@@ -1,4 +1,8 @@
+export {}
+
 const next = require('next')
+
+const fs = require('fs')
 
 const express = require('express')
 const { join } = require('path')
@@ -17,7 +21,7 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
-let lexi
+let lexi = {} as any
 
 app.prepare().then(() => {
   const server = express()
@@ -46,23 +50,20 @@ app.prepare().then(() => {
   )
 
   server.use((req: any, res: any, next: any) => {
-    // next()
-    // return
+    if (
+      req.originalUrl !== '/login' && 
+      !req.session.loggedIn &&
+      !req.originalUrl.startsWith('/_next') &&
+      !req.originalUrl.startsWith('/assets') &&
+      !req.originalUrl.startsWith('/auth')
+    ) {
+      res.redirect('/login')
+    }
+    
+    next()
+  })
 
-  if (
-    req.originalUrl !== '/login' && 
-    !req.session.loggedIn &&
-    !req.originalUrl.startsWith('/_next') &&
-    !req.originalUrl.startsWith('/assets') &&
-    !req.originalUrl.startsWith('/auth')
-  ) {
-    res.redirect('/login')
-  }
-  
-  next()
-})
-
-// login
+  // login
   server.post('/auth/login', async (req: any, res: any) => {
     const { sessionToken, clearanceToken, userAgent } = req.body
     try {
@@ -88,13 +89,6 @@ app.prepare().then(() => {
         catch(e) {
           res.send({ status: 'failure', msg: (e as any).statusText })
         }
-        
-        // const conversation = api.getConversation()
-        // send a message and wait for the response
-        // const response0 = await conversation.sendMessage('What is OpenAI?')
-        
-        // console.log(response0)
-    
       })()
     }
     catch(e) {
@@ -103,25 +97,50 @@ app.prepare().then(() => {
     }
   })
 
-    // // get user
-    // server.get('/auth/users/me', async (req: Server.RequestWithSession, res: Response) => {
-    //   try {
-    //     const { jwt, canAccessPreview } = req.session
-    //     res.send({ isLoggedIn: !!jwt, canAccessPreview })
-    //   }
-    //   catch(e) {
-    //     console.log('User not logged in, or an error occured')
-    //     console.log(e)
-    //   }
-      
-    // })
+  // chat
+  server.post('/lexi/chat', async (req: any, res: any) => {
+    const { query } = req.body
+    try {
+      (async() => {
+        try {
+          const conversation = lexi.getConversation()
+          const response = await conversation.sendMessage(query)
+          res.send({ status: 'success', data: { response } })
+        }
+        catch(e) {
+          res.send({ status: 'failure', msg: (e as any).statusText })
+        }
+      })()
+    }
+    catch(e) {
+      console.log(e)
+      res.send({ status: 'failure', msg: 'Chat failed' })
+    }
+  })
 
-    // // logout
-    // server.get('/auth/users/logout', (req: Server.RequestWithSession, res: Response) => {
-    //   req.session.jwt = null
-    //   console.log('log out')
-    //   res.send({ status: '200' })
-    // })
+  // initialize Lexi
+  server.post('/lexi/chat/init', async (req: any, res: any) => {
+    try {
+      (async() => {
+        const lexiInitializationScript = fs.readFileSync('lexi/lexi-initialization.txt', 'utf8')
+        
+        try {
+          const conversation = lexi.getConversation()
+          const response = await conversation.sendMessage(lexiInitializationScript)
+          res.send({ status: 'success', data: {
+            response
+          } })
+        }
+        catch(e) {
+          res.send({ status: 'failure', msg: (e as any).statusText })
+        }
+      })()
+    }
+    catch(e) {
+      console.log(e)
+      res.send({ status: 'failure', msg: 'Chat failed' })
+    }
+  })
   
   server.all('/next/*', async (req: Request, res: any) => {
     res.status(400).json({ error: 'Next API route not found' })

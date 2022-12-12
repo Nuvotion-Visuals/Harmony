@@ -1,12 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "esnext",
+    "module": "CommonJS",
     "outDir": "dist",
     "noEmit": false,
-    "isolatedModules": false,
     "downlevelIteration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "isolatedModules": false
   },
   "include": ["server"]
 }

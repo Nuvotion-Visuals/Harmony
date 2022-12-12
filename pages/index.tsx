@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState, useEffect, useRef } from 'react'
 import cuid from 'cuid'
+import axios from 'axios'
 
 import {
   Button,
@@ -35,7 +36,7 @@ const Home: NextPage = () => {
 
   const [query, set_query] = useState('')
 
-  const makeQuery = (query: string) => {
+  const makeQuery = (query: string, initialize: boolean) => {
     const guid = cuid()
     set_queryGuids([...queryGuids, guid])
     set_queriesByGuid({
@@ -44,22 +45,43 @@ const Home: NextPage = () => {
         query,
         loading: true, 
       }
-    })
+    });
+
+    (async () => {
+      try {
+        const loginRes = await axios({
+          method: 'POST',
+          url: initialize ? '/lexi/chat/init' : `/lexi/chat`,
+          data: {
+            query
+          }
+        })
+        const { status, msg, data } = loginRes.data
+
+        if (status === 'success') {
+          set_queriesByGuid({
+            ...queriesByGuid,
+            [guid]: {
+              query,
+              loading: false,
+              response: data.response
+            }
+          });
+          return;
+        }
+        else {
+          console.log('Error')
+          alert('Something went wrong')
+        }
+      }
+      catch(e) {
+        console.log('Error')
+        alert('Something went wrong')
+      }
+    })()
 
     set_query('')
-    set_scrollTo(true)
-
-    setTimeout(() => {
-      set_queryGuids([...queryGuids, guid])
-      set_queriesByGuid({
-        ...queriesByGuid,
-        [guid]: {
-          query,
-          loading: false, 
-          response: 'Yes, I can hear you.'
-        }
-      })
-    }, 5000)
+    set_scrollTo(true);
   }
 
   const queries = Object.keys(queriesByGuid).map(guid => queriesByGuid[guid]) 
@@ -72,6 +94,12 @@ const Home: NextPage = () => {
   useEffect(() => {
     set_scrollTo(false)
   }, [queries.length])
+
+  useEffect(() => {
+    if (queries.length === 0) {
+      makeQuery('Hello, Lexi.', true)
+    }
+  }, [])
 
   const Response = ({ query, speaker }: { query: string, speaker?: string}) => {
     const isLexi = speaker === 'Lexi'
@@ -112,12 +140,6 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      <Head>
-        <title>Lexi</title>
-        <meta name="description" content="Levi is a highly-intellegent virtual coworker for creative and technical projects" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <Navigation
         navLogoSrc={'/assets/lexi-typography.svg'}
         navs={[
@@ -192,7 +214,7 @@ const Home: NextPage = () => {
                   text='Send'
                   icon='paper-plane'
                   expand={true}
-                  onClick={() => makeQuery(query)}
+                  onClick={() => makeQuery(query, false)}
                 />
             </S.ButtonContainer>
           </S.Footer>

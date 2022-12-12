@@ -93,10 +93,10 @@ const Preview = ({  } : Props) => {
           <details>
             <summary>Where can I find the login information?</summary>
               <ol>
-                <li>Go to <a href='https://chat.openai.com/chat' target='_blank'>https://chat.openai.com/chat</a> and log in or sign up</li>
-                <li>Press F12 to open dev tools</li>
-                <li>Go to Application &gt; Cookies</li>
-                <li>Copy and paste the values for <i>__Secure-next-auth.session-token</i> and <i>cf_clearance</i></li>
+                <li>Go to <a href='https://chat.openai.com/chat' rel="noreferrer"target='_blank'>https://chat.openai.com/chat</a> and log in or sign up.</li>
+                <li>Press F12 to open dev tools.</li>
+                <li>Go to Application &gt; Cookies.</li>
+                <li>Copy and paste the values for <i>__Secure-next-auth.session-token</i> and <i>cf_clearance</i>.</li>
               </ol>
           </details>
 

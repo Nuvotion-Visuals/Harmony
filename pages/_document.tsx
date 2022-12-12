@@ -29,7 +29,16 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <title>Lexichat - Creative AI Coworker</title>
+          <meta name="description" content="Lexi is a highly-intellegent virtual coworker for creative and technical projects" />
+          <link rel="icon" href="/favicon.ico" />
+          <meta property="og:title" content="Lexichat" />
+          <meta
+            property="og:image"
+            content="/assets/lexichat-preview.png"
+          />
+        </Head>
         <body>
           <Main />
           <NextScript />
