@@ -1,5 +1,4 @@
-export {}
-
+// @ts-ignore
 const next = require('next')
 
 const fs = require('fs')
@@ -84,10 +83,14 @@ app.prepare().then(() => {
           req.session.sessionToken
           req.session.auth = auth
 
-          res.send({ status: 'success' })
+          res.send({ status: 200 })
         }
         catch(e) {
-          res.send({ status: 'failure', msg: (e as any).statusText })
+          const error = e as any
+          console.log(error)
+          const status = error.statusCode || error.code || 500
+          const message = error.message || '"internal error'
+          res.send({ status, message })
         }
       })()
     }
@@ -100,45 +103,37 @@ app.prepare().then(() => {
   // chat
   server.post('/lexi/chat', async (req: any, res: any) => {
     const { query } = req.body
+
     try {
-      (async() => {
-        try {
-          const conversation = lexi.getConversation()
-          const response = await conversation.sendMessage(query)
-          res.send({ status: 'success', data: { response } })
-        }
-        catch(e) {
-          res.send({ status: 'failure', msg: (e as any).statusText })
-        }
-      })()
+      const conversation = lexi.getConversation()
+      const response = await conversation.sendMessage(query)
+      res.send({ status: 200, data: { response } })
     }
     catch(e) {
-      console.log(e)
-      res.send({ status: 'failure', msg: 'Chat failed' })
+      const error = e as any
+      console.log(error)
+      const status = error.statusCode || error.code || 500
+      const message = error.message || '"internal error'
+      res.send({ status, message })
     }
   })
 
   // initialize Lexi
   server.post('/lexi/chat/init', async (req: any, res: any) => {
     try {
-      (async() => {
-        const lexiInitializationScript = fs.readFileSync('lexi/lexi-initialization.txt', 'utf8')
-        
-        try {
-          const conversation = lexi.getConversation()
-          const response = await conversation.sendMessage(lexiInitializationScript)
-          res.send({ status: 'success', data: {
-            response
-          } })
-        }
-        catch(e) {
-          res.send({ status: 'failure', msg: (e as any).statusText })
-        }
-      })()
+      const lexiInitializationScript = fs.readFileSync('lexi/lexi-initialization.txt', 'utf8')
+      const conversation = lexi.getConversation()
+      const response = await conversation.sendMessage(lexiInitializationScript)
+      res.send({ status: 200, data: {
+        response
+      }})
     }
     catch(e) {
-      console.log(e)
-      res.send({ status: 'failure', msg: 'Chat failed' })
+      const error = e as any
+      console.log(error)
+      const status = error.statusCode || error.code || 500
+      const message = error.message || '"internal error'
+      res.send({ status, message })
     }
   })
   

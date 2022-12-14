@@ -51,16 +51,17 @@ const Preview = ({  } : Props) => {
             userAgent: window.navigator.userAgent
           }
         })
-        const { status, msg } = loginRes.data
+        const { status, message } = loginRes.data
 
-        if (status === 'success') {
+        if (status === 200) {
           window.location.replace(`/`)
           return;
         }
         else {
+          console.log(status, message)
           formik.setErrors({
-            sessionToken: 'Verify your session token and try again',
-            clearanceToken: 'Verify your clearance token and try again'
+            sessionToken: 'Verify your session token and try again. It may have expired.',
+            clearanceToken: 'Verify your clearance token and try again. It may expired.'
           })
         }
       }
@@ -84,7 +85,7 @@ const Preview = ({  } : Props) => {
       }}
     >
       <StyleHTML>
-          Lexi is an AI co-worker who can help with artistic and technical projects.
+          Lexi is an AI coworker who can help with artistic and technical projects.
 
           <br />
           <br />

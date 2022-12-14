@@ -14,7 +14,9 @@ library.add(
   // regular
   // @ts-ignore
   far.faHeart, far.faPaperPlane, far.faCheckSquare, far.faSquare,
-  fas.faEnvelope,
+  fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark,
+  far.faEnvelope, 
+  
 
   // solid
   fas.faInfoCircle, fas.faBars, fas.faHeart, fas.faPlus,
@@ -25,7 +27,9 @@ library.add(
   fas.faCheck, fas.faExclamationTriangle, fas.faUser, fas.faComment,
   fas.faComments, fas.faMessage, fas.faComments, fas.faBook, 
   fas.faQuestionCircle, fas.faNewspaper, fas.faInfo, fas.faQuestion,
-  fas.faLightbulb, fas.faFolder
+  fas.faLightbulb, fas.faFolder, fas.faCopy, fas.faBookmark, fas.faShare,
+  fas.faDownload, fas.faFileDownload, fas.faRefresh, fas.faSync, fas.faSyncAlt,
+  fas.faPlay, fas.faMicrophone, fas.faMicrophoneSlash, fas.faStop
 )
 
 config.autoAddCss = false

@@ -1,6 +1,6 @@
 # Lexichat
 
-Lexi is an AI co-worker who can help with a wide range of artistic and technical projects.
+Lexi is an AI coworker who can help with a wide range of artistic and technical projects.
 
 Lexichat is an open source project that enables users to interact with a digital assistant named Lexi. Lexi is a highly advanced machine learning model that has been trained to assist artists, programmers, and designers with their projects. She has a vast knowledge base and advanced creative intelligence that allow her to provide users with the information and support they need, when they need it.
 

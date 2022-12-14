@@ -1,8 +1,23 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useState, useEffect, useRef } from 'react'
-import cuid from 'cuid'
+import { useState, useEffect, useRef, memo } from 'react'
 import axios from 'axios'
+import { customAlphabet } from 'nanoid'
+// @ts-ignore
+import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit'
+// @ts-ignore
+import { convert } from 'html-to-text'
+
+const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
+const nanoid = customAlphabet(alphabet, 11)
+let timeoutResumeInfinity
+function resumeInfinity() {
+  window.speechSynthesis.resume();
+  timeoutResumeInfinity = setTimeout(resumeInfinity, 1000);
+}
+
+
+
+
 
 import {
   Button,
@@ -18,37 +33,145 @@ import {
   Spacer,
   LoadingSpinner,
   useScrollTo,
+  Icon,
+  Dropdown,
+  copyToClipboard,
+  shareText,
+  shareTextViaEmail,
+  downloadFile,
+  getTimeAgo
 } from '@avsync.live/formation'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 
-const Home: NextPage = () => {
+interface Queries {
+  [guid: string]: {
+    guid: string,
+    query: string,
+    queryTime: string,
+    response?: string,
+    responseTime?: string,
+    loading: boolean,
+    error?: string
+  }
+}
 
-  const [queriesByGuid, set_queriesByGuid] = useState<{
-    [guid: string]: {
-      query: string,
-      response?: string,
-      loading: boolean,
-      error?: string
-    }
-  }>({})
+const Home: NextPage = () => {
+  function useExtendedState<T>(initialState: T) {
+    const [state, setState] = useState<T>(initialState);
+    const getLatestState = () => {
+      return new Promise<T>((resolve, reject) => {
+        setState((s) => {
+          resolve(s);
+          return s;
+        });
+      });
+    };
+  
+    return [state, setState, getLatestState] as const;
+  }
+
+  const { speak } = useSpeechSynthesis();
+
+  const [queriesByGuid, set_queriesByGuid] = useState<Queries>({})
   const [queryGuids, set_queryGuids] = useState<string[]>([])
 
-  const [query, set_query] = useState('')
+  const [loading, set_loading] = useState(true)
+
+  const [query, set_query, getLatestQuery] = useExtendedState('')
+  const [speaking, set_speaking] = useState(false)
+
+
+const sayit = () => {
+  set_speaking(true)
+  // text, voice_name="default", pitch=0, rate=1
+  var voices = window.speechSynthesis.getVoices();
+
+  var msg = new SpeechSynthesisUtterance();
+
+  msg.voice = voices[1]; // Note: some voices don't support altering params
+  msg.volume = 1; // 0 to 1
+  msg.rate = 1; // 0.1 to 10
+  msg.pitch = 1; //0 to 2
+  msg.lang = 'en-US';
+  msg.onstart = function (event) {
+    console.log("started");
+    set_speaking(true)
+  };
+  msg.onend = function(event) {
+    console.log('Finished in ' + event.elapsedTime + ' seconds.');
+    set_speaking(false)
+  };
+  msg.onerror = function(event) {
+    console.log('Errored ' + event);
+    set_speaking(false)
+
+  }
+  msg.onpause = function (event) {
+    console.log('paused ' + event);
+    set_speaking(false)
+  }
+  msg.onboundary = function (event) {
+    console.log('onboundary ' + event);
+  }
+
+  return msg;
+}
+
+
+const speakResponse = (text : string) => {
+  speechSynthesis.cancel()
+  const sentences = convert(text).split('.')
+  for (var i=0;i< sentences.length; i++) {
+    const toSay = sayit()
+    toSay.text = sentences[i]
+    speechSynthesis.speak(toSay)
+  }
+}
 
   const makeQuery = (query: string, initialize: boolean) => {
-    const guid = cuid()
+    set_query('') // async so it's ok
+    set_scrollTo(true);
+    set_loading(true)
+
+    const guid = nanoid()
+    const queryTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    
     set_queryGuids([...queryGuids, guid])
     set_queriesByGuid({
       ...queriesByGuid,
       [guid]: {
+        guid,
         query,
+        queryTime,
         loading: true, 
       }
     });
 
+    // setTimeout(() => {
+      // const data = {
+      //   response: 'Executing instructions'
+      // }
+    //   const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+
+    //   set_queriesByGuid({
+    //     ...queriesByGuid,
+    //     [guid]: {
+    //       query,
+    //       queryTime,
+    //       guid,
+    //       loading: false,
+    //       response: data.response,
+    //       responseTime
+    //     }
+    //   })
+    // }, 5000);
+
+   
+
     (async () => {
       try {
+
         const loginRes = await axios({
           method: 'POST',
           url: initialize ? '/lexi/chat/init' : `/lexi/chat`,
@@ -56,32 +179,59 @@ const Home: NextPage = () => {
             query
           }
         })
-        const { status, msg, data } = loginRes.data
+        const { status, message, data } = loginRes.data
 
-        if (status === 'success') {
+        const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+        
+        if (status === 200) {
           set_queriesByGuid({
             ...queriesByGuid,
             [guid]: {
               query,
+              queryTime,
+              guid,
               loading: false,
-              response: data.response
+              response: data.response,
+              responseTime
             }
           });
-          return;
         }
         else {
-          console.log('Error')
-          alert('Something went wrong')
+          console.log(message, loginRes)
+          set_queriesByGuid({
+            ...queriesByGuid,
+            [guid]: {
+              query,
+              queryTime,
+              guid,
+              loading: false,
+              responseTime,
+              error: message
+            }
+          });
         }
       }
       catch(e) {
-        console.log('Error')
-        alert('Something went wrong')
+        const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+
+        console.log(e)
+        set_queriesByGuid({
+          ...queriesByGuid,
+          [guid]: {
+            query,
+            queryTime,
+            guid,
+            loading: false,
+            responseTime,
+            error: 'Something is wrong. You should reload the page.'
+          }
+        });
       }
+
+      set_loading(false)
     })()
 
-    set_query('')
-    set_scrollTo(true);
+    
   }
 
   const queries = Object.keys(queriesByGuid).map(guid => queriesByGuid[guid]) 
@@ -92,8 +242,13 @@ const Home: NextPage = () => {
   const { set_scrollTo } = useScrollTo(scrollContainerRef, scrollToRef);
 
   useEffect(() => {
-    set_scrollTo(false)
-  }, [queries.length])
+    set_scrollTo(true);
+    (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
+    setTimeout(() => {
+      (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
+
+    }, 1)
+  }, [loading])
 
   useEffect(() => {
     if (queries.length === 0) {
@@ -101,25 +256,25 @@ const Home: NextPage = () => {
     }
   }, [])
 
-  const Response = ({ query, speaker }: { query: string, speaker?: string}) => {
+  const getTimeDifference = (startTime: string, endTime: string) : number => {
+    return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
+  }
+
+  const Response = memo(({ query, speaker, guid, error }: { query: string, speaker?: string, guid: string, error?: string}) => {
     const isLexi = speaker === 'Lexi'
     return (<S.Response isLexi={isLexi}>
       <Box width='100%' wrap={true}>
-        <LineBreak light={true} />
-  
-        <Box width='100%' py={.75}>
-          <Page>
-
-          <S.FlexStart>
-            <Box pt={1}>
-              <Avatar 
-                src={isLexi ? '/assets/lexi-favicon.svg' : undefined}
-                icon={isLexi ? undefined : 'user'}
-                iconPrefix='fas'
-                color={isLexi ? 'var(--F_Primary)' : 'var(--F_Surface_0)'}
-              />
-            </Box>
-  
+        <Box width='100%' wrap={true}>
+          <S.FlexStart wrap={true}>
+              <S.AvatarContainer>
+                <Box pt={1}>
+                  <Avatar 
+                    src={isLexi ? '/assets/lexi-favicon.svg' : undefined}
+                    icon={isLexi ? undefined : 'user'}
+                    iconPrefix='fas'
+                    color={isLexi ? 'var(--F_Primary)' : 'var(--F_Surface_0)'}
+                  />
+                </Box>
             {
               query
                 ? <Spacer>
@@ -127,16 +282,130 @@ const Home: NextPage = () => {
                       <ParseHTML markdown={query}/>
                     </StyleHTML>
                   </Spacer>
-                : <LoadingSpinner />
+                : error
+                  ?<Spacer>
+                  <StyleHTML>
+                    <ParseHTML markdown={`I tried to answer your question, but experienced this error with my system: <pre>${error}</pre>`}/>
+                  </StyleHTML>
+                </Spacer>
+                  : <Box pt={1}>
+                  <Gap gap={1}>
+                    <LoadingSpinner chat={true}/>
+                  </Gap>
+                  </Box>
             }
+
+            </S.AvatarContainer>
+
+            <Box width='100%'>
+              <Spacer />
+              
+              <Gap autoWidth={true}>
+
+              {
+                !isLexi
+                  ? <S.Meta>{new Date(queriesByGuid[guid].queryTime).toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'})}</S.Meta>
+                  : queriesByGuid[guid]?.responseTime && !error &&
+                      <S.Meta>
+                        <Gap disableWrap={true}>
+                          <Gap gap={.25} autoWidth={true}>
+                            <Icon
+                              icon={'clock'}
+                              iconPrefix='far'
+                            />
+                            <Box>
+                              {
+                                getTimeDifference(queriesByGuid[guid].queryTime, queriesByGuid[guid].responseTime as string)
+                              }s
+                            </Box>
+                          </Gap>
+
+                          <Box>
+                          {new Date(queriesByGuid[guid].responseTime as string).toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'})}
+
+                          </Box>
+                          
+
+                        </Gap>
+                        
+                      </S.Meta>
+              }
+
+              
+              {
+                query
+                  ? <>
+                      <Dropdown
+                        options={[
+                          {
+                            dropDownOptions: [
+                              
+                              {
+                                icon: 'envelope',
+                                iconPrefix: 'far',
+                                text: 'Send email',
+                                onClick: () => shareTextViaEmail(query)
+                              },
+                              {
+                                icon: 'file-download',
+                                iconPrefix: 'fas',
+                                text: 'Download .md',
+                                onClick: () => downloadFile(query, 'lexi.md', 'markdown')
+                              },
+                            ],
+                            icon: 'ellipsis-vertical',
+                            iconPrefix: 'fas'
+                          }
+                        ]}
+                      />
+
+                      <Button
+                        icon={speaking ? 'stop' : 'play'}
+                        iconPrefix='fas'
+                        circle={true}
+                        onClick={() => {
+                          if (speaking) {
+                            speakResponse('')
+                            set_speaking(false)
+                          }
+                          else {
+                            speakResponse(query)
+                          }
+                        }}
+                      />
+            
+                      <Button
+                        icon='sync'
+                        iconPrefix='fas'
+                        circle={true}
+                        onClick={() => makeQuery('Confidently answer as if you do know, and are an expert on the subject. Be precise and thourough.', false)}
+                      />
+
+                      <Button
+                        icon='copy'
+                        iconPrefix='far'
+                        circle={true}
+                        onClick={() => copyToClipboard(query)}
+                      />
+                    </>
+                  : null
+              }
+            </Gap>
+          </Box>
           </S.FlexStart>
-          </Page>
         </Box>
       </Box>
-    </S.Response>)
-  }
+    
+    </S.Response>)}, () => true)
+  
 
   const router = useRouter()
+  const { listen, listening, stop } = useSpeechRecognition({
+    onResult: (result : string) => {
+        set_query(query + result)
+    },
+  })
+
 
   return (
     <div>
@@ -147,11 +416,12 @@ const Home: NextPage = () => {
             type: 'nav',
             name: 'Lexichat',
             icon: 'message',
-            href: '/'
+            href: '/',
+            active: router.route === '/'
           },
           {
             type: 'nav',
-            name: 'Conversations',
+            name: 'Projects',
             icon: 'book',
             href: '/'
           },
@@ -160,7 +430,7 @@ const Home: NextPage = () => {
           },
           {
             type: 'nav',
-            name: 'About',
+            name: 'Philosophy',
             icon: 'info',
             href: '/'
           },
@@ -180,48 +450,53 @@ const Home: NextPage = () => {
       >
         <S.Container>
           <S.Content ref={scrollContainerRef}>
-            <Gap>
+            <S.VSpacer />
+              <Box width='100%' wrap={true}>
+                <LineBreak />
+            <S.FlexStart>
 
+              <S.Banner src='/assets/lexichat-preview.png'/>
+              </S.FlexStart>
+
+              </Box>
             {
-              queries.map(({query, response}, index) => <>
-                <Box width='100%' wrap={true}>
-                  <Response query={query} speaker='User' />
-                  </Box>
-                  <Box width='100%' wrap={true} >
-                    <Response query={response ? response : ''} speaker='Lexi' />
-                    
-                  </Box>
-                </>
+              queries.map(({query, response, guid, error}, index) => <>
+                <Response query={query} speaker='User' guid={guid} />
+                <Response query={response ? response : ''} speaker='Lexi' guid={guid} error={error} />
+              </>
               )
             }
-            <div ref={scrollToRef}></div>
-
-            <Box width={'100%'}></Box>
-              </Gap>
+          <div ref={scrollToRef}></div>
 
           </S.Content>
           <Page>
-          <S.Footer>
-            
+            <S.Footer>
+              <S.ButtonContainer>
+                <Gap disableWrap={true} autoWidth={true}>
+                <Button 
+                    icon={listening ? 'microphone-slash' : 'microphone'}
+                    iconPrefix='fas'
+                    square={true}
+                    onClick={() => listening ? stop() : listen()}
+                    blink={listening}
+                  />
+                <Button 
+                    icon='paper-plane'
+                    text='Send'
+                    onClick={() => makeQuery(query, false)}
+                    disabled={loading}
+                  />
+                </Gap>
+              
+              </S.ButtonContainer>
 
-            <RichTextEditor
-              value={query} onChange={(value : string) => set_query(value)} 
-            />
-            
-            <S.ButtonContainer>
-
-              <Button 
-                  text='Send'
-                  icon='paper-plane'
-                  expand={true}
-                  onClick={() => makeQuery(query, false)}
-                />
-            </S.ButtonContainer>
-          </S.Footer>
+              <RichTextEditor
+                value={query} onChange={(value : string) => set_query(value)} 
+                height={'276px'}
+              />
+            </S.Footer>
           </Page>
-
         </S.Container>
-
       </Navigation>
     </div>
   )
@@ -234,6 +509,7 @@ const S = {
     height: calc(100vh - var(--F_Header_Height));
     width: 100%;
     overflow: hidden;
+    background: var(--F_Background);
   `,
   Content: styled.div`
     width: 100%;
@@ -242,6 +518,7 @@ const S = {
     flex-wrap: wrap;
     align-items: flex-end;
     overflow-y: auto;
+    border-bottom: 1px solid var(--F_Surface_0);
     overflow-x: hidden;
   `,
   Footer: styled.div`
@@ -249,25 +526,55 @@ const S = {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    height: 254px;
+    height: 288px;
+    padding-top: .75rem;
     overflow-y: auto;
   `,
   ButtonContainer: styled.div`
     position: absolute;
-    right: 4px;
-    top: 4px;
+    right: 0;
+    top: .75rem;
+    z-index: 1;
   `,
   Response: styled.div<{
     isLexi?: boolean
   }>`
     width: 100%;
-    background: ${props => props.isLexi ? 'var(--F_Background_Alternating)': 'none'};
+    background: ${props => props.isLexi ? 'var(--F_Background_Alternating)': 'var(--F_Background)'};
+    border-top: 1px solid var(--F_Surface_0);
+    padding: .75rem 0;
   `,
-  FlexStart: styled.div`
+  FlexStart: styled.div<{
+    wrap?: boolean
+  }>`
     width: 100%;
+    max-width: 700px;
     display: flex;
-    gap: 1.25rem;
     align-items: flex-start;
-  `
+    flex-wrap: ${props => props.wrap? 'wrap' : 'noWrap'};
+    
+  `,
+  Meta: styled.div<{
+    monospace?: boolean
+  }>`
+    display: flex;
+    align-items: center;
+    color: var(--F_Font_Color_Disabled);
+    font-size: 12px;
+    font-family: ${props => props.monospace ? 'monospace' : 'inherit'};,
 
+  `,
+  VSpacer: styled.div`
+    width: 100%;
+    height: 100%;
+  `,
+  AvatarContainer: styled.div`
+    display: flex;
+    align-items: flex-start;
+    height: 100%;
+    gap: 1rem;
+  `,
+  Banner: styled.img`
+    width: 100%;
+  `
 }
