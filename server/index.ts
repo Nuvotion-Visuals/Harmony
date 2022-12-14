@@ -5,9 +5,14 @@ const fs = require('fs')
 
 const express = require('express')
 const { join } = require('path')
+const { fetchTranscript } = require('youtube-transcript').default
 
 const cookieParser = require('cookie-parser')
 const cookieSession = require('cookie-session')
+
+const { extract } = require('@extractus/article-extractor')
+
+const { getSubtitles } = require('youtube-captions-scraper')
 
 const bodyParser = require('body-parser')
 
@@ -89,7 +94,7 @@ app.prepare().then(() => {
           const error = e as any
           console.log(error)
           const status = error.statusCode || error.code || 500
-          const message = error.message || '"internal error'
+          const message = error.message || 'internal error'
           res.send({ status, message })
         }
       })()
@@ -113,7 +118,7 @@ app.prepare().then(() => {
       const error = e as any
       console.log(error)
       const status = error.statusCode || error.code || 500
-      const message = error.message || '"internal error'
+      const message = error.message || 'internal error'
       res.send({ status, message })
     }
   })
@@ -132,7 +137,71 @@ app.prepare().then(() => {
       const error = e as any
       console.log(error)
       const status = error.statusCode || error.code || 500
-      const message = error.message || '"internal error'
+      const message = error.message || 'internal error'
+      res.send({ status, message })
+    }
+  })
+
+   // chat
+  server.post('/tools/parse-article', async (req: any, res: any) => {
+    const { contentUrl } = req.body
+
+    try {
+      const input = contentUrl
+      extract(input)
+      // @ts-ignore
+        .then(article => {
+          res.send({ status: 200, data: {
+            article
+          }})
+        })
+      // @ts-ignore
+      .catch(e => {
+        const error = e as any
+        console.log(error)
+        const status = error.statusCode || error.code || 500
+        const message = error.message || 'internal error'
+        res.send({ status, message })
+      })
+    }
+    catch(e) {
+      const error = e as any
+      console.log(error)
+      const status = error.statusCode || error.code || 500
+      const message = error.message || 'internal error'
+      res.send({ status, message })
+    }
+  })
+
+  server.post('/tools/parse-youtube-video', async (req: any, res: any) => {
+    const { videoUrl } = req.body
+
+    function youtube_parser(url : string) : string {
+      var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+      var match = url.match(regExp);
+      return (match&&match[7].length==11)? match[7] : '';
+  }
+
+    try {
+      getSubtitles({
+        videoID: youtube_parser(videoUrl), 
+        lang: 'en'
+      }).then((captions : {
+        'start': Number,
+        'dur': Number,
+        'text': String
+      }[]) => {
+        const transcript = captions.map(cap => cap.text).join(' ')
+        res.send({ status: 200, data: {
+          transcript
+        }})
+      })
+    }
+    catch(e) {
+      const error = e as any
+      console.log(error)
+      const status = error.statusCode || error.code || 500
+      const message = error.message || 'internal error'
       res.send({ status, message })
     }
   })

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@avsync.live/formation": "^0.9.46",
+    "@extractus/article-extractor": "^7.2.8-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "axios": "^1.2.1",
     "body-parser": "^1.20.1",
@@ -28,6 +29,8 @@
     "react-dom": "18.2.0",
     "react-speech-kit": "^3.0.1",
     "styled-components": "^5.3.5",
+    "youtube-captions-scraper": "^2.0.0",
+    "youtube-transcript": "^1.0.4",
     "yup": "^0.32.11"
   },
   "devDependencies": {

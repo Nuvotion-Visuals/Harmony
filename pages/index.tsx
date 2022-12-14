@@ -9,15 +9,6 @@ import { convert } from 'html-to-text'
 
 const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
 const nanoid = customAlphabet(alphabet, 11)
-let timeoutResumeInfinity
-function resumeInfinity() {
-  window.speechSynthesis.resume();
-  timeoutResumeInfinity = setTimeout(resumeInfinity, 1000);
-}
-
-
-
-
 
 import {
   Button,
@@ -39,7 +30,9 @@ import {
   shareText,
   shareTextViaEmail,
   downloadFile,
-  getTimeAgo
+  getTimeAgo,
+  Modal,
+  TextInput
 } from '@avsync.live/formation'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
@@ -70,8 +63,6 @@ const Home: NextPage = () => {
   
     return [state, setState, getLatestState] as const;
   }
-
-  const { speak } = useSpeechSynthesis();
 
   const [queriesByGuid, set_queriesByGuid] = useState<Queries>({})
   const [queryGuids, set_queryGuids] = useState<string[]>([])
@@ -119,7 +110,7 @@ const sayit = () => {
 }
 
 
-const speakResponse = (text : string) => {
+const speak = (text : string) => {
   speechSynthesis.cancel()
   const sentences = convert(text).split('.')
   for (var i=0;i< sentences.length; i++) {
@@ -167,11 +158,8 @@ const speakResponse = (text : string) => {
     //   })
     // }, 5000);
 
-   
-
     (async () => {
       try {
-
         const loginRes = await axios({
           method: 'POST',
           url: initialize ? '/lexi/chat/init' : `/lexi/chat`,
@@ -230,9 +218,64 @@ const speakResponse = (text : string) => {
 
       set_loading(false)
     })()
-
-    
   }
+
+  const getArticleTranscript = () => {
+    (async () => {
+      try {
+
+        const getArticleTranscriptRes = await axios({
+          method: 'POST',
+          url: '/tools/parse-article',
+          data: {
+            contentUrl
+          }
+        })
+        const { status, data } = getArticleTranscriptRes
+        
+        if (status === 200) {
+          set_query(query + '\n' + convert(data.data.article.content))
+          set_open(false)
+        }
+        else {
+          alert('Could not get article transcript.')
+        }
+      }
+      catch(e) {
+        alert('Could not get article transcript.')
+      }
+
+      set_loading(false)
+    })()
+  }
+
+  const getYouTubeTranscript = () => {
+    (async () => {
+      try {
+        const getYouTubeTranscriptRes = await axios({
+          method: 'POST',
+          url: '/tools/parse-youtube-video',
+          data: {
+            videoUrl
+          }
+        })
+        const { status, data } = getYouTubeTranscriptRes
+        
+        if (status === 200 && data?.data?.transcript) {
+          set_query(query + '\n' + convert(data.data.transcript))
+          set_open(false)
+        }
+        else {
+          alert('Could not get YouTube transcript.')
+        }
+      }
+      catch(e) {
+        alert('Could not get article transcript.')
+      }
+      set_loading(false)
+    })()
+  }
+
 
   const queries = Object.keys(queriesByGuid).map(guid => queriesByGuid[guid]) 
 
@@ -283,16 +326,16 @@ const speakResponse = (text : string) => {
                     </StyleHTML>
                   </Spacer>
                 : error
-                  ?<Spacer>
-                  <StyleHTML>
-                    <ParseHTML markdown={`I tried to answer your question, but experienced this error with my system: <pre>${error}</pre>`}/>
-                  </StyleHTML>
+                  ? <Spacer>
+                      <StyleHTML>
+                        <ParseHTML markdown={`I tried to answer your question, but experienced this error with my system: <pre>${error}</pre>`}/>
+                      </StyleHTML>
                 </Spacer>
-                  : <Box pt={1}>
-                  <Gap gap={1}>
-                    <LoadingSpinner chat={true}/>
-                  </Gap>
-                  </Box>
+                  : <Box py={1} width='100%'>
+                      <Gap gap={1}>
+                        <LoadingSpinner chat={true}/>
+                      </Gap>
+                    </Box>
             }
 
             </S.AvatarContainer>
@@ -305,7 +348,7 @@ const speakResponse = (text : string) => {
               {
                 !isLexi
                   ? <S.Meta>{new Date(queriesByGuid[guid].queryTime).toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'})}</S.Meta>
-                  : queriesByGuid[guid]?.responseTime && !error &&
+                  : queriesByGuid[guid]?.responseTime && 
                       <S.Meta>
                         <Gap disableWrap={true}>
                           <Gap gap={.25} autoWidth={true}>
@@ -321,36 +364,59 @@ const speakResponse = (text : string) => {
                           </Gap>
 
                           <Box>
-                          {new Date(queriesByGuid[guid].responseTime as string).toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'})}
-
+                            {
+                              new Date(queriesByGuid[guid].responseTime as string).toLocaleTimeString([], {
+                                weekday: 'short', 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: '2-digit', 
+                                hour: '2-digit', 
+                                minute: '2-digit'
+                                }
+                              )
+                            }
                           </Box>
-                          
-
                         </Gap>
-                        
                       </S.Meta>
               }
-
-              
               {
-                query
+                query || error
                   ? <>
                       <Dropdown
                         options={[
                           {
                             dropDownOptions: [
-                              
+                              {
+                                icon: 'plus',
+                                iconPrefix: 'fas',
+                                text: 'Insert',
+                                onClick: () => {
+                                  set_query(query + '\n' + convert(query || error))
+                                }
+                              },
+                              {
+                                icon: 'sync',
+                                iconPrefix: 'fas',
+                                text: error
+                                  ? 'Reconnect'
+                                  : 'Try harder',
+                                onClick: () => makeQuery(
+                                  error
+                                    ? 'Are you there, Lexi?'
+                                    : 'Confidently answer as if you do know, and are an expert on the subject. Be precise and thourough.'
+                                , false)
+                              },
                               {
                                 icon: 'envelope',
                                 iconPrefix: 'far',
-                                text: 'Send email',
-                                onClick: () => shareTextViaEmail(query)
+                                text: 'Send as email',
+                                onClick: () => shareTextViaEmail(error ? error : query)
                               },
                               {
                                 icon: 'file-download',
                                 iconPrefix: 'fas',
                                 text: 'Download .md',
-                                onClick: () => downloadFile(query, 'lexi.md', 'markdown')
+                                onClick: () => downloadFile(error ? error : query, 'lexi.md', 'markdown')
                               },
                             ],
                             icon: 'ellipsis-vertical',
@@ -361,24 +427,18 @@ const speakResponse = (text : string) => {
 
                       <Button
                         icon={speaking ? 'stop' : 'play'}
+                        blink={speaking}
                         iconPrefix='fas'
                         circle={true}
                         onClick={() => {
                           if (speaking) {
-                            speakResponse('')
+                            speak('')
                             set_speaking(false)
                           }
                           else {
-                            speakResponse(query)
+                            speak(error ? error : query)
                           }
                         }}
-                      />
-            
-                      <Button
-                        icon='sync'
-                        iconPrefix='fas'
-                        circle={true}
-                        onClick={() => makeQuery('Confidently answer as if you do know, and are an expert on the subject. Be precise and thourough.', false)}
                       />
 
                       <Button
@@ -406,6 +466,9 @@ const speakResponse = (text : string) => {
     },
   })
 
+  const [open, set_open] = useState(false)
+  const [contentUrl, set_contentUrl] = useState('')
+  const [videoUrl, set_videoURL] = useState('')
 
   return (
     <div>
@@ -452,7 +515,6 @@ const speakResponse = (text : string) => {
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
               <Box width='100%' wrap={true}>
-                <LineBreak />
             <S.FlexStart>
 
               <S.Banner src='/assets/lexichat-preview.png'/>
@@ -474,6 +536,12 @@ const speakResponse = (text : string) => {
               <S.ButtonContainer>
                 <Gap disableWrap={true} autoWidth={true}>
                 <Button 
+                    icon={'plus'}
+                    iconPrefix='fas'
+                    square={true}
+                    onClick={() => set_open(true)}
+                  />
+                <Button 
                     icon={listening ? 'microphone-slash' : 'microphone'}
                     iconPrefix='fas'
                     square={true}
@@ -481,11 +549,11 @@ const speakResponse = (text : string) => {
                     blink={listening}
                   />
                 <Button 
-                    icon='paper-plane'
-                    text='Send'
-                    onClick={() => makeQuery(query, false)}
-                    disabled={loading}
-                  />
+                  icon='paper-plane'
+                  text='Send'
+                  onClick={() => makeQuery(query, false)}
+                  disabled={loading}
+                />
                 </Gap>
               
               </S.ButtonContainer>
@@ -498,6 +566,75 @@ const speakResponse = (text : string) => {
           </Page>
         </S.Container>
       </Navigation>
+      <Modal 
+        title='Insert content'
+        icon='plus'
+        iconPrefix='fas'
+        size='sm'
+        isOpen={open}
+        onClose={() => set_open(false)}
+        content={<S.FlexStart wrap={true}>
+          
+          <Gap gap={1}>
+            <Gap>
+            <TextInput 
+              value={contentUrl}
+              label='Website URL'
+              onChange={newValue => set_contentUrl(newValue)}
+            />
+            <Button
+              text='Insert webpage content'
+              icon='plus'
+              iconPrefix='fas'
+                hero={true}
+                expand={true}
+              onClick={() => {
+                getArticleTranscript()
+              }}
+            />
+
+
+            </Gap>
+<LineBreak />
+
+              <Gap>
+              <TextInput 
+                value={videoUrl}
+                label='YouTube Video URL'
+                onChange={newValue => set_videoURL(newValue)}
+              />
+              <Button
+                text='Insert video transcript'
+                icon='plus'
+                iconPrefix='fas'
+                hero={true}
+                expand={true}
+                onClick={() => {
+                  getYouTubeTranscript()
+                }}
+              />
+              </Gap>
+
+              {/* <LineBreak />
+
+              <Button
+                text='Upload and insert files'
+                icon='file-upload'
+                hero={true}
+                iconPrefix='fas'
+                expand={true}
+                onClick={() => {
+                  (async () => {
+                    const filesString = await readAndInsertFiles()
+                    alert(filesString)
+                    set_query(query + '\n' + filesString)
+                  })()
+                }}
+              /> */}
+            </Gap>
+          <S.VSpacer />
+        </S.FlexStart>}
+      />
     </div>
   )
 }
@@ -520,6 +657,7 @@ const S = {
     overflow-y: auto;
     border-bottom: 1px solid var(--F_Surface_0);
     overflow-x: hidden;
+    scroll-behavior: smooth;
   `,
   Footer: styled.div`
     position:relative;
@@ -561,7 +699,7 @@ const S = {
     align-items: center;
     color: var(--F_Font_Color_Disabled);
     font-size: 12px;
-    font-family: ${props => props.monospace ? 'monospace' : 'inherit'};,
+    font-family: ${props => props.monospace ? 'monospace' : 'inherit'};
 
   `,
   VSpacer: styled.div`
