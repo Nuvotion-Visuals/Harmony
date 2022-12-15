@@ -28,8 +28,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="5.17549"
-     inkscape:cx="62.506158"
-     inkscape:cy="92.358404"
+     inkscape:cx="116.22088"
+     inkscape:cy="42.508052"
      inkscape:window-width="1920"
      inkscape:window-height="2043"
      inkscape:window-x="1920"
@@ -46,7 +46,8 @@
        style="font-style:italic;font-size:7.78245px;font-family:'Playfair Display';-inkscape-font-specification:'Playfair Display Italic';fill:#ffffff;stroke:#000000;stroke-width:0"
        transform="matrix(0.86169443,0,0,0.79078319,0.34602951,0.20545484)"><g
          id="g326"
-         transform="matrix(0.46316236,0,0,0.50469512,-0.20224691,0.09281656)"><g
+         transform="matrix(0.46316236,0,0,0.50469512,-0.13890198,0.11442606)"
+         style="font-style:italic;font-size:7.78245px;font-family:'Playfair Display';-inkscape-font-specification:'Playfair Display Italic';fill:#ffffff;stroke:#000000;stroke-width:0"><g
            id="g314"><ellipse
              style="fill:#800080;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
              id="path5358"
@@ -78,7 +79,7 @@
                id="path432" /></g></g></g><g
          id="path781"
          style="font-style:italic;font-size:7.78245px;font-family:'Playfair Display';-inkscape-font-specification:'Playfair Display Italic';fill:#ffffff;stroke:#000000;stroke-width:0"
-         transform="matrix(0.95180624,0,0,0.95180624,10.476322,-15.813911)"><g
+         transform="matrix(0.86278005,0,0,0.86278005,11.924951,-14.184524)"><g
            aria-label="Lexichat"
            transform="scale(0.95797039,1.0438736)"
            id="text600"

@@ -1,0 +1,1 @@
+![image.png](.attachments.10711/image.png)I don't like how she keeps phrasing this with a conclusion

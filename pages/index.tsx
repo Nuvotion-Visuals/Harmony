@@ -477,7 +477,7 @@ const speak = (text : string) => {
         navs={[
           {
             type: 'nav',
-            name: 'Lexichat',
+            name: 'Lexi',
             icon: 'message',
             href: '/',
             active: router.route === '/'

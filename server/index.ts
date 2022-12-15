@@ -53,19 +53,19 @@ app.prepare().then(() => {
     })
   )
 
-  server.use((req: any, res: any, next: any) => {
-    if (
-      req.originalUrl !== '/login' && 
-      !req.session.loggedIn &&
-      !req.originalUrl.startsWith('/_next') &&
-      !req.originalUrl.startsWith('/assets') &&
-      !req.originalUrl.startsWith('/auth')
-    ) {
-      res.redirect('/login')
-    }
+  // server.use((req: any, res: any, next: any) => {
+  //   if (
+  //     req.originalUrl !== '/login' && 
+  //     !req.session.loggedIn &&
+  //     !req.originalUrl.startsWith('/_next') &&
+  //     !req.originalUrl.startsWith('/assets') &&
+  //     !req.originalUrl.startsWith('/auth')
+  //   ) {
+  //     res.redirect('/login')
+  //   }
     
-    next()
-  })
+  //   next()
+  // })
 
   // login
   server.post('/auth/login', async (req: any, res: any) => {
