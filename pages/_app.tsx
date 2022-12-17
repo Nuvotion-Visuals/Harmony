@@ -29,13 +29,33 @@ library.add(
   fas.faQuestionCircle, fas.faNewspaper, fas.faInfo, fas.faQuestion,
   fas.faLightbulb, fas.faFolder, fas.faCopy, fas.faBookmark, fas.faShare,
   fas.faDownload, fas.faFileDownload, fas.faRefresh, fas.faSync, fas.faSyncAlt,
-  fas.faPlay, fas.faMicrophone, fas.faMicrophoneSlash, fas.faStop
+  fas.faPlay, fas.faMicrophone, fas.faMicrophoneSlash, fas.faStop, fas.faFingerprint,
+  fas.faBrain, fas.faPuzzlePiece, fas.faCompass, fas.faGraduationCap,
+  fas.faBullseye, fas.faComments, fas.faMousePointer, fas.faMasksTheater,
+  fas.faBalanceScale, fas.faTag, fas.faTrafficLight, fas.faFlask, fas.faDna,
+  fas.faScroll, fas.faTimes, fas.faCubes, fas.faUsersLine,
+  fas.faPeopleArrows, fas.faShieldHalved, fas.faMask,
+  fas.faArrowsSplitUpAndLeft, fas.faArrowsSpin, fas.faCog,
+  fas.faDiagramProject, fas.faList, fas.faBookmark
+
 )
+
+import App from '../components/App'
+import { useRouter } from 'next/router'
 
 config.autoAddCss = false
 
-const App = ({ Component, pageProps }: AppProps) => {
-  return <Component {...pageProps} />
+const MyApp = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter()
+  return <>
+    {
+      router.route === '/login'
+        ? <Component {...pageProps} />
+        : <App>
+            <Component {...pageProps} />
+          </App>
+      }
+  </>
 }
 
-export default App
+export default MyApp

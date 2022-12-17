@@ -25,6 +25,8 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
+
+
 let lexi = {} as any
 
 app.prepare().then(() => {
@@ -53,40 +55,40 @@ app.prepare().then(() => {
     })
   )
 
-  // server.use((req: any, res: any, next: any) => {
-  //   if (
-  //     req.originalUrl !== '/login' && 
-  //     !req.session.loggedIn &&
-  //     !req.originalUrl.startsWith('/_next') &&
-  //     !req.originalUrl.startsWith('/assets') &&
-  //     !req.originalUrl.startsWith('/auth')
-  //   ) {
-  //     res.redirect('/login')
-  //   }
+  server.use((req: any, res: any, next: any) => {
+    if (
+      req.originalUrl !== '/login' && 
+      !req.session.loggedIn &&
+      !req.originalUrl.startsWith('/_next') &&
+      !req.originalUrl.startsWith('/assets') &&
+      !req.originalUrl.startsWith('/auth')
+    ) {
+      res.redirect('/login')
+    }
     
-  //   next()
-  // })
+    next()
+  })
 
   // login
   server.post('/auth/login', async (req: any, res: any) => {
-    const { sessionToken, clearanceToken, userAgent } = req.body
+    const { email, password } = req.body
     try {
       (async() => {
-        const { ChatGPTAPI } = await import('chatgpt')
-        lexi = new ChatGPTAPI({
-          sessionToken,
-          clearanceToken,
-          userAgent
-        })
-        
         try {
-          console.log(sessionToken, clearanceToken, userAgent)
+          const { ChatGPTAPIBrowser } = await import('chatgpt')
 
-          const auth = await lexi.ensureAuth()
+          lexi = new ChatGPTAPIBrowser({
+            email,
+            password
+          })
+          await lexi.init()
+          const response = await lexi.sendMessage('Are you there?')
+          console.log(response)
+          // const auth = await lexi.ensureAuth()
 
           req.session.loggedIn = true
-          req.session.sessionToken
-          req.session.auth = auth
+          // req.session.sessionToken
+          // req.session.auth = auth
 
           res.send({ status: 200 })
         }
@@ -110,8 +112,7 @@ app.prepare().then(() => {
     const { query } = req.body
 
     try {
-      const conversation = lexi.getConversation()
-      const response = await conversation.sendMessage(query)
+      const response = await lexi.sendMessage(query)
       res.send({ status: 200, data: { response } })
     }
     catch(e) {
@@ -126,9 +127,8 @@ app.prepare().then(() => {
   // initialize Lexi
   server.post('/lexi/chat/init', async (req: any, res: any) => {
     try {
-      const lexiInitializationScript = fs.readFileSync('lexi/lexi-initialization.txt', 'utf8')
-      const conversation = lexi.getConversation()
-      const response = await conversation.sendMessage(lexiInitializationScript)
+      // const lexiInitializationScript = fs.readFileSync('lexi/lexi-initialization.txt', 'utf8')
+      const response = await lexi.sendMessage('Are you there?')
       res.send({ status: 200, data: {
         response
       }})

@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 interface Values {
-  sessionToken: string,
-  clearanceToken: string
+  email: string,
+  password: string
 }
 
 interface Props {
@@ -22,13 +22,13 @@ const Preview = ({  } : Props) => {
 
   const formik = useFormik({
     initialValues: {
-      sessionToken: '',
-      clearanceToken: ''
+      email: '',
+      password: ''
     },
     validationSchema: Yup.object().shape({
-      sessionToken: Yup.string()
+      email: Yup.string()
         .required('Required') ,
-      clearanceToken: Yup.string()
+      password: Yup.string()
         .required('Required')
     }),
     onSubmit: values => {
@@ -37,8 +37,8 @@ const Preview = ({  } : Props) => {
   })
 
   const submit = (values : Values) => {
-    formik.setFieldTouched('sessionToken');
-    formik.setFieldTouched('clearanceToken');
+    formik.setFieldTouched('email');
+    formik.setFieldTouched('password');
     setDisabled(true);
     (async () => {
       try {
@@ -46,8 +46,8 @@ const Preview = ({  } : Props) => {
           method: 'POST',
           url: `/auth/login`,
           data: {
-            sessionToken: values.sessionToken,
-            clearanceToken: values.clearanceToken,
+            email: values.email,
+            password: values.password,
             userAgent: window.navigator.userAgent
           }
         })
@@ -60,8 +60,8 @@ const Preview = ({  } : Props) => {
         else {
           console.log(status, message)
           formik.setErrors({
-            sessionToken: 'Verify your session token and try again. It may have expired.',
-            clearanceToken: 'Verify your clearance token and try again. It may expired.'
+            email: 'Verify your session token and try again. It may have expired.',
+            password: 'Verify your clearance token and try again. It may expired.'
           })
         }
       }
@@ -75,7 +75,7 @@ const Preview = ({  } : Props) => {
     setDisabled(false)
   }, [formik.errors])
 
-  return (<Auth title='Log in to Lexichat' logoSrc='/assets/lexi-favicon.svg'>
+  return (<Auth title='Log in to Lexium' logoSrc='/assets/lexi-favicon.svg'>
     <form 
       onSubmit={formik.handleSubmit}
       onKeyDown={e => {
@@ -85,46 +85,34 @@ const Preview = ({  } : Props) => {
       }}
     >
       <StyleHTML>
-          Lexi is an AI coworker who can help with artistic and technical projects.
+          Lexi is a creative AGI who can assist with artistic and technical projects.
 
-          <br />
-          <br />
-          <S.Help>
-
-          <details>
-            <summary>Where can I find the login information?</summary>
-              <ol>
-                <li>Go to <a href='https://chat.openai.com/chat' rel="noreferrer"target='_blank'>https://chat.openai.com/chat</a> and log in or sign up.</li>
-                <li>Press F12 to open dev tools.</li>
-                <li>Go to Application &gt; Cookies.</li>
-                <li>Copy and paste the values for <i>__Secure-next-auth.session-token</i> and <i>cf_clearance</i>.</li>
-              </ol>
-          </details>
-
-        </S.Help>
+     
         </StyleHTML>
       <Gap gap={1}>
         
         <TextInput
           autoFocus={true}
-          name='sessionToken'
-          label='Session token'
-          error={formik.touched.sessionToken && formik.errors.sessionToken ? formik.errors.sessionToken : ''}
-          value={formik.values.sessionToken}
+          name='email'
+          type='email'
+          label='Email'
+          error={formik.touched.email && formik.errors.email ? formik.errors.email : ''}
+          value={formik.values.email}
           iconPrefix='fal'
           onChangeEvent={e => formik.handleChange(e)}
         />
         <TextInput
-          name='clearanceToken'
-          label='Clearance token'
-          error={formik.touched.clearanceToken && formik.errors.clearanceToken ? formik.errors.clearanceToken : ''}
-          value={formik.values.clearanceToken}
+          name='password'
+          type='password'
+          label='Password'
+          error={formik.touched.password && formik.errors.password ? formik.errors.password : ''}
+          value={formik.values.password}
           iconPrefix='fal'
           onChangeEvent={e => formik.handleChange(e)}
         />
         
         <Button
-          text={'Login'}
+          text={disabled ? 'Logging in...' : 'Login'}
           icon={'unlock'}
           expand={true}
           primary={true}

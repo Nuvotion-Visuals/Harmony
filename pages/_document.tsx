@@ -30,7 +30,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <title>Lexichat - Creative AI Coworker</title>
+          <title>Lexi - Creative AGI</title>
           <meta name="description" content="Lexi is a highly-intellegent virtual coworker for creative and technical projects" />
           <link rel="icon" href="/favicon.ico" />
           <meta property="og:title" content="Lexichat" />
@@ -38,6 +38,7 @@ class MyDocument extends Document {
             property="og:image"
             content="/assets/lexichat-preview.png"
           />
+          
         </Head>
         <body>
           <Main />
