@@ -11,7 +11,7 @@
     "kill": "kill $(lsof -t -i:1618)"
   },
   "dependencies": {
-    "@avsync.live/formation": "^0.9.56",
+    "@avsync.live/formation": "^0.9.57",
     "@extractus/article-extractor": "^7.2.8-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "axios": "^1.2.1",
