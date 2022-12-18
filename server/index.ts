@@ -27,26 +27,20 @@ const handle = app.getRequestHandler()
 
 let lexi = {} as any
 
-const WSS = require('ws').WebSocketServer;
-const wss = new WSS({ port: 1619 });
-let websock = {} as typeof WSS
-
-const sendMessage = ({ 
-  query,
-  callback
-} : {
-  query: string,
+// send message to language model
+const sendMessage = (
+  message: string,
   callback: (arg0: {
     status: number,
     message?: string,
-    data?: {
+    data: {
       response: string
     }
   }) => void
-}) => {
+) => {
   (async () => {
     try {
-      const response = await lexi.sendMessage(query)
+      const response = await lexi.sendMessage(message)
       callback({ status: 200, data: { response } })
     }
     catch(e) {
@@ -54,35 +48,46 @@ const sendMessage = ({
       console.log(error)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
-      callback({ status, message })
+      callback({ status, message, data: { response: '' } })
     }
   })()
 }
 
+// initalize websocket server
+const WSS = require('ws').WebSocketServer;
+const wss = new WSS({ port: 1619 });
+let websock = {} as typeof WSS
 wss.on('connection', function connection(ws: typeof WSS) {
   console.log('Web socket server initialized.')
+  // receive message from client
   ws.onmessage = (message: { data: string }) => {
     const action = JSON.parse(message.data) as {
       type: string,
       message: string,
-      guid: string
+      guid: string,
+      messageTime: string,
     }
     if (action.type === 'message') {
-      sendMessage({
-        query: action.message,
-        callback: (response) => {
+      sendMessage(
+        action.message,
+        ({ data, status }) => {
+          // send response from language model to client
+          console.log(`Sending Lexi's response to client...`)
+
           ws.send(JSON.stringify({
             type: 'response',
-            message: response,
-            guid: action.guid
+            message: data.response || '',
+            guid: action.guid,
+            status,
+            messageTime: action.messageTime
           }))
         }
-      })
-      console.log('send message to Lexi')
+      )
     }
   }
 })
 
+// create app
 app.prepare().then(() => {
   const server = express()
 
@@ -138,18 +143,13 @@ app.prepare().then(() => {
             password
           })
           await lexi.init()
-          const response = await lexi.sendMessage('What are your capabilities as a language model?', {
+          const response = await lexi.sendMessage('Hello.', {
             onProgress: (partialResponse: any) => {
               console.log(partialResponse)
             }
           })
           console.log(response)
-          // const auth = await lexi.ensureAuth()
-
           req.session.loggedIn = true
-          // req.session.sessionToken
-          // req.session.auth = auth
-
           res.send({ status: 200 })
         }
         catch(e) {
@@ -165,13 +165,6 @@ app.prepare().then(() => {
       console.log(e)
       res.send({ status: 'failure', msg: 'Code validation failed' })
     }
-  })
-
-  // chat
-  server.post('/lexi/chat', async (req: any, res: any) => {
-    const { query } = req.body
-    res.send({ status: 200, message: 'Use websockets' })
-   
   })
 
   // initialize Lexi

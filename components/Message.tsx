@@ -248,7 +248,6 @@ const Message = ({
       align-items: flex-start;
       height: 100%;
       width: 700px;
-      max-width: calc(100% -);
       gap: 1rem;
     `,
     Banner: styled.img`

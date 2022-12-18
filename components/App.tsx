@@ -97,24 +97,25 @@ const Home = ({
 
   useEffect(() => {
     if (websocketClient) {
+      // recieve a web socket message from the client
       websocketClient.onmessage = (ev) => {
         const wsmessage = JSON.parse(ev.data)
         if (wsmessage.type === 'response') {
           console.log(wsmessage)
-          const { status, message, guid } = wsmessage as any
+          const { status, guid, type, message, queryTime } = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          const queryTime = responseTime
           
-          if (wsmessage.message.status === 200) {
+          
+          if (status === 200) {
             set_queriesByGuid(queriesByGuid => ({
               ...queriesByGuid,
               [guid]: {
                 query: queriesByGuid[guid].query,
-                queryTime,
+                queryTime: queriesByGuid[guid].queryTime,
                 guid,
                 loading: false,
-                response: message.data.response,
+                response: message,
                 responseTime
               }
             }));
@@ -211,42 +212,17 @@ const speak = (text : string) => {
       }
     });
 
-    // setTimeout(() => {
-      // const data = {
-      //   response: 'Executing instructions'
-      // }
-    //   const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-
-    //   set_queriesByGuid({
-    //     ...queriesByGuid,
-    //     [guid]: {
-    //       query,
-    //       queryTime,
-    //       guid,
-    //       loading: false,
-    //       response: data.response,
-    //       responseTime
-    //     }
-    //   })
-    // }, 5000);
-
     (async () => {
+      // send to server
       try {
-        websocketClient.send(JSON.stringify({
+        const action = {
           type: 'message',
-          message: query,
-          guid
-        }))
-
-        const loginRes = await axios({
-          method: 'POST',
-          url: initialize ? '/lexi/chat/init' : `/lexi/chat`,
-          data: {
-            query
-          }
-        })
-        
+          guid,
+          message: query
+        }
+        websocketClient.send(JSON.stringify(action))
       }
+      // failed to send to server
       catch(e) {
         const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
 
@@ -259,7 +235,7 @@ const speak = (text : string) => {
             guid,
             loading: false,
             responseTime,
-            error: 'Something is wrong. You should reload the page.'
+            error: 'It seems the websocket request went wrong. You should reload the page.'
           }
         });
       }
