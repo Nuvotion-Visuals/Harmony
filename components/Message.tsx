@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { Box, Spacer, Gap, Icon, Dropdown, shareTextViaEmail, downloadFile, Button, copyToClipboard, StyleHTML, Avatar, LoadingSpinner, ParseHTML } from "@avsync.live/formation"
 import { memo } from "react"
 import styled from "styled-components"
+
+import { speak } from '../Lexi/System/Language/speech'
 
 const getTimeDifference = (startTime: string, endTime: string) : number => {
 return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
@@ -21,6 +24,9 @@ const Message = ({
     queryTime: string,
     responseTime?: string
 }) => {
+
+    const [speaking, set_speaking] = useState(false)
+
     const isLexi = speaker === 'Lexi'
     return (<S.Message isLexi={isLexi}>
       <Box width='100%' wrap={true}>
@@ -143,21 +149,24 @@ const Message = ({
                         ]}
                       />
 
-                      {/* <Button
+                      <Button
                         icon={speaking ? 'stop' : 'play'}
                         blink={speaking}
                         iconPrefix='fas'
                         circle={true}
                         onClick={() => {
                           if (speaking) {
-                            speak('')
+                            speak('', () => {})
                             set_speaking(false)
                           }
                           else {
-                            speak(error ? error : query)
+                            set_speaking(true)
+                            speak(error ? error : query, () => {
+                              set_speaking(false)
+                            })
                           }
                         }}
-                      /> */}
+                      />
 
                       <Button
                         icon='copy'

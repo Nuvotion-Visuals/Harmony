@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, memo, Suspense } from 'react'
 import axios from 'axios'
 import { customAlphabet } from 'nanoid'
 // @ts-ignore
-import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit'
+import { useSpeechRecognition } from 'react-speech-kit'
 // @ts-ignore
 import { convert } from 'html-to-text'
 
@@ -28,6 +28,7 @@ import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import Message from './Message'
 import React from 'react'
+import { speak } from '../Lexi/System/Language/speech'
 
 const RichTextEditor = React.lazy(
   () => import('@avsync.live/formation').then(module => ({ default: module.RichTextEditor }))
@@ -64,8 +65,6 @@ async function connectToServer() {
 let websocketClient = {} as WebSocket
 (async () => {
   websocketClient = await connectToServer()
- 
-  
 })()
 
 const Home = ({
@@ -92,8 +91,6 @@ const Home = ({
   const [loading, set_loading] = useExtendedState(true)
 
   const [query, set_query, getLatestQuery] = useExtendedState('')
-  const [speaking, set_speaking] = useExtendedState(false)
-
 
   useEffect(() => {
     if (websocketClient) {
@@ -101,11 +98,16 @@ const Home = ({
       websocketClient.onmessage = (ev) => {
         const wsmessage = JSON.parse(ev.data)
         if (wsmessage.type === 'response') {
-          console.log(wsmessage)
+          stop()
+          speak(wsmessage.message, () => {
+            set_disableTimer(true)
+            listen()
+          })
           const { status, guid, type, message, queryTime } = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
           
+          scrollToBottom()
           
           if (status === 200) {
             set_queriesByGuid(queriesByGuid => ({
@@ -139,58 +141,12 @@ const Home = ({
     }
   }, [websocketClient])
 
-const sayit = () => {
-  set_speaking(true)
-  // text, voice_name="default", pitch=0, rate=1
-  var voices = window.speechSynthesis.getVoices();
-
-  var msg = new SpeechSynthesisUtterance();
-
-  msg.voice = voices[1]; // Note: some voices don't support altering params
-  msg.volume = 1; // 0 to 1
-  msg.rate = 1; // 0.1 to 10
-  msg.pitch = 1; //0 to 2
-  msg.lang = 'en-US';
-  msg.onstart = function (event) {
-    console.log("started");
-    set_speaking(true)
-  };
-  msg.onend = function(event) {
-    console.log('Finished in ' + event.elapsedTime + ' seconds.');
-    set_speaking(false)
-  };
-  msg.onerror = function(event) {
-    console.log('Errored ' + event);
-    set_speaking(false)
-
-  }
-  msg.onpause = function (event) {
-    console.log('paused ' + event);
-    set_speaking(false)
-  }
-  msg.onboundary = function (event) {
-    console.log('onboundary ' + event);
-  }
-
-  return msg;
-}
 
 const scrollToBottom = () => {
   (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
     setTimeout(() => {
       (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
     }, 1)
-}
-
-
-const speak = (text : string) => {
-  speechSynthesis.cancel()
-  const sentences = convert(text).split('.')
-  for (var i=0;i< sentences.length; i++) {
-    const toSay = sayit()
-    toSay.text = sentences[i]
-    speechSynthesis.speak(toSay)
-  }
 }
 
   const makeQuery = (query: string, initialize: boolean) => {
@@ -300,7 +256,6 @@ const speak = (text : string) => {
     })()
   }
 
-
   const queries = Object.keys(queriesByGuid).map(guid => queriesByGuid[guid]) 
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
@@ -316,12 +271,79 @@ const speak = (text : string) => {
     }
   }, [])
 
+  const [ready, set_ready, getLatestReady] = useExtendedState(false)
+  const [disableTimer, set_disableTimer] = useState(true)
+  useEffect(() => {
+    let timer = {} as any;
+
+    if (query && !ready && query !== '<p><br><p>' && !disableTimer) {
+      timer = setTimeout(() => {
+        set_ready(true)
+      }, 2000);
+    }
+
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [ready, query, disableTimer]);
+
   const router = useRouter()
   const { listen, listening, stop } = useSpeechRecognition({
     onResult: (result : string) => {
-        set_query(query + result)
+      
+      (async () => {
+        const latestReady = await getLatestReady()
+        const latestQuery = await getLatestQuery()
+
+        if (latestReady) {
+ 
+          if (result.trim() === 'send' || result.trim() === 'set') {
+            console.log('send')
+            makeQuery(latestQuery, false)
+            set_disableTimer(true)
+            stop()
+          }
+          if (result.trim() === 'clear') {
+            console.log('clear')
+            set_query('')
+            stop()
+            setTimeout(() => {
+              listen()
+            }, 500)
+          }
+    
+          set_ready(false)
+        }
+        else {
+          set_ready(false)
+          set_query(query + result)
+
+          set_disableTimer(false)
+
+        }
+        
+      })()
+     
+      
+
+
+
+      // if (result.trim() === 'ready') {
+      //   stop();
+
+      //   (async () => {
+      //     const latestQuery = await getLatestQuery()
+      //     console.log(latestQuery)
+      //     makeQuery(latestQuery, false)
+      //   })()
+      // }
+      // else {
+      //   set_query(query + result)
+      // }
     },
   })
+
 
   const [open, set_open] = useState(false)
   const [contentUrl, set_contentUrl] = useState('')
@@ -614,17 +636,32 @@ const speak = (text : string) => {
             <S.Footer>
               <S.ButtonContainer>
                 <Gap disableWrap={true} autoWidth={true}>
+                
                 <Button 
                   icon={'plus'}
                   iconPrefix='fas'
                   circle={true}
                   onClick={() => set_open(true)}
                 />
+                <div>
+                {
+                listening &&  `${(ready ? '"Send" or "Clear"' :'Listening...')}`
+              }
+                </div>
+              
                 <Button 
                   icon={listening ? 'microphone-slash' : 'microphone'}
                   iconPrefix='fas'
                   circle={true}
-                  onClick={() => listening ? stop() : listen()}
+                  onClick={() => {
+                    if (listening) {
+                      stop()
+                    }
+                    else {
+                      listen()
+                      set_ready(false)
+                    }
+                  }}
                   blink={listening}
                 />
                 <Button 
@@ -664,6 +701,7 @@ const speak = (text : string) => {
           
           <Gap gap={1}>
             <Gap>
+             
             <TextInput 
               value={contentUrl}
               label='Website URL'
