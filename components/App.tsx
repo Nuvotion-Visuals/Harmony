@@ -9,6 +9,8 @@ import { convert } from 'html-to-text'
 const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
 const nanoid = customAlphabet(alphabet, 11)
 
+import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
+
 import {
   Button,
   Navigation,
@@ -50,22 +52,6 @@ interface Props {
   children: React.ReactNode
 }
 
-async function connectToServer() {
-  const ws = new WebSocket('ws://localhost:1619');
-  return new Promise<WebSocket>((resolve, reject) => {
-    const timer = setInterval(() => {
-      if(ws.readyState === 1) {
-        clearInterval(timer)
-        resolve(ws)
-      }
-    }, 10)
-  })
-}
-
-let websocketClient = {} as WebSocket
-(async () => {
-  websocketClient = await connectToServer()
-})()
 
 const Home = ({
   children
@@ -92,6 +78,8 @@ const Home = ({
 
   const [query, set_query, getLatestQuery] = useExtendedState('')
 
+  const websocketClient = getWebsocketClient()
+
   useEffect(() => {
     if (websocketClient) {
       // recieve a web socket message from the client
@@ -106,9 +94,9 @@ const Home = ({
           const { status, guid, type, message, queryTime } = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          
+          console.log('got a response')
           scrollToBottom()
-          
+
           if (status === 200) {
             set_queriesByGuid(queriesByGuid => ({
               ...queriesByGuid,

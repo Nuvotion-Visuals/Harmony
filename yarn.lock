@@ -1389,10 +1389,10 @@ character-reference-invalid@^1.0.0:
   resolved "https://registry.yarnpkg.com/character-reference-invalid/-/character-reference-invalid-1.1.4.tgz#083329cda0eae272ab3dbbf37e9a382c13af1560"
   integrity sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==
 
-chatgpt@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/chatgpt/-/chatgpt-2.5.0.tgz#a58995b57eb348d1fa8302857a836124d9d3f47a"
-  integrity sha512-PHQPE0IO0s8Q94+rSP5K2OjrSLxHkwunGDEMXLxAa0F+e6fhleDWR9msQnC9hZmSqM5yhwzqXQye2UBlUBITrQ==
+chatgpt@^3.2.4:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/chatgpt/-/chatgpt-3.2.4.tgz#4db9237a386e7c386111ca2147d408d64f32da13"
+  integrity sha512-tP8RUUH+Jl0lCFf08lOcFsgnrli1DMNZF76Zc6nIbPXDS0iHwVUI0n90qlIic6RTAMD0KPGahF/yaLrB/T/hOQ==
   dependencies:
     delay "^5.0.0"
     eventsource-parser "^0.0.5"
@@ -1400,8 +1400,9 @@ chatgpt@^2.5.0:
     html-to-md "^0.8.3"
     p-timeout "^6.0.0"
     puppeteer-extra "^3.3.4"
-    puppeteer-extra-plugin-recaptcha "^3.6.6"
+    puppeteer-extra-plugin-recaptcha "npm:@fisch0920/puppeteer-extra-plugin-recaptcha@^3.6.6"
     puppeteer-extra-plugin-stealth "^2.11.1"
+    random "^4.1.0"
     remark "^14.0.2"
     strip-markdown "^5.0.0"
     uuid "^9.0.0"
@@ -5002,10 +5003,10 @@ puppeteer-core@19.4.0, puppeteer-core@^19.4.0:
     unbzip2-stream "1.4.3"
     ws "8.10.0"
 
-puppeteer-extra-plugin-recaptcha@^3.6.6:
+"puppeteer-extra-plugin-recaptcha@npm:@fisch0920/puppeteer-extra-plugin-recaptcha@^3.6.6":
   version "3.6.6"
-  resolved "https://registry.yarnpkg.com/puppeteer-extra-plugin-recaptcha/-/puppeteer-extra-plugin-recaptcha-3.6.6.tgz#431a7c8a8a81e7dcf48b6a0e1b9d674783acfbd7"
-  integrity sha512-SVbmL+igGX8m0Qg9dn85trWDghbfUCTG/QUHYscYx5XgMZVVb0/v0a6MqbPdHoKmBx5BS2kLd6rorMlncMcXdw==
+  resolved "https://registry.yarnpkg.com/@fisch0920/puppeteer-extra-plugin-recaptcha/-/puppeteer-extra-plugin-recaptcha-3.6.6.tgz#0bff4ae757baef84ce79499bef8cdb8174f679c9"
+  integrity sha512-KI12BbqOupDm8+R21IS645L9/SzdYMVvMFdvGy2zIePJ5qPYNcqUIqBSA86hdk0vM2WJ1G5q1t7AUQoemGwbeQ==
   dependencies:
     debug "^4.1.1"
     merge-deep "^3.0.2"
@@ -5107,6 +5108,13 @@ quill@^1.3.7:
     extend "^3.0.2"
     parchment "^1.1.4"
     quill-delta "^3.6.2"
+
+random@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/random/-/random-4.1.0.tgz#3e0fff0eea0d311e6a80fd2c91e72bb064dec363"
+  integrity sha512-6Ajb7XmMSE9EFAMGC3kg9mvE7fGlBip25mYYuSMzw/uUSrmGilvZo2qwX3RnTRjwXkwkS+4swse9otZ92VjAtQ==
+  dependencies:
+    seedrandom "^3.0.5"
 
 range-parser@~1.2.1:
   version "1.2.1"
@@ -5558,6 +5566,11 @@ schema-utils@^1.0.0:
     ajv "^6.1.0"
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
+
+seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
 
 selderee@^0.10.0:
   version "0.10.0"

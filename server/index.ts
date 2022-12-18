@@ -27,6 +27,9 @@ const handle = app.getRequestHandler()
 
 let lexi = {} as any
 
+let currentConversationId = ''
+let currentMessageId = ''
+
 // send message to language model
 const sendMessage = (
   message: string,
@@ -40,7 +43,11 @@ const sendMessage = (
 ) => {
   (async () => {
     try {
-      const response = await lexi.sendMessage(message)
+      const { response, messageId } = await lexi.sendMessage(message, {
+        conversationId: currentConversationId,
+        parentMessageId: currentMessageId
+      })
+      currentMessageId = messageId
       callback({ status: 200, data: { response } })
     }
     catch(e) {
@@ -78,6 +85,23 @@ wss.on('connection', function connection(ws: typeof WSS) {
             type: 'response',
             message: data.response || '',
             guid: action.guid,
+            status,
+            messageTime: action.messageTime
+          }))
+        }
+      )
+    }
+
+    else if (action.type === 'script') {
+      const script = fs.readFileSync('./Lexi/Scripts/1. Identity/Readme.md', 'utf8')
+      console.log(script)
+      sendMessage(
+        script,
+        ({ data, status }) => {
+          ws.send(JSON.stringify({
+            type: 'response',
+            message: data.response || '',
+            guid: Math.random(),
             status,
             messageTime: action.messageTime
           }))
@@ -142,12 +166,15 @@ app.prepare().then(() => {
             email,
             password
           })
-          await lexi.init()
-          const response = await lexi.sendMessage('Hello.', {
+          await lexi.initSession()
+          const {response, conversationId, messageId } = await lexi.sendMessage('Hello.', {
             onProgress: (partialResponse: any) => {
               console.log(partialResponse)
             }
           })
+          console.log(response, conversationId, messageId)
+          currentConversationId = conversationId
+          currentMessageId = messageId
           console.log(response)
           req.session.loggedIn = true
           res.send({ status: 200 })
@@ -164,24 +191,6 @@ app.prepare().then(() => {
     catch(e) {
       console.log(e)
       res.send({ status: 'failure', msg: 'Code validation failed' })
-    }
-  })
-
-  // initialize Lexi
-  server.post('/lexi/chat/init', async (req: any, res: any) => {
-    try {
-      // const lexiInitializationScript = fs.readFileSync('lexi/lexi-initialization.txt', 'utf8')
-      const response = await lexi.sendMessage('Are you there?')
-      res.send({ status: 200, data: {
-        response
-      }})
-    }
-    catch(e) {
-      const error = e as any
-      console.log(error)
-      const status = error.statusCode || error.code || 500
-      const message = error.message || 'internal error'
-      res.send({ status, message })
     }
   })
 

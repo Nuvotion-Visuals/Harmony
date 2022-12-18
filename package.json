@@ -1,6 +1,6 @@
 {
   "name": "lexi",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Lexi is an AI coworker who can help with artistic and technical projects.",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --watch 'server/index.ts' --exec 'ts-node' --project tsconfig.server.json server/index.ts",
@@ -16,7 +16,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "axios": "^1.2.1",
     "body-parser": "^1.20.1",
-    "chatgpt": "^2.5.0",
+    "chatgpt": "^3.2.4",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",
     "cuid": "^2.1.8",
