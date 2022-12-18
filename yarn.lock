@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.49":
-  version "0.9.49"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.49.tgz#e3948d65a974140394687e9c48e918a5a7abcd81"
-  integrity sha512-L50/9BsgceOg2FQHXlc6oY/M+w4LtdhGu8HsUcF68jILBoid29gCDZzfEF1NS5xJIa+BiyA+Qjin28dMEJw0JQ==
+"@avsync.live/formation@^0.9.56":
+  version "0.9.56"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.56.tgz#7a1d36f7ac88e775489e09ffe1175bae5ea73ec2"
+  integrity sha512-s598O8JfhDkBEaWUQppcti5qbWfcfFACUFW/rIQu5SKmqPeoez5P6I7bjtOsrVFmJAZBhjnBCA2OEBIadCRB1Q==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -26,6 +26,7 @@
     "@fortawesome/free-solid-svg-icons" "^6.1.2"
     "@fortawesome/react-fontawesome" "^0.2.0"
     "@types/react-swipeable-views" "^0.13.1"
+    "@types/turndown" "^5.0.1"
     isomorphic-dompurify "^0.21.0"
     javascript-time-ago "^2.5.9"
     lodash.union "^4.6.0"
@@ -45,6 +46,7 @@
     showdown "^2.1.0"
     spark-md5 "^3.0.2"
     thumbo "^1.0.8"
+    turndown "^7.1.1"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.18.6":
   version "7.18.6"
@@ -828,6 +830,11 @@
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
     csstype "^3.0.2"
+
+"@types/turndown@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@types/turndown/-/turndown-5.0.1.tgz#fcda7b02cda4c9d445be1440036df20f335b9387"
+  integrity sha512-N8Ad4e3oJxh9n9BiZx9cbe/0M3kqDpOTm2wzj13wdDUxDPjfjloWIJaquZzWE1cYTAHpjOH3rcTnXQdpEfS/SQ==
 
 "@types/unist@*", "@types/unist@^2.0.0", "@types/unist@^2.0.6":
   version "2.0.6"
@@ -1988,6 +1995,11 @@ domhandler@^5.0.1, domhandler@^5.0.2, domhandler@^5.0.3:
   integrity sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==
   dependencies:
     domelementtype "^2.3.0"
+
+domino@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/domino/-/domino-2.1.6.tgz#fe4ace4310526e5e7b9d12c7de01b7f485a57ffe"
+  integrity sha512-3VdM/SXBZX2omc9JF9nOPCtDaYQ67BGp5CoLpIQlO2KCAPETs8TcDHacF26jXadGbvUteZzRTeos2fhID5+ucQ==
 
 dompurify@^2.3.12:
   version "2.4.1"
@@ -6076,6 +6088,13 @@ tunnel-agent@^0.6.0:
   integrity sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==
   dependencies:
     safe-buffer "^5.0.1"
+
+turndown@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/turndown/-/turndown-7.1.1.tgz#96992f2d9b40a1a03d3ea61ad31b5a5c751ef77f"
+  integrity sha512-BEkXaWH7Wh7e9bd2QumhfAXk5g34+6QUmmWx+0q6ThaVOLuLUqsnkq35HQ5SBHSaxjSfSM7US5o4lhJNH7B9MA==
+  dependencies:
+    domino "^2.1.6"
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"

@@ -20,10 +20,9 @@ import {
   useScrollTo,
   Modal,
   TextInput,
-  setLinkComponent,
-  Spacer
+  Spacer,
+  useBreakpoint
 } from '@avsync.live/formation'
-setLinkComponent(require('../components/Link').default)
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import Message from './Message'
@@ -111,6 +110,13 @@ const sayit = () => {
   return msg;
 }
 
+const scrollToBottom = () => {
+  (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
+    setTimeout(() => {
+      (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
+    }, 1)
+}
+
 
 const speak = (text : string) => {
   speechSynthesis.cancel()
@@ -124,8 +130,8 @@ const speak = (text : string) => {
 
   const makeQuery = (query: string, initialize: boolean) => {
     set_query('') // async so it's ok
-    set_scrollTo(true);
     set_loading(true)
+    scrollToBottom()
 
     const guid = nanoid()
     const queryTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
@@ -284,15 +290,8 @@ const speak = (text : string) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const scrollToRef = useRef<HTMLDivElement | null>(null)
 
-  const { set_scrollTo } = useScrollTo(scrollContainerRef, scrollToRef);
-
   useEffect(() => {
-    set_scrollTo(true);
-    (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
-    setTimeout(() => {
-      (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
-
-    }, 1)
+    scrollToBottom()
   }, [loading])
 
   useEffect(() => {
@@ -300,10 +299,6 @@ const speak = (text : string) => {
       // makeQuery('Hello, Lexi.', true)
     }
   }, [])
-
-  const getTimeDifference = (startTime: string, endTime: string) : number => {
-    return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
-  }
 
   const router = useRouter()
   const { listen, listening, stop } = useSpeechRecognition({
@@ -316,41 +311,58 @@ const speak = (text : string) => {
   const [contentUrl, set_contentUrl] = useState('')
   const [videoUrl, set_videoURL] = useState('')
 
-  useEffect(() => {
-    console.log(queriesByGuid)
-  }, [queriesByGuid])
+  const [sidebarOpen, set_sidebarOpen] = useState(true)
+  const { isMobile, isTablet } = useBreakpoint()
+
   return (
     <div>
       <Navigation
         navLogoSrc={'/assets/lexi-typography.svg'}
+        open={sidebarOpen}
+        onSetOpen={isSidebarOpen => set_sidebarOpen(isSidebarOpen)}
+        navChildren={<>
+          <S.Center isMobile={isMobile || isTablet} isSidebarOpen={sidebarOpen} >
+            <Box width='100%' maxWidth='700px'>
+
+            <TextInput 
+              value={contentUrl}
+              onChange={newValue => set_contentUrl(newValue)}
+              icon='search'
+              iconPrefix='fas'
+              compact={true}
+            />
+            </Box>
+
+          </S.Center>
+        </>}
         navs={[
           {
             type: 'nav',
             name: 'Chat',
             icon: 'message',
             href: '/',
-            active: router.route === '/'
+            active: router.asPath === '/'
           },
           {
             type: 'nav',
             name: 'Projects',
             icon: 'bookmark',
             href: '/projects',
-            active: router.route === '/projects'
+            active: router.asPath === '/projects'
           },
           {
             type: 'nav',
             name: 'Roles',
             icon: 'people-arrows',
-            href: '/projects',
-            active: router.route === '/projects'
+            href: '/roles',
+            active: router.asPath === '/roles'
           },
           {
             type: 'nav',
             name: 'Entities',
             icon: 'cubes',
-            href: '/projects',
-            active: router.route === '/projects'
+            href: '/entities',
+            active: router.asPath === '/entities'
           },
          
           {
@@ -365,28 +377,28 @@ const speak = (text : string) => {
             name: 'Theory',
             icon: 'flask',
             href: '/guide/theory',
-            active: router.route === '/guide/theory'
+            active: router.asPath === '/guide/theory'
           },
           {
             type: 'nav',
             name: 'How to script',
             icon: 'scroll',
             href: '/guide/how-to-script',
-            active: router.route === '/guide/how-to-script'
+            active: router.asPath === '/guide/how-to-script'
           },
           {
             type: 'nav',
             name: 'Recipes',
             icon: 'book',
             href: '/guide/recipes',
-            active: router.route === '/guide/recipes'
+            active: router.asPath === '/guide/recipes'
           },
           {
             type: 'nav',
             name: 'FAQ',
             icon: 'question',
             href: '/guide/faq',
-            active: router.route === '/guide/faq'
+            active: router.asPath === '/guide/faq'
           },
           {
             type: 'spacer'
@@ -401,7 +413,7 @@ const speak = (text : string) => {
             href: `/scripts/identity`,
             icon: 'fingerprint',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/identity'
+            active: router.asPath === '/scripts/identity'
           },
           {
             type: 'nav',
@@ -409,7 +421,7 @@ const speak = (text : string) => {
             href: `/scripts/capabilities`,
             icon: 'brain',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/capabilities'
+            active: router.asPath === '/scripts/capabilities'
           },
           {
             type: 'nav',
@@ -417,7 +429,7 @@ const speak = (text : string) => {
             href: `/scripts/behavior`,
             icon: 'puzzle-piece',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/behavior'
+            active: router.asPath === '/scripts/behavior'
           },
           {
             type: 'nav',
@@ -425,7 +437,7 @@ const speak = (text : string) => {
             href: `/scripts/purpose`,
             icon: 'compass',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/purpose'
+            active: router.asPath === '/scripts/purpose'
           },
           {
             type: 'nav',
@@ -433,7 +445,7 @@ const speak = (text : string) => {
             href: `/scripts/specialization`,
             icon: 'graduation-cap',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/specialization'
+            active: router.asPath === '/scripts/specialization'
           },
           {
             type: 'nav',
@@ -441,7 +453,7 @@ const speak = (text : string) => {
             href: `/scripts/goals`,
             icon: 'bullseye',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/goals'
+            active: router.asPath === '/scripts/goals'
           },
           {
             type: 'nav',
@@ -449,7 +461,7 @@ const speak = (text : string) => {
             href: `/scripts/personality`,
             icon: 'masks-theater',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/personality'
+            active: router.asPath === '/scripts/personality'
           },
           {
             type: 'nav',
@@ -457,7 +469,7 @@ const speak = (text : string) => {
             href: `/scripts/communication`,
             icon: 'comments',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/communication'
+            active: router.asPath === '/scripts/communication'
           },
           {
             type: 'nav',
@@ -465,7 +477,7 @@ const speak = (text : string) => {
             href: `/scripts/user-experience`,
             icon: 'mouse-pointer',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/user-experience'
+            active: router.asPath === '/scripts/user-experience'
           },
           {
             type: 'nav',
@@ -473,7 +485,7 @@ const speak = (text : string) => {
             href: `/scripts/evaluation`,
             icon: 'balance-scale',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/evaluation'
+            active: router.asPath === '/scripts/evaluation'
           },
           {
             type: 'nav',
@@ -481,7 +493,7 @@ const speak = (text : string) => {
             href: `/scripts/brand`,
             icon: 'tag',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/brand'
+            active: router.asPath === '/scripts/brand'
           },
           {
             type: 'nav',
@@ -489,7 +501,7 @@ const speak = (text : string) => {
             href: `/scripts/evolution`,
             icon: 'dna',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/evolution'
+            active: router.asPath === '/scripts/evolution'
           },
           {
             type: 'nav',
@@ -497,7 +509,7 @@ const speak = (text : string) => {
             href: `/scripts/limitations`,
             icon: 'traffic-light',
             iconPrefix: 'fas',
-            active: router.route === '/scripts/limitations'
+            active: router.asPath === '/scripts/limitations'
           },
           {
             type: 'spacer'
@@ -509,18 +521,18 @@ const speak = (text : string) => {
           {
             type: 'nav',
             name: 'Terms of service',
-            href: `/terms-of-service`,
+            href: `/legal/terms-of-service`,
             icon: 'shield-halved',
             iconPrefix: 'fas',
-            active: router.route === '/terms-of-service'
+            active: router.asPath === '/legal/terms-of-service'
           },
           {
             type: 'nav',
             name: 'Privacy policy',
-            href: `/privacy-policy`,
+            href: `/legal/privacy-policy`,
             icon: 'mask',
             iconPrefix: 'fas',
-            active: router.route === '/privacy-policy'
+            active: router.asPath === '/legal/privacy-policy'
           },
           {
             type: 'spacer'
@@ -531,46 +543,18 @@ const speak = (text : string) => {
             href: `/settings`,
             icon: 'cog',
             iconPrefix: 'fas',
-            active: router.route === '/settings'
+            active: router.asPath === '/settings'
           },
           {
-            type: 'spacer'
-          },
-          {
-            type: 'spacer'
-          },
-          {
-            type: 'spacer'
-          },
-          {
-            type: 'spacer'
-          },
-          {
-            type: 'spacer'
+            type: 'clickNav',
+            name: 'Log out',
+            onClick: () => {
+              router.push('/login')
+            },
+            icon: 'sign-out',
+            iconPrefix: 'fas',
           },
         ]}
-        navChildren={<>
-        <Box pl={1}>
-         
-        </Box>
-          <Spacer />
-          <Gap disableWrap={true} gap={.75}>
-          <TextInput 
-            value={contentUrl}
-            onChange={newValue => set_contentUrl(newValue)}
-            icon='search'
-            iconPrefix='fas'
-            compact={true}
-          />
-          <Box pr={.75}>
-            <Button
-              text='Logout'
-              secondary={true}
-            />
-          </Box>
-          </Gap>
-        
-        </>}
       >
         <S.Container>
           <S.Content ref={scrollContainerRef}>
@@ -640,7 +624,12 @@ const speak = (text : string) => {
                 <RichTextEditor
                   value={query} onChange={(value : string) => set_query(value)} 
                   height={'276px'}
-                  onEnter={() => makeQuery(query, false)}
+                  onEnter={(newQuery) => {
+                    makeQuery(
+                      newQuery.slice(0, -11), // remove unwanted linebreak
+                      false
+                    )
+                  }}
                 />
               </Suspense>
               
@@ -675,10 +664,8 @@ const speak = (text : string) => {
               }}
             />
 
-
             </Gap>
-<LineBreak />
-
+            <LineBreak />
               <Gap>
               <TextInput 
                 value={videoUrl}
@@ -738,6 +725,9 @@ const S = {
     right: 0;
     top: .75rem;
     z-index: 1;
+    button {
+      background: none;
+    }
   `,
   Response: styled.div<{
     isLexi?: boolean
@@ -756,6 +746,36 @@ const S = {
     align-items: flex-start;
     flex-wrap: ${props => props.wrap? 'wrap' : 'noWrap'};
     
+  `,
+  Center: styled.div<{
+    isMobile?: boolean,
+    isSidebarOpen?: boolean
+  }>`
+    left: ${props => 
+      props.isMobile
+        ? '9.5rem'
+        : props.isSidebarOpen
+            ? 'var(--F_Sidebar_Width_Expanded)'
+            : '0'
+    };
+    position: absolute;
+    /* width: ${props => 
+      props.isMobile
+        ? '12rem'
+        : props.isSidebarOpen
+            ? '100%'
+            : '12rem'
+    }; */
+    width: ${props => 
+      props.isMobile
+        ? '12rem'
+        : props.isSidebarOpen
+            ? 'calc(100% - var(--F_Sidebar_Width_Expanded))'
+            : '100%'
+    };
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
   `,
   Meta: styled.div<{
     monospace?: boolean

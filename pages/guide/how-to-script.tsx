@@ -1,18 +1,19 @@
-import { InferGetStaticPropsType } from 'next'
+import { InferGetServerSidePropsType } from 'next'
 
 type Post = {
   author: string
   content: string
 }
 
-function Blog({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
+const Page = ({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     // will resolve posts to type Post[]
   }
   
-  export default Blog
+  export default Page
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async ({ params }: any) => {
 //   const res = await fetch('https://.../posts')
+console.log(params)
   const posts: Post[] = []
 
   return {

@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import React from 'react'
 
+
 import '@avsync.live/formation/dist/index.dark.css'
 
 import '../styles/globals.css'
@@ -36,12 +37,15 @@ library.add(
   fas.faScroll, fas.faTimes, fas.faCubes, fas.faUsersLine,
   fas.faPeopleArrows, fas.faShieldHalved, fas.faMask,
   fas.faArrowsSplitUpAndLeft, fas.faArrowsSpin, fas.faCog,
-  fas.faDiagramProject, fas.faList, fas.faBookmark
+  fas.faDiagramProject, fas.faList, fas.faBookmark, fas.faSignOut
 
 )
 
 import App from '../components/App'
 import { useRouter } from 'next/router'
+
+import { setLinkComponent } from '@avsync.live/formation'
+setLinkComponent(require('../components/Link').default)
 
 config.autoAddCss = false
 
