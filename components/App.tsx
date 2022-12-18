@@ -49,11 +49,31 @@ interface Props {
   children: React.ReactNode
 }
 
+async function connectToServer() {
+  const ws = new WebSocket('ws://localhost:1619');
+  return new Promise<WebSocket>((resolve, reject) => {
+    const timer = setInterval(() => {
+      if(ws.readyState === 1) {
+        clearInterval(timer)
+        resolve(ws)
+      }
+    }, 10)
+  })
+}
+
+let websocketClient = {} as WebSocket
+(async () => {
+  websocketClient = await connectToServer()
+ 
+  
+})()
+
 const Home = ({
   children
 } :Props) => {
   function useExtendedState<T>(initialState: T) {
     const [state, setState] = useState<T>(initialState);
+
     const getLatestState = () => {
       return new Promise<T>((resolve, reject) => {
         setState((s) => {
@@ -66,14 +86,57 @@ const Home = ({
     return [state, setState, getLatestState] as const;
   }
 
-  const [queriesByGuid, set_queriesByGuid] = useState<Queries>({})
-  const [queryGuids, set_queryGuids] = useState<string[]>([])
+  const [queriesByGuid, set_queriesByGuid] = useExtendedState<Queries>({})
+  const [queryGuids, set_queryGuids] = useExtendedState<string[]>([])
 
-  const [loading, set_loading] = useState(true)
+  const [loading, set_loading] = useExtendedState(true)
 
   const [query, set_query, getLatestQuery] = useExtendedState('')
-  const [speaking, set_speaking] = useState(false)
+  const [speaking, set_speaking] = useExtendedState(false)
 
+
+  useEffect(() => {
+    if (websocketClient) {
+      websocketClient.onmessage = (ev) => {
+        const wsmessage = JSON.parse(ev.data)
+        if (wsmessage.type === 'response') {
+          console.log(wsmessage)
+          const { status, message, guid } = wsmessage as any
+
+          const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+          const queryTime = responseTime
+          
+          if (wsmessage.message.status === 200) {
+            set_queriesByGuid(queriesByGuid => ({
+              ...queriesByGuid,
+              [guid]: {
+                query: queriesByGuid[guid].query,
+                queryTime,
+                guid,
+                loading: false,
+                response: message.data.response,
+                responseTime
+              }
+            }));
+          }
+          else {
+            // console.log(message, loginRes)
+            set_queriesByGuid(queriesByGuid => ({
+              ...queriesByGuid,
+              [guid]: {
+                query,
+                queryTime,
+                guid,
+                loading: false,
+                responseTime,
+                error: message
+              }
+            }));
+          }
+        }
+      }
+    }
+  }, [websocketClient])
 
 const sayit = () => {
   set_speaking(true)
@@ -144,7 +207,7 @@ const speak = (text : string) => {
         guid,
         query,
         queryTime,
-        loading: true, 
+        loading: true,
       }
     });
 
@@ -169,6 +232,12 @@ const speak = (text : string) => {
 
     (async () => {
       try {
+        websocketClient.send(JSON.stringify({
+          type: 'message',
+          message: query,
+          guid
+        }))
+
         const loginRes = await axios({
           method: 'POST',
           url: initialize ? '/lexi/chat/init' : `/lexi/chat`,
@@ -176,37 +245,7 @@ const speak = (text : string) => {
             query
           }
         })
-        const { status, message, data } = loginRes.data
-
-        const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
         
-        if (status === 200) {
-          set_queriesByGuid({
-            ...queriesByGuid,
-            [guid]: {
-              query,
-              queryTime,
-              guid,
-              loading: false,
-              response: data.response,
-              responseTime
-            }
-          });
-        }
-        else {
-          console.log(message, loginRes)
-          set_queriesByGuid({
-            ...queriesByGuid,
-            [guid]: {
-              query,
-              queryTime,
-              guid,
-              loading: false,
-              responseTime,
-              error: message
-            }
-          });
-        }
       }
       catch(e) {
         const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
