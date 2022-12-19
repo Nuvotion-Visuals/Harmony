@@ -96,34 +96,18 @@ const Home = ({
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
           console.log('got a response')
           scrollToBottom()
-
-          if (status === 200) {
-            set_queriesByGuid(queriesByGuid => ({
-              ...queriesByGuid,
-              [guid]: {
-                query: queriesByGuid[guid].query,
-                queryTime: queriesByGuid[guid].queryTime,
-                guid,
-                loading: false,
-                response: message,
-                responseTime
-              }
-            }));
-          }
-          else {
-            // console.log(message, loginRes)
-            set_queriesByGuid(queriesByGuid => ({
-              ...queriesByGuid,
-              [guid]: {
-                query,
-                queryTime,
-                guid,
-                loading: false,
-                responseTime,
-                error: message
-              }
-            }));
-          }
+        
+          set_queriesByGuid(queriesByGuid => ({
+            ...queriesByGuid,
+            [guid]: {
+              query: queriesByGuid[guid].query,
+              queryTime: queriesByGuid[guid].queryTime,
+              guid,
+              loading: false,
+              response: message,
+              responseTime
+            }
+          }))
         }
       }
     }

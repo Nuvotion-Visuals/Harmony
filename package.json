@@ -8,10 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "fresh": "yarn remove @avsync.live/formation && rm -rf ./node_modules/@avsync.live/formation",
-    "kill": "kill $(lsof -t -i:1618)"
+    "kill": "kill $(lsof -t -i:1618)",
+    "kill-ws": "kill $(lsof -t -i:1619)"
   },
   "dependencies": {
-    "@avsync.live/formation": "^0.9.57",
+    "@avsync.live/formation": "^0.9.58",
     "@extractus/article-extractor": "^7.2.8-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "axios": "^1.2.1",

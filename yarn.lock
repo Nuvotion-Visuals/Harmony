@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.57":
-  version "0.9.57"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.57.tgz#1efbe81f935c3fe82be2adb1fcc1cc01cb5db463"
-  integrity sha512-mVrkRyI6QvkLGB7p2nAM/Fbdk4u4MEjiTVp9K5+f/hw9tfWY4KzP/kGtlUoZyAdLFp9TzPXmsqrV7nQkxsASaQ==
+"@avsync.live/formation@^0.9.58":
+  version "0.9.58"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.58.tgz#533c7d6535f2ae8f187e8d2fb6819f7382ac48e2"
+  integrity sha512-8aEBH+/jWReoDgK5xXi0QQ5HQOZj4j6Zlr0c87LaDyU3DGnHFAcQN/YKedHHaahd4AxaHj6XvHBnNPJ5FuQeOg==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -26,6 +26,7 @@
     "@fortawesome/free-solid-svg-icons" "^6.1.2"
     "@fortawesome/react-fontawesome" "^0.2.0"
     "@types/react-swipeable-views" "^0.13.1"
+    "@types/spark-md5" "^3.0.2"
     "@types/turndown" "^5.0.1"
     isomorphic-dompurify "^0.21.0"
     javascript-time-ago "^2.5.9"
@@ -826,6 +827,11 @@
   dependencies:
     "@types/mime" "*"
     "@types/node" "*"
+
+"@types/spark-md5@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/spark-md5/-/spark-md5-3.0.2.tgz#da2e8a778a20335fc4f40b6471c4b0d86b70da55"
+  integrity sha512-82E/lVRaqelV9qmRzzJ1PKTpyrpnT7mwdneKNJB9hUtypZDMggloDfFUCIqRRx3lYRxteCwXSq9c+W71Vf0QnQ==
 
 "@types/styled-components@^5.1.26":
   version "5.1.26"
@@ -5142,9 +5148,9 @@ rc-slider@^10.0.1:
     shallowequal "^1.1.0"
 
 rc-util@^5.18.1:
-  version "5.25.3"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.25.3.tgz#7f6a5895e4edc5acdf5f73e90e1c031f3b67257d"
-  integrity sha512-+M+44T6UdM4iOd4QXRQKQjitOY26vC5pgFPNSo0XsY9OWzpHvy77BI55eL9Q9oDMUHzVuRNzzUkK1RI2W3n+ZQ==
+  version "5.26.0"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.26.0.tgz#683c4a63eaec98f159ea18c587a53d458d2b0036"
+  integrity sha512-dduMsbbrioH9NtetALsRjtOTF8IgymELZeQAn1Ar34pZuUycrY8zDa4y0gMMBDRZZtCjjpL7aHGX4kzRwyYkMg==
   dependencies:
     "@babel/runtime" "^7.18.3"
     react-is "^16.12.0"
