@@ -89,7 +89,6 @@ const Home = ({
           stop()
           speak(wsmessage.message, () => {
             set_disableTimer(true)
-            listen()
           })
           const { status, guid, type, message, queryTime } = wsmessage as any
 
