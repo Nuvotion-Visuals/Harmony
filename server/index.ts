@@ -147,7 +147,7 @@ function sorted<T>(array: T[], compareFn?: (a: T, b: T) => number): T[] {
   return copy;
 }
 
-function match(string: string, regex: RegExp): RegExpMatchArray | null {
+const match = (string: string, regex: RegExp): RegExpMatchArray | null => {
   // Use the regex.exec() method to search for a match in the string
   const result = regex.exec(string);
   // If a match was found, return the match array
@@ -158,94 +158,53 @@ function match(string: string, regex: RegExp): RegExpMatchArray | null {
   return null;
 }
 
+const extractScriptNameFromPath = (input: string): string => 
+  input.split(' ')[1].split('/')[0]
 
-(async () => {
-  const markdown: string = await readMarkdownFile('path/to/file.md');
-  console.log(markdown);
-})();
+const countWords = (s: string): number => {
+  s = s.replace(/(^\s)|(\s$)/gi,""); // exclude start and end white-space
+  s = s.replace(/[ ]{2,}/gi," "); // 2 or more spaces to 1
+  s = s.replace(/\n /,"\n"); // exclude newline with a start spacing
+  return s.split(' ').filter(str => str !== "").length;
+}
+
 const initializeScripts = () => {
   (async () => {
-    async function logResults(scripts: string[]) {
-      const promises = scripts.map(async script => {
-        const result = await readMarkdownFile(script);
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        console.log(`${script} loaded`);
-
-        return result;
-      });
-      
-      const results = await Promise.all(promises);
-    }
-
-    
-
     const getDirectories = (source: string) =>
       fs.readdirSync(source, { withFileTypes: true })
         .filter((dirent: any) => dirent.isDirectory())
         .map((dirent : any) => dirent.name)
-
+        
     const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
-    logResults(scriptNames);
-    
-    // logResults(scriptNames);
+    const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
+    let pageCount = 0
+    let wordCount = 0
+    let characterCount = 0
+    let numberOfSteps = 0
 
-    // const identity = await readMarkdownFile('./Lexi/Scripts/1. Identity/Readme.md')
-    // await new Promise(resolve => setTimeout(resolve, 3000));
-    // console.log(identity)
-    // console.log('Identity loaded')
-
-    // const capabilities = await readMarkdownFile('./Lexi/Scripts/2. Capabilities/Readme.md')
-    // await new Promise(resolve => setTimeout(resolve, 3000));
-    // console.log(capabilities)
-    // console.log('Capabilities loaded')
-
-  
-    // const behavior = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-    // await new Promise(resolve => setTimeout(resolve, 3000));
-    // console.log(behavior)
-    // console.log('Behavitor loaded')
-
-
-    const purpose = await readMarkdownFile('./Lexi/Scripts/4. Purpose/Readme.md')
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(purpose)
-    console.log('Purpose loaded')
-
-    const identityPromise = readMarkdownFile('./Lexi/Scripts/1. Identity/Readme.md');
-  const capabilitiesPromise = readMarkdownFile('./Lexi/Scripts/2. Capabilities/Readme.md');
-  const behaviorPromise = readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md');
-
-  const [identity, capabilities, behavior] = await Promise.all([
-    identityPromise,
-    capabilitiesPromise,
-    behaviorPromise
-  ]);
-
-  console.log(identity);
-  console.log('Identity loaded');
-  console.log(capabilities);
-  console.log('Capabilities loaded');
-  console.log(behavior);
-  console.log('Behavior loaded');
-
-
-    const specialization = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-
-    const goals = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-
-    const personality = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-
-    const communication = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-
-    const userExperience = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-
-    const evaluation = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-
-    const brand = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-
-    const evolution = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
-
-    const limitations = await readMarkdownFile('./Lexi/Scripts/3. Behavior/Readme.md')
+    const logResults = async (scripts: string[]) => {
+      let step = 1
+      numberOfSteps = scripts.length
+      for (const script of scripts) {
+        const result = await readMarkdownFile(script)
+        const scriptWordCount = countWords(result)
+        const scriptCharacterCount = result.length
+        const scriptPageCount = scriptWordCount / 250
+        console.log(`🟣 Initializing script ${step}/${numberOfSteps} - ${extractScriptNameFromPath(script)} [${scriptCharacterCount} characters, ${scriptWordCount} words, ${scriptPageCount.toFixed(1)} pages, ${(scriptWordCount / 300).toFixed(1)} minutes read]`)
+        await new Promise(resolve => setTimeout(resolve, 1000)) // simulate request time
+        step += 1
+        wordCount += scriptWordCount
+        characterCount += scriptCharacterCount
+        pageCount += scriptPageCount
+      }
+    }
+    const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    await logResults(scriptPaths)
+    const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    const getTimeDifference = (startTime: string, endTime: string) : number => {
+      return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
+    }
+    console.log(`🟣 ${numberOfSteps} scripts initialized, totalling ${characterCount} characters ${wordCount} words. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to that many words. It took me ${getTimeDifference(startTime, endTime)} seconds.`)
   })()
 }
 initializeScripts()
