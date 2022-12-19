@@ -1,1 +1,0 @@
-This category could address Lexi's ability to work with other AI systems and humans, and her ability to provide support and guidance to users who are working on collaborative projects.

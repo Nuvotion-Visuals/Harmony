@@ -1,39 +1,56 @@
-import { Button } from '@avsync.live/formation'
+import { Button, Page, ParseHTML, StyleHTML } from '@avsync.live/formation'
 import { InferGetServerSidePropsType } from 'next'
-import { getWebsocketClient } from '../../Lexi/System/Connectvity/websocket-client'
+
+async function readMarkdownFile(filePath: string): Promise<string> {
+  try {
+    const data: Buffer = await fs.promises.readFile(filePath);
+    return data.toString();
+  } catch (error: any) {
+    throw new Error(`Failed to read markdown file at ${filePath}: ${error.message}`);
+  }
+}
 
 type Post = {
   author: string
   content: string
 }
 
-const Page = ({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const MyPage = ({ markdown, params, scriptNames }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   
-  const websocketClient = getWebsocketClient()
   return <>
-    <Button
-      text='Initialize personality'
-      onClick={() => {
-        const action = {
-          type: 'script',
-          message: 'Identity'
-        }
-        websocketClient.send(JSON.stringify(action))
-      }}
-    />
+    <Page>
+      <StyleHTML>
+        <ParseHTML markdown={markdown} />
+      </StyleHTML>
+    </Page>
   </>
 }
   
-export default Page
+export default MyPage
+
+import fs from 'fs'
+import path from 'path'
+import getConfig from 'next/config'
+const { serverRuntimeConfig } = getConfig()
 
 export const getServerSideProps = async ({ params }: any) => {
-//   const res = await fetch('https://.../posts')
-console.log(params)
-  const posts: Post[] = []
+  const getDirectories = (source: string) =>
+    fs.readdirSync(source, { withFileTypes: true })
+      .filter((dirent: any) => dirent.isDirectory())
+      .map((dirent : any) => dirent.name)
+
+  const scriptNames = getDirectories('./Lexi/Scripts/')
+  const capitalize = (s: string) => s && s[0].toUpperCase() + s.slice(1)
+  const scriptName = capitalize(params.scriptName)
+
+  const scriptObject = scriptNames.reduce((a, v) => ({ ...a, [v.split(' ')[1]]: v.split(' ')[0].slice(0,-1)}), {}) 
+  const markdown = await readMarkdownFile(path.join(serverRuntimeConfig.PROJECT_ROOT, `./Lexi/Scripts/${scriptObject[scriptName]}. ${scriptName}/Readme.md`))
 
   return {
     props: {
-      posts,
+      markdown,
+      params,
+      scriptNames: scriptObject
     },
   }
 }

@@ -39,7 +39,7 @@ const RichTextEditor = React.lazy(
 interface Queries {
   [guid: string]: {
     guid: string,
-    query: string,
+    query?: string,
     queryTime: string,
     response?: string,
     responseTime?: string,
@@ -108,16 +108,43 @@ const Home = ({
             }
           }))
         }
+        if (wsmessage.type === 'message') {
+          stop()
+          speak(wsmessage.response, () => {
+            set_disableTimer(true)
+          })
+          const { message, response } = wsmessage as any
+
+          const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+          console.log('got a response')
+          scrollToBottom()
+
+          const guid = nanoid()
+        
+          set_queriesByGuid(queriesByGuid => ({
+            ...queriesByGuid,
+            [guid]: {
+              queryTime: '',
+              guid,
+              loading: false,
+              response,
+              responseTime
+            }
+          }))
+        }
       }
+      
     }
   }, [websocketClient])
 
 
 const scrollToBottom = () => {
-  (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
+  if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
+    (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
     setTimeout(() => {
       (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
     }, 1)
+  }
 }
 
   const makeQuery = (query: string, initialize: boolean) => {
@@ -582,13 +609,17 @@ const scrollToBottom = () => {
               </Box>
             {
               queries.map(({query, response, guid, error}, index) => <>
+              {
+                queriesByGuid[guid].query &&  
                 <Message 
-                  query={queriesByGuid[guid].query} 
-                  speaker='User' 
-                  guid={guid} 
-                  queryTime={queriesByGuid[guid].queryTime} 
-                  responseTime={queriesByGuid[guid].responseTime}
-                />
+                    query={queriesByGuid[guid].query || ''} 
+                    speaker='User' 
+                    guid={guid} 
+                    queryTime={queriesByGuid[guid].queryTime} 
+                    responseTime={queriesByGuid[guid].responseTime}
+                  />
+                }
+               
                 <Message 
                   query={queriesByGuid[guid].response || ''} 
                   speaker='Lexi' 
@@ -665,7 +696,7 @@ const scrollToBottom = () => {
         title='Insert content'
         icon='plus'
         iconPrefix='fas'
-        size='sm'
+        size='xl'
         isOpen={open}
         onClose={() => set_open(false)}
         content={<S.FlexStart wrap={true}>
@@ -675,7 +706,9 @@ const scrollToBottom = () => {
              
             <TextInput 
               value={contentUrl}
-              label='Website URL'
+              label='Webpage URL'
+              icon='globe'
+              iconPrefix='fas'
               onChange={newValue => set_contentUrl(newValue)}
             />
             <Button
@@ -696,6 +729,8 @@ const scrollToBottom = () => {
                 value={videoUrl}
                 label='YouTube Video URL'
                 onChange={newValue => set_videoURL(newValue)}
+                icon='youtube'
+                iconPrefix='fab'
               />
               <Button
                 text='Insert video transcript'
@@ -708,7 +743,11 @@ const scrollToBottom = () => {
                 }}
               />
               </Gap>
+              <S.Iframe src='https://www.google.com/search?igu=1 ' width='100%' height='500px'></S.Iframe>
+
             </Gap>
+
+
           {/* <S.VSpacer /> */}
         </S.FlexStart>}
       />
@@ -719,6 +758,13 @@ const scrollToBottom = () => {
 export default Home
 
 const S = {
+  Iframe: styled.iframe`
+    width: 100%;
+    height: 500px;
+    border-radius: 1rem;
+    overflow: hidden;
+    padding-bottom: 2rem;
+  `,
   Container: styled.div`
     height: calc(100vh - var(--F_Header_Height));
     width: 100%;

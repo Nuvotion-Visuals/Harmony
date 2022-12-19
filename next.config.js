@@ -4,6 +4,9 @@ const nextConfig = {
   swcMinify: true,
   compiler: {
     styledComponents: true
+  },
+  serverRuntimeConfig: {
+    PROJECT_ROOT: __dirname
   }
 }
 

@@ -19,6 +19,10 @@ const bodyParser = require('body-parser')
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 
+const getTimeDifference = (startTime: string, endTime: string) : number => {
+  return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
+}
+
 require('dotenv').config()
 const port = parseInt(process.env.PORT || '1618', 10)
 const dev = process.env.NODE_ENV !== 'production'
@@ -26,6 +30,7 @@ const app = next({ dev })
 const handle = app.getRequestHandler()
 
 let lexi = {} as any
+let ready = false
 
 let currentConversationId = ''
 let currentMessageId = ''
@@ -53,11 +58,11 @@ const sendMessage = (
     }
     catch(error) {
       if (error instanceof Error) {
-        console.log(error)
+        console.log('🟣', error)
         callback({ 
           status: 500, 
           data: { 
-            response: `Unfortunately, you may need to log out and log in again. I experienced the following error when trying to access my language model.<br><pre>${error.message}</pre> ${error.cause ? `<br><pre>${error.cause}</pre>` : ''} <pre>${error.stack}</pre> <br>Because I am not able to access my language model, I cannot answer intelligently. This is usually caused when my access to the ChatCPT session is interrupted.`
+            response: `I experienced the following error when trying to access my language model.<br><pre>${error.message}</pre> ${error.cause ? `<br><pre>${error.cause}</pre>` : ''} <pre>${error.stack}</pre>`
           }})
       }
     }
@@ -68,10 +73,95 @@ const sendMessage = (
 const WSS = require('ws').WebSocketServer;
 const wss = new WSS({ port: 1619 });
 let websock = {} as typeof WSS
+const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+
 wss.on('connection', function connection(ws: typeof WSS) {
-  console.log('Web socket server initialized.')
+  const check = () => {
+    if (ready) {
+      const initializeScripts = () => {
+        (async () => {
+          const getDirectories = (source: string) =>
+            fs.readdirSync(source, { withFileTypes: true })
+              .filter((dirent: any) => dirent.isDirectory())
+              .map((dirent : any) => dirent.name)
+              
+          const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
+          const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
+          let pageCount = 0
+          let wordCount = 0
+          let characterCount = 0
+          let numberOfSteps = 0
+
+          const logResults = async (scripts: string[]) => {
+            let step = 1
+            numberOfSteps = scripts.length
+            for (const script of scripts) {
+              const result = await readMarkdownFile(script)
+              const scriptName = extractScriptNameFromPath(script)
+              const scriptWordCount = countWords(result)
+              const scriptCharacterCount = result.length
+              const scriptPageCount = scriptWordCount / 250
+             
+              const messageTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+              const { response, messageId } = await lexi.sendMessage(result, {
+                conversationId: currentConversationId,
+                parentMessageId: currentMessageId,
+                timeoutMs: 2 * 60 * 1000
+              })
+              currentMessageId = messageId
+              const responseTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+              wordCount += scriptWordCount
+              characterCount += scriptCharacterCount
+              pageCount += scriptPageCount
+              const fullResponse = `${response}. That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. [${scriptCharacterCount} characters, ${scriptWordCount} words, ${scriptPageCount.toFixed(1)} pages, ${(scriptWordCount / 300).toFixed(1)} minutes read]`
+              step += 1
+              
+              console.log('🟣', fullResponse)
+              ws.send(JSON.stringify({
+                type: 'message',
+                message: `Read your ${scriptName}`,
+                response: fullResponse,
+                guid: `${scriptName})`,
+                status: 200,
+                messageTime,
+                responseTime
+              }))
+            } 
+          }
+          
+          const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+          await logResults(scriptPaths)
+          const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+          
+          const response = `${numberOfSteps} scripts initialized, totalling ${characterCount} characters ${wordCount} words. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
+          console.log('🟣', response)
+          ws.send(JSON.stringify({
+            type: 'message',
+            message: null,
+            response: response,
+            guid: `${Math.random()})`,
+            status: 200,
+            messageTime: startTime,
+            responseTime: endTime
+          }))
+        })()
+      }
+      initializeScripts()
+    }
+    else {
+      setTimeout(() => {
+        const currentTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+        console.log('🟣', `I can't access my language model. I've been checking each second for ${getTimeDifference(serverStartTime, currentTime)} seconds.`)
+        check()
+      }, 1000)
+    }
+  }
+  check()
+
+  console.log('🟣', 'My web socket server is ready for connections')
   // receive message from client
   ws.onmessage = (message: { data: string }) => {
+    
     const action = JSON.parse(message.data) as {
       type: string,
       message: string,
@@ -83,7 +173,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
         action.message,
         ({ data, status }) => {
           // send response from language model to client
-          console.log(`Sending Lexi's response to client...`)
+          console.log('🟣', `Sending Lexi's response to client...`)
 
           ws.send(JSON.stringify({
             type: 'response',
@@ -95,24 +185,9 @@ wss.on('connection', function connection(ws: typeof WSS) {
         }
       )
     }
-
-    else if (action.type === 'script') {
-      const script = fs.readFileSync('./Lexi/Scripts/1. Identity/Readme.md', 'utf8')
-      console.log(script)
-      sendMessage(
-        script,
-        ({ data, status }) => {
-          ws.send(JSON.stringify({
-            type: 'response',
-            message: data.response || '',
-            guid: Math.random(),
-            status,
-            messageTime: action.messageTime
-          }))
-        }
-      )
-    }
   }
+
+  
 })
 
 async function readMarkdownFile(filePath: string): Promise<string> {
@@ -168,46 +243,7 @@ const countWords = (s: string): number => {
   return s.split(' ').filter(str => str !== "").length;
 }
 
-const initializeScripts = () => {
-  (async () => {
-    const getDirectories = (source: string) =>
-      fs.readdirSync(source, { withFileTypes: true })
-        .filter((dirent: any) => dirent.isDirectory())
-        .map((dirent : any) => dirent.name)
-        
-    const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
-    const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
-    let pageCount = 0
-    let wordCount = 0
-    let characterCount = 0
-    let numberOfSteps = 0
 
-    const logResults = async (scripts: string[]) => {
-      let step = 1
-      numberOfSteps = scripts.length
-      for (const script of scripts) {
-        const result = await readMarkdownFile(script)
-        const scriptWordCount = countWords(result)
-        const scriptCharacterCount = result.length
-        const scriptPageCount = scriptWordCount / 250
-        console.log(`🟣 Initializing script ${step}/${numberOfSteps} - ${extractScriptNameFromPath(script)} [${scriptCharacterCount} characters, ${scriptWordCount} words, ${scriptPageCount.toFixed(1)} pages, ${(scriptWordCount / 300).toFixed(1)} minutes read]`)
-        await new Promise(resolve => setTimeout(resolve, 1000)) // simulate request time
-        step += 1
-        wordCount += scriptWordCount
-        characterCount += scriptCharacterCount
-        pageCount += scriptPageCount
-      }
-    }
-    const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-    await logResults(scriptPaths)
-    const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-    const getTimeDifference = (startTime: string, endTime: string) : number => {
-      return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
-    }
-    console.log(`🟣 ${numberOfSteps} scripts initialized, totalling ${characterCount} characters ${wordCount} words. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to that many words. It took me ${getTimeDifference(startTime, endTime)} seconds.`)
-  })()
-}
-initializeScripts()
 
 // create app
 app.prepare().then(() => {
@@ -267,19 +303,20 @@ app.prepare().then(() => {
           await lexi.initSession()
           const {response, conversationId, messageId } = await lexi.sendMessage('Hello.', {
             onProgress: (partialResponse: any) => {
-              console.log(partialResponse)
+              console.log('🟣', partialResponse)
             }
           })
-          console.log(response, conversationId, messageId)
+          console.log('🟣', response, conversationId, messageId)
           currentConversationId = conversationId
           currentMessageId = messageId
-          console.log(response)
+          console.log('🟣', response)
           req.session.loggedIn = true
+          ready = true
           res.send({ status: 200 })
         }
         catch(e) {
           const error = e as any
-          console.log(error)
+          console.log('🟣', error)
           const status = error.statusCode || error.code || 500
           const message = error.message || 'internal error'
           res.send({ status, message })
@@ -287,7 +324,7 @@ app.prepare().then(() => {
       })()
     }
     catch(e) {
-      console.log(e)
+      console.log('🟣', e)
       res.send({ status: 'failure', msg: 'Code validation failed' })
     }
   })
@@ -308,7 +345,7 @@ app.prepare().then(() => {
       // @ts-ignore
       .catch(e => {
         const error = e as any
-        console.log(error)
+        console.log('🟣', error)
         const status = error.statusCode || error.code || 500
         const message = error.message || 'internal error'
         res.send({ status, message })
@@ -316,7 +353,7 @@ app.prepare().then(() => {
     }
     catch(e) {
       const error = e as any
-      console.log(error)
+      console.log('🟣', error)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
       res.send({ status, message })
@@ -349,7 +386,7 @@ app.prepare().then(() => {
     }
     catch(e) {
       const error = e as any
-      console.log(error)
+      console.log('🟣', error)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
       res.send({ status, message })
@@ -364,6 +401,6 @@ app.prepare().then(() => {
 
   server.listen(<number>port, (err: any) => {
     if (err) throw err
-    console.log(`> Ready on http://localhost:${port}`)
+    console.log('🟣', `> Ready on http://localhost:${port}`)
   })
 })

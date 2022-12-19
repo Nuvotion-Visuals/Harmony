@@ -40,7 +40,7 @@ const sayit = () => {
 
 export const speak = (text : string, onComplete: () => void) => {
   speechSynthesis.cancel()
-  const sentences = convert(text).split('.')
+  const sentences = convert(text).split('. ')
   for (var i=0;i< sentences.length; i++) {
     const toSay = sayit()
     toSay.text = sentences[i]

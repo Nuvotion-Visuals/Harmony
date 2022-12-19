@@ -11,12 +11,15 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 import { library, config } from '@fortawesome/fontawesome-svg-core'
 import * as far from '@fortawesome/free-regular-svg-icons'
 import * as fas from '@fortawesome/free-solid-svg-icons'
+import * as fab from '@fortawesome/free-brands-svg-icons'
 library.add(
   // regular
   // @ts-ignore
   far.faHeart, far.faPaperPlane, far.faCheckSquare, far.faSquare,
   fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark,
   far.faEnvelope, 
+
+  fab.faYoutube,
   
 
   // solid
@@ -37,7 +40,8 @@ library.add(
   fas.faScroll, fas.faTimes, fas.faCubes, fas.faUsersLine,
   fas.faPeopleArrows, fas.faShieldHalved, fas.faMask,
   fas.faArrowsSplitUpAndLeft, fas.faArrowsSpin, fas.faCog,
-  fas.faDiagramProject, fas.faList, fas.faBookmark, fas.faSignOut
+  fas.faDiagramProject, fas.faList, fas.faBookmark, fas.faSignOut,
+  fas.faGlobe
 
 )
 
