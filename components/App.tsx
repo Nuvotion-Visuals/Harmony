@@ -24,7 +24,8 @@ import {
   TextInput,
   Spacer,
   useBreakpoint,
-  Label
+  Label,
+  AspectRatio
 } from '@avsync.live/formation'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
@@ -341,7 +342,7 @@ const scrollToBottom = () => {
       // }
     },
   })
-
+  const [show, set_show] = useState(false) 
 
   const [open, set_open] = useState(false)
   const [contentUrl, set_contentUrl] = useState('')
@@ -596,10 +597,17 @@ const scrollToBottom = () => {
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
               <Page>
-                {
-                  children
-                }
+                <Box pb={.75}>
+                  <div style={{borderRadius: '.75rem', width: '100%', overflow: 'hidden'}}>
+                    <AspectRatio
+                      ratio={21/9}
+                      backgroundSrc='/assets/lexi-banner-2.gif'
+                      coverBackground={true}
+                    />
+                  </div>
+                </Box>
               </Page>
+             
               
               <Box width='100%' wrap={true}>
             <S.FlexStart>
@@ -631,6 +639,36 @@ const scrollToBottom = () => {
               </>
               )
             }
+          
+           
+            <Box hide={false} wrap={true} width='100%'>
+              <Box width='100%' hide={!show}>
+                
+                <Page>
+               
+                {
+                  children
+                }
+                </Page>
+               
+              </Box>
+              {
+                router.route !== '/' &&
+                  <Box width='100%' pb={.75}>
+                  <Page>
+                  <Button
+                    text={show ? 'Hide script' : 'Show script'}
+                    icon={show ? 'eye-slash' : 'eye'}
+                    iconPrefix='fas'
+                    secondary={true}
+                    onClick={() => set_show(!show)}
+                  />
+                  </Page>
+                
+                </Box>
+              }
+              
+            </Box>
           <div ref={scrollToRef}></div>
 
           </S.Content>
