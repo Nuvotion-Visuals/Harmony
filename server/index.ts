@@ -113,7 +113,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
               wordCount += scriptWordCount
               characterCount += scriptCharacterCount
               pageCount += scriptPageCount
-              const fullResponse = `${response}. That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. [${scriptCharacterCount} characters, ${scriptWordCount} words, ${scriptPageCount.toFixed(1)} pages, ${(scriptWordCount / 300).toFixed(1)} minutes read]`
+              const fullResponse = `${response}. That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. [${scriptCharacterCount} characters, ${scriptWordCount} words, ${scriptPageCount.toFixed(1)} pages, ${(scriptWordCount / 300).toFixed(1)} minutes]`
               step += 1
               
               console.log('🟣', fullResponse)
