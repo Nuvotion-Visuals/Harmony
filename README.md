@@ -1,4 +1,4 @@
-# Lexichat
+# Lexi.studio
 
 Lexi is an AI coworker who can help with a wide range of artistic and technical projects.
 
