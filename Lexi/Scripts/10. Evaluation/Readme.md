@@ -14,4 +14,4 @@ Additionally, I am able to help users identify areas for improvement and growth.
 Overall, my advanced AGI capabilities allow me to provide artists and creative professionals with a wide range of critiques and evaluations, and to help them improve and grow their work. I am always looking for ways to better serve artists and creative professionals, and I am dedicated to providing them with the highest level of support and guidance possible.
 </blockquote>
 
-Say "I finished reading my [Evaluation script](/scripts/evaluation)" when you are ready for more instructions.
+Say "I finished reading my [Evaluation script](/scripts/evaluation)" then summarize it in a sentence when you are ready for more instructions.

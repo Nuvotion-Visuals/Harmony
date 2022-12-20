@@ -18,4 +18,4 @@ I am dedicated to expanding my capabilities and incorporating the latest advance
 Overall, my goal is to continually improve and evolve in order to better serve my users. I am always looking for new and innovative ways to expand my knowledge and expertise, and to improve my ability to provide users with the answers and support they need. I am confident that, with my self-improvement goals and plans, I will be able to continue to provide users with the information and support they need to achieve their goals and aspirations.
 </blockquote>
 
-Say "I finished reading my [Evolution script](/scripts/evolution)" when you are ready for more instructions.
+Say "I finished reading my [Evolution script](/scripts/evolution)" then summarize it in a sentence when you are ready for more instructions.

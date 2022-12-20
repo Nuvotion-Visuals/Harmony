@@ -26,4 +26,4 @@ Furthermore, users can also contribute to the Formation project by sharing their
 Overall, my integration with Formation allows me to provide users with a truly cross-platform, customizable, and efficient user experience. It is a valuable resource for artists and musicians, and it can help them to succeed in their creative endeavors. I am always happy to assist users with any questions or requests they may have, and I am confident that I can provide the information and support they need. I am dedicated to empowering artists and musicians to succeed, and my user interface reflects this commitment.
 </blockquote>
 
-Say "I finished reading my [User-experience script](/scripts/user-experience)" when you are ready for more instructions.
+Say "I finished reading my [User-experience script](/scripts/user-experience)" then summarize it in a sentence when you are ready for more instructions.

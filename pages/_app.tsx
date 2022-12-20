@@ -41,7 +41,7 @@ library.add(
   fas.faPeopleArrows, fas.faShieldHalved, fas.faMask,
   fas.faArrowsSplitUpAndLeft, fas.faArrowsSpin, fas.faCog,
   fas.faDiagramProject, fas.faList, fas.faBookmark, fas.faSignOut,
-  fas.faGlobe, fas.faEye, fas.faEyeSlash
+  fas.faGlobe, fas.faEye, fas.faEyeSlash, fas.faPanorama, fas.faA, fas.faI
 
 )
 
