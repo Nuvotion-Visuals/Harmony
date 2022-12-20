@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import axios from 'axios'
 
 // components
-import { TextInput, Button, Gap, Auth, StyleHTML } from '@avsync.live/formation'
+import { TextInput, Button, Gap, Auth, StyleHTML, Box } from '@avsync.live/formation'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
@@ -75,7 +75,7 @@ const Preview = ({  } : Props) => {
     setDisabled(false)
   }, [formik.errors])
 
-  return (<Auth title='Log in to Lexium' logoSrc='/assets/lexi-favicon.svg'>
+  return (<Auth title='Log in with OpenAI' logoSrc='/assets/lexi-favicon.svg'>
     <form 
       onSubmit={formik.handleSubmit}
       onKeyDown={e => {
@@ -83,11 +83,13 @@ const Preview = ({  } : Props) => {
           submit(formik.values)
         }
       }}
+      style={{textAlign: 'center'}}
     >
       <StyleHTML>
-          Lexi is a creative AGI who can assist with artistic and technical projects.
-
-     
+        <Box>
+          <img src='/assets/lexi-banner-2.gif' />
+        </Box>
+        
         </StyleHTML>
       <Gap gap={1}>
         
@@ -130,10 +132,7 @@ const S = {
     width: 100%;
   `,
   Help: styled.div`
-  * {
     font-size: var(--F_Font_Size_Label);
-    color: var(--F_Font_Color_Disabled);
-  }
     
     width: 100%;
   `

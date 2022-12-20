@@ -3,11 +3,11 @@ import { AspectRatio, Box, Button, Gap } from "@avsync.live/formation"
 const Home = () => {
   return (
     <Box wrap={true}>
-      <AspectRatio
+      {/* <AspectRatio
         ratio={21/9}
-        backgroundSrc='/assets/lexi-banner.png'
+        backgroundSrc='/assets/lexi-banner-2.gif'
         coverBackground={true}
-      />
+      /> */}
       <Box py={.75} width='100%' wrap={true}>
         <Gap>
           <Button

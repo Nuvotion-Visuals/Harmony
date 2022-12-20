@@ -10,11 +10,6 @@ async function readMarkdownFile(filePath: string): Promise<string> {
   }
 }
 
-type Post = {
-  author: string
-  content: string
-}
-
 const MyPage = ({ markdown, params, scriptNames }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   
   return <>

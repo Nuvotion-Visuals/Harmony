@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Spacer, Gap, Icon, Dropdown, shareTextViaEmail, downloadFile, Button, copyToClipboard, StyleHTML, Avatar, LoadingSpinner, ParseHTML } from "@avsync.live/formation"
+import { Box, Spacer, Gap, Icon, Dropdown, shareTextViaEmail, downloadFile, Button, copyToClipboard, StyleHTML, Avatar, LoadingSpinner, ParseHTML, HTMLtoMarkdown } from "@avsync.live/formation"
 import { memo } from "react"
 import styled from "styled-components"
 
@@ -172,7 +172,7 @@ const Message = ({
                         icon='copy'
                         iconPrefix='far'
                         circle={true}
-                        onClick={() => copyToClipboard(query)}
+                        onClick={() => copyToClipboard(HTMLtoMarkdown(query))}
                       />
                     </>
                   : null

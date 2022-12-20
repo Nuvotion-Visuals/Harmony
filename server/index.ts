@@ -23,6 +23,59 @@ const getTimeDifference = (startTime: string, endTime: string) : number => {
   return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
 }
 
+const errorResponseMessages = {
+  400: {
+    meaning: 'Bad Request',
+    message: 'This status code indicates that the server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).',
+    recommendation: 'If you are seeing a 400 status code, it may indicate that there is a problem with the format or content of the request. Check the syntax and structure of the request to make sure it is correct and try again. If the problem persists, it may be necessary to contact the server administrator or the client application developer for further assistance.'
+  },
+  401: {
+    meaning: 'Unauthorized',
+    message: 'This status code indicates that the request requires HTTP authentication. The request should be accompanied by an Authorization header field containing a credential suitable for accessing the requested resource.',
+    recommendation: 'If you are seeing a 401 status code, it may indicate that you are trying to access a resource that requires authentication. Check that you have provided the correct credentials in the request and try again. If the problem persists, it may be necessary to contact the server administrator or the client application developer for further assistance.'
+  },
+  403: {
+    meaning: 'Forbidden',
+    message: 'This status code indicates that the server understood the request but refuses to authorize it. A 403 response is not a guarantee that the client will not be able to access the resource at some point in the future. When the server returns a 403 response, it generally means that the client must authenticate itself to get the requested response.',
+    recommendation: 'If you are seeing a 403 status code, it may indicate that you do not have permission to access the requested resource. Check that you have the correct permissions and try again. If the problem persists, it may be necessary to contact the server administrator or the client application developer for further assistance.'
+  },
+  404: {
+    meaning: 'Not Found',
+    message: 'This status code indicates that the server cannot find the requested resource. This may be because the resource does not exist or because the server is unable to access the resource.',
+    recommendation: 'If you are seeing a 404 error, you may want to check that the URL you are trying to access is correct. If it is correct, the resource may have been moved or deleted. You may also want to check the server logs to see if there are any issues that may be causing the server to be unable to access the resource.'
+  },
+  408: {
+    meaning: 'Request Timeout',
+    message: 'This status code indicates that the server did not receive a complete request message within the time that it was prepared to wait. This may be because the request took too long to be sent or because the server was too busy to process the request.',
+    recommendation: 'If you are seeing a 408 error, you may want to check the network connection and try the request again. If the error persists, it may be due to a problem with the server or network infrastructure. You may want to check the server logs for more information.'
+  },
+  429: {
+    meaning: 'Too Many Requests',
+    message: 'This status code indicates that the user has sent too many requests in a given amount of time. This may be because the user is making too many requests or because the server is unable to handle the volume of requests being made.',
+    recommendation: 'If you are seeing a 429 error, you may want to check that you are not making too many requests in a short period of time. You may also want to check the server logs to see if there are any issues that may be causing the server to be unable to handle the volume of requests being made.'
+  },
+  500: {
+    meaning: 'Internal Server Error',
+    message: 'This status code indicates that an unexpected condition was encountered by the server while processing the request. This could be due to a bug in the server software or a problem with the server hardware.',
+    recommendation: 'If you are seeing a 500 status code, it is likely that there is a problem with the server. In this case, you should contact the server administrator or the website owner for further assistance. It may also be helpful to check the server logs for more information.'
+  },
+  503: {
+    meaning: 'Service Unavailable',
+    message: 'This status code indicates that the server is currently unable to handle the request due to maintenance or capacity issues. The server may be offline or under heavy load.',
+    recommendation: 'If you are seeing a 503 status code, it is likely that the server is temporarily unavailable. In this case, you should try accessing the website again later. If the problem persists, you may want to contact the server administrator or the website owner for further assistance.'
+  },
+  504: {
+    meaning: 'Gateway Timeout',
+    message: 'This status code indicates that the server, while acting as a gateway or proxy, did not receive a timely response from the upstream server. This could be due to a problem with the network or a problem with the upstream server.',
+    recommendation: 'If you are seeing a 504 status code, it is likely that there is a problem with the network or the upstream server. In this case, you should try accessing the website again later. If the problem persists, you may want to contact the server administrator or the website owner for further assistance.'
+  },
+  511: {
+    meaning: 'Network Authentication Required',
+    message: 'This status code indicates that the client must authenticate itself to get the requested response. This is similar to 401 (Unauthorized), but indicates that the client must authenticate itself to get the requested response. The client may repeat the request with a suitable Authorization header field.',
+    recommendation: 'If you are seeing a 511 status code, it means that you need to authenticate yourself in order to access the requested resource. In this case, you should provide the appropriate authentication credentials in the request header. If you are unsure of how to do this or if the problem persists, you may want to contact the server administrator or the website owner for further assistance.'
+  }
+}
+
 require('dotenv').config()
 const port = parseInt(process.env.PORT || '1618', 10)
 const dev = process.env.NODE_ENV !== 'production'
@@ -92,6 +145,15 @@ wss.on('connection', function connection(ws: typeof WSS) {
           let characterCount = 0
           let numberOfSteps = 0
 
+          ws.send(JSON.stringify({
+            type: 'message',
+            message: null,
+            response: `I need to read ${scriptNames.length} AGI scripts.`,
+            guid: Math.random(),
+            status: 200,
+  
+          }))
+
           const logResults = async (scripts: string[]) => {
             let step = 1
             numberOfSteps = scripts.length
@@ -103,11 +165,37 @@ wss.on('connection', function connection(ws: typeof WSS) {
               const scriptPageCount = scriptWordCount / 250
              
               const messageTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-              const { response, messageId } = await lexi.sendMessage(result, {
-                conversationId: currentConversationId,
-                parentMessageId: currentMessageId,
-                timeoutMs: 2 * 60 * 1000
-              })
+              
+              // keep trying if it fails
+              let keepTrying
+              let failCount = 0
+              let messageId = ''
+              let response = 'I failed to connect'
+
+
+              do {
+                try {
+                  if (failCount > 10) {
+                    keepTrying = false
+                    return 
+                  }
+
+                  const data = await lexi.sendMessage(result, {
+                    conversationId: currentConversationId,
+                    parentMessageId: currentMessageId,
+                    timeoutMs: 2 * 60 * 1000
+                  })
+                  messageId = data.messageId
+                  response = data.response
+                  keepTrying = false
+                } 
+                catch(e) {
+                  keepTrying = true
+                  failCount += 1
+                  console.log(e)
+                }
+              } while (keepTrying)
+
               currentMessageId = messageId
               const responseTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
               wordCount += scriptWordCount
@@ -272,21 +360,21 @@ app.prepare().then(() => {
     })
   )
 
-  server.use((req: any, res: any, next: any) => {
-    if (
-      req.originalUrl !== '/login' && 
-      !req.session.loggedIn &&
-      !req.originalUrl.startsWith('/_next') &&
-      !req.originalUrl.startsWith('/assets') &&
-      !req.originalUrl.startsWith('/auth')
-    ) {
-      res.redirect('/login')
-      return
-    }
+  // server.use((req: any, res: any, next: any) => {
+  //   if (
+  //     req.originalUrl !== '/login' && 
+  //     !req.session.loggedIn &&
+  //     !req.originalUrl.startsWith('/_next') &&
+  //     !req.originalUrl.startsWith('/assets') &&
+  //     !req.originalUrl.startsWith('/auth')
+  //   ) {
+  //     res.redirect('/login')
+  //     return
+  //   }
     
-    next()
-    return
-  })
+  //   next()
+  //   return
+  // })
 
   // login
   server.post('/auth/login', async (req: any, res: any) => {
