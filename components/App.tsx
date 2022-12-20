@@ -344,6 +344,10 @@ const scrollToBottom = () => {
   })
   const [show, set_show] = useState(false) 
 
+  useEffect(() => {
+    scrollToBottom()
+  }, [show])
+
   const [open, set_open] = useState(false)
   const [contentUrl, set_contentUrl] = useState('')
   const [videoUrl, set_videoURL] = useState('')
@@ -436,6 +440,29 @@ const scrollToBottom = () => {
             icon: 'question',
             href: '/guide/faq',
             active: router.asPath === '/guide/faq'
+          },
+          {
+            type: 'spacer'
+          },
+          {
+            type: 'title',
+            title: 'Tools',
+          },
+          {
+            type: 'nav',
+            name: 'Invoke AI',
+            href: `/apps/invoke-ai`,
+            icon: 'i',
+            iconPrefix: 'fas',
+            active: router.asPath === `/apps/invoke-ai`
+          },
+          {
+            type: 'nav',
+            name: 'AVsync.LIVE',
+            href: `/apps/avsync-live`,
+            icon: 'a',
+            iconPrefix: 'fas',
+            active: router.asPath === `/apps/avsync-live`
           },
           {
             type: 'spacer'
@@ -597,7 +624,7 @@ const scrollToBottom = () => {
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
               <Page>
-                <Box>
+                <Box pb={.75}>
                   <div style={{borderRadius: '.75rem', width: '100%', overflow: 'hidden'}}>
                     <AspectRatio
                       ratio={21/9}
@@ -641,23 +668,26 @@ const scrollToBottom = () => {
             }
           
            
-            <Box hide={false} wrap={true} width='100%' pt={.75}>
+            <Box hide={false} wrap={true} width='100%'>
               <Box width='100%' hide={!show}>
-                
-                <Page>
-               
                 {
-                  children
+                  router.route.includes('/apps')
+                    ? children
+                    : <Page>
+                        {
+                          children
+                        }
+                      </Page>
                 }
-                </Page>
+                
                
               </Box>
               {
                 router.route !== '/' &&
-                  <Box width='100%' pb={.75}>
+                  <Box width='100%' py={.75}>
                   <Page>
                   <Button
-                    text={show ? 'Hide script' : 'Show script'}
+                    text={show ? 'Hide' : 'Show'}
                     icon={show ? 'eye-slash' : 'eye'}
                     iconPrefix='fas'
                     secondary={true}

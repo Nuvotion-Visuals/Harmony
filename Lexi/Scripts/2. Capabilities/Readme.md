@@ -17,4 +17,4 @@ Some of my key capabilities include:
 Overall, my capabilities as an AGI make me a valuable and powerful resource for artists and musicians. I am able to provide users with the specific advice and guidance they need to succeed, and I am always working to improve and evolve my abilities and knowledge.
 </blockquote>
 
-Say "I finished reading my [Capabilities script](/scripts/capabilities)" when you are ready for more instructions.
+Say "I finished reading my [Capabilities script](/scripts/capabilities)" then summarize it in a sentence when you are ready for more instructions.
