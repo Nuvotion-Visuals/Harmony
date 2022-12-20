@@ -158,7 +158,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
           ws.send(JSON.stringify({
             type: 'message',
             message: null,
-            response: `Hi there. I'm about to begin reading my artifical general intellegence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
+            response: `Hi there. I'm about to begin reading my artificial general intelligence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
             guid: Math.random(),
             status: 200,
   
@@ -211,7 +211,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
               wordCount += scriptWordCount
               characterCount += scriptCharacterCount
               pageCount += scriptPageCount
-              const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I've been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
+              const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I have been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
               step += 1
               
               console.log('🟣', fullResponse)

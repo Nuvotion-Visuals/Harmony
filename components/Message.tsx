@@ -65,6 +65,7 @@ const Message = ({
           <S.FlexStart wrap={true}>
             
             <Box width='100%'>
+              <Box maxWidth={'700px'} width='100%'>
               <Spacer />
               
               <Gap autoWidth={true}>
@@ -178,6 +179,7 @@ const Message = ({
                   : null
               }
             </Gap>
+            </Box>
           </Box>
           </S.FlexStart>
         </Box>
@@ -232,7 +234,6 @@ const Message = ({
       wrap?: boolean
     }>`
       width: 100%;
-      max-width: 700px;
       display: flex;
       align-items: flex-start;
       flex-wrap: ${props => props.wrap? 'wrap' : 'noWrap'};

@@ -75,7 +75,7 @@ const Preview = ({  } : Props) => {
     setDisabled(false)
   }, [formik.errors])
 
-  return (<Auth title='Log in with OpenAI' logoSrc='/assets/lexi-favicon.svg'>
+  return (<Auth title='Welcome to Lexi.studio' logoSrc='/assets/lexi-favicon.svg'>
     <form 
       onSubmit={formik.handleSubmit}
       onKeyDown={e => {
@@ -86,10 +86,8 @@ const Preview = ({  } : Props) => {
       style={{textAlign: 'center'}}
     >
       <StyleHTML>
-        <Box>
-          <img src='/assets/lexi-banner-2.gif' />
-        </Box>
         
+        <S.Help>Hi, I'm Lexi, a creative artificial general intelligence (AGI) system ready to work with you on artistic and technical projects.</S.Help>
         </StyleHTML>
       <Gap gap={1}>
         

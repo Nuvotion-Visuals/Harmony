@@ -597,7 +597,7 @@ const scrollToBottom = () => {
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
               <Page>
-                <Box pb={.75}>
+                <Box>
                   <div style={{borderRadius: '.75rem', width: '100%', overflow: 'hidden'}}>
                     <AspectRatio
                       ratio={21/9}
@@ -609,7 +609,7 @@ const scrollToBottom = () => {
               </Page>
              
               
-              <Box width='100%' wrap={true}>
+              <Box width='100%' wrap={true} mt={queries.length > 0 ? .75 : 0}>
             <S.FlexStart>
 
               </S.FlexStart>
@@ -641,7 +641,7 @@ const scrollToBottom = () => {
             }
           
            
-            <Box hide={false} wrap={true} width='100%'>
+            <Box hide={false} wrap={true} width='100%' pt={.75}>
               <Box width='100%' hide={!show}>
                 
                 <Page>
