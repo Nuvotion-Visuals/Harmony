@@ -23,56 +23,59 @@ const getTimeDifference = (startTime: string, endTime: string) : number => {
   return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
 }
 
-const errorResponseMessages = {
+const numberWithCommas = (x: number | string) =>
+  (typeof x === 'string' ? x : x.toString()).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+const errorMessagesLanguageModelServer = {
   400: {
     meaning: 'Bad Request',
-    message: 'This status code indicates that the server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).',
-    recommendation: 'If you are seeing a 400 status code, it may indicate that there is a problem with the format or content of the request. Check the syntax and structure of the request to make sure it is correct and try again. If the problem persists, it may be necessary to contact the server administrator or the client application developer for further assistance.'
+    message: 'This status code indicates that the language model server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).',
+    recommendation: 'If you are seeing a 400 status code, it may indicate that there is a problem with the format or content of the request. Check the syntax and structure of the request to make sure it is correct and try again. If the problem persists, it may be necessary to contact the language model server administrator or the client application developer for further assistance.'
   },
   401: {
     meaning: 'Unauthorized',
     message: 'This status code indicates that the request requires HTTP authentication. The request should be accompanied by an Authorization header field containing a credential suitable for accessing the requested resource.',
-    recommendation: 'If you are seeing a 401 status code, it may indicate that you are trying to access a resource that requires authentication. Check that you have provided the correct credentials in the request and try again. If the problem persists, it may be necessary to contact the server administrator or the client application developer for further assistance.'
+    recommendation: 'If you are seeing a 401 status code, it may indicate that you are trying to access a resource that requires authentication. Check that you have provided the correct credentials in the request and try again. If the problem persists, it may be necessary to contact the language model server administrator or the client application developer for further assistance.'
   },
   403: {
     meaning: 'Forbidden',
-    message: 'This status code indicates that the server understood the request but refuses to authorize it. A 403 response is not a guarantee that the client will not be able to access the resource at some point in the future. When the server returns a 403 response, it generally means that the client must authenticate itself to get the requested response.',
-    recommendation: 'If you are seeing a 403 status code, it may indicate that you do not have permission to access the requested resource. Check that you have the correct permissions and try again. If the problem persists, it may be necessary to contact the server administrator or the client application developer for further assistance.'
+    message: 'This status code indicates that the language model server understood the request but refuses to authorize it. A 403 response is not a guarantee that the client will not be able to access the resource at some point in the future. When the language model server returns a 403 response, it generally means that the client must authenticate itself to get the requested response.',
+    recommendation: 'If you are seeing a 403 status code, it may indicate that you do not have permission to access the requested resource. Check that you have the correct permissions and try again. If the problem persists, it may be necessary to contact the language model server administrator or the client application developer for further assistance.'
   },
   404: {
     meaning: 'Not Found',
-    message: 'This status code indicates that the server cannot find the requested resource. This may be because the resource does not exist or because the server is unable to access the resource.',
-    recommendation: 'If you are seeing a 404 error, you may want to check that the URL you are trying to access is correct. If it is correct, the resource may have been moved or deleted. You may also want to check the server logs to see if there are any issues that may be causing the server to be unable to access the resource.'
+    message: 'This status code indicates that the language model server cannot find the requested resource. This may be because the resource does not exist or because the language model server is unable to access the resource.',
+    recommendation: 'If you are seeing a 404 error, you may want to check that the URL you are trying to access is correct. If it is correct, the resource may have been moved or deleted. You may also want to check the language model server logs to see if there are any issues that may be causing the language model server to be unable to access the resource.'
   },
   408: {
     meaning: 'Request Timeout',
-    message: 'This status code indicates that the server did not receive a complete request message within the time that it was prepared to wait. This may be because the request took too long to be sent or because the server was too busy to process the request.',
-    recommendation: 'If you are seeing a 408 error, you may want to check the network connection and try the request again. If the error persists, it may be due to a problem with the server or network infrastructure. You may want to check the server logs for more information.'
+    message: 'This status code indicates that the language model server did not receive a complete request message within the time that it was prepared to wait. This may be because the request took too long to be sent or because the language model server was too busy to process the request.',
+    recommendation: 'If you are seeing a 408 error, you may want to check the network connection and try the request again. If the error persists, it may be due to a problem with the language model server or network infrastructure. You may want to check the language model server logs for more information.'
   },
   429: {
     meaning: 'Too Many Requests',
-    message: 'This status code indicates that the user has sent too many requests in a given amount of time. This may be because the user is making too many requests or because the server is unable to handle the volume of requests being made.',
-    recommendation: 'If you are seeing a 429 error, you may want to check that you are not making too many requests in a short period of time. You may also want to check the server logs to see if there are any issues that may be causing the server to be unable to handle the volume of requests being made.'
+    message: 'This status code indicates that the user has sent too many requests in a given amount of time. This may be because the user is making too many requests or because the language model server is unable to handle the volume of requests being made.',
+    recommendation: 'If you are seeing a 429 error, you may want to check that you are not making too many requests in a short period of time. You may also want to check the language model server logs to see if there are any issues that may be causing the language model server to be unable to handle the volume of requests being made.'
   },
   500: {
     meaning: 'Internal Server Error',
-    message: 'This status code indicates that an unexpected condition was encountered by the server while processing the request. This could be due to a bug in the server software or a problem with the server hardware.',
-    recommendation: 'If you are seeing a 500 status code, it is likely that there is a problem with the server. In this case, you should contact the server administrator or the website owner for further assistance. It may also be helpful to check the server logs for more information.'
+    message: 'This status code indicates that an unexpected condition was encountered by the language model server while processing the request. This could be due to a bug in the language model server software or a problem with the language model server hardware.',
+    recommendation: 'This usually occurs when the language model is not able to process your text. Try again, try shortening it, or try rephrasing it.'
   },
   503: {
     meaning: 'Service Unavailable',
-    message: 'This status code indicates that the server is currently unable to handle the request due to maintenance or capacity issues. The server may be offline or under heavy load.',
-    recommendation: 'If you are seeing a 503 status code, it is likely that the server is temporarily unavailable. In this case, you should try accessing the website again later. If the problem persists, you may want to contact the server administrator or the website owner for further assistance.'
+    message: 'This status code indicates that the language model server is currently unable to handle the request due to maintenance or capacity issues. the language model server may be offline or under heavy load.',
+    recommendation: 'If you are seeing a 503 status code, it is likely that the language model server is temporarily unavailable. In this case, you should try accessing the website again later. If the problem persists, you may want to contact the language model server administrator or the website owner for further assistance.'
   },
   504: {
     meaning: 'Gateway Timeout',
-    message: 'This status code indicates that the server, while acting as a gateway or proxy, did not receive a timely response from the upstream server. This could be due to a problem with the network or a problem with the upstream server.',
-    recommendation: 'If you are seeing a 504 status code, it is likely that there is a problem with the network or the upstream server. In this case, you should try accessing the website again later. If the problem persists, you may want to contact the server administrator or the website owner for further assistance.'
+    message: 'This status code indicates that the language model server, while acting as a gateway or proxy, did not receive a timely response from the upstream server. This could be due to a problem with the network or a problem with the upstream server.',
+    recommendation: 'If you are seeing a 504 status code, it is likely that there is a problem with the network or the upstream server. In this case, you should try accessing the website again later. If the problem persists, you may want to contact the language model server administrator or the website owner for further assistance.'
   },
   511: {
     meaning: 'Network Authentication Required',
     message: 'This status code indicates that the client must authenticate itself to get the requested response. This is similar to 401 (Unauthorized), but indicates that the client must authenticate itself to get the requested response. The client may repeat the request with a suitable Authorization header field.',
-    recommendation: 'If you are seeing a 511 status code, it means that you need to authenticate yourself in order to access the requested resource. In this case, you should provide the appropriate authentication credentials in the request header. If you are unsure of how to do this or if the problem persists, you may want to contact the server administrator or the website owner for further assistance.'
+    recommendation: 'If you are seeing a 511 status code, it means that you need to authenticate yourself in order to access the requested resource. In this case, you should provide the appropriate authentication credentials in the request header. If you are unsure of how to do this or if the problem persists, you may want to contact the language model server administrator or the website owner for further assistance.'
   }
 }
 
@@ -112,10 +115,15 @@ const sendMessage = (
     catch(error) {
       if (error instanceof Error) {
         console.log('🟣', error)
+
+        const errorCodeRegex = /error (\d+)/;
+        // @ts-ignore
+        const errorCode = Number((error.message || 'error 500').match(errorCodeRegex)?.[1])
+
         callback({ 
           status: 500, 
           data: { 
-            response: `I experienced the following error when trying to access my language model.<br><pre>${error.message}</pre> ${error.cause ? `<br><pre>${error.cause}</pre>` : ''} <pre>${error.stack}</pre>`
+            response: `I experienced the following error when trying to access my language model.${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning ? `<p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning}</p><p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.recommendation}</p>` : ''}<br><pre>${error.message}</pre><pre>${error.stack}</pre>`
           }})
       }
     }
@@ -133,6 +141,8 @@ wss.on('connection', function connection(ws: typeof WSS) {
     if (ready) {
       const initializeScripts = () => {
         (async () => {
+          const scriptInitializationTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+
           const getDirectories = (source: string) =>
             fs.readdirSync(source, { withFileTypes: true })
               .filter((dirent: any) => dirent.isDirectory())
@@ -148,7 +158,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
           ws.send(JSON.stringify({
             type: 'message',
             message: null,
-            response: `I need to read ${scriptNames.length} AGI scripts.`,
+            response: `Hi there. I'm about to begin reading my artifical general intellegence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
             guid: Math.random(),
             status: 200,
   
@@ -201,7 +211,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
               wordCount += scriptWordCount
               characterCount += scriptCharacterCount
               pageCount += scriptPageCount
-              const fullResponse = `${response}. That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. [${scriptCharacterCount} characters, ${scriptWordCount} words, ${scriptPageCount.toFixed(1)} pages, ${(scriptWordCount / 300).toFixed(1)} minutes]`
+              const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I've been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
               step += 1
               
               console.log('🟣', fullResponse)
@@ -234,7 +244,9 @@ wss.on('connection', function connection(ws: typeof WSS) {
           }))
         })()
       }
-      initializeScripts()
+      setTimeout(() => {
+        initializeScripts()
+      }, 10000)
     }
     else {
       setTimeout(() => {
