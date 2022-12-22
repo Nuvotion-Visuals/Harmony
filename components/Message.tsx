@@ -30,7 +30,7 @@ const Message = ({
     const isLexi = speaker === 'Lexi'
     return (<S.Message isLexi={isLexi}>
       <Box width='100%' wrap={true}>
-        <Box width='100%' wrap={true}>
+        <Box width='100%' wrap={true} maxWidth={'700px'} >
 
         <S.AvatarContainer>
                 <Box pt={1}>
@@ -44,15 +44,19 @@ const Message = ({
             {
               query
                 ? <Spacer>
-                    <StyleHTML>
-                      <ParseHTML markdown={query}/>
-                    </StyleHTML>
+                    <S.Content>
+                      <StyleHTML>
+                        <ParseHTML markdown={query}/>
+                      </StyleHTML>
+                    </S.Content>
                   </Spacer>
                 : error
                   ? <Spacer>
+                    <S.Content>
                       <StyleHTML>
                         <ParseHTML markdown={`I tried to answer your question, but experienced this error with my system: <pre>${error}</pre>`}/>
                       </StyleHTML>
+                    </S.Content>
                 </Spacer>
                   : <Box py={1} width='100%'>
                       <Gap gap={1}>
@@ -65,7 +69,7 @@ const Message = ({
           <S.FlexStart wrap={true}>
             
             <Box width='100%'>
-              <Box maxWidth={'700px'} width='100%'>
+              <Box width='100%'>
               <Spacer />
               
               <Gap autoWidth={true}>
@@ -196,17 +200,6 @@ const Message = ({
       overflow: hidden;
       background: var(--F_Background);
     `,
-    Content: styled.div`
-      width: 100%;
-      height: calc(100vh - calc(var(--F_Header_Height) + 300px)); 
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      overflow-y: auto;
-      border-bottom: 1px solid var(--F_Surface_0);
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-    `,
     Footer: styled.div`
       position:relative;
       display: flex;
@@ -262,5 +255,9 @@ const Message = ({
     `,
     Banner: styled.img`
       width: 100%;
+    `,
+    Content: styled.div`
+      width: 100%;
+      max-width: calc(700px - 2.5rem);
     `
   }

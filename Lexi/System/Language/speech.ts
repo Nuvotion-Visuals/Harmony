@@ -1,57 +1,65 @@
 // @ts-ignore
-import { convert } from 'html-to-text';
+import { convert } from 'html-to-text'
 
-let audioBuffers: AudioBuffer[] = [];
+let audioBuffers: AudioBuffer[] = []
+let source: any
 
 export async function speak(text: string, callback: (error: any) => void) {
   audioBuffers = []
-  const sentences = convert(text).split('. ');
-  let firstRequestCompleted = false;
+  if (text === '') {
+    if (source) {
+      source.stop()
+    }
+    return
+  }
+  // Normalize the text: This means to convert the text into a standardized format, such as plaintext, in order to make it easier to process.
+  const normalizedText = convert(text)
 
+  // Tokenize the text: This means to split the text into smaller units, such as words or sentences, in order to analyze or process it more easily.
+  const sentences = normalizedText.split('. ').filter((sentence : string) => sentence ! === '' || sentence !== '. ')
+
+  let firstRequestCompleted = false
   try {
     for (const sentence of sentences) {
-      const audioBuffer = await ttsRequest(sentence);
-      audioBuffers.push(audioBuffer);
+      const audioBuffer = await ttsRequest(sentence)
+      audioBuffers.push(audioBuffer)
       if (!firstRequestCompleted) {
-        playSentences();
-        firstRequestCompleted = true;
+        speakSentences()
+        firstRequestCompleted = true
       }
     }
-    callback(null);
+    callback(null)
   } catch (error) {
-    callback(error);
+    callback(error)
   }
 }
 
-let previousText: any;
-let audioCtx: any;
+let audioCtx: any
 async function ttsRequest(text: string): Promise<AudioBuffer> {
   if (!audioCtx) {
-    audioCtx = new AudioContext();
+    audioCtx = new AudioContext()
   }
-  previousText = text;
-  const response = await fetch(`http://localhost:5002/api/tts?text=${text}.`);
-  const arrayBuffer = await response.arrayBuffer();
-  return audioCtx.decodeAudioData(arrayBuffer);
+  const response = await fetch(`http://localhost:5002/api/tts?text=${text}.`)
+  const arrayBuffer = await response.arrayBuffer()
+  return audioCtx.decodeAudioData(arrayBuffer)
 }
 
-let source: any;
+// Synthesize the text: This means to generate speech output from the text, either by using a text-to-speech engine or by playing pre-recorded audio files.
+const speakSentences = () => {
+  let index = 0
 
-function playSentences() {
-  let index = 0;
-
-  function playNext() {
+  const speakSentence = () => {
     if (index >= audioBuffers.length) {
-      return;
+      return
     }
-    const audioBuffer = audioBuffers[index];
-    source = audioCtx.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioCtx.destination);
-    source.onended = playNext;
-    source.start();
-    index++;
+    const audioBuffer = audioBuffers[index]
+    source = audioCtx.createBufferSource()
+    source.buffer = audioBuffer
+    source.connect(audioCtx.destination)
+    source.onended = speakSentence
+    source.start()
+    index++
   }
 
-  playNext();
+  speakSentence()
 }
