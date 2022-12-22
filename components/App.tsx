@@ -25,17 +25,17 @@ import {
   Spacer,
   useBreakpoint,
   Label,
-  AspectRatio
+  AspectRatio,
+  RichTextEditor
 } from '@avsync.live/formation'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import Message from './Message'
 import React from 'react'
 import { speak } from '../Lexi/System/Language/speech'
+import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
-const RichTextEditor = React.lazy(
-  () => import('@avsync.live/formation').then(module => ({ default: module.RichTextEditor }))
-)
+import dynamic from 'next/dynamic'
 
 interface Queries {
   [guid: string]: {
@@ -355,6 +355,24 @@ const scrollToBottom = () => {
   const [sidebarOpen, set_sidebarOpen] = useState(true)
   const { isMobile, isTablet } = useBreakpoint()
 
+  useEffect(() => {
+    scrollToBottom()
+  }, [router.asPath])
+
+  useEffect(() => {
+    const handleClick = () => {
+      listenForWakeWord(() => {
+        listen()
+        speak('', () => {})
+        console.log('Heard wake word')
+      })
+    }
+    document.addEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+    }
+  });
+
   return (
     <div>
       <Navigation
@@ -628,7 +646,7 @@ const scrollToBottom = () => {
                   <div style={{borderRadius: '.75rem', width: '100%', overflow: 'hidden'}}>
                     <AspectRatio
                       ratio={21/9}
-                      backgroundSrc='/assets/lexi-banner-2.gif'
+                      backgroundSrc='/assets/lexi-banner-2.png'
                       coverBackground={true}
                     />
                   </div>
@@ -706,7 +724,6 @@ const scrollToBottom = () => {
             <S.Footer>
               <S.ButtonContainer>
                 <Gap disableWrap={true} autoWidth={true}>
-                
                 <Button 
                   icon={'plus'}
                   iconPrefix='fas'
@@ -743,18 +760,19 @@ const scrollToBottom = () => {
                 </Gap>
               
               </S.ButtonContainer>
-              <Suspense fallback={<LoadingSpinner />}>
+
+
                 <RichTextEditor
-                  value={query} onChange={(value : string) => set_query(value)} 
-                  height={'276px'}
-                  onEnter={(newQuery) => {
-                    makeQuery(
-                      newQuery.slice(0, -11), // remove unwanted linebreak
-                      false
-                    )
-                  }}
-                />
-              </Suspense>
+                value={query} onChange={(value : string) => set_query(value)} 
+                height={'276px'}
+                onEnter={(newQuery) => {
+                  makeQuery(
+                    newQuery.slice(0, -11), // remove unwanted linebreak
+                    false
+                  )
+                }}
+              />
+                          
               
             </S.Footer>
           </Page>

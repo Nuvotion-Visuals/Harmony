@@ -245,7 +245,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
         })()
       }
       setTimeout(() => {
-        initializeScripts()
+        // initializeScripts()
       }, 10000)
     }
     else {
