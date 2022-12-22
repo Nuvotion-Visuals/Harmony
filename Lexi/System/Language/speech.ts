@@ -1,45 +1,57 @@
 // @ts-ignore
-import { convert } from 'html-to-text'
+import { convert } from 'html-to-text';
 
-import { customAlphabet } from 'nanoid'
-const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
-const nanoid = customAlphabet(alphabet, 11)
+let audioBuffers: AudioBuffer[] = [];
 
-let currentSentenceId = null
-export const speak = (text : string, onComplete: () => void) => {
-  currentSentenceId = nanoid()
+export async function speak(text: string, callback: (error: any) => void) {
+  audioBuffers = []
   const sentences = convert(text).split('. ');
-  const playSentence = (i: number) => {
-    if (i === sentences.length) {
-      onComplete()
-      return
+  let firstRequestCompleted = false;
+
+  try {
+    for (const sentence of sentences) {
+      const audioBuffer = await ttsRequest(sentence);
+      audioBuffers.push(audioBuffer);
+      if (!firstRequestCompleted) {
+        playSentences();
+        firstRequestCompleted = true;
+      }
     }
-    ttsRequest(sentences[i], () => {
-      playSentence(i + 1)
-    })
+    callback(null);
+  } catch (error) {
+    callback(error);
   }
-  playSentence(0)
 }
 
-let source: any
-let previousText: string | null = null;
-let audioCtx: AudioContext | null
-function ttsRequest(text: string, onComplete: () => void) {
+let previousText: any;
+let audioCtx: any;
+async function ttsRequest(text: string): Promise<AudioBuffer> {
+  if (!audioCtx) {
+    audioCtx = new AudioContext();
+  }
   previousText = text;
-  audioCtx = new AudioContext();
-  fetch(`http://localhost:5002/api/tts?text=${text}.`)
-    .then((response) => response.arrayBuffer())
-    .then((arrayBuffer) => audioCtx.decodeAudioData(arrayBuffer))
-    .then((audioBuffer) => {
-      if (source) {
-        source.stop()
-      }
-      source = audioCtx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioCtx.destination);
-      source.onended = () => {
-        onComplete();
-      };
-      source.start();
-    });
+  const response = await fetch(`http://localhost:5002/api/tts?text=${text}.`);
+  const arrayBuffer = await response.arrayBuffer();
+  return audioCtx.decodeAudioData(arrayBuffer);
+}
+
+let source: any;
+
+function playSentences() {
+  let index = 0;
+
+  function playNext() {
+    if (index >= audioBuffers.length) {
+      return;
+    }
+    const audioBuffer = audioBuffers[index];
+    source = audioCtx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioCtx.destination);
+    source.onended = playNext;
+    source.start();
+    index++;
+  }
+
+  playNext();
 }
