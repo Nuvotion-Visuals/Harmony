@@ -136,128 +136,8 @@ const wss = new WSS({ port: 1619 });
 let websock = {} as typeof WSS
 const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
 
+let initialized = false
 wss.on('connection', function connection(ws: typeof WSS) {
-  const check = () => {
-    if (ready) {
-      const initializeScripts = () => {
-        (async () => {
-          const scriptInitializationTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-
-          const getDirectories = (source: string) =>
-            fs.readdirSync(source, { withFileTypes: true })
-              .filter((dirent: any) => dirent.isDirectory())
-              .map((dirent : any) => dirent.name)
-              
-          const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
-          const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
-          let pageCount = 0
-          let wordCount = 0
-          let characterCount = 0
-          let numberOfSteps = 0
-
-          ws.send(JSON.stringify({
-            type: 'message',
-            message: null,
-            response: `Hi there. I'm about to begin reading my artificial general intelligence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
-            guid: Math.random(),
-            status: 200,
-  
-          }))
-
-          const logResults = async (scripts: string[]) => {
-            let step = 1
-            numberOfSteps = scripts.length
-            for (const script of scripts) {
-              const result = await readMarkdownFile(script)
-              const scriptName = extractScriptNameFromPath(script)
-              const scriptWordCount = countWords(result)
-              const scriptCharacterCount = result.length
-              const scriptPageCount = scriptWordCount / 250
-             
-              const messageTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-              
-              // keep trying if it fails
-              let keepTrying
-              let failCount = 0
-              let messageId = ''
-              let response = 'I failed to connect'
-
-
-              do {
-                try {
-                  if (failCount > 10) {
-                    keepTrying = false
-                    return 
-                  }
-
-                  const data = await lexi.sendMessage(result, {
-                    conversationId: currentConversationId,
-                    parentMessageId: currentMessageId,
-                    timeoutMs: 2 * 60 * 1000
-                  })
-                  messageId = data.messageId
-                  response = data.response
-                  keepTrying = false
-                } 
-                catch(e) {
-                  keepTrying = true
-                  failCount += 1
-                  console.log(e)
-                }
-              } while (keepTrying)
-
-              currentMessageId = messageId
-              const responseTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-              wordCount += scriptWordCount
-              characterCount += scriptCharacterCount
-              pageCount += scriptPageCount
-              const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I have been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
-              step += 1
-              
-              console.log('🟣', fullResponse)
-              ws.send(JSON.stringify({
-                type: 'message',
-                message: `Read your ${scriptName}`,
-                response: fullResponse,
-                guid: `${scriptName})`,
-                status: 200,
-                messageTime,
-                responseTime
-              }))
-            } 
-          }
-          
-          const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          await logResults(scriptPaths)
-          const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          
-          const response = `${numberOfSteps} scripts initialized, totalling ${characterCount} characters ${wordCount} words. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
-          console.log('🟣', response)
-          ws.send(JSON.stringify({
-            type: 'message',
-            message: null,
-            response: response,
-            guid: `${Math.random()})`,
-            status: 200,
-            messageTime: startTime,
-            responseTime: endTime
-          }))
-        })()
-      }
-      setTimeout(() => {
-        // initializeScripts()
-      }, 10000)
-    }
-    else {
-      setTimeout(() => {
-        const currentTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-        console.log('🟣', `I can't access my language model. I've been checking each second for ${getTimeDifference(serverStartTime, currentTime)} seconds.`)
-        check()
-      }, 1000)
-    }
-  }
-  check()
-
   console.log('🟣', 'My web socket server is ready for connections')
   // receive message from client
   ws.onmessage = (message: { data: string }) => {
@@ -284,6 +164,119 @@ wss.on('connection', function connection(ws: typeof WSS) {
           }))
         }
       )
+    }
+    if (action.type === 'initialize') {
+      (async () => {
+        if (!initialized) {
+          initialized = true
+
+          const scriptInitializationTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+
+          const getDirectories = (source: string) =>
+            fs.readdirSync(source, { withFileTypes: true })
+              .filter((dirent: any) => dirent.isDirectory())
+              .map((dirent : any) => dirent.name)
+              
+          const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
+          const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
+          let pageCount = 0
+          let wordCount = 0
+          let characterCount = 0
+          let numberOfSteps = 0
+
+          ws.send(JSON.stringify({
+            type: 'message',
+            message: null,
+            response: `Hi there. I'm about to begin reading my artificial general intelligence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
+            guid: 'Initialize',
+            status: 200,
+  
+          }))
+
+          const logResults = async (scripts: string[]) => {
+            let step = 1
+            numberOfSteps = scripts.length
+
+            for (const script of scripts) {
+              const result = await readMarkdownFile(script)
+              const scriptName = extractScriptNameFromPath(script)
+              const scriptWordCount = countWords(result)
+              const scriptCharacterCount = result.length
+              const scriptPageCount = scriptWordCount / 250
+             
+              const messageTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+              
+              // keep trying if it fails
+              let keepTrying
+              let failCount = 0
+              let messageId = ''
+              let response = 'I failed to connect'
+
+              console.log(`Making async function call: ${scriptName}`);
+
+                try {
+                  const data = await lexi.sendMessage(result, {
+                    conversationId: currentConversationId,
+                    parentMessageId: currentMessageId,
+                    timeoutMs: 2 * 60 * 1000
+                  })
+                  messageId = data.messageId
+                  response = data.response
+
+                  currentMessageId = messageId
+                  const responseTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+                  wordCount += scriptWordCount
+                  characterCount += scriptCharacterCount
+                  pageCount += scriptPageCount
+                  const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I have been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
+                  step += 1
+                  
+                  console.log('🟣', fullResponse)
+                  ws.send(JSON.stringify({
+                    type: 'message',
+                    message: `Read your ${scriptName}`,
+                    response: fullResponse,
+                    guid: `${scriptName}`,
+                    status: 200,
+                    messageTime,
+                    responseTime,
+                    scriptName,
+                  }))
+                } catch (error) {
+                  console.error(error);
+                  // add failure message
+                }
+              }
+          }     
+          
+          const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+          await logResults(scriptPaths)
+          const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+          
+          // add failure message
+          const response = `${numberOfSteps} scripts initialized, totalling ${characterCount} characters ${wordCount} words. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
+          console.log('🟣', response)
+          ws.send(JSON.stringify({
+            type: 'message',
+            message: null,
+            response: response,
+            guid: `${Math.random()})`,
+            status: 200,
+            messageTime: startTime,
+            responseTime: endTime
+          }))
+        }
+        else {
+          ws.send(JSON.stringify({
+            type: 'message',
+            message: null,
+            response: `I have already read my scripts.`,
+            guid: 'Already Initialize',
+            status: 200,
+  
+          }))
+        }
+      })()
     }
   }
 

@@ -1412,10 +1412,10 @@ character-reference-invalid@^1.0.0:
   resolved "https://registry.yarnpkg.com/character-reference-invalid/-/character-reference-invalid-1.1.4.tgz#083329cda0eae272ab3dbbf37e9a382c13af1560"
   integrity sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==
 
-chatgpt@^3.2.4:
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/chatgpt/-/chatgpt-3.2.4.tgz#4db9237a386e7c386111ca2147d408d64f32da13"
-  integrity sha512-tP8RUUH+Jl0lCFf08lOcFsgnrli1DMNZF76Zc6nIbPXDS0iHwVUI0n90qlIic6RTAMD0KPGahF/yaLrB/T/hOQ==
+chatgpt@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/chatgpt/-/chatgpt-3.3.2.tgz#d2c185f944ba42df2625164ac465992dec1a683b"
+  integrity sha512-uGKkHRLIMLtZJ3Shv1JmvZzyyHn1I+jD4z2zjF0Zfipe2+U6c+Kd6tqjavmsDlyuCYcsO23VF1oX2hVbipQbPQ==
   dependencies:
     delay "^5.0.0"
     eventsource-parser "^0.0.5"
