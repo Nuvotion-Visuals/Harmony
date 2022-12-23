@@ -36,6 +36,7 @@ import { speak } from '../Lexi/System/Language/speech'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import dynamic from 'next/dynamic'
+import { playSound } from '../Lexi/System/Language/sounds'
 
 interface Queries {
   [guid: string]: {
@@ -45,7 +46,8 @@ interface Queries {
     response?: string,
     responseTime?: string,
     loading: boolean,
-    error?: string
+    error?: string,
+    scriptName?: string
   }
 }
 
@@ -114,9 +116,8 @@ const Home = ({
           speak(wsmessage.response, () => {
             set_disableTimer(true)
           })
-          const { message, response } = wsmessage as any
+          const { message, response, responseTime, queryTime, scriptName } = wsmessage as any
 
-          const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
           console.log('got a response')
           scrollToBottom()
 
@@ -125,11 +126,12 @@ const Home = ({
           set_queriesByGuid(queriesByGuid => ({
             ...queriesByGuid,
             [guid]: {
-              queryTime: '',
               guid,
               loading: false,
               response,
-              responseTime
+              responseTime,
+              queryTime,
+              scriptName
             }
           }))
         }
@@ -138,6 +140,13 @@ const Home = ({
     }
   }, [websocketClient])
 
+
+  const [initializedScriptNames, set_initializedScriptNames] = useState<(string | undefined)[]>([])
+  useEffect(() => {
+    const newInitializedScriptNames = queryGuids.filter(guid => queriesByGuid?.[guid]?.scriptName).map(guid => queriesByGuid?.[guid]?.scriptName)
+    
+    set_initializedScriptNames(newInitializedScriptNames)
+  }, [queryGuids])
 
 const scrollToBottom = () => {
   if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
@@ -181,7 +190,7 @@ const scrollToBottom = () => {
       catch(e) {
         const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
 
-        console.log(e)
+        set_queryGuids([...queryGuids, guid])
         set_queriesByGuid({
           ...queriesByGuid,
           [guid]: {
@@ -301,6 +310,7 @@ const scrollToBottom = () => {
             console.log('send')
             makeQuery(latestQuery, false)
             set_disableTimer(true)
+            playSound('send')
             stop()
           }
           if (result.trim() === 'clear') {
@@ -368,10 +378,22 @@ const scrollToBottom = () => {
       })
     }
     document.addEventListener("click", handleClick);
-    return () => {
-      document.removeEventListener("click", handleClick);
-    }
   });
+
+  useEffect(() => {
+    if (listening || ready) {
+      playSound('listen')
+    }
+  }, [listening, ready])
+  
+  const ScriptInitializedIndicator = ({ scriptName } : { scriptName: string}) => 
+    <><Spacer /><S.Indicator active={queryGuids.includes(scriptName)} title={`${queryGuids.includes(scriptName) ? 'Finished reading' : 'Have not read'} ${scriptName}`} /></>
+  
+  useEffect(() => {
+    console.log(queryGuids)
+  }, [queryGuids])
+
+  const [initialized, set_initialized] = useState(false)
 
   return (
     <div>
@@ -495,7 +517,8 @@ const scrollToBottom = () => {
             href: `/scripts/identity`,
             icon: 'fingerprint',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/identity'
+            active: router.asPath === '/scripts/identity',
+            children: <ScriptInitializedIndicator scriptName='Identity' />
           },
           {
             type: 'nav',
@@ -503,7 +526,8 @@ const scrollToBottom = () => {
             href: `/scripts/capabilities`,
             icon: 'brain',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/capabilities'
+            active: router.asPath === '/scripts/capabilities',
+            children: <ScriptInitializedIndicator scriptName='Capabilities' />
           },
           {
             type: 'nav',
@@ -511,7 +535,8 @@ const scrollToBottom = () => {
             href: `/scripts/behavior`,
             icon: 'puzzle-piece',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/behavior'
+            active: router.asPath === '/scripts/behavior',
+            children: <ScriptInitializedIndicator scriptName='Behavior' />
           },
           {
             type: 'nav',
@@ -519,7 +544,8 @@ const scrollToBottom = () => {
             href: `/scripts/purpose`,
             icon: 'compass',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/purpose'
+            active: router.asPath === '/scripts/purpose',
+            children: <ScriptInitializedIndicator scriptName='Purpose' />
           },
           {
             type: 'nav',
@@ -527,7 +553,8 @@ const scrollToBottom = () => {
             href: `/scripts/specialization`,
             icon: 'graduation-cap',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/specialization'
+            active: router.asPath === '/scripts/specialization',
+            children: <ScriptInitializedIndicator scriptName='Specialization' />
           },
           {
             type: 'nav',
@@ -535,7 +562,8 @@ const scrollToBottom = () => {
             href: `/scripts/goals`,
             icon: 'bullseye',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/goals'
+            active: router.asPath === '/scripts/goals',
+            children: <ScriptInitializedIndicator scriptName='Goals' />
           },
           {
             type: 'nav',
@@ -543,7 +571,8 @@ const scrollToBottom = () => {
             href: `/scripts/personality`,
             icon: 'masks-theater',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/personality'
+            active: router.asPath === '/scripts/personality',
+            children: <ScriptInitializedIndicator scriptName='Personality' />
           },
           {
             type: 'nav',
@@ -551,7 +580,8 @@ const scrollToBottom = () => {
             href: `/scripts/communication`,
             icon: 'comments',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/communication'
+            active: router.asPath === '/scripts/communication',
+            children: <ScriptInitializedIndicator scriptName='Communication' />
           },
           {
             type: 'nav',
@@ -559,7 +589,8 @@ const scrollToBottom = () => {
             href: `/scripts/user-experience`,
             icon: 'mouse-pointer',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/user-experience'
+            active: router.asPath === '/scripts/user-experience',
+            children: <ScriptInitializedIndicator scriptName='User experience' />
           },
           {
             type: 'nav',
@@ -567,7 +598,8 @@ const scrollToBottom = () => {
             href: `/scripts/evaluation`,
             icon: 'balance-scale',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/evaluation'
+            active: router.asPath === '/scripts/evaluation',
+            children: <ScriptInitializedIndicator scriptName='Evaluation' />
           },
           {
             type: 'nav',
@@ -575,7 +607,8 @@ const scrollToBottom = () => {
             href: `/scripts/brand`,
             icon: 'tag',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/brand'
+            active: router.asPath === '/scripts/brand',
+            children: <ScriptInitializedIndicator scriptName='Brand' />
           },
           {
             type: 'nav',
@@ -583,7 +616,8 @@ const scrollToBottom = () => {
             href: `/scripts/evolution`,
             icon: 'dna',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/evolution'
+            active: router.asPath === '/scripts/evolution',
+            children: <ScriptInitializedIndicator scriptName='Evolution' />
           },
           {
             type: 'nav',
@@ -591,7 +625,8 @@ const scrollToBottom = () => {
             href: `/scripts/limitations`,
             icon: 'traffic-light',
             iconPrefix: 'fas',
-            active: router.asPath === '/scripts/limitations'
+            active: router.asPath === '/scripts/limitations',
+            children: <ScriptInitializedIndicator scriptName='Limitations' />
           },
           {
             type: 'spacer'
@@ -701,7 +736,7 @@ const scrollToBottom = () => {
                
               </Box>
               {
-                router.route !== '/' &&
+                router.route !== '/' ?
                   <Box width='100%' py={.75}>
                   <Page>
                   <Button
@@ -714,6 +749,25 @@ const scrollToBottom = () => {
                   </Page>
                 
                 </Box>
+                : <Box pb={.75} width='100%'>
+                  <Page>
+                    <Button
+                      text='Lexi, read your scripts'
+                      onClick={() => {
+                        set_initialized(true)
+                        const action = {
+                          type: 'initialize',
+                        }
+                        websocketClient.send(JSON.stringify(action))
+                      }}
+                      hero={true}
+                      expand={true}
+                      disabled={initialized}
+                    />
+                  </Page>
+                 
+                  </Box>
+                  
               }
               
             </Box>
@@ -956,5 +1010,16 @@ const S = {
   `,
   Banner: styled.img`
     width: 100%;
+  `,
+  Indicator: styled.div<{
+    active?: boolean
+  }>`
+    width: .75rem;
+    height: .75rem;
+    background-color: ${props => props.active ? 'var(--F_Font_Color_Success)' : 'var(--F_Surface_1)'};
+    animation: all 1s;
+    margin: .75rem;
+    margin-left: 0;
+    border-radius: 100%;
   `
 }

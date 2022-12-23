@@ -22,8 +22,10 @@ export function listenForWakeWord(callback: () => void) {
     // Set up the wake word grammar
     const wakeWord = 'Lexi';
     const speechRecognitionList = new SpeechGrammarList();
-    const grammar = `#JSGF V1.0; grammar wakeWord; public <wake> = ${wakeWord};;`
-    speechRecognitionList.addFromString(grammar, 1);
+
+    const g_wakeWord = `#JSGF V1.0; grammar wakeWord; public <wake> = ${wakeWord};;`
+    speechRecognitionList.addFromString(g_wakeWord, 1);
+
     recognition.grammars = speechRecognitionList;
   
     // Start listening for the wake word

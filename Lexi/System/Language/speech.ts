@@ -24,11 +24,12 @@ export async function speak(text: string, callback: (error: any) => void) {
       const audioBuffer = await ttsRequest(sentence)
       audioBuffers.push(audioBuffer)
       if (!firstRequestCompleted) {
-        speakSentences()
+        speakSentences(() => {
+          callback(null)
+        })
         firstRequestCompleted = true
       }
     }
-    callback(null)
   } catch (error) {
     callback(error)
   }
@@ -45,12 +46,16 @@ async function ttsRequest(text: string): Promise<AudioBuffer> {
 }
 
 // Synthesize the text: This means to generate speech output from the text, either by using a text-to-speech engine or by playing pre-recorded audio files.
-const speakSentences = () => {
+const speakSentences = (callback : () => void) => {
   let index = 0
 
   const speakSentence = () => {
     if (index >= audioBuffers.length) {
+      callback()
       return
+    }
+    if (source) {
+      source.stop()
     }
     const audioBuffer = audioBuffers[index]
     source = audioCtx.createBufferSource()
