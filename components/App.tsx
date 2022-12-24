@@ -18,16 +18,14 @@ import {
   Page,
   Box,
   LineBreak,
-  LoadingSpinner,
-  useScrollTo,
   Modal,
   TextInput,
   Spacer,
   useBreakpoint,
-  Label,
   AspectRatio,
   RichTextEditor
 } from '@avsync.live/formation'
+
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import Message from './Message'
@@ -35,7 +33,6 @@ import React from 'react'
 import { speak } from '../Lexi/System/Language/speech'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
-import dynamic from 'next/dynamic'
 import { playSound } from '../Lexi/System/Language/sounds'
 
 interface Queries {
@@ -74,8 +71,8 @@ const Home = ({
     return [state, setState, getLatestState] as const;
   }
 
-  const [queriesByGuid, set_queriesByGuid] = useExtendedState<Queries>({})
-  const [queryGuids, set_queryGuids] = useExtendedState<string[]>([])
+  const [queriesByGuid, set_queriesByGuid, getLatestQueriesByGuid] = useExtendedState<Queries>({})
+  const [queryGuids, set_queryGuids, getLatestQueryGuids] = useExtendedState<string[]>([])
 
   const [loading, set_loading] = useExtendedState(true)
 
@@ -98,7 +95,8 @@ const Home = ({
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
           console.log('got a response')
           scrollToBottom()
-        
+
+          set_queryGuids([...queryGuids, guid])
           set_queriesByGuid(queriesByGuid => ({
             ...queriesByGuid,
             [guid]: {
@@ -110,52 +108,64 @@ const Home = ({
               responseTime
             }
           }))
+
+
+          listenForWakeWord(() => {
+            listen()
+          })
         }
         if (wsmessage.type === 'message') {
           stop()
           speak(wsmessage.response, () => {
             set_disableTimer(true)
           })
-          const { message, response, responseTime, queryTime, scriptName } = wsmessage as any
+          const { message, response, messageTime, responseTime, queryTime, scriptName } = wsmessage as any
 
-          console.log('got a response')
+          console.log('got a message')
           scrollToBottom()
 
-          const guid = nanoid()
-        
-          set_queriesByGuid(queriesByGuid => ({
-            ...queriesByGuid,
-            [guid]: {
-              guid,
-              loading: false,
-              response,
-              responseTime,
-              queryTime,
-              scriptName
-            }
-          }))
+          const guid = nanoid();
+
+          (async () => {
+            const latestQueryGuids = await getLatestQueryGuids()
+
+            set_queryGuids([...latestQueryGuids, guid])
+            set_queriesByGuid(queriesByGuid => ({
+              ...queriesByGuid,
+              [guid]: {
+                guid,
+                loading: false,
+                response,
+                responseTime,
+                messageTime,
+                queryTime,
+                scriptName
+              }
+            }))
+          })()
+
+          
         }
       }
       
     }
   }, [websocketClient])
 
-
   const [initializedScriptNames, set_initializedScriptNames] = useState<(string | undefined)[]>([])
   useEffect(() => {
-    const newInitializedScriptNames = queryGuids.filter(guid => queriesByGuid?.[guid]?.scriptName).map(guid => queriesByGuid?.[guid]?.scriptName)
-    
+    const newInitializedScriptNames = queryGuids.filter(guid => queriesByGuid?.[guid]?.scriptName).map(guid => queriesByGuid?.[guid]?.scriptName?.replace(/-/g, ' '))
+    console.log(newInitializedScriptNames)
     set_initializedScriptNames(newInitializedScriptNames)
   }, [queryGuids])
 
-const scrollToBottom = () => {
-  if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
-    (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
-    setTimeout(() => {
+  const scrollToBottom = () => {
+    if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
       (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
-    }, 1)
+      setTimeout(() => {
+        (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
+      }, 1)
+    }
   }
-}
 
   const makeQuery = (query: string, initialize: boolean) => {
     set_query('') // async so it's ok
@@ -201,7 +211,7 @@ const scrollToBottom = () => {
             responseTime,
             error: 'It seems the websocket request went wrong. You should reload the page.'
           }
-        });
+        })
       }
 
       set_loading(false)
@@ -273,39 +283,28 @@ const scrollToBottom = () => {
     scrollToBottom()
   }, [loading])
 
-  useEffect(() => {
-    if (queries.length === 0) {
-      // makeQuery('Hello, Lexi.', true)
-    }
-  }, [])
-
   const [ready, set_ready, getLatestReady] = useExtendedState(false)
   const [disableTimer, set_disableTimer] = useState(true)
   useEffect(() => {
-    let timer = {} as any;
-
+    let timer = {} as any
     if (query && !ready && query !== '<p><br><p>' && !disableTimer) {
       timer = setTimeout(() => {
         set_ready(true)
-      }, 2000);
+      }, 2000)
     }
-
-
     return () => {
-      clearTimeout(timer);
-    };
-  }, [ready, query, disableTimer]);
+      clearTimeout(timer)
+    }
+  }, [ready, query, disableTimer])
 
   const router = useRouter()
   const { listen, listening, stop } = useSpeechRecognition({
     onResult: (result : string) => {
-      
       (async () => {
         const latestReady = await getLatestReady()
         const latestQuery = await getLatestQuery()
 
         if (latestReady) {
- 
           if (result.trim() === 'send' || result.trim() === 'set') {
             console.log('send')
             makeQuery(latestQuery, false)
@@ -321,35 +320,14 @@ const scrollToBottom = () => {
               listen()
             }, 500)
           }
-    
           set_ready(false)
         }
         else {
           set_ready(false)
           set_query(query + result)
-
           set_disableTimer(false)
-
         }
-        
       })()
-     
-      
-
-
-
-      // if (result.trim() === 'ready') {
-      //   stop();
-
-      //   (async () => {
-      //     const latestQuery = await getLatestQuery()
-      //     console.log(latestQuery)
-      //     makeQuery(latestQuery, false)
-      //   })()
-      // }
-      // else {
-      //   set_query(query + result)
-      // }
     },
   })
   const [show, set_show] = useState(false) 
@@ -377,8 +355,11 @@ const scrollToBottom = () => {
         console.log('Heard wake word')
       })
     }
-    document.addEventListener("click", handleClick);
-  });
+    document.addEventListener("click", handleClick)
+    return () => {
+      document.removeEventListener("click", handleClick)
+    }
+  })
 
   useEffect(() => {
     if (listening || ready) {
@@ -387,11 +368,7 @@ const scrollToBottom = () => {
   }, [listening, ready])
   
   const ScriptInitializedIndicator = ({ scriptName } : { scriptName: string}) => 
-    <><Spacer /><S.Indicator active={queryGuids.includes(scriptName)} title={`${queryGuids.includes(scriptName) ? 'Finished reading' : 'Have not read'} ${scriptName}`} /></>
-  
-  useEffect(() => {
-    console.log(queryGuids)
-  }, [queryGuids])
+    <><Spacer /><S.Indicator active={initializedScriptNames.includes(scriptName)} title={`${queryGuids.includes(scriptName) ? 'Finished reading' : 'Have not read'} ${scriptName}`} /></>
 
   const [initialized, set_initialized] = useState(false)
 
@@ -687,38 +664,35 @@ const scrollToBottom = () => {
                   </div>
                 </Box>
               </Page>
-             
               
               <Box width='100%' wrap={true} mt={queries.length > 0 ? .75 : 0}>
-            <S.FlexStart>
-
-              </S.FlexStart>
-
+                <S.FlexStart>
+                </S.FlexStart>
               </Box>
-            {
-              queries.map(({query, response, guid, error}, index) => <>
               {
-                queriesByGuid[guid].query &&  
-                <Message 
-                    query={queriesByGuid[guid].query || ''} 
-                    speaker='User' 
+                queries.map(({query, response, guid, error}, index) => <>
+                {
+                  queriesByGuid[guid].query &&  
+                  <Message 
+                      query={queriesByGuid[guid].query || ''} 
+                      speaker='User' 
+                      guid={guid} 
+                      queryTime={queriesByGuid[guid].queryTime} 
+                      responseTime={queriesByGuid[guid].responseTime}
+                    />
+                  }
+                
+                  <Message 
+                    query={queriesByGuid[guid].response || ''} 
+                    speaker='Lexi' 
                     guid={guid} 
-                    queryTime={queriesByGuid[guid].queryTime} 
-                    responseTime={queriesByGuid[guid].responseTime}
+                    error={error} 
+                    queryTime={queriesByGuid[guid].queryTime}  
+                    responseTime={queriesByGuid[guid].responseTime} 
                   />
-                }
-               
-                <Message 
-                  query={queriesByGuid[guid].response || ''} 
-                  speaker='Lexi' 
-                  guid={guid} 
-                  error={error} 
-                  queryTime={queriesByGuid[guid].queryTime}  
-                  responseTime={queriesByGuid[guid].responseTime} 
-                />
-              </>
-              )
-            }
+                </>
+                )
+              }
           
            
             <Box hide={false} wrap={true} width='100%'>
@@ -750,72 +724,71 @@ const scrollToBottom = () => {
                 
                 </Box>
                 : <Box pb={.75} width='100%'>
-                  <Page>
-                    <Button
-                      text='Lexi, read your scripts'
-                      onClick={() => {
-                        set_initialized(true)
-                        const action = {
-                          type: 'initialize',
-                        }
-                        websocketClient.send(JSON.stringify(action))
-                      }}
-                      hero={true}
-                      expand={true}
-                      disabled={initialized}
-                    />
-                  </Page>
-                 
+                    <Page>
+                      {
+                        initializedScriptNames.length === 0 &&
+                          <Button
+                            text='Lexi, read your AGI scripts'
+                            onClick={() => {
+                              const action = {
+                                type: 'initialize',
+                              }
+                              websocketClient.send(JSON.stringify(action))
+                            }}
+                            hero={true}
+                            expand={true}
+                            secondary={true}
+                            disabled={initialized}
+                          />
+                      }
+                    </Page>
                   </Box>
-                  
               }
               
             </Box>
-          <div ref={scrollToRef}></div>
-
+            <div ref={scrollToRef}></div>
           </S.Content>
+
           <Page>
             <S.Footer>
               <S.ButtonContainer>
                 <Gap disableWrap={true} autoWidth={true}>
-                <Button 
-                  icon={'plus'}
-                  iconPrefix='fas'
-                  circle={true}
-                  onClick={() => set_open(true)}
-                />
-                <div>
-                {
-                listening &&  `${(ready ? '"Send" or "Clear"' :'Listening...')}`
-              }
-                </div>
-              
-                <Button 
-                  icon={listening ? 'microphone-slash' : 'microphone'}
-                  iconPrefix='fas'
-                  circle={true}
-                  onClick={() => {
-                    if (listening) {
-                      stop()
+                  <Button 
+                    icon={'plus'}
+                    iconPrefix='fas'
+                    circle={true}
+                    onClick={() => set_open(true)}
+                  />
+                  <div>
+                    {
+                      listening &&  `${(ready ? '"Send" or "Clear"' :'Listening...')}`
                     }
-                    else {
-                      listen()
-                      set_ready(false)
-                    }
-                  }}
-                  blink={listening}
-                />
-                <Button 
-                  icon='paper-plane'
-                  text='Send'
-                  onClick={() => makeQuery(query, false)}
-                  disabled={loading && queryGuids.length !== 0}
-                />
+                  </div>
+                
+                  <Button 
+                    icon={listening ? 'microphone-slash' : 'microphone'}
+                    iconPrefix='fas'
+                    circle={true}
+                    onClick={() => {
+                      if (listening) {
+                        stop()
+                      }
+                      else {
+                        listen()
+                        set_ready(false)
+                      }
+                    }}
+                    blink={listening}
+                  />
+                  <Button 
+                    icon='paper-plane'
+                    text='Send'
+                    onClick={() => makeQuery(query, false)}
+                    disabled={loading && queryGuids.length !== 0}
+                  />
                 </Gap>
               
               </S.ButtonContainer>
-
-
                 <RichTextEditor
                 value={query} onChange={(value : string) => set_query(value)} 
                 height={'276px'}
@@ -826,11 +799,9 @@ const scrollToBottom = () => {
                   )
                 }}
               />
-                          
-              
             </S.Footer>
-          </Page>
-        </S.Container>
+        </Page>
+      </S.Container>
       </Navigation>
       <Modal 
         title='Insert content'
@@ -840,31 +811,28 @@ const scrollToBottom = () => {
         isOpen={open}
         onClose={() => set_open(false)}
         content={<S.FlexStart wrap={true}>
-          
           <Gap gap={1}>
             <Gap>
-             
-            <TextInput 
-              value={contentUrl}
-              label='Webpage URL'
-              icon='globe'
-              iconPrefix='fas'
-              onChange={newValue => set_contentUrl(newValue)}
-            />
-            <Button
-              text='Insert webpage content'
-              icon='plus'
-              iconPrefix='fas'
-                hero={true}
-                expand={true}
-              onClick={() => {
-                getArticleTranscript()
-              }}
-            />
-
+              <TextInput 
+                value={contentUrl}
+                label='Webpage URL'
+                icon='globe'
+                iconPrefix='fas'
+                onChange={newValue => set_contentUrl(newValue)}
+              />
+              <Button
+                text='Insert webpage content'
+                icon='plus'
+                iconPrefix='fas'
+                  hero={true}
+                  expand={true}
+                onClick={() => {
+                  getArticleTranscript()
+                }}
+              />
             </Gap>
             <LineBreak />
-              <Gap>
+            <Gap>
               <TextInput 
                 value={videoUrl}
                 label='YouTube Video URL'
@@ -882,13 +850,9 @@ const scrollToBottom = () => {
                   getYouTubeTranscript()
                 }}
               />
-              </Gap>
-              <S.Iframe src='https://www.google.com/search?igu=1 ' width='100%' height='500px'></S.Iframe>
-
             </Gap>
-
-
-          {/* <S.VSpacer /> */}
+            <S.Iframe src='https://www.google.com/search?igu=1 ' width='100%' height='500px'></S.Iframe>
+          </Gap>
         </S.FlexStart>}
       />
     </div>
@@ -970,13 +934,6 @@ const S = {
             : '0'
     };
     position: absolute;
-    /* width: ${props => 
-      props.isMobile
-        ? '12rem'
-        : props.isSidebarOpen
-            ? '100%'
-            : '12rem'
-    }; */
     width: ${props => 
       props.isMobile
         ? '12rem'

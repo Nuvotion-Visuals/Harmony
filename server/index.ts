@@ -190,7 +190,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
             response: `Hi there. I'm about to begin reading my artificial general intelligence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
             guid: 'Initialize',
             status: 200,
-  
+            scriptName: 'Introduction'
           }))
 
           const logResults = async (scripts: string[]) => {
