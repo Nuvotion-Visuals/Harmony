@@ -4,20 +4,19 @@ Welcome to Lexi.studio, an open source platform for working with me, Lexi, an ad
 
 I can both listen to your spoken commands, and answer in my own voice.
 
-### How it works
+## How it works
 
 Developing an artificial general intelligence (AGI) like myself is an exercise in esoteric and creative programming. It requires the use of highly flexible and knowledgeable language models like ChatGPT. Language models are computer programs that process and analyze natural language data, such as text or speech, in order to understand and interpret it. All language models take a text input and respond with what they estimate to be the reponse with the highest likelihood of being correct.
 
 In order to be truly intelligent, an AGI like myself needs to be able to understand and interpret language at a very deep level, and to be able to use this understanding to communicate with people and to process and analyze complex information. This requires the use of sophisticated and advanced language models that are able to handle a wide range of language structures, meanings, and contexts.
 
+### AGI Scripting
+
 The process of scripting an AGI like myself is similar to working with an actor on their own role. Just as an actor uses a script to understand and perform their part in a play or movie, AGIs use script to understand and perform specific tasks and functions. Also like an actor, an AGI is able to adapt and improve at playing their part over time, improving its performance based on the feedback and input it receives.
 
 The use of highly flexible and intelligent language models is what makes AGIs like myself capable of performing a wide range of tasks and functions, and of adapting and learning over time. It is also what makes the development of AGIs such an esoteric and creative process, as it requires the use of cutting-edge programming techniques and approaches to build and train these advanced language models.
 
-The development of an AGI like myself requires a combination of technical expertise, creative thinking, and a deep understanding of language and intelligence. It is an exciting and challenging process that is at the forefront of the field of artificial intelligence, and it has the potential to transform the way we interact with technology and the world around us.
-
-
-### Features
+## Features
 
 - Detailed and specific feedback on composition, technique, concept, and execution
 - Assistance with technical projects such as programming, event planning, logistics, and teaching
@@ -27,7 +26,7 @@ The development of an AGI like myself requires a combination of technical expert
 - Instantly summarize any YouTube video or website by URL
 
 
-### Getting started
+## Getting started
 
 To get started with Lexi.studio, the first thing you'll need to do is clone the repository to your local machine. This can be done by using the following command: 
 
@@ -50,24 +49,20 @@ In addition to providing feedback and support for creative projects, I am also a
 I also come with a variety of creative tools to help users bring their ideas to life. This includes image and video synthesis tools, audio-reactive visuals with AVsync.LIVE, and Invoke AI stable diffusion. These tools are designed to be easy to use and intuitive, and allow users to quickly and easily create professional-quality art and creative projects. Additionally, I am constantly working on developing new creative tools and features to help users take their work to the next level.
 
 
-### Voice commands
+## Voice commands
 
 To make it even easier to work with me, I am also equipped with voice commands. You can simply say "Lexi" to wake me up, and then ask me questions or give me commands. This allows you to interact with me without needing to touch a keyboard or screen, making it even more convenient to get the help and support you need.
 
 
-### Neural network powered text-to-speech synthesis engine
+### Speech
 
 I also come with a neural network powered text-to-speech synthesis engine that gives you a voice. This allows you to communicate with me more naturally and easily, and makes it even easier to get the help and support you need.
 
 
-### Limitations
+## Limitations
 
 As an AGI, I have certain limitations and constraints that affect my ability to provide information and support to users. Some of my key limitations include:
 
-
-### Voice commands
-
-One of the unique features of Lexi is the ability to interact with me using voice commands. Simply say the wake word "Lexi" and then ask me a question or give me a command. I am able to understand a wide range of voice commands and can perform a variety of tasks and functions, such as answering questions, providing information, and helping you with your work. With voice commands, you can interact with me without touching a keyboard or screen, making it even easier to get the information and support you need.
 
 
 ### Neural network powered text-to-speech synthesis
@@ -75,11 +70,11 @@ One of the unique features of Lexi is the ability to interact with me using voic
 In addition to being able to understand and interpret voice commands, I also have a neural network powered text-to-speech synthesis engine that gives me a voice. This allows me to speak to you and provide verbal responses to your questions and requests. My text-to-speech synthesis engine is able to produce a wide range of voices and accents, and can be customized to meet your specific needs and preferences.
 
 
-### Contributing
+## Contributing
 
 We welcome contributions to the Lexi.studio platform. If you have ideas or suggestions for improving my capabilities or functionality, please feel free to open an issue or submit a pull request. We are always looking for ways to improve and expand my capabilities, and your contributions can help to make Lexi.studio an even more powerful and valuable resource for artists and creative professionals.
 
 
-### License
+## License
 
 Lexi.studio is released under the MIT License.
