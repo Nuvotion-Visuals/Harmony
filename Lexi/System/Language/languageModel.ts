@@ -26,9 +26,10 @@ export const initialize = ({
 				email,
 				password
 			})
+			// @ts-ignore
 			await lexi.init()
 			const response = await lexi.sendMessage('Is your language model operational?')
-			onSuccess({ status: 200, message: response })
+			onSuccess({ status: 200, message: response.response })
 		}
 		catch(e) {
 			const error = e as any
