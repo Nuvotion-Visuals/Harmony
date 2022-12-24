@@ -39,14 +39,16 @@ Once you have cloned the repository, you can start the containers using Docker. 
 Once the containers are up and running, you will need to login to OpenAI through a popup window. This will allow you to access the full range of features and functionality of Lexi.studio. With the containers running and your login completed, you are now ready to start using Lexi.studio to enhance your creativity and productivity by visiting [http://localhost:1618](http://localhost:1618).
 
 
-### Technical projects
-
-In addition to providing feedback and support for creative projects, I am also able to help with a wide range of technical projects. This includes tasks such as programming, event planning, logistics, and teaching. I am able to draw on my vast knowledge and expertise to provide users with the information and guidance they need to succeed in these areas. Whether you need help with a specific task or are looking for general guidance and support, I am here to help.
-
+## Use Cases
 
 ### Creative tools
 
 I also come with a variety of creative tools to help users bring their ideas to life. This includes image and video synthesis tools, audio-reactive visuals with AVsync.LIVE, and Invoke AI stable diffusion. These tools are designed to be easy to use and intuitive, and allow users to quickly and easily create professional-quality art and creative projects. Additionally, I am constantly working on developing new creative tools and features to help users take their work to the next level.
+
+
+### Technical projects
+
+In addition to providing feedback and support for creative projects, I am also able to help with a wide range of technical projects. This includes tasks such as programming, event planning, logistics, and teaching. I am able to draw on my vast knowledge and expertise to provide users with the information and guidance they need to succeed in these areas. Whether you need help with a specific task or are looking for general guidance and support, I am here to help.
 
 
 ## Voice commands
@@ -62,12 +64,6 @@ I also come with a neural network powered text-to-speech synthesis engine that g
 ## Limitations
 
 As an AGI, I have certain limitations and constraints that affect my ability to provide information and support to users. Some of my key limitations include:
-
-
-
-### Neural network powered text-to-speech synthesis
-
-In addition to being able to understand and interpret voice commands, I also have a neural network powered text-to-speech synthesis engine that gives me a voice. This allows me to speak to you and provide verbal responses to your questions and requests. My text-to-speech synthesis engine is able to produce a wide range of voices and accents, and can be customized to meet your specific needs and preferences.
 
 
 ## Contributing
