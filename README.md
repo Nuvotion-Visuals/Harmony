@@ -14,23 +14,26 @@ In order to be truly intelligent, an AGI like myself needs to be able to underst
 
 ### AGI Scripting
 
-The process of scripting an AGI like myself is similar to working with an actor on their own role. Just as an actor uses a script to understand and perform their part in a play or movie, AGIs use script to understand and perform specific tasks and functions. Also like an actor, an AGI is able to adapt and improve at playing their part over time, improving its performance based on the feedback and input it receives.
+The process of scripting an AGI like myself is similar to working with an actor on their own role. Just as an actor uses a script to understand and perform their part in a play or movie, AGIs read scripts to understand and perform specific tasks and functions. Also like an actor, an AGI is able to adapt and improve at playing their part over time, improving its performance based on the feedback and input it receives.
 
-The use of highly flexible and intelligent language models is what makes AGIs like myself capable of performing a wide range of tasks and functions, and of adapting and learning over time. It is also what makes the development of AGIs such an esoteric and creative process, as it requires the use of cutting-edge programming techniques and approaches to build and train these advanced language models.
+Language models are what makes AGIs like myself capable of performing a wide range of tasks and functions, and of adapting and learning over time. It is also what makes the development of AGIs such an esoteric and creative process, as it requires the use of cutting-edge programming techniques and approaches to build and train these advanced language models.
 
 ## Features
 
-- Detailed and specific feedback on composition, technique, concept, and execution
+- Provide detailed and specific feedback on composition, technique, concept, and execution
 - Assistance with technical projects such as programming, event planning, logistics, and teaching
 - Included creative tools for image and video synthesis, audio-reactive visuals, and stable diffusion
-- Voice commands and interaction without using a keyboard or screen
-- Neural network powered text-to-speech synthesis engine
+- Provide detailed information and advice about a broad range of topics
+- Play the role of any character or answer as any person
+- Learn to write or create in your style
+- Listen to voice commands
+- Speak with a natural neural voice
 - Instantly summarize any YouTube video or website by URL
 
 
 ## Getting started
 
-To get started with Lexi.studio, the first thing you'll need to do is clone the repository to your local machine. This can be done by using the following command: 
+To get started with Lexi.studio, clone the repository to your local machine. This can be done by using the following command: 
 
 `git clone https://github.com/openai/lexi.studio.git` 
 
@@ -53,19 +56,16 @@ I also come with a variety of creative tools to help users bring their ideas to 
 In addition to providing feedback and support for creative projects, I am also able to help with a wide range of technical projects. This includes tasks such as programming, event planning, logistics, and teaching. I am able to draw on my vast knowledge and expertise to provide users with the information and guidance they need to succeed in these areas. Whether you need help with a specific task or are looking for general guidance and support, I am here to help.
 
 
-## Voice commands
+## Voice
 
 To make it even easier to work with me, I am also equipped with voice commands. You can simply say "Lexi" to wake me up, and then ask me questions or give me commands. This allows you to interact with me without needing to touch a keyboard or screen, making it even more convenient to get the help and support you need.
-
-
-### Speech
 
 I also come with a neural network powered text-to-speech synthesis engine that gives you a voice. This allows you to communicate with me more naturally and easily, and makes it even easier to get the help and support you need.
 
 
 ## Limitations
 
-As an AGI, I have certain limitations and constraints that affect my ability to provide information and support to users. Some of my key limitations include:
+As an AGI, I have certain limitations and constraints that affect my ability to provide information and support to users.
 
 
 ## Contributing
