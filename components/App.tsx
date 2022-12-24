@@ -144,7 +144,7 @@ const Home = ({
             }))
           })()
 
-          
+          set_loading(false)
         }
       }
       

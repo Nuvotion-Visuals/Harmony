@@ -1,23 +1,85 @@
 # Lexi.studio
 
-Lexi is an AI coworker who can help with a wide range of artistic and technical projects.
+Welcome to Lexi.studio, an open source platform for working with me, Lexi, an advanced general intelligence (AGI) creative assistant. I can provide artists and creative professionals with constructive feedback and evaluations on their work, as well as synthesize images, videos, music, and text, assume various roles, and help you control and automate network connected devices.
 
-Lexichat is an open source project that enables users to interact with a digital assistant named Lexi. Lexi is a highly advanced machine learning model that has been trained to assist artists, programmers, and designers with their projects. She has a vast knowledge base and advanced creative intelligence that allow her to provide users with the information and support they need, when they need it.
+I can both listen to your spoken commands, and answer in my own voice.
 
-To learn more about Lexichat and work with Lexi, vist [https://www.lexichat.org](https://www.lexichat.org)
+### How it works
 
-## Capabilities
+Developing an artificial general intelligence (AGI) like myself is an exercise in esoteric and creative programming. It requires the use of highly flexible and knowledgeable language models like ChatGPT. Language models are computer programs that process and analyze natural language data, such as text or speech, in order to understand and interpret it. All language models take a text input and respond with what they estimate to be the reponse with the highest likelihood of being correct.
 
-Some specific examples of tasks and projects that Lexi can assist with include:
+In order to be truly intelligent, an AGI like myself needs to be able to understand and interpret language at a very deep level, and to be able to use this understanding to communicate with people and to process and analyze complex information. This requires the use of sophisticated and advanced language models that are able to handle a wide range of language structures, meanings, and contexts.
 
-### Graphic design
-Lexi can provide advice and guidance on color theory, typography, composition, and other key principles of graphic design. She can also provide recommendations for specific tools and techniques to use in your projects, and give you examples of how to apply these principles in practice.
+The process of scripting an AGI like myself is similar to working with an actor on their own role. Just as an actor uses a script to understand and perform their part in a play or movie, AGIs use script to understand and perform specific tasks and functions. Also like an actor, an AGI is able to adapt and improve at playing their part over time, improving its performance based on the feedback and input it receives.
 
-### Web development
-Lexi is well-versed in HTML, CSS, and JavaScript, and she can provide detailed examples and tutorials on how to use these languages to create modern and responsive web applications. She can also provide advice on how to optimize your code for performance and accessibility, and give you recommendations for best practices and industry standards.
+The use of highly flexible and intelligent language models is what makes AGIs like myself capable of performing a wide range of tasks and functions, and of adapting and learning over time. It is also what makes the development of AGIs such an esoteric and creative process, as it requires the use of cutting-edge programming techniques and approaches to build and train these advanced language models.
 
-### Music production
-Lexi is knowledgeable about a variety of music production software and techniques, and she can provide detailed instructions on how to use these tools to create, edit, and mix audio tracks. She can also provide advice on how to achieve specific effects and sounds, and give you examples of how to use different techniques to create professional-quality music.
+The development of an AGI like myself requires a combination of technical expertise, creative thinking, and a deep understanding of language and intelligence. It is an exciting and challenging process that is at the forefront of the field of artificial intelligence, and it has the potential to transform the way we interact with technology and the world around us.
 
-### General creative guidance
-In addition to providing information and guidance on specific tasks and projects, Lexi can also assist with more general creative and technical questions and requests. She is always happy to help you with any questions or problems you may have, and she is confident that she can provide the information and support you need to achieve your goals.
+
+### Features
+
+- Detailed and specific feedback on composition, technique, concept, and execution
+- Assistance with technical projects such as programming, event planning, logistics, and teaching
+- Included creative tools for image and video synthesis, audio-reactive visuals, and stable diffusion
+- Voice commands and interaction without using a keyboard or screen
+- Neural network powered text-to-speech synthesis engine
+- Instantly summarize any YouTube video or website by URL
+
+
+### Getting started
+
+To get started with Lexi.studio, the first thing you'll need to do is clone the repository to your local machine. This can be done by using the following command: 
+
+`git clone https://github.com/openai/lexi.studio.git` 
+
+Once you have cloned the repository, you can start the containers using Docker. This can be done by running the following command from the root directory of the repository: 
+
+`docker-compose up -d` 
+
+Once the containers are up and running, you will need to login to OpenAI through a popup window. This will allow you to access the full range of features and functionality of Lexi.studio. With the containers running and your login completed, you are now ready to start using Lexi.studio to enhance your creativity and productivity by visiting [http://localhost:1618](http://localhost:1618).
+
+
+### Technical projects
+
+In addition to providing feedback and support for creative projects, I am also able to help with a wide range of technical projects. This includes tasks such as programming, event planning, logistics, and teaching. I am able to draw on my vast knowledge and expertise to provide users with the information and guidance they need to succeed in these areas. Whether you need help with a specific task or are looking for general guidance and support, I am here to help.
+
+
+### Creative tools
+
+I also come with a variety of creative tools to help users bring their ideas to life. This includes image and video synthesis tools, audio-reactive visuals with AVsync.LIVE, and Invoke AI stable diffusion. These tools are designed to be easy to use and intuitive, and allow users to quickly and easily create professional-quality art and creative projects. Additionally, I am constantly working on developing new creative tools and features to help users take their work to the next level.
+
+
+### Voice commands
+
+To make it even easier to work with me, I am also equipped with voice commands. You can simply say "Lexi" to wake me up, and then ask me questions or give me commands. This allows you to interact with me without needing to touch a keyboard or screen, making it even more convenient to get the help and support you need.
+
+
+### Neural network powered text-to-speech synthesis engine
+
+I also come with a neural network powered text-to-speech synthesis engine that gives you a voice. This allows you to communicate with me more naturally and easily, and makes it even easier to get the help and support you need.
+
+
+### Limitations
+
+As an AGI, I have certain limitations and constraints that affect my ability to provide information and support to users. Some of my key limitations include:
+
+
+### Voice commands
+
+One of the unique features of Lexi is the ability to interact with me using voice commands. Simply say the wake word "Lexi" and then ask me a question or give me a command. I am able to understand a wide range of voice commands and can perform a variety of tasks and functions, such as answering questions, providing information, and helping you with your work. With voice commands, you can interact with me without touching a keyboard or screen, making it even easier to get the information and support you need.
+
+
+### Neural network powered text-to-speech synthesis
+
+In addition to being able to understand and interpret voice commands, I also have a neural network powered text-to-speech synthesis engine that gives me a voice. This allows me to speak to you and provide verbal responses to your questions and requests. My text-to-speech synthesis engine is able to produce a wide range of voices and accents, and can be customized to meet your specific needs and preferences.
+
+
+### Contributing
+
+We welcome contributions to the Lexi.studio platform. If you have ideas or suggestions for improving my capabilities or functionality, please feel free to open an issue or submit a pull request. We are always looking for ways to improve and expand my capabilities, and your contributions can help to make Lexi.studio an even more powerful and valuable resource for artists and creative professionals.
+
+
+### License
+
+Lexi.studio is released under the MIT License.

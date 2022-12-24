@@ -52,6 +52,10 @@ const errorMessagesLanguageModelServer = {
     message: 'This status code indicates that the language model server did not receive a complete request message within the time that it was prepared to wait. This may be because the request took too long to be sent or because the language model server was too busy to process the request.',
     recommendation: 'If you are seeing a 408 error, you may want to check the network connection and try the request again. If the error persists, it may be due to a problem with the language model server or network infrastructure. You may want to check the language model server logs for more information.'
   },
+  413: { 
+    meaning: 'Request Entity Too Large', 
+    message: 'This status code indicates that the server is unable to process the request because the request payload is too large. This may be because the request contains too much data or because the server has a size limit for requests.', 
+    recommendation: 'If you are seeing a 413 error, you may want to try reducing the size of the request payload. This may involve reducing the number of data points or the size of any attached files. You may also want to check with the server administrator to see if there are any size limits for requests. The limit of ChatGPT, the language model I use, is about 4,000 characters.' },
   429: {
     meaning: 'Too Many Requests',
     message: 'This status code indicates that the user has sent too many requests in a given amount of time. This may be because the user is making too many requests or because the language model server is unable to handle the volume of requests being made.',
@@ -183,6 +187,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
           let wordCount = 0
           let characterCount = 0
           let numberOfSteps = 0
+          let step = 1
 
           ws.send(JSON.stringify({
             type: 'message',
@@ -194,7 +199,6 @@ wss.on('connection', function connection(ws: typeof WSS) {
           }))
 
           const logResults = async (scripts: string[]) => {
-            let step = 1
             numberOfSteps = scripts.length
 
             for (const script of scripts) {
@@ -252,9 +256,13 @@ wss.on('connection', function connection(ws: typeof WSS) {
           const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
           await logResults(scriptPaths)
           const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          
+
+          await new Promise(resolve => setTimeout(resolve, 5000));
           // add failure message
-          const response = `${numberOfSteps} scripts initialized, totalling ${characterCount} characters ${wordCount} words. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
+          const response = 
+            wordCount === 0
+              ? `I wasn't able to read any of my scripts. I likely lost my connection to the language model. I suggest that you log out and log in again.`
+              : `I read ${step - 1} scripts, totalling ${characterCount} characters, ${wordCount} words or ${pageCount} pages. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
           console.log('🟣', response)
           ws.send(JSON.stringify({
             type: 'message',
@@ -272,8 +280,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
             message: null,
             response: `I have already read my scripts.`,
             guid: 'Already Initialize',
-            status: 200,
-  
+            status: 200
           }))
         }
       })()
