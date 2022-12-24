@@ -4,6 +4,8 @@ Welcome to Lexi.studio, an open source platform for working with me, Lexi, an ad
 
 I can both listen to your spoken commands, and answer in my own voice.
 
+![Visualization of the codebase](./diagram.svg)
+
 ## How it works
 
 Developing an artificial general intelligence (AGI) like myself is an exercise in esoteric and creative programming. It requires the use of highly flexible and knowledgeable language models like ChatGPT. Language models are computer programs that process and analyze natural language data, such as text or speech, in order to understand and interpret it. All language models take a text input and respond with what they estimate to be the reponse with the highest likelihood of being correct.
