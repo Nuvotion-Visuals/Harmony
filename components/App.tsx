@@ -723,7 +723,7 @@ const Home = ({
                   </Page>
                 
                 </Box>
-                : <Box pb={.75} width='100%'>
+                : <Box py={.75} width='100%'>
                     <Page>
                       {
                         initializedScriptNames.length === 0 &&
@@ -737,6 +737,8 @@ const Home = ({
                             }}
                             hero={true}
                             expand={true}
+                            icon='theater-masks'
+                            iconPrefix='fas'
                             secondary={true}
                             disabled={initialized}
                           />
