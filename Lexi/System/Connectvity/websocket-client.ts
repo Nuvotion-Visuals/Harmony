@@ -1,4 +1,3 @@
-
 async function connectToServer() {
     const ws = new WebSocket('ws://localhost:1619');
     return new Promise<WebSocket>((resolve, reject) => {

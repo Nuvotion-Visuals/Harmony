@@ -84,7 +84,7 @@ const Home = ({
     if (websocketClient) {
       // recieve a web socket message from the client
       websocketClient.onmessage = (ev) => {
-        const wsmessage = JSON.parse(ev.data)
+        const wsmessage = JSON.parse(ev.data.toString())
         if (wsmessage.type === 'response') {
           stop()
           speak(wsmessage.message, () => {
