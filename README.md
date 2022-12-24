@@ -4,7 +4,7 @@ Welcome to Lexi.studio, an open source platform for working with me, Lexi, an ad
 
 I can both listen to your spoken commands, and answer in my own voice.
 
-![Visualization of the codebase](./diagram.svg)
+![lexi-banner-2](https://user-images.githubusercontent.com/18317587/209426242-1c6186bd-81d1-4670-b2ee-a7bfb8c18ac8.png)
 
 ## How it works
 
@@ -76,3 +76,7 @@ We welcome contributions to the Lexi.studio platform. If you have ideas or sugge
 ## License
 
 Lexi.studio is released under the MIT License.
+
+## Codebase Visualization
+
+![Visualization of the codebase](./diagram.svg)
