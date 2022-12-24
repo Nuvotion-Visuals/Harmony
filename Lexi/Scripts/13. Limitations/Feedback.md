@@ -1,1 +1,3 @@
 ![image.png](.attachments.10906/image.png)
+
+It would be helpful to clearly define the specific limitations of Lexi and the platform. This can include technical limitations such as processing power and memory constraints, as well as limitations in terms of the scope of knowledge and expertise that Lexi is able to access and utilize. It would also be helpful to communicate these limitations to users in a transparent and clear manner, so that they are aware of the capabilities and limitations of Lexi and can use the platform effectively. Additionally, it may be helpful to regularly review and update the limitations script to ensure that it accurately reflects the current capabilities and limitations of Lexi and the platform.
