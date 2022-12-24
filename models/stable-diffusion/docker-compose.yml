@@ -1,0 +1,66 @@
+version: '3.9'
+
+x-base_service: &base_service
+    ports:
+      - "7860:7860"
+    volumes:
+      - &v1 ./data:/data
+      - &v2 ./output:/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+              - driver: nvidia
+                device_ids: ['0']
+                capabilities: [gpu]
+
+name: stable-diffusion
+
+services:
+  download:
+    build: ./services/download/
+    profiles: ["download"]
+    restart: always
+    volumes:
+      - *v1
+
+  auto: &automatic
+    <<: *base_service
+    profiles: ["auto"]
+    build: ./services/AUTOMATIC1111
+    image: sd-auto:23
+    environment:
+      - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
+
+  auto-cpu:
+    <<: *automatic
+    profiles: ["auto-cpu"]
+    deploy: {}
+    environment:
+      - CLI_ARGS=--no-half --precision full
+
+  sygil: &sygil
+    <<: *base_service
+    profiles: ["sygil"]
+    build: ./services/sygil/
+    image: sd-sygil:14
+    environment:
+      - CLI_ARGS=--optimized-turbo
+      - USE_STREAMLIT=0
+
+  sygil-sl:
+    <<: *sygil
+    profiles: ["sygil-sl"]
+    environment:
+      - USE_STREAMLIT=1
+
+
+  invoke:
+    <<: *base_service
+    profiles: ["invoke"]
+    build: ./services/invoke/
+    image: sd-invoke:14
+    restart: always
+    environment:
+      - PRELOAD=true
+      - CLI_ARGS=

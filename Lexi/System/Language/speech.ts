@@ -40,7 +40,7 @@ async function ttsRequest(text: string): Promise<AudioBuffer> {
   if (!audioCtx) {
     audioCtx = new AudioContext()
   }
-  const response = await fetch(`http://localhost:5002/api/tts?text=${text}.`)
+  const response = await fetch(`http://localhost:5500/api/tts?voice=coqui-tts%3Aen_ljspeech&lang=en&vocoder=high&denoiserStrength=.001&text=${text}.`)
   const arrayBuffer = await response.arrayBuffer()
   return audioCtx.decodeAudioData(arrayBuffer)
 }
