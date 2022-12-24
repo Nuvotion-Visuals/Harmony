@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  web:
+    image: synesthesiam/opentts:en
+    container_name: opentts
+    command: --cache --no-espeak
+    restart: always
+    ports:
+      - 5500:5500

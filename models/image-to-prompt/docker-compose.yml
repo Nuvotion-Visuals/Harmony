@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  img2prompt:
+    container_name: image-to-prompt
+    image: r8.im/methexis-inc/img2prompt@sha256:50adaf2d3ad20a6f911a8a9e3ccf777b263b8596fbd2c8fc26e8888f8a0edbb5
+    ports:
+      - "5000:5000"
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
