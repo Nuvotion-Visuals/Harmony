@@ -1,3 +1,5 @@
+# Theory
+
 The theory behind Lexi, a virtual AGI assistant, is centered on the concept of artificial intelligence and its potential to assist and augment human creativity and productivity. Lexi is designed to be a highly adaptable and flexible tool that can assist users in a wide range of creative endeavors, from art and music to business and personal projects.
 
 At the core of Lexi's AGI system is the use of advanced machine learning algorithms and natural language processing techniques. These algorithms allow Lexi to understand and respond to a wide range of voice commands and requests, and to provide users with accurate and relevant answers to their questions. Lexi's AGI system is also designed to be highly flexible and adaptable, allowing it to learn and adapt to new information and data over time.
