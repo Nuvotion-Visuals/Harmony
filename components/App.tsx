@@ -22,8 +22,7 @@ import {
   TextInput,
   Spacer,
   useBreakpoint,
-  AspectRatio,
-  RichTextEditor
+  AspectRatio
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -34,6 +33,12 @@ import { speak } from '../Lexi/System/Language/speech'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import { playSound } from '../Lexi/System/Language/sounds'
+
+import dynamic from 'next/dynamic'
+
+const RichTextEditor = dynamic(() => import('@avsync.live/formation').then(module => module.RichTextEditor), {
+  ssr: false,
+})
 
 interface Queries {
   [guid: string]: {
@@ -930,7 +935,7 @@ const S = {
   }>`
     left: ${props => 
       props.isMobile
-        ? '9.5rem'
+        ? '14rem'
         : props.isSidebarOpen
             ? 'var(--F_Sidebar_Width_Expanded)'
             : '0'
@@ -938,7 +943,7 @@ const S = {
     position: absolute;
     width: ${props => 
       props.isMobile
-        ? '12rem'
+        ? '14rem'
         : props.isSidebarOpen
             ? 'calc(100% - var(--F_Sidebar_Width_Expanded))'
             : '100%'
