@@ -41,8 +41,10 @@ library.add(
   fas.faPeopleArrows, fas.faShieldHalved, fas.faMask,
   fas.faArrowsSplitUpAndLeft, fas.faArrowsSpin, fas.faCog,
   fas.faDiagramProject, fas.faList, fas.faBookmark, fas.faSignOut,
-  fas.faGlobe, fas.faEye, fas.faEyeSlash, fas.faPanorama, fas.faA, fas.faI
-
+  fas.faGlobe, fas.faEye, fas.faEyeSlash, fas.faPanorama, fas.faA, fas.faI,
+  fas.faCircleNodes, fas.faDiagramProject, fas.faEye, fas.faDatabase,
+  fas.faChess, fas.faHandshakeSimple, fas.faGlobe, fas.faPaintBrush,
+  fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette
 )
 
 import App from '../components/App'

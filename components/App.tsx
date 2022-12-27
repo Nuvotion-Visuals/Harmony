@@ -611,6 +611,96 @@ const Home = ({
             children: <ScriptInitializedIndicator scriptName='Limitations' />
           },
           {
+            type: 'nav',
+            name: 'Multimodality',
+            href: `/scripts/multimodality`,
+            icon: 'circle-nodes',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/multimodality',
+            children: <ScriptInitializedIndicator scriptName='Multimodality' />
+          },
+          {
+            type: 'nav',
+            name: 'Scaling',
+            href: `/scripts/scaling`,
+            icon: 'arrow-up-right-dots',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/scaling',
+            children: <ScriptInitializedIndicator scriptName='Scaling' />
+          },
+          {
+            type: 'nav',
+            name: 'Decision making',
+            href: `/scripts/decision-making`,
+            icon: 'diagram-project',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/decision-making',
+            children: <ScriptInitializedIndicator scriptName='Decision making' />
+          },
+          {
+            type: 'nav',
+            name: 'Cognition',
+            href: `/scripts/cognition`,
+            icon: 'brain',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/cognition',
+            children: <ScriptInitializedIndicator scriptName='Cognition' />
+          },
+          {
+            type: 'nav',
+            name: 'Creativity',
+            href: `/scripts/creativity`,
+            icon: 'palette',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/creativity',
+            children: <ScriptInitializedIndicator scriptName='Creativity' />
+          },
+          {
+            type: 'nav',
+            name: 'Context',
+            href: `/scripts/context`,
+            icon: 'earth-africa',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/context',
+            children: <ScriptInitializedIndicator scriptName='Context' />
+          },
+          {
+            type: 'nav',
+            name: 'Memory',
+            href: `/scripts/memory`,
+            icon: 'database',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/memory',
+            children: <ScriptInitializedIndicator scriptName='Memory' />
+          },
+          {
+            type: 'nav',
+            name: 'Stategy',
+            href: `/scripts/strategy`,
+            icon: 'chess-queen',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/strategy',
+            children: <ScriptInitializedIndicator scriptName='Strategy' />
+          },
+          {
+            type: 'nav',
+            name: 'Perception',
+            href: `/scripts/perception`,
+            icon: 'eye',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/perception',
+            children: <ScriptInitializedIndicator scriptName='Perception' />
+          },
+          {
+            type: 'nav',
+            name: 'Ethics',
+            href: `/scripts/ethics`,
+            icon: 'handshake-simple',
+            iconPrefix: 'fas',
+            active: router.asPath === '/scripts/ethics',
+            children: <ScriptInitializedIndicator scriptName='Ethics' />
+          },
+          {
             type: 'spacer'
           },
           {

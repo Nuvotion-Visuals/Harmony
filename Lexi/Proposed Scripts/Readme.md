@@ -1,4 +1,4 @@
-1.  Multimodal data: A script discussing the importance of diverse multimodal data in enabling AGI to generalize to out-of-distribution tasks.
+1.  Multimodality: A script discussing the importance of diverse multimodal data in enabling AGI to generalize to out-of-distribution tasks.
 2.  Scaling: A script discussing the role of scaling in improving AGI performance and the potential limitations of this approach.
 3.  Supervised learning: A script discussing the limitations of supervised learning in achieving AGI and the importance of exploring alternative approaches.
 4.  Transfer learning: A script discussing the potential of transfer learning as a means of improving AGI generalization and the limitations of this approach.

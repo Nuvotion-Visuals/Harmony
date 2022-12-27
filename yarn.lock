@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.58":
-  version "0.9.58"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.58.tgz#533c7d6535f2ae8f187e8d2fb6819f7382ac48e2"
-  integrity sha512-8aEBH+/jWReoDgK5xXi0QQ5HQOZj4j6Zlr0c87LaDyU3DGnHFAcQN/YKedHHaahd4AxaHj6XvHBnNPJ5FuQeOg==
+"@avsync.live/formation@^0.9.59":
+  version "0.9.59"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.59.tgz#87b48754af28531ef6f07748b391bb4378d17e51"
+  integrity sha512-mXiAzB1I69YmMPHS0jk/WUEy+h47raFB+e3hZvkoFYDOENem/X5I+Joo/NTSodI4pb4+4oijSlcTc2FxHKIb+A==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -145,10 +145,10 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@babel/runtime@^7.10.1", "@babel/runtime@^7.15.4", "@babel/runtime@^7.18.3", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1":
-  version "7.20.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.6.tgz#facf4879bfed9b5326326273a64220f099b0fce3"
-  integrity sha512-Q+8MqP7TiHMWzSfwiJwXCjyf4GYA4Dgw3emg/7xmwsdLJOZUp+nMqcOwOzzYheuM1rhDu8FSj2l0aoMygEuXuA==
+"@babel/runtime@^7.10.1", "@babel/runtime@^7.18.3", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1":
+  version "7.20.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.7.tgz#fcb41a5a70550e04a7b708037c7c32f7f356d8fd"
+  integrity sha512-UF0tvkUtxwAgZ5W/KrkHf0Rn0fdnLDU9ScxBrEVNUprE/MzirjK4MJUX1/BVDv00Sv8cljtukVK1aky++X1SjQ==
   dependencies:
     regenerator-runtime "^0.13.11"
 
@@ -158,6 +158,13 @@
   integrity sha512-lkqXDcvlFT5rvEjiu6+QYO+1GXrEHRo2LOtS7E4GtX5ESIZOgepqsZBVIj6Pv+a6zqsya9VCgiK1KAK4BvJDAw==
   dependencies:
     regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.15.4":
+  version "7.20.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.6.tgz#facf4879bfed9b5326326273a64220f099b0fce3"
+  integrity sha512-Q+8MqP7TiHMWzSfwiJwXCjyf4GYA4Dgw3emg/7xmwsdLJOZUp+nMqcOwOzzYheuM1rhDu8FSj2l0aoMygEuXuA==
+  dependencies:
+    regenerator-runtime "^0.13.11"
 
 "@babel/template@^7.18.6":
   version "7.18.10"
@@ -1646,9 +1653,9 @@ core-js@^2.4.0:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.6.4:
-  version "3.26.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.26.1.tgz#7a9816dabd9ee846c1c0fe0e8fcad68f3709134e"
-  integrity sha512-21491RRQVzUn0GGM9Z1Jrpr6PNPxPi+Za8OM9q4tksTSnlbXXGKK1nXNg/QvwFYettXvSX6zWKCtHHfjN4puyA==
+  version "3.27.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.27.0.tgz#a343bc614f29d9dcffa7616e65e10f9001cdd332"
+  integrity sha512-wY6cKosevs430KRkHUIsvepDXHGjlXOZO3hYXNyqpD6JvB0X28aXyv0t1Y1vZMwE7SoKmtfa6IASHCPN52FwBQ==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -3561,9 +3568,9 @@ javascript-time-ago@^2.5.9:
     relative-time-format "^1.1.6"
 
 jquery@^3.5.0:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.2.tgz#8302bbc9160646f507bdf59d136a478b312783c4"
-  integrity sha512-/e7ulNIEEYk1Z/l4X0vpxGt+B/dNsV8ghOPAWZaJs8pkGvsSC0tm33aMGylXcj/U7y4IcvwtMXPMyBFZn/gK9A==
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.3.tgz#23ed2ffed8a19e048814f13391a19afcdba160e6"
+  integrity sha512-bZ5Sy3YzKo9Fyc8wH2iIQK4JImJ6R0GWI9kL1/k7Z91ZBNgkRXE6U0JfHIizZbort8ZunhSI3jw9I6253ahKfg==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
@@ -3891,9 +3898,9 @@ markdown-to-text@^0.1.1:
     "@types/mocha" "^8.2.0"
 
 marked@^4.0.19:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-4.2.4.tgz#5a4ce6c7a1ae0c952601fce46376ee4cf1797e1c"
-  integrity sha512-Wcc9ikX7Q5E4BYDPvh1C6QNSxrjC9tBgz+A/vAhp59KXUgachw++uMvMKiSW8oA85nopmPZcEvBoex/YLMsiyA==
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-4.2.5.tgz#979813dfc1252cc123a79b71b095759a32f42a5d"
+  integrity sha512-jPueVhumq7idETHkb203WDD4fMA3yV9emQ5vLwop58lu8bTclMghBWcYAavlDqIEMaisADinV1TooIFCfqOsYQ==
 
 matchmediaquery@^0.3.0:
   version "0.3.1"
@@ -5173,13 +5180,12 @@ rc-slider@^10.0.1:
     shallowequal "^1.1.0"
 
 rc-util@^5.18.1:
-  version "5.26.0"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.26.0.tgz#683c4a63eaec98f159ea18c587a53d458d2b0036"
-  integrity sha512-dduMsbbrioH9NtetALsRjtOTF8IgymELZeQAn1Ar34pZuUycrY8zDa4y0gMMBDRZZtCjjpL7aHGX4kzRwyYkMg==
+  version "5.27.0"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.27.0.tgz#52a0793cb18d54c4318a13f8b2655d2c27105944"
+  integrity sha512-lk9HnxVWdpGzkqs6OpZ+xxAHBefqy6+wT5LjSeBoaxzE0j5Tpq0Mf4TMc29B+Z0QP81yDvfgvp1O8oBxj70kEg==
   dependencies:
     "@babel/runtime" "^7.18.3"
     react-is "^16.12.0"
-    shallowequal "^1.1.0"
 
 rc@^1.2.7:
   version "1.2.8"
