@@ -423,11 +423,17 @@ const Home = ({
           {
             type: 'nav',
             name: 'Entities',
-            icon: 'cubes',
+            icon: 'shapes',
             href: '/entities',
             active: router.asPath === '/entities'
           },
-         
+          {
+            type: 'nav',
+            name: 'Realms',
+            icon: 'door-open',
+            href: '/realms',
+            active: router.asPath === '/realms'
+          },
           {
             type: 'spacer'
           },
