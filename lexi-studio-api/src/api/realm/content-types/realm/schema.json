@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "realms",
+  "info": {
+    "singularName": "realm",
+    "pluralName": "realms",
+    "displayName": "Realm"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}

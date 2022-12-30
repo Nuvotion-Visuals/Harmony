@@ -415,10 +415,10 @@ const Home = ({
           },
           {
             type: 'nav',
-            name: 'Roles',
+            name: 'Characters',
             icon: 'people-arrows',
-            href: '/roles',
-            active: router.asPath === '/roles'
+            href: '/characters',
+            active: router.asPath === '/characters'
           },
           {
             type: 'nav',
@@ -491,6 +491,14 @@ const Home = ({
             icon: 'a',
             iconPrefix: 'fas',
             active: router.asPath === `/apps/avsync-live`
+          },
+          {
+            type: 'nav',
+            name: 'API Builder',
+            href: `/apps/api`,
+            icon: 'i',
+            iconPrefix: 'fas',
+            active: router.asPath === `/apps/api`
           },
           {
             type: 'spacer'
