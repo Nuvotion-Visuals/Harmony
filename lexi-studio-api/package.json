@@ -11,10 +11,24 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "@strapi/strapi": "4.5.5",
-    "@strapi/plugin-users-permissions": "4.5.5",
+    "@_sh/strapi-plugin-ckeditor": "^1.1.2",
+    "@palmabit/strapi-app-version": "^1.1.0",
+    "@strapi/plugin-color-picker": "^4.5.5",
+    "@strapi/plugin-documentation": "^4.5.5",
+    "@strapi/plugin-graphql": "^4.5.5",
     "@strapi/plugin-i18n": "4.5.5",
-    "mysql": "2.18.1"
+    "@strapi/plugin-users-permissions": "4.5.5",
+    "@strapi/strapi": "4.5.5",
+    "mysql": "2.18.1",
+    "strapi-plugin-duplicate-button": "^1.0.4",
+    "strapi-plugin-entity-relationship-chart": "^4.1.0",
+    "strapi-plugin-graphs-builder": "^1.0.0",
+    "strapi-plugin-import-export-entries": "^1.18.0",
+    "strapi-plugin-local-image-sharp": "^1.2.1",
+    "strapi-plugin-passwordless": "^4.0.8",
+    "strapi-plugin-ratings": "^1.1.9",
+    "strapi-plugin-request-id": "^1.1.0",
+    "strapi-plugin-slugify": "^2.3.2"
   },
   "author": {
     "name": "A Strapi developer"
