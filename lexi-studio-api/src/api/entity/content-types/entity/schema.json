@@ -4,7 +4,8 @@
   "info": {
     "singularName": "entity",
     "pluralName": "entities",
-    "displayName": "Entity"
+    "displayName": "Entity",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,6 +14,19 @@
   "attributes": {
     "name": {
       "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "members": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::person.person"
+    },
+    "entity_types": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity-type.entity-type"
     }
   }
 }
