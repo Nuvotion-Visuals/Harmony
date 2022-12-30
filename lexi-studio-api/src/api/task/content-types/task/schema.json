@@ -4,7 +4,8 @@
   "info": {
     "singularName": "task",
     "pluralName": "tasks",
-    "displayName": "Task"
+    "displayName": "Task",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,6 +14,43 @@
   "attributes": {
     "name": {
       "type": "string"
+    },
+    "priority": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::priority.priority"
+    },
+    "task_status": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::task-status.task-status"
+    },
+    "attachments": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "assignees": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::person.person"
+    },
+    "started": {
+      "type": "datetime"
+    },
+    "due": {
+      "type": "datetime"
+    },
+    "completed": {
+      "type": "datetime"
     }
   }
 }

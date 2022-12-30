@@ -25,8 +25,8 @@
     },
     "team": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::entity.entity"
+      "relation": "oneToMany",
+      "target": "api::person.person"
     },
     "budget": {
       "type": "richtext"
@@ -210,6 +210,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project-issue.project-issue"
+    },
+    "character": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::character.character",
+      "inversedBy": "projects"
     }
   }
 }

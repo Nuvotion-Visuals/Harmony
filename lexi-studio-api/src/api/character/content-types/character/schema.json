@@ -4,7 +4,8 @@
   "info": {
     "singularName": "character",
     "pluralName": "characters",
-    "displayName": "Character"
+    "displayName": "Character",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,6 +14,35 @@
   "attributes": {
     "name": {
       "type": "string"
+    },
+    "scripts": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::script.script",
+      "mappedBy": "character"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "realms": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::realm.realm",
+      "mappedBy": "character"
+    },
+    "projects": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project.project",
+      "mappedBy": "character"
+    },
+    "conversations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::conversation.conversation"
     }
   }
 }

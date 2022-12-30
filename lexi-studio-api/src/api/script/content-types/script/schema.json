@@ -4,7 +4,8 @@
   "info": {
     "singularName": "script",
     "pluralName": "scripts",
-    "displayName": "Script"
+    "displayName": "Script",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,6 +14,18 @@
   "attributes": {
     "name": {
       "type": "string"
+    },
+    "character": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::character.character",
+      "inversedBy": "scripts"
+    },
+    "text": {
+      "type": "richtext"
+    },
+    "feedback": {
+      "type": "richtext"
     }
   }
 }
