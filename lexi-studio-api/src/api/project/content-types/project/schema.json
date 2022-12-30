@@ -4,7 +4,8 @@
   "info": {
     "singularName": "project",
     "pluralName": "projects",
-    "displayName": "Project"
+    "displayName": "Project",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,6 +14,202 @@
   "attributes": {
     "name": {
       "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::entity.entity"
+    },
+    "team": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::entity.entity"
+    },
+    "budget": {
+      "type": "richtext"
+    },
+    "timeline": {
+      "type": "richtext"
+    },
+    "goals": {
+      "type": "richtext"
+    },
+    "deliverables": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "risks": {
+      "type": "richtext"
+    },
+    "tasks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::task.task"
+    },
+    "progress": {
+      "type": "integer",
+      "max": 100,
+      "min": 0
+    },
+    "resources": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "milestones": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::task.task"
+    },
+    "meetings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::meeting.meeting"
+    },
+    "communication": {
+      "type": "richtext"
+    },
+    "feedback": {
+      "type": "richtext"
+    },
+    "review": {
+      "type": "richtext"
+    },
+    "started": {
+      "type": "datetime"
+    },
+    "completed": {
+      "type": "datetime"
+    },
+    "due": {
+      "type": "datetime"
+    },
+    "locations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::location.location"
+    },
+    "internal_stakeholders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "external_stakeholders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "scope": {
+      "type": "richtext"
+    },
+    "change_requests": {
+      "type": "richtext"
+    },
+    "requirements": {
+      "type": "richtext"
+    },
+    "assumptions": {
+      "type": "richtext"
+    },
+    "constraints": {
+      "type": "richtext"
+    },
+    "time_estimate": {
+      "type": "richtext"
+    },
+    "resource_estimate": {
+      "type": "richtext"
+    },
+    "quality_standards": {
+      "type": "richtext"
+    },
+    "acceptance_criteria": {
+      "type": "richtext"
+    },
+    "evaluation_criteria": {
+      "type": "richtext"
+    },
+    "outputs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "outcomes": {
+      "type": "richtext"
+    },
+    "benefits": {
+      "type": "richtext"
+    },
+    "key_performance_indicators": {
+      "type": "richtext"
+    },
+    "change_management_plan": {
+      "type": "richtext"
+    },
+    "resource_plan": {
+      "type": "richtext"
+    },
+    "quality_management_plan": {
+      "type": "richtext"
+    },
+    "configuration_plan": {
+      "type": "richtext"
+    },
+    "release_plan": {
+      "type": "richtext"
+    },
+    "test_plan": {
+      "type": "richtext"
+    },
+    "deployment_plan": {
+      "type": "richtext"
+    },
+    "maintenance_plan": {
+      "type": "richtext"
+    },
+    "support_plan": {
+      "type": "richtext"
+    },
+    "training_plan": {
+      "type": "richtext"
+    },
+    "retirement_plan": {
+      "type": "richtext"
+    },
+    "project_status": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::project-status.project-status"
+    },
+    "team_members": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "conversations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::conversation.conversation"
+    },
+    "project_roles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-role.project-role"
+    },
+    "skill_sets": {
+      "type": "richtext"
+    },
+    "notes": {
+      "type": "richtext"
+    },
+    "project_issues": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-issue.project-issue"
     }
   }
 }

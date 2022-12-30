@@ -435,6 +435,14 @@ const Home = ({
             active: router.asPath === '/realms'
           },
           {
+            type: 'nav',
+            name: 'Framework',
+            href: `/framework`,
+            icon: 'sitemap',
+            iconPrefix: 'fas',
+            active: router.asPath === `/framework`
+          },
+          {
             type: 'spacer'
           },
           {
@@ -491,14 +499,6 @@ const Home = ({
             icon: 'a',
             iconPrefix: 'fas',
             active: router.asPath === `/apps/avsync-live`
-          },
-          {
-            type: 'nav',
-            name: 'API Builder',
-            href: `/apps/api`,
-            icon: 'i',
-            iconPrefix: 'fas',
-            active: router.asPath === `/apps/api`
           },
           {
             type: 'spacer'
@@ -807,7 +807,7 @@ const Home = ({
             <Box hide={false} wrap={true} width='100%'>
               <Box width='100%' hide={!show}>
                 {
-                  router.route.includes('/apps')
+                  router.route.includes('/apps') || router.route === '/framework'
                     ? children
                     : <Page>
                         {

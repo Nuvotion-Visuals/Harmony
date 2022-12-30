@@ -19,9 +19,8 @@ library.add(
   fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark,
   far.faEnvelope, 
 
-  fab.faYoutube,
+  fab.faYoutube, fab.faGithubAlt,
   
-
   // solid
   fas.faInfoCircle, fas.faBars, fas.faHeart, fas.faPlus,
   fas.faEllipsisV, fas.faPaperPlane, fas.faCalendarAlt,
@@ -45,7 +44,7 @@ library.add(
   fas.faCircleNodes, fas.faDiagramProject, fas.faEye, fas.faDatabase,
   fas.faChess, fas.faHandshakeSimple, fas.faGlobe, fas.faPaintBrush,
   fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette,
-  fas.faShapes, fas.faDoorOpen, fas.faMap
+  fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap
 )
 
 import App from '../components/App'

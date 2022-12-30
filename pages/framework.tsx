@@ -8,7 +8,7 @@ type Post = {
 
 const Page = ({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     // will resolve posts to type Post[]
-  return (<S.App src='http://localhost:1620/admin' allow='camera;microphone' allowFullScreen></S.App>)
+  return (<S.App src='http://localhost:1620/admin/content-manager' allow='camera;microphone' allowFullScreen></S.App>)
 }
   
 export default Page
