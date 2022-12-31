@@ -501,6 +501,14 @@ const Home = ({
             active: router.asPath === `/apps/avsync-live`
           },
           {
+            type: 'nav',
+            name: 'Photopea',
+            href: `/apps/photopea`,
+            icon: 'p',
+            iconPrefix: 'fas',
+            active: router.asPath === `/apps/photopea`
+          },
+          {
             type: 'spacer'
           },
           {
