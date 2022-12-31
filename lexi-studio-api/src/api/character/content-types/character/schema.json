@@ -27,12 +27,6 @@
     "last_name": {
       "type": "string"
     },
-    "realms": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::realm.realm",
-      "mappedBy": "character"
-    },
     "projects": {
       "type": "relation",
       "relation": "oneToMany",
@@ -43,6 +37,468 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::conversation.conversation"
+    },
+    "description": {
+      "type": "string"
+    },
+    "voice_samples": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "responses": {
+      "type": "richtext"
+    },
+    "actions": {
+      "type": "richtext"
+    },
+    "conditions": {
+      "type": "richtext"
+    },
+    "relationships": {
+      "type": "richtext"
+    },
+    "quotes": {
+      "type": "richtext"
+    },
+    "appearance": {
+      "type": "richtext"
+    },
+    "backstory": {
+      "type": "richtext"
+    },
+    "goals": {
+      "type": "richtext"
+    },
+    "personality_traits": {
+      "type": "richtext"
+    },
+    "flaws": {
+      "type": "richtext"
+    },
+    "talents": {
+      "type": "richtext"
+    },
+    "skills": {
+      "type": "richtext"
+    },
+    "hobbies": {
+      "type": "richtext"
+    },
+    "values": {
+      "type": "richtext"
+    },
+    "beliefs": {
+      "type": "richtext"
+    },
+    "fears": {
+      "type": "richtext"
+    },
+    "motivations": {
+      "type": "richtext"
+    },
+    "quirks": {
+      "type": "richtext"
+    },
+    "mannerisms": {
+      "type": "richtext"
+    },
+    "intelligence": {
+      "type": "richtext"
+    },
+    "confidence": {
+      "type": "richtext"
+    },
+    "sociability": {
+      "type": "string"
+    },
+    "ambition": {
+      "type": "richtext"
+    },
+    "generosity": {
+      "type": "richtext"
+    },
+    "patience": {
+      "type": "richtext"
+    },
+    "compassion": {
+      "type": "richtext"
+    },
+    "honesty": {
+      "type": "richtext"
+    },
+    "dependability": {
+      "type": "richtext"
+    },
+    "leadership": {
+      "type": "richtext"
+    },
+    "resourcefulness": {
+      "type": "richtext"
+    },
+    "adaptability": {
+      "type": "richtext"
+    },
+    "efficiency": {
+      "type": "richtext"
+    },
+    "creativity": {
+      "type": "richtext"
+    },
+    "communication": {
+      "type": "richtext"
+    },
+    "conflict_resolution": {
+      "type": "richtext"
+    },
+    "emotional_intelligence": {
+      "type": "richtext"
+    },
+    "motivation": {
+      "type": "richtext"
+    },
+    "self_control": {
+      "type": "richtext"
+    },
+    "teamwork": {
+      "type": "richtext"
+    },
+    "probelm_solving": {
+      "type": "richtext"
+    },
+    "physical_abilities": {
+      "type": "richtext"
+    },
+    "physical_limitations": {
+      "type": "richtext"
+    },
+    "clothing": {
+      "type": "richtext"
+    },
+    "hair": {
+      "type": "richtext"
+    },
+    "makeup": {
+      "type": "richtext"
+    },
+    "accessories": {
+      "type": "richtext"
+    },
+    "tattoos": {
+      "type": "richtext"
+    },
+    "scars": {
+      "type": "richtext"
+    },
+    "health": {
+      "type": "richtext"
+    },
+    "energy_level": {
+      "type": "richtext"
+    },
+    "diet": {
+      "type": "richtext"
+    },
+    "exercise": {
+      "type": "richtext"
+    },
+    "sleeping_patterns": {
+      "type": "richtext"
+    },
+    "hygiene": {
+      "type": "richtext"
+    },
+    "senses": {
+      "type": "richtext"
+    },
+    "sexual_orientation": {
+      "type": "richtext"
+    },
+    "gender_identity": {
+      "type": "richtext"
+    },
+    "pronouns": {
+      "type": "richtext"
+    },
+    "marital_status": {
+      "type": "richtext"
+    },
+    "home": {
+      "type": "richtext"
+    },
+    "family": {
+      "type": "richtext"
+    },
+    "friends": {
+      "type": "richtext"
+    },
+    "pets": {
+      "type": "richtext"
+    },
+    "neighbors": {
+      "type": "richtext"
+    },
+    "community": {
+      "type": "richtext"
+    },
+    "social_status": {
+      "type": "richtext"
+    },
+    "career": {
+      "type": "richtext"
+    },
+    "education": {
+      "type": "richtext"
+    },
+    "financial_status": {
+      "type": "richtext"
+    },
+    "transportation": {
+      "type": "richtext"
+    },
+    "vacations": {
+      "type": "richtext"
+    },
+    "free_time": {
+      "type": "richtext"
+    },
+    "entertainment": {
+      "type": "richtext"
+    },
+    "sports": {
+      "type": "richtext"
+    },
+    "holidays": {
+      "type": "richtext"
+    },
+    "cultural_influences": {
+      "type": "richtext"
+    },
+    "religion": {
+      "type": "richtext"
+    },
+    "political_views": {
+      "type": "richtext"
+    },
+    "philosophy": {
+      "type": "richtext"
+    },
+    "likes": {
+      "type": "richtext"
+    },
+    "dislikes": {
+      "type": "richtext"
+    },
+    "habits": {
+      "type": "richtext"
+    },
+    "favorites": {
+      "type": "richtext"
+    },
+    "least_favorites": {
+      "type": "richtext"
+    },
+    "tastes": {
+      "type": "richtext"
+    },
+    "mood": {
+      "type": "richtext"
+    },
+    "temperament": {
+      "type": "richtext"
+    },
+    "attitudes": {
+      "type": "richtext"
+    },
+    "morals": {
+      "type": "richtext"
+    },
+    "dreams": {
+      "type": "richtext"
+    },
+    "insecurities": {
+      "type": "richtext"
+    },
+    "passions": {
+      "type": "richtext"
+    },
+    "aspirations": {
+      "type": "richtext"
+    },
+    "personality_type": {
+      "type": "richtext"
+    },
+    "self_esteem": {
+      "type": "richtext"
+    },
+    "self_image": {
+      "type": "richtext"
+    },
+    "self_awareness": {
+      "type": "richtext"
+    },
+    "empathy": {
+      "type": "richtext"
+    },
+    "planning_skills": {
+      "type": "richtext"
+    },
+    "time_management": {
+      "type": "richtext"
+    },
+    "sense_of_humor": {
+      "type": "richtext"
+    },
+    "imagination": {
+      "type": "richtext"
+    },
+    "memory": {
+      "type": "richtext"
+    },
+    "concentration": {
+      "type": "richtext"
+    },
+    "learning_style": {
+      "type": "richtext"
+    },
+    "curiosity": {
+      "type": "richtext"
+    },
+    "open_mindedness": {
+      "type": "richtext"
+    },
+    "wisdom": {
+      "type": "richtext"
+    },
+    "anger_management": {
+      "type": "richtext"
+    },
+    "stress_management": {
+      "type": "richtext"
+    },
+    "emotional_control": {
+      "type": "richtext"
+    },
+    "forgiveness": {
+      "type": "richtext"
+    },
+    "gratitude": {
+      "type": "richtext"
+    },
+    "loyalty": {
+      "type": "richtext"
+    },
+    "integrity": {
+      "type": "richtext"
+    },
+    "respect": {
+      "type": "richtext"
+    },
+    "tolerance": {
+      "type": "richtext"
+    },
+    "inclusivity": {
+      "type": "richtext"
+    },
+    "equality": {
+      "type": "richtext"
+    },
+    "justice": {
+      "type": "richtext"
+    },
+    "fairness": {
+      "type": "richtext"
+    },
+    "empowerment": {
+      "type": "richtext"
+    },
+    "style": {
+      "type": "richtext"
+    },
+    "ego": {
+      "type": "richtext"
+    },
+    "voice": {
+      "type": "richtext"
+    },
+    "media": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "level": {
+      "type": "integer"
+    },
+    "experience_points": {
+      "type": "integer"
+    },
+    "abilities": {
+      "type": "richtext"
+    },
+    "class": {
+      "type": "richtext"
+    },
+    "stats": {
+      "type": "richtext"
+    },
+    "inventory": {
+      "type": "richtext"
+    },
+    "equipment": {
+      "type": "richtext"
+    },
+    "armor": {
+      "type": "richtext"
+    },
+    "weapons": {
+      "type": "richtext"
+    },
+    "quests": {
+      "type": "richtext"
+    },
+    "reputation": {
+      "type": "richtext"
+    },
+    "factions": {
+      "type": "richtext"
+    },
+    "allies": {
+      "type": "richtext"
+    },
+    "enemies": {
+      "type": "richtext"
+    },
+    "person": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::person.person"
+    },
+    "character_type": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::character-type.character-type"
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::character.character"
+    },
+    "children": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::area.area"
     }
   }
 }

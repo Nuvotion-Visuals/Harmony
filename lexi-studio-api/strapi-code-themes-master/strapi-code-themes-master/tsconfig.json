@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./lib",
+    "target": "esnext",
+    "module": "commonjs",
+    "declaration": true,
+  },
+  "include": [
+    "./themes/**/*",
+    "./index.ts",
+  ],
+  "exclude": [
+    "**/node_modules/**/*",
+    "**/__tests__/**/*",
+    "**/__mocks__/**/*",
+    "**/lib/**/*"
+  ]
+}

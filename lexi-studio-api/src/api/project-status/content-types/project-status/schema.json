@@ -4,7 +4,8 @@
   "info": {
     "singularName": "project-status",
     "pluralName": "project-statuses",
-    "displayName": "Project Status"
+    "displayName": "Project Status",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,6 +13,9 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
+      "type": "string"
+    },
+    "description": {
       "type": "string"
     }
   }
