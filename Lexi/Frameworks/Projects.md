@@ -30,7 +30,7 @@ Deliverables: A field to specify the products or outcomes that will be produced 
 
 Risks: A field to specify any potential risks or challenges that could impact the project.
 
-Dependencies: A field to specify any tasks or activities that must be completed before the project can move forward.
+Tasks: A field to specify any tasks or activities that must be completed before the project can move forward.
 
 Resources: A field to specify any resources or materials needed to complete the project.
 
@@ -98,15 +98,7 @@ Outcomes: A field to specify the outcomes or impacts that the project is intende
 
 Benefits: A field to specify the benefits or advantages that the project will provide.
 
-Costs: A field to specify the costs or expenses associated with the project.
-
 Key performance indicators (KPIs): A field to specify the KPIs or metrics used to measure the success or progress of the project.
-
-Risk assessment: A field to specify the risk assessment or analysis conducted for the project.
-
-Risk management plan: A field to specify the risk management plan or strategy for the project.
-
-Communication plan: A field to specify the communication plan or strategy for the project.
 
 Change management plan: A field to specify the change management plan or strategy for the project.
 
@@ -132,20 +124,6 @@ Evaluation plan: A field to specify the evaluation plan or strategy for the proj
 
 Retirement plan: A field to specify the retirement plan or strategy for the project.
 
-Status: A field to specify the current status of the project, such as ongoing, completed, or cancelled.
-
-Progress: A field to specify the progress made on the project, such as a percentage complete.
-
-Tasks: A field to specify the tasks or activities that need to be completed as part of the project.
-
-Milestones: A field to specify the key milestones or checkpoints that have been reached or are upcoming in the project.
-
-Deliverables: A field to specify the deliverables or outputs that will be produced as part of the project.
-
-Dependencies: A field to specify any dependencies or tasks that must be completed before other tasks can be started.
-
-Issues: A field to specify any issues or challenges that have arisen during the project.
-
 Changes: A field to specify any changes or updates made to the project plan or scope.
 
 Decisions: A field to specify any important decisions or choices that have been made as part of the project.
@@ -161,13 +139,3 @@ Roles and responsibilities: A field to specify the roles and responsibilities of
 Skill sets: A field to specify the skill sets or expertise of each team member.
 
 Contact information: A field to specify the contact information for each team member.
-
-Resources: A field to specify the resources or materials needed for the project.
-
-Budget: A field to specify the budget or funds allocated for the project.
-
-Time estimates: A field to specify estimates for the time required to complete the project.
-
-Resource estimates: A field to specify estimates for the resources required to complete the project.
-
-Quality standards: A field to specify the quality standards or criteria for the project.

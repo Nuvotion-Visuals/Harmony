@@ -6,8 +6,6 @@ Name: A field to specify the name of the entity.
 
 Description: A field to provide a brief description or summary of the entity.
 
-Type: A field to specify the type of entity, such as a person, place, or object.
-
 Category: A field to specify the category or classification of the entity, such as historical figure, business, or physical object.
 
 Date of creation: A field to specify the date on which the entity was created or first came into existence.
