@@ -1,9 +1,8 @@
 {
-  "name": "nodejs-docs-samples-text-to-speech",
+  "name": "lexi-tts",
   "private": true,
   "license": "Apache-2.0",
-  "author": "Google Inc.",
-  "repository": "googleapis/nodejs-text-to-speech",
+  "author": "AVsync.LIVE LLC",
   "files": [
     "*.js"
   ],
