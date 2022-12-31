@@ -16,6 +16,7 @@
     "@extractus/article-extractor": "^7.2.8-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
+    "@google-cloud/text-to-speech": "^4.1.0",
     "axios": "^1.2.1",
     "body-parser": "^1.20.1",
     "chatgpt": "^3.3.2",

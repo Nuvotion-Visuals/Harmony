@@ -138,7 +138,7 @@ const sendMessage = (
 const WSS = require('ws').WebSocketServer;
 const wss = new WSS({ port: 1619 });
 let websock = {} as typeof WSS
-const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'});
 
 let initialized = false
 wss.on('connection', function connection(ws: typeof WSS) {
