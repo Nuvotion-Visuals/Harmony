@@ -22,7 +22,8 @@ import {
   TextInput,
   Spacer,
   useBreakpoint,
-  AspectRatio
+  AspectRatio,
+  stringInArray
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -412,6 +413,13 @@ const Home = ({
             icon: 'bookmark',
             href: '/projects',
             active: router.asPath === '/projects'
+          },
+          {
+            type: 'nav',
+            name: 'People',
+            icon: 'users',
+            href: '/people',
+            active: router.asPath === '/people'
           },
           {
             type: 'nav',
@@ -815,7 +823,14 @@ const Home = ({
             <Box hide={false} wrap={true} width='100%'>
               <Box width='100%' hide={!show}>
                 {
-                  router.route.includes('/apps') || router.route === '/framework'
+                  router.route.includes('/apps') || stringInArray(router.route, [
+                    '/framework',
+                    '/projects',
+                    '/characters',
+                    '/entities',
+                    '/realms',
+                    '/people'
+                  ])
                     ? children
                     : <Page>
                         {

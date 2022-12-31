@@ -1288,6 +1288,11 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.15.18.tgz#128b76ecb9be48b60cf5cfc1c63a4f00691a3239"
   integrity sha512-L4jVKS82XVhw2nvzLg/19ClLWg0y27ulRwuP7lcyL6AbUWB5aPglXY3M21mauDQMDfRLs8cQmeT03r/+X3cZYQ==
 
+"@exfabrica/strapi-plugin-awesome-help@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@exfabrica/strapi-plugin-awesome-help/-/strapi-plugin-awesome-help-1.0.8.tgz#41734c31125270e9aae4d285a5c043b1b5c94657"
+  integrity sha512-wfT1vieSEbfFUxJQG+JWUaXzc7LxG23ASdhGwO2soxyu56Fdv9E/kZYw4wl6A3WdmLsAQ8ICZrNI7AmSxc04eg==
+
 "@fingerprintjs/fingerprintjs@3.3.3":
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/@fingerprintjs/fingerprintjs/-/fingerprintjs-3.3.3.tgz#ead445032c92a79d5f585953019402ed223edc7d"

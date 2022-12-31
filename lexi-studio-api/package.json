@@ -12,6 +12,7 @@
   "devDependencies": {},
   "dependencies": {
     "@_sh/strapi-plugin-ckeditor": "^1.1.2",
+    "@exfabrica/strapi-plugin-awesome-help": "^1.0.8",
     "@palmabit/strapi-app-version": "^1.1.0",
     "@strapi/plugin-color-picker": "^4.5.5",
     "@strapi/plugin-documentation": "^4.5.5",

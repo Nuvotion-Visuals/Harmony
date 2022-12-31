@@ -216,6 +216,27 @@
       "relation": "manyToOne",
       "target": "api::character.character",
       "inversedBy": "projects"
+    },
+    "media": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::project.project"
+    },
+    "children": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project.project"
     }
   }
 }
