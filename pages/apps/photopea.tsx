@@ -8,7 +8,7 @@ type Post = {
 
 const Page = ({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     // will resolve posts to type Post[]
-  return (<S.App src='https://avsync.live/deck' allow='camera;microphone' allowFullScreen></S.App>)
+  return (<S.App src='https://photopea.com' allow='camera;microphone' allowFullScreen></S.App>)
 }
   
 export default Page
