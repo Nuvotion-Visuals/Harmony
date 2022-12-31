@@ -4,7 +4,8 @@
   "info": {
     "singularName": "project-type",
     "pluralName": "project-types",
-    "displayName": "Project Type"
+    "displayName": "Project Type",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,6 +13,9 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
+      "type": "string"
+    },
+    "description": {
       "type": "string"
     }
   }

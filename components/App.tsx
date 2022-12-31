@@ -416,6 +416,13 @@ const Home = ({
           },
           {
             type: 'nav',
+            name: 'Tasks',
+            icon: 'check-square',
+            href: '/tasks',
+            active: router.asPath === '/tasks'
+          },
+          {
+            type: 'nav',
             name: 'People',
             icon: 'users',
             href: '/people',
@@ -437,18 +444,24 @@ const Home = ({
           },
           {
             type: 'nav',
+            name: 'Stories',
+            icon: 'book',
+            href: '/stories',
+            active: router.asPath === '/stories'
+          },
+          {
+            type: 'nav',
+            name: 'Scenes',
+            icon: 'film',
+            href: '/scenes',
+            active: router.asPath === '/scenes'
+          },
+          {
+            type: 'nav',
             name: 'Realms',
             icon: 'door-open',
             href: '/realms',
             active: router.asPath === '/realms'
-          },
-          {
-            type: 'nav',
-            name: 'Framework',
-            href: `/framework`,
-            icon: 'sitemap',
-            iconPrefix: 'fas',
-            active: router.asPath === `/framework`
           },
           {
             type: 'spacer'
@@ -829,7 +842,10 @@ const Home = ({
                     '/characters',
                     '/entities',
                     '/realms',
-                    '/people'
+                    '/people',
+                    '/tasks',
+                    '/stories',
+                    '/scenes'
                   ])
                     ? children
                     : <Page>

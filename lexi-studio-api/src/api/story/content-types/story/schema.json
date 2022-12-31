@@ -1,0 +1,103 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stories",
+  "info": {
+    "singularName": "story",
+    "pluralName": "stories",
+    "displayName": "Story",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "authors": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "genre": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tag.tag"
+    },
+    "setting": {
+      "type": "richtext"
+    },
+    "plot": {
+      "type": "richtext"
+    },
+    "theme": {
+      "type": "richtext"
+    },
+    "tone": {
+      "type": "richtext"
+    },
+    "point_of_view": {
+      "type": "richtext"
+    },
+    "conflict": {
+      "type": "richtext"
+    },
+    "resolution": {
+      "type": "richtext"
+    },
+    "imagery": {
+      "type": "richtext"
+    },
+    "symbolism": {
+      "type": "richtext"
+    },
+    "motif": {
+      "type": "richtext"
+    },
+    "forshadowing": {
+      "type": "richtext"
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::entity.entity"
+    },
+    "realms": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::realm.realm"
+    },
+    "characters": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::character.character"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::project.project"
+    },
+    "locations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::location.location"
+    },
+    "areas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::area.area"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::tag.tag"
+    },
+    "scenes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::scene.scene",
+      "mappedBy": "story"
+    }
+  }
+}
