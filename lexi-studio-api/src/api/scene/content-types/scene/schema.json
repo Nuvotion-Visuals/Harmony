@@ -1,0 +1,123 @@
+{
+  "kind": "collectionType",
+  "collectionName": "scenes",
+  "info": {
+    "singularName": "scene",
+    "pluralName": "scenes",
+    "displayName": "Scene",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "time_of_day": {
+      "type": "richtext"
+    },
+    "weather": {
+      "type": "richtext"
+    },
+    "characters": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::character.character"
+    },
+    "dialogue": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::conversation.conversation"
+    },
+    "imagery": {
+      "type": "richtext"
+    },
+    "mood": {
+      "type": "richtext"
+    },
+    "conflict": {
+      "type": "richtext"
+    },
+    "resolution": {
+      "type": "richtext"
+    },
+    "theme": {
+      "type": "richtext"
+    },
+    "symbolism": {
+      "type": "richtext"
+    },
+    "motif": {
+      "type": "richtext"
+    },
+    "foreshadowing": {
+      "type": "richtext"
+    },
+    "action": {
+      "type": "richtext"
+    },
+    "areas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::area.area"
+    },
+    "locations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::location.location"
+    },
+    "story": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::story.story",
+      "inversedBy": "scenes"
+    },
+    "realm": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::realm.realm"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::tag.tag"
+    },
+    "area": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::area.area"
+    },
+    "attachments": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "props": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "costumes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    },
+    "lighting": {
+      "type": "richtext"
+    },
+    "sound": {
+      "type": "richtext"
+    }
+  }
+}

@@ -26,14 +26,15 @@
       "target": "api::task-status.task-status"
     },
     "attachments": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "description": {
       "type": "string"
@@ -51,6 +52,27 @@
     },
     "completed": {
       "type": "datetime"
+    },
+    "subtasks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::task.task"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::project.project"
+    },
+    "locations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::location.location"
+    },
+    "entities": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::entity.entity",
+      "mappedBy": "tasks"
     }
   }
 }

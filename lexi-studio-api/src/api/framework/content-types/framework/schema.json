@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "frameworks",
+  "info": {
+    "singularName": "framework",
+    "pluralName": "frameworks",
+    "displayName": "Framework",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    }
+  }
+}
