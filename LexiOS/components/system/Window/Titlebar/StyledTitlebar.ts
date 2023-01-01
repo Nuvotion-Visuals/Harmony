@@ -20,7 +20,6 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       : 'var(--F_Surface_0)'};
   border-bottom: ${styledBorder};
   border-radius: .5rem .5rem 0 0;
-  overflow: hidden;
   display: flex;
   height: ${({ theme }) => theme.sizes.titleBar.height}px;
   position: relative;
@@ -41,7 +40,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
     figure {
       align-items: center;
       display: flex;
-      margin-left: 8px;
+      margin-left: .5rem;
       min-width: inherit;
       position: relative;
       top: -1px;

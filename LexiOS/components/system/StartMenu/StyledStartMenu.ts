@@ -11,38 +11,14 @@ type StyledStartMenuProps = {
 const SCROLLBAR_PADDING_OFFSET = 3;
 const HOVER_ADJUSTED_PADDING = THIN_SCROLLBAR_WIDTH - SCROLLBAR_PADDING_OFFSET;
 
-const ThinScrollBars = css<StyledStartMenuProps>`
-  ::-webkit-scrollbar {
-    width: ${({ $showScrolling }) =>
-      $showScrolling ? THIN_SCROLLBAR_WIDTH : SCROLLBAR_PADDING_OFFSET}px;
-  }
-
-  ::-webkit-scrollbar-corner,
-  ::-webkit-scrollbar-track {
-    background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "transparent"};
-  }
-
-  ::-webkit-scrollbar-button:single-button {
-    background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "transparent"};
-    border: ${({ $showScrolling }) =>
-      !$showScrolling && "1px solid transparent"};
-  }
-
-  ::-webkit-scrollbar-thumb:vertical {
-    background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "rgb(167, 167, 167)"};
-  }
-`;
-
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
-  background-color: var(--F_Background);
+  border-radius: .5rem;
   bottom: ${TASKBAR_HEIGHT}px;
   contain: strict;
   display: flex;
   height: 100%;
-  left: 0;
+  left: .5rem;
+  margin-bottom: .5rem;
   max-height: ${({ theme }) => theme.sizes.startMenu.maxHeight}px;
   max-width: ${({ theme }) => theme.sizes.startMenu.size}px;
   position: absolute;
@@ -50,7 +26,6 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   z-index: 10000;
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    background-color: hsla(0, 0%, 13%, 70%);
   }
 
   ${StyledFileManager} {
@@ -82,20 +57,11 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       width: 0;
     }
 
-    &:hover {
-      ${ThinScrollBars};
-    
-
-      @supports (scrollbar-width: thin) {
-        scrollbar-width: thin;
-      }
-    }
+   
 
     @media (hover: none), (pointer: coarse) {
-      ${ThinScrollBars};
-
       ::-webkit-scrollbar-track {
-        margin: 13px 0;
+        margin: .75rem 0;
       }
     }
   }

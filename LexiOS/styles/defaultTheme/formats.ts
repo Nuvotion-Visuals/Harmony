@@ -5,7 +5,7 @@ const formats = {
     minute: "2-digit",
   } as Intl.DateTimeFormatOptions,
   systemFont:
-    "-apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+    "Poppins",
 };
 
 export default formats;

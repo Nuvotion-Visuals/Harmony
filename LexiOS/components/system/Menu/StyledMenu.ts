@@ -12,19 +12,16 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
     transform: `translate(${$x}px, ${$y}px)`,
   },
 }))<StyledMenuProps>`
-  background: var(--F_Background);
-  box-shadow: 1px 1px 1px hsla(0, 0%, 20%, 70%),
-    2px 2px 2px hsla(0, 0%, 10%, 70%);
+  background: var(--F_Surface_0);
   color: rgb(255, 255, 255);
+  border-radius: .5rem;
   contain: layout;
-  font-size: 12px;
+  font-size: 13px;
   max-height: fit-content;
   max-width: fit-content;
-  padding: 4px 2px;
   position: absolute;
   width: max-content;
   z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
-
   ol {
     li.disabled {
       color: rgb(110, 110, 110);
@@ -32,31 +29,31 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
     }
 
     hr {
-      background-color: rgb(128, 128, 128);
+      background-color: var(--F_Surface);
       height: 1px;
       margin: 3px 8px;
     }
 
     figure {
       display: flex;
-      padding: 3px 0;
-
+      padding: .5rem 0;
       &:hover,
       &.active {
-        background-color: rgb(65, 65, 65);
+        background: var(--F_Surface);
       }
 
       figcaption {
         display: flex;
         height: 16px;
         line-height: 16px;
-        margin-left: 32px;
+        margin-left: 2rem;
         margin-right: 64px;
         place-items: center;
         position: relative;
         top: -1px;
         white-space: nowrap;
         width: max-content;
+        line-height: 1em;
 
         &.primary {
           font-weight: 700;
