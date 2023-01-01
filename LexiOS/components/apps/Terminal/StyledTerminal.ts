@@ -5,10 +5,14 @@ import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 const StyledTerminal = styled.div`
   height: 100%;
   width: 100%;
-
+  font-family: monospace !important;
+* {
+  font-family: monospace !important;
+}
   .terminal {
-    backdrop-filter: blur(8px);
     height: 100% !important;
+    background: var(--F_Background);
+    padding: 0 .5rem;
   }
 
   .xterm-viewport {

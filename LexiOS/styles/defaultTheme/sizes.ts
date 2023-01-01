@@ -16,7 +16,7 @@ const sizes = {
   },
   fileExplorer: {
     navBarHeight: "42px",
-    statusBarHeight: "24px",
+    statusBarHeight: "28px",
   },
   fileManager: {
     columnGap: "1px",

@@ -68,13 +68,22 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       display: flex;
       place-content: center;
       place-items: center;
+      align-items: center;
       width: ${({ theme }) => theme.sizes.titleBar.buttonWidth};
-      
-      svg {
-        fill: ${({ $foreground, theme }) =>
+    cursor: pointer;
+
+      img {
+        filter: invert(.5);
+        cursor: pointer;
+
+        * {
+          
+        color: ${({ $foreground, theme }) =>
           $foreground
             ? 'var(--F_Font_Color_Label)'
             : 'var(--F_Font_Color_Disabled)'};
+        }
+        
         margin: 0 1px 2px 0;
         width: ${({ theme }) => theme.sizes.titleBar.buttonIconWidth};
       }
@@ -90,8 +99,8 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
         background-color: ${({ theme }) =>
           theme.colors.titleBar.backgroundHover};
 
-        svg {
-          fill: ${({ theme }) => theme.colors.titleBar.text};
+        img {
+          filter: invert(.9);
         }
 
         &.close {

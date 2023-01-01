@@ -22,7 +22,8 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
   position: absolute;
   width: max-content;
   z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
- 
+  padding: .5rem 0;
+  box-shadow: var(--F_Outline);
   ol {
     li.disabled {
       color: rgb(110, 110, 110);

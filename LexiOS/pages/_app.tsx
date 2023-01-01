@@ -8,6 +8,7 @@ import { SessionProvider } from "contexts/session";
 import type { AppProps } from "next/app";
 
 import '@avsync.live/formation/dist/index.dark.css'
+import '../styles/globals.css'
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => (
   <ProcessProvider>

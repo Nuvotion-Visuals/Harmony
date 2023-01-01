@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledMarked = styled.div`
   article {
-    background-color: #f9f9f9;
+    background-color: var(--F_Background);
     box-sizing: border-box;
     font-size: 16px;
     height: 100%;

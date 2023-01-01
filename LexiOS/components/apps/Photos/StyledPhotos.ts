@@ -4,7 +4,7 @@ const buttonSize = "48px";
 const paddingSize = "32px";
 
 const StyledPhotos = styled.div`
-  background-color: #222;
+  background-color: black;
   display: flex;
   height: 100%;
   padding-bottom: ${paddingSize};
