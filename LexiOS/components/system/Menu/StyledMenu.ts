@@ -22,6 +22,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
   position: absolute;
   width: max-content;
   z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
+ 
   ol {
     li.disabled {
       color: rgb(110, 110, 110);
@@ -36,6 +37,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
 
     figure {
       display: flex;
+      align-items: center;
       padding: .5rem 0;
       &:hover,
       &.active {
@@ -50,7 +52,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
         margin-right: 64px;
         place-items: center;
         position: relative;
-        top: -1px;
+        top: 1px;
         white-space: nowrap;
         width: max-content;
         line-height: 1em;

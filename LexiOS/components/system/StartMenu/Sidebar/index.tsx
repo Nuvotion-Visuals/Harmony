@@ -44,18 +44,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
   };
   const topButtons: SidebarButtons = [
-    {
-      heading: true,
-      icon: <SideMenu />,
-      name: "START",
-      ...(collapsed && { tooltip: "Expand" }),
-    },
-    {
-      active: true,
-      icon: <AllApps />,
-      name: "All apps",
-      ...(collapsed && { tooltip: "All apps" }),
-    },
+ 
   ];
   const { sizes } = useTheme();
   const vh = viewHeight();

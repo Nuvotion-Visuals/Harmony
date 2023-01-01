@@ -59,11 +59,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
 
    
 
-    @media (hover: none), (pointer: coarse) {
-      ::-webkit-scrollbar-track {
-        margin: .75rem 0;
-      }
-    }
+   
   }
 `;
 

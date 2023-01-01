@@ -7,7 +7,7 @@ const StyledClock = styled.div`
   height: 100%;
   max-width: ${({ theme }) => `calc(${theme.sizes.clock.width} + 10px)}`};
   min-width: ${({ theme }) => theme.sizes.clock.width};
-  padding: 0 5px;
+  padding: 0 .5rem;
   place-content: center;
   place-items: center;
   position: absolute;
