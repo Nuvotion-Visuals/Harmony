@@ -10,7 +10,8 @@ const StyledBrowser = styled.div`
   nav {
     background-color: var(--F_Background);
     display: flex;
-    padding: .5rem 0;
+    padding-bottom: calc(.5rem - 2px);
+    padding-top: 2px;
     place-content: center;
     place-items: center;
 
