@@ -12,8 +12,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
     transform: `translate(${$x}px, ${$y}px)`,
   },
 }))<StyledMenuProps>`
-  background-color: rgb(43, 43, 43);
-  border: 1px solid rgb(160, 160, 160);
+  background: var(--F_Background);
   box-shadow: 1px 1px 1px hsla(0, 0%, 20%, 70%),
     2px 2px 2px hsla(0, 0%, 10%, 70%);
   color: rgb(255, 255, 255);

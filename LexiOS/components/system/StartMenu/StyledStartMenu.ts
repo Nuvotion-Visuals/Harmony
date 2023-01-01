@@ -37,9 +37,8 @@ const ThinScrollBars = css<StyledStartMenuProps>`
 `;
 
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
-  background-color: hsla(0, 0%, 13%, 95%);
+  background-color: var(--F_Background);
   bottom: ${TASKBAR_HEIGHT}px;
-  box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
   contain: strict;
   display: flex;
   height: 100%;
@@ -59,8 +58,6 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
 
     margin-top: 0;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
-    padding-right: ${THIN_SCROLLBAR_WIDTH}px;
-    padding-top: 7px;
     scrollbar-width: none;
 
     ${StyledFileManager} {
@@ -87,11 +84,9 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
 
     &:hover {
       ${ThinScrollBars};
-      padding-right: ${({ $showScrolling }) =>
-        $showScrolling ? 0 : `${HOVER_ADJUSTED_PADDING}px`};
+    
 
       @supports (scrollbar-width: thin) {
-        padding-right: 5px;
         scrollbar-width: thin;
       }
     }

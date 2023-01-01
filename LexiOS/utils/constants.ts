@@ -320,7 +320,7 @@ export const DEFAULT_SCROLLBAR_WIDTH = 17;
 export const TASKBAR_HEIGHT = 30;
 
 export const PACKAGE_DATA = {
-  alias: "daedalOS",
+  alias: "LexiOS",
   author: {
     email: "dustinbrett@gmail.com",
     name: "Dustin Brett",
