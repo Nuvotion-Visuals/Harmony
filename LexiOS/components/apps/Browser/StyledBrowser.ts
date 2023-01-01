@@ -58,6 +58,7 @@ const StyledBrowser = styled.div`
       height: 33px;
       justify-content: left;
       padding: 0 8px;
+      border-bottom: 1px solid var(--F_Surface);
 
       button {
         margin-bottom: 4px;

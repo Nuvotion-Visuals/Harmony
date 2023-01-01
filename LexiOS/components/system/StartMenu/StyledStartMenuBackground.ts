@@ -10,7 +10,7 @@ const StyledStartMenuBackground = styled.span<StyledStartMenuBackgroundProps>`
   position: absolute;
   width: 100%;
   z-index: -1;
-  background: var(--F_Background);
+  background: var(--F_Surface_0);
 `;
 
 export default StyledStartMenuBackground;

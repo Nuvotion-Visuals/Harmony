@@ -7,7 +7,7 @@ type StyledStartButtonProps = {
 
 const StyledStartButton = styled(Button)<StyledStartButtonProps>`
   background-color: ${({ $active, theme }) =>
-    $active && theme.colors.taskbar.foreground};
+    $active && 'var(--F_Surface_0)'};
   display: flex;
   fill: ${({ theme }) => theme.colors.startButton};
   height: 100%;
@@ -15,18 +15,23 @@ const StyledStartButton = styled(Button)<StyledStartButtonProps>`
   place-content: center;
   place-items: center;
   position: absolute;
-
+  cursor: pointer;
+  * {
+    cursor: pointer;
+  }
   && {
     width: ${({ theme }) => theme.sizes.startButton.width};
   }
 
   svg {
+  cursor: pointer;
+
     height: ${({ theme }) => theme.sizes.startButton.iconSize};
   }
 
   &:hover {
     background-color: ${({ $active, theme }) =>
-      !$active && theme.colors.taskbar.hover};
+      !$active && 'var(--F_Surface_0)'};
 
     svg {
       fill: ${({ theme }) => theme.colors.highlight};

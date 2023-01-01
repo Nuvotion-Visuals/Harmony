@@ -58,11 +58,11 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   }
 
   &:hover {
-    background: var(--F_Surface_0);
+    background: var(--F_Surface_1);
   }
 
   &:active {
-    background: var(--F_Surface_1);
+    background: var(--F_Surface_2);
   }
 `;
 

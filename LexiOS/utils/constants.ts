@@ -317,7 +317,7 @@ export const DEFAULT_TEXT_FILE_SAVE_PATH = `${DESKTOP_PATH}/Untitled.txt`;
 
 export const DEFAULT_SCROLLBAR_WIDTH = 17;
 
-export const TASKBAR_HEIGHT = 30;
+export const TASKBAR_HEIGHT = 42;
 
 export const PACKAGE_DATA = {
   alias: "LexiOS",
