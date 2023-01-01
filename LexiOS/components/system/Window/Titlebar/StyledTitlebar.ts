@@ -10,15 +10,17 @@ const styledBorder = ({
   theme,
 }: StyledTitlebarProps & { theme: DefaultTheme }): string =>
   $foreground
-    ? `1px solid ${theme.colors.titleBar.background}`
-    : `1px solid ${theme.colors.titleBar.backgroundInactive}`;
+    ? ``
+    : ``;
 
 const StyledTitlebar = styled.header<StyledTitlebarProps>`
   background-color: ${({ $foreground, theme }) =>
     $foreground
-      ? theme.colors.titleBar.background
-      : theme.colors.titleBar.backgroundInactive};
+      ? 'var(--F_Background)'
+      : 'var(--F_Surface_0)'};
   border-bottom: ${styledBorder};
+  border-radius: .5rem .5rem 0 0;
+  overflow: hidden;
   display: flex;
   height: ${({ theme }) => theme.sizes.titleBar.height}px;
   position: relative;
@@ -68,12 +70,12 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       place-content: center;
       place-items: center;
       width: ${({ theme }) => theme.sizes.titleBar.buttonWidth};
-
+      
       svg {
         fill: ${({ $foreground, theme }) =>
           $foreground
-            ? theme.colors.titleBar.text
-            : theme.colors.titleBar.buttonInactive};
+            ? 'var(--F_Font_Color_Label)'
+            : 'var(--F_Font_Color_Disabled)'};
         margin: 0 1px 2px 0;
         width: ${({ theme }) => theme.sizes.titleBar.buttonIconWidth};
       }
@@ -94,7 +96,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
         }
 
         &.close {
-          background-color: ${({ theme }) => theme.colors.titleBar.closeHover};
+          background-color: var(--F_Surface_1);
           transition: background-color 0.25s ease;
         }
       }

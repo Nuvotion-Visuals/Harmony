@@ -6,7 +6,7 @@ type StyledSidebarButtonProps = {
 };
 
 const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
-  border: 1px solid transparent;
+ 
   display: flex;
   height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
   place-content: center;
@@ -15,8 +15,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
 
   &::before {
-    border-left: ${({ $active, theme }) =>
-      `4px solid ${$active ? theme.colors.highlight : "transparent"}`};
+
     content: "";
     height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
     left: 0;
@@ -41,7 +40,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
     }
 
     figcaption {
-      border: 1px solid transparent;
+    
       left: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
       position: absolute;
       white-space: nowrap;
@@ -59,12 +58,11 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   }
 
   &:hover {
-    background-color: hsla(0, 0%, 35%, 70%);
-    border: 1px solid hsla(0, 0%, 45%, 70%);
+    background: var(--F_Surface_0);
   }
 
   &:active {
-    background-color: hsla(0, 0%, 40%, 70%);
+    background: var(--F_Surface_1);
   }
 `;
 

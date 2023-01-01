@@ -24,7 +24,7 @@ export const bookmarks: Bookmark[] = [
   },
   {
     icon: FAVICON_BASE_PATH,
-    name: "daedalOS",
+    name: "LexiOS",
     url: "https://dustinbrett.com/",
   },
   {

@@ -8,9 +8,9 @@ const StyledBrowser = styled.div`
   }
 
   nav {
-    background-color: rgb(87, 87, 87);
+    background-color: var(--F_Background);
     display: flex;
-    padding: 4px 0;
+    padding: .5rem 0;
     place-content: center;
     place-items: center;
 
@@ -55,7 +55,6 @@ const StyledBrowser = styled.div`
     }
 
     &:not(:first-child) {
-      border-bottom: 1px solid rgb(118, 115, 118);
       height: 33px;
       justify-content: left;
       padding: 0 8px;
@@ -67,7 +66,7 @@ const StyledBrowser = styled.div`
     }
 
     input {
-      background-color: rgb(64, 62, 65);
+      background-color: var(--F_Surface);
       border-radius: 18px;
       color: rgb(255, 255, 255);
       font-family: ${({ theme }) => theme.formats.systemFont};
@@ -80,7 +79,7 @@ const StyledBrowser = styled.div`
       width: 100%;
 
       &:focus {
-        outline: 2px solid rgb(138, 180, 248);
+        box-shadow: var(--F_Outline_Focus);
       }
     }
   }

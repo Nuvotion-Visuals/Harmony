@@ -1,7 +1,7 @@
 {
-  "name": "daedalos",
-  "version": "2.0.0",
-  "description": "Desktop environment in the browser",
+  "name": "lexios",
+  "version": "1.0.0",
+  "description": "Lexi's virtual operating system that runs in the browser.",
   "author": {
     "name": "Dustin Brett",
     "email": "dustinbrett@gmail.com",
@@ -26,7 +26,6 @@
     "dev": "next dev",
     "eslint": "eslint --report-unused-disable-directives .",
     "export": "next export",
-    "prepare": "husky install",
     "prettier": "prettier --write .",
     "start": "next build && next start",
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
@@ -43,6 +42,7 @@
     "styled-components": "^5"
   },
   "dependencies": {
+    "@avsync.live/formation": "^0.9.59",
     "@monaco-editor/react": "^4.4.6",
     "@panzoom/panzoom": "^4.5.1",
     "@prettier/plugin-xml": "^2.2.0",

@@ -1,4 +1,4 @@
-## 🌌 **daedalOS** 🌌
+## 🌌 **LexiOS** 🌌
 
 ### _Desktop environment in the browser_
 
@@ -16,8 +16,8 @@
 - [Git](https://git-scm.com/downloads)
 
 ```
-git clone https://github.com/DustinBrett/daedalOS.git
-cd daedalOS
+git clone https://github.com/DustinBrett/LexiOS.git
+cd LexiOS
 ```
 
 ### Yarn
