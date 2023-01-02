@@ -1,12 +1,12 @@
 export async function imageToPrompt(imageUrl: string): Promise<void> {
-  const response = await fetch('http://localhost:5000/predictions', {
+  const response = await fetch('http://192.168.1.128:5000/predictions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       input: {
-        image: 'http://localhost:1618/assets/lexi-typography.svg',
+        image: 'http://192.168.1.128:1618/assets/lexi-typography.svg',
       },
     }),
   });

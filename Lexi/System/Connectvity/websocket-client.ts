@@ -1,5 +1,5 @@
 async function connectToServer() {
-    const ws = new WebSocket('ws://localhost:1619');
+    const ws = new WebSocket('ws://192.168.1.128:1619');
     return new Promise<WebSocket>((resolve, reject) => {
       const timer = setInterval(() => {
         if(ws.readyState === 1) {

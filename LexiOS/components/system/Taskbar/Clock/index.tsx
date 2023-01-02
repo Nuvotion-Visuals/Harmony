@@ -1,3 +1,4 @@
+import { Button } from "@avsync.live/formation";
 import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
@@ -159,7 +160,7 @@ const Clock: FC = () => {
   // eslint-disable-next-line unicorn/no-null
   if (!time) return null;
 
-  return (
+  return (<>
     <StyledClock
       ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
       aria-label="Clock"
@@ -171,6 +172,8 @@ const Clock: FC = () => {
     >
       {supportsOffscreenCanvas ? undefined : time}
     </StyledClock>
+  </>
+   
   );
 };
 

@@ -10,7 +10,7 @@ const colors = {
     text: "#FFF",
     textShadow: `none`,
   },
-  highlight: "var(--F_Font_Color)",
+  highlight: "var(--F_Surface_1)",
   highlightBackground: "var(--F_Primary)",
   progress: "hsla(113, 78%, 56%, 90%)",
   progressBackground: "hsla(104, 22%, 45%, 70%)",

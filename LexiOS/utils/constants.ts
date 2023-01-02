@@ -23,7 +23,7 @@ export const DEFAULT_CLOCK_SOURCE: ClockSource = "local";
 
 export const DEFAULT_THEME: ThemeName = "defaultTheme";
 
-export const DEFAULT_WALLPAPER = "VANTA";
+export const DEFAULT_WALLPAPER = "HEXELLS";
 
 export const DEFAULT_WALLPAPER_FIT: WallpaperFit = "fill";
 
@@ -264,7 +264,7 @@ export const DYNAMIC_EXTENSION = new Set([
 
 export const SAVE_TITLE_CHAR = "\u25CF";
 
-export const ROOT_NAME = "My PC";
+export const ROOT_NAME = "This Device";
 
 export const ROOT_SHORTCUT = `${ROOT_NAME}.url`;
 

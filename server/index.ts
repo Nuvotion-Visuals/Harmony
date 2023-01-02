@@ -501,6 +501,6 @@ app.prepare().then(() => {
 
   server.listen(<number>port, (err: any) => {
     if (err) throw err
-    console.log('🟣', `> Ready on http://localhost:${port}`)
+    console.log('🟣', `> Ready on http://192.168.1.128:${port}`)
   })
 })

@@ -11,10 +11,6 @@ const StyledWindow = styled(motion.section)<StyledWindowProps>`
   border-radius: .5rem;
   contain: strict;
   height: 100%;
-  box-shadow: ${({ $isForeground, theme }) =>
-    `${$isForeground
-        ? 'var(--F_Outline_Focus)'
-        : 'var(--F_Outline)'}`};
   width: 100%;
   header + * {
     height: ${({ theme }) =>

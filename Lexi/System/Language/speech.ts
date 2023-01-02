@@ -40,10 +40,10 @@ async function ttsRequest(text: string): Promise<AudioBuffer> {
   if (!audioCtx) {
     audioCtx = new AudioContext()
   }
-  // const response = await fetch(`http://localhost:5500/api/tts?voice=larynx%3Aljspeech-glow_tts&lang=en&vocoder=high&denoiserStrength=.001&text=${text}.`)
+  // const response = await fetch(`http://192.168.1.128:5500/api/tts?voice=larynx%3Aljspeech-glow_tts&lang=en&vocoder=high&denoiserStrength=.001&text=${text}.`)
   
   // much better Google Cloud TTS
-  const response = await fetch(`http://localhost:1621/tts?text=${text}.`)
+  const response = await fetch(`http://192.168.1.128:1621/tts?text=${text}.`)
   
   const arrayBuffer = await response.arrayBuffer()
   return audioCtx.decodeAudioData(arrayBuffer)

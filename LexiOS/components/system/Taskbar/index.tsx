@@ -1,3 +1,4 @@
+import useFullscreen from "components/apps/Photos/useFullscreen";
 import Clock from "components/system/Taskbar/Clock";
 import StartButton from "components/system/Taskbar/StartButton";
 import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
@@ -7,13 +8,14 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
 
+import { Button } from '@avsync.live/formation'
 const StartMenu = dynamic(() => import("components/system/StartMenu"));
 
 const Taskbar: FC = () => {
   const [startMenuVisible, setStartMenuVisible] = useState(false);
   const toggleStartMenu = (showMenu?: boolean): void =>
     setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState);
-
+  
   return (
     <>
       {startMenuVisible && <StartMenu toggleStartMenu={toggleStartMenu} />}
@@ -23,6 +25,7 @@ const Taskbar: FC = () => {
           toggleStartMenu={toggleStartMenu}
         />
         <TaskbarEntries />
+       
         <Clock />
       </StyledTaskbar>
     </>

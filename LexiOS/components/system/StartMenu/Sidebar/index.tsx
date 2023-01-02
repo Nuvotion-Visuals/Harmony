@@ -1,3 +1,4 @@
+import { Icon } from "@avsync.live/formation";
 import type { SidebarButtons } from "components/system/StartMenu/Sidebar/SidebarButton";
 import SidebarButton from "components/system/StartMenu/Sidebar/SidebarButton";
 import {
@@ -44,7 +45,22 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
   };
   const topButtons: SidebarButtons = [
- 
+    {
+      action: () =>
+      open(
+        "Browser"
+      ),
+      icon: <Icon icon='microphone' iconPrefix='fas' />,
+      name: "Speak",
+      ...(collapsed && { tooltip: "Speak to Lexi" }),
+    },
+    {
+      action: () =>
+        document.body.requestFullscreen(),
+      icon: <Icon icon='expand' iconPrefix='fas' />,
+      name: "Fullscreen",
+      ...(collapsed && { tooltip: "Enter fullscreen" }),
+    },
   ];
   const { sizes } = useTheme();
   const vh = viewHeight();
@@ -62,7 +78,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
               { url: `${HOME}/Documents` },
               "/System/Icons/documents.webp"
             ),
-          icon: <Documents />,
+          icon: <Icon icon='file' iconPrefix='far' />,
           name: "Documents",
           ...(collapsed && { tooltip: "Documents" }),
         }
@@ -72,12 +88,12 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
           action: () =>
             open(
               "FileExplorer",
-              { url: `${HOME}/Pictures` },
-              "/System/Icons/pictures.webp"
+              { url: `${HOME}/Music` },
+              "/System/Icons/music.webp"
             ),
-          icon: <Pictures />,
-          name: "Pictures",
-          ...(collapsed && { tooltip: "Pictures" }),
+          icon: <Icon icon='music' iconPrefix='fas' />,
+          name: "Music",
+          ...(collapsed && { tooltip: "Music" }),
         }
       : undefined,
     buttonAreaCount > 5
@@ -85,23 +101,49 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
           action: () =>
             open(
               "FileExplorer",
+              { url: `${HOME}/Pictures` },
+              "/System/Icons/pictures.webp"
+            ),
+          icon: <Icon icon='image' iconPrefix='far' />,
+          name: "Pictures",
+          ...(collapsed && { tooltip: "Pictures" }),
+        }
+      : undefined,
+    buttonAreaCount > 6
+      ? {
+          action: () =>
+            open(
+              "FileExplorer",
               { url: `${HOME}/Videos` },
               "/System/Icons/videos.webp"
             ),
-          icon: <Videos />,
+          icon: <Icon icon='film' iconPrefix='fas' />,
           name: "Videos",
           ...(collapsed && { tooltip: "Videos" }),
         }
       : undefined,
-    {
-      action: () => {
-        setHaltSession(true);
-        resetStorage(rootFs).finally(() => window.location.reload());
-      },
-      icon: <Power />,
-      name: "Power",
-      tooltip: "Clears session data and reloads the page.",
-    },
+    buttonAreaCount > 7
+    ? {
+        action: () =>
+          open(
+            "FileExplorer",
+            { url: `${HOME}/Videos` },
+            "/System/Icons/videos.webp"
+          ),
+        icon: <Icon icon='gear' iconPrefix='fas' />,
+        name: "Videos",
+        ...(collapsed && { tooltip: "Videos" }),
+      }
+    : undefined,
+    // {
+    //   action: () => {
+    //     setHaltSession(true);
+    //     resetStorage(rootFs).finally(() => window.location.reload());
+    //   },
+    //   icon: <Power />,
+    //   name: "Power",
+    //   tooltip: "Clears session data and reloads the page.",
+    // },
   ].filter(Boolean) as SidebarButtons;
 
   useEffect(() => clearTimer, []);

@@ -21,22 +21,24 @@ export function listenForWakeWord(callback: () => void) {
   
     // Set up the wake word grammar
     const wakeWord = 'Lexi';
-    const speechRecognitionList = new SpeechGrammarList();
+    if (SpeechGrammarList !== undefined) {
+      const speechRecognitionList = new SpeechGrammarList();
 
-    const g_wakeWord = `#JSGF V1.0; grammar wakeWord; public <wake> = ${wakeWord};;`
-    speechRecognitionList.addFromString(g_wakeWord, 1);
-
-    recognition.grammars = speechRecognitionList;
+      const g_wakeWord = `#JSGF V1.0; grammar wakeWord; public <wake> = ${wakeWord};;`
+      speechRecognitionList.addFromString(g_wakeWord, 1);
   
-    // Start listening for the wake word
-    recognition.start();
-    console.log(`Listening for wake word "${wakeWord}"`);
-  
-    // Set up the event handler for when the wake word is recognized
-    recognition.onresult = (event: any) => {
-      const result = event.results[0][0].transcript;
-      if (result === wakeWord) {
-        callback();
+      recognition.grammars = speechRecognitionList;
+    
+      // Start listening for the wake word
+      recognition.start();
+      console.log(`Listening for wake word "${wakeWord}"`);
+    
+      // Set up the event handler for when the wake word is recognized
+      recognition.onresult = (event: any) => {
+        const result = event.results[0][0].transcript;
+        if (result === wakeWord) {
+          callback();
+        }
       }
     }
   }

@@ -7,7 +7,7 @@ const sizes = {
     subMenuOffset: 3,
   },
   fileEntry: {
-    fontSize: "13px",
+    fontSize: "12px",
     iconSize: "48px",
     maxIconTextDisplayWidth: 73,
     maxListTextDisplayWidth: 102,
@@ -26,8 +26,8 @@ const sizes = {
     rowGap: "28px",
   },
   startButton: {
-    iconSize: "16px",
-    width: "42px",
+    iconSize: "24px",
+    width: "68px",
   },
   startMenu: {
     maxHeight: 390,
@@ -43,7 +43,7 @@ const sizes = {
     blur: "5px",
     entry: {
       borderSize: "2px",
-      fontSize: "13px",
+      fontSize: "12px",
       iconSize: "16px",
       maxWidth: "180px",
       peekImage: {
@@ -54,9 +54,9 @@ const sizes = {
   },
   titleBar: {
     buttonIconWidth: "10px",
-    buttonWidth: "45px",
-    fontSize: "13px",
-    height: 34,
+    buttonWidth: "2.5rem",
+    fontSize: "12px",
+    height: 30,
     iconMarginRight: ".5rem",
     iconSize: "16px",
   },

@@ -17,7 +17,7 @@ library.add(
   // @ts-ignore
   far.faHeart, far.faPaperPlane, far.faCheckSquare, far.faSquare,
   fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark,
-  far.faEnvelope, 
+  far.faEnvelope,
 
   fab.faYoutube, fab.faGithubAlt,
   
