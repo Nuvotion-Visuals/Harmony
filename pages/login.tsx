@@ -60,8 +60,8 @@ const Preview = ({  } : Props) => {
         else {
           console.log(status, message)
           formik.setErrors({
-            email: 'Verify your session token and try again. It may have expired.',
-            password: 'Verify your clearance token and try again. It may expired.'
+            email: 'Your login failed, check your credentials.',
+            password: 'Alternatively, there may be an error trying to connect to the OpenAI API.'
           })
         }
       }

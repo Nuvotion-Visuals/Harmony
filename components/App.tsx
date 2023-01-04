@@ -23,7 +23,8 @@ import {
   Spacer,
   useBreakpoint,
   AspectRatio,
-  stringInArray
+  stringInArray,
+  Dropdown
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -397,6 +398,45 @@ const Home = ({
             </Box>
 
           </S.Center>
+          <Spacer />
+          <Gap autoWidth>
+          <Dropdown
+          options={[
+            {
+              "icon": "gear",
+              "iconPrefix": "fas",
+              "dropDownOptions": [
+                {
+                  "icon": "fingerprint",
+                  iconPrefix: 'fas',
+                  "text": "Identity"
+                },
+                {
+                  "icon": "palette",
+                  iconPrefix: 'fas',
+                  "text": "Appearance"
+                },
+                {
+                  "icon": "volume-high",
+                  "iconPrefix": "fas",
+                  "text": "Sound"
+                }
+              ]
+            }
+          ]}
+       />
+          {
+            router.route !== 'login' && 
+              <Box mr={.75}>
+                <Button
+                  text='Sign out'
+                  onClick={() => router.push('/login')}
+                  secondary={true}
+                />
+              </Box>
+            }
+          </Gap>
+         
         </>}
         navs={[
           {
@@ -724,24 +764,7 @@ const Home = ({
             icon: 'mask',
             iconPrefix: 'fas',
             active: router.asPath === '/legal/privacy-policy'
-          },
-          {
-            type: 'nav',
-            name: 'Settings',
-            href: `/settings`,
-            icon: 'cog',
-            iconPrefix: 'fas',
-            active: router.asPath === '/settings'
-          },
-          {
-            type: 'clickNav',
-            name: 'Log out',
-            onClick: () => {
-              router.push('/login')
-            },
-            icon: 'sign-out',
-            iconPrefix: 'fas',
-          },
+          }
         ]}
       >
         <S.Container>
