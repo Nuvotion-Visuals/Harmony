@@ -1,7 +1,7 @@
 const sizes = {
   clock: {
     fontSize: "13px",
-    width: "76px",
+    width: "70px",
   },
   contextMenu: {
     subMenuOffset: 3,

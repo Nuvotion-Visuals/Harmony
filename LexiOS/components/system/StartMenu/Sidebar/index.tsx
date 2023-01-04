@@ -45,13 +45,13 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
   };
   const topButtons: SidebarButtons = [
-    {
-      action: () =>
-        document.body.requestFullscreen(),
-      icon: <Icon icon='expand' iconPrefix='fas' />,
-      name: "Fullscreen",
-      ...(collapsed && { tooltip: "Enter fullscreen" }),
-    },
+    // {
+    //   action: () =>
+    //     document.body.requestFullscreen(),
+    //   icon: <Icon icon='expand' iconPrefix='fas' />,
+    //   name: "Fullscreen",
+    //   ...(collapsed && { tooltip: "Enter fullscreen" }),
+    // },
   ];
   const { sizes } = useTheme();
   const vh = viewHeight();

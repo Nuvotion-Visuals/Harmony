@@ -25,7 +25,7 @@ const StyledBrowser = styled.div`
       place-items: center;
       transition: background 0.2s ease-in-out;
       width: 28px;
-
+      box-shadow: none;
 
       &:hover {
         background-color: rgb(103, 103, 103);

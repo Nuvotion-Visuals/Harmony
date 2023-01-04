@@ -1,0 +1,8 @@
+version: "3.7"
+
+services:
+  reverse-proxy:
+    image: traefik
+    command: --configfile=./traefik.toml --log.level=DEBUG
+    ports:
+      - 1617:1617

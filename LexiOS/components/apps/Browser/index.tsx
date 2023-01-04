@@ -155,18 +155,21 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           iconPrefix='fas'
           disabled={!canGoBack}
           onClick={() => changeHistory(-1)}
+          secondary
         />
         <F_Button
           icon='arrow-right'
           iconPrefix='fas'
           disabled={!canGoForward}
             onClick={() => changeHistory(+1)}
+            secondary
         />
         <F_Button
           icon='refresh'
           iconPrefix='fas'
           disabled={loading}
           onClick={() => setUrl(history[position])}
+          secondary
         />
           <TextInput
             value={browswerUrl}
@@ -184,7 +187,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           iconPrefix='far'
           disabled={loading}
           onClick={() => copyToClipboard(browswerUrl)}
-
+          secondary
         />
       
         <Dropdown
@@ -231,7 +234,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           ))}
         </nav>
       </Box>
-      
+
       <iframe
         ref={iframeRef}
         onLoad={() => setLoading(false)}

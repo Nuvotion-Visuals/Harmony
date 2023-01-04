@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
 
-import { Button } from '@avsync.live/formation'
+import { Button, Spacer } from '@avsync.live/formation'
 const StartMenu = dynamic(() => import("components/system/StartMenu"));
 
 const Taskbar: FC = () => {
@@ -25,7 +25,7 @@ const Taskbar: FC = () => {
           toggleStartMenu={toggleStartMenu}
         />
         <TaskbarEntries />
-       
+        <Spacer />
         <Clock />
       </StyledTaskbar>
     </>

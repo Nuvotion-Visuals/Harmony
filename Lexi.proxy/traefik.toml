@@ -1,0 +1,55 @@
+defaultEntryPoints = ["http"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":1617"
+
+[api]
+
+[providers]
+  [providers.file]
+    directory = "config"
+
+[[routers]]
+  rule = "Host(localhost) && Path(/lexios)"
+  service = "lexios"
+  entrypoints = ["http"]
+
+[[services]]
+  [services.lexios]
+  [services.lexios.loadBalancer]
+    [[services.lexios.loadBalancer.servers]]
+      url = "http://localhost:3000"
+
+[[routers]]
+  rule = "Host(localhost) && Path(/lexistudio)"
+  service = "lexistudio"
+  entrypoints = ["http"]
+
+[[services]]
+  [services.lexistudio]
+  [services.lexistudio.loadBalancer]
+    [[services.lexistudio.loadBalancer.servers]]
+      url = "http://localhost:1618"
+
+[[routers]]
+  rule = "Host(localhost) && Path(/framework)"
+  service = "framework"
+  entrypoints = ["http"]
+
+[[services]]
+  [services.framework]
+  [services.framework.loadBalancer]
+    [[services.framework.loadBalancer.servers]]
+      url = "http://localhost:1620"
+
+[[routers]]
+  rule = "Host(localhost) && Path(/lexitts)"
+  service = "lexitts"
+  entrypoints = ["http"]
+
+[[services]]
+  [services.lexitts]
+  [services.lexitts.loadBalancer]
+    [[services.lexitts.loadBalancer.servers]]
+      url = "http://localhost:1621"

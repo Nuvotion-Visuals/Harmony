@@ -1,6 +1,6 @@
-import { Button } from "@avsync.live/formation";
+import { Box, Button } from "@avsync.live/formation";
 import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
-import StyledClock from "components/system/Taskbar/Clock/StyledClock";
+import StyledClock, { S_Container } from "components/system/Taskbar/Clock/StyledClock";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
@@ -161,17 +161,39 @@ const Clock: FC = () => {
   if (!time) return null;
 
   return (<>
-    <StyledClock
-      ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
-      aria-label="Clock"
-      onClick={easterEggOnClick}
-      role="timer"
-      title={date}
-      suppressHydrationWarning
-      {...clockContextMenu}
-    >
-      {supportsOffscreenCanvas ? undefined : time}
-    </StyledClock>
+    <Box>
+     
+      <StyledClock
+        ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
+        aria-label="Clock"
+        onClick={easterEggOnClick}
+        role="timer"
+        title={date}
+        suppressHydrationWarning
+        {...clockContextMenu}
+      >
+       
+        {supportsOffscreenCanvas ? undefined : time}
+      
+      </StyledClock>
+      <S_Container>
+        <Button
+          onClick={() => {
+            if (!document.fullscreenElement) {
+              // Fullscreen is not active, so enter fullscreen
+              document.documentElement.requestFullscreen();
+            } else {
+              // Fullscreen is active, so exit fullscreen
+              document.exitFullscreen();
+            }
+          }}
+          icon='expand'
+          iconPrefix="fas"
+          secondary={true}
+        />
+      </S_Container>
+    </Box>
+   
   </>
    
   );
