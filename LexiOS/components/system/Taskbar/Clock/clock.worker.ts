@@ -27,7 +27,7 @@ const TEXT_HEIGHT_OFFSET = 1;
 const styleClock = (): void => {
   offscreenContext.scale(global.devicePixelRatio, global.devicePixelRatio);
   offscreenContext.fillStyle = textColor;
-  offscreenContext.font = `${fontSize} ${formats.systemFont}`;
+  offscreenContext.font = `12px sans-serif`;
   offscreenContext.textAlign = "center";
   offscreenContext.textBaseline = "middle";
 

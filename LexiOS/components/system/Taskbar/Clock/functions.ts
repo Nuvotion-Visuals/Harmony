@@ -15,7 +15,6 @@ const timeFormat: Intl.DateTimeFormatOptions = {
   hour: "numeric",
   hour12: true,
   minute: "2-digit",
-  second: "2-digit",
 };
 
 const dayFormat: Intl.DateTimeFormatOptions = {
