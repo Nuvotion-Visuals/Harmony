@@ -26,7 +26,7 @@ const Taskbar: FC = () => {
         />
         <TaskbarEntries />
        
-        <Clock />
+        {/* <Clock /> */}
       </StyledTaskbar>
     </>
   );

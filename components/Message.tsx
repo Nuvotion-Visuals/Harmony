@@ -35,7 +35,7 @@ const Message = ({
         <S.AvatarContainer>
                 <Box pt={1}>
                   <Avatar 
-                    src={isLexi ? '/assets/lexi-favicon.svg' : undefined}
+                    src={isLexi ? '/assets/lexi-circle.png' : undefined}
                     icon={isLexi ? undefined : 'user'}
                     iconPrefix='fas'
                     color={isLexi ? 'var(--F_Primary)' : 'var(--F_Surface_0)'}
@@ -44,11 +44,13 @@ const Message = ({
             {
               query
                 ? <Spacer>
-                    <S.Content>
                       <StyleHTML>
+
+                    <S.Content>
                         <ParseHTML markdown={query}/>
-                      </StyleHTML>
                     </S.Content>
+                    </StyleHTML>
+
                   </Spacer>
                 : error
                   ? <Spacer>
@@ -220,8 +222,8 @@ const Message = ({
     }>`
       width: 100%;
       background: ${props => props.isLexi ? 'var(--F_Background_Alternating)': 'var(--F_Background)'};
-      border-top: 1px solid var(--F_Surface_0);
       padding: .75rem 0;
+      border-top: 1px solid var(--F_Surface_0);
     `,
     FlexStart: styled.div<{
       wrap?: boolean
@@ -230,7 +232,7 @@ const Message = ({
       display: flex;
       align-items: flex-start;
       flex-wrap: ${props => props.wrap? 'wrap' : 'noWrap'};
-      
+      max-width: calc(100vw - 1.5rem);
     `,
     Meta: styled.div<{
       monospace?: boolean
@@ -240,7 +242,7 @@ const Message = ({
       color: var(--F_Font_Color_Disabled);
       font-size: 12px;
       font-family: ${props => props.monospace ? 'monospace' : 'inherit'};
-  
+
     `,
     VSpacer: styled.div`
       width: 100%;
@@ -251,6 +253,7 @@ const Message = ({
       align-items: flex-start;
       height: 100%;
       width: 700px;
+      max-width: calc(100vw - 1.5rem);
       gap: 1rem;
     `,
     Banner: styled.img`
@@ -258,6 +261,7 @@ const Message = ({
     `,
     Content: styled.div`
       width: 100%;
-      max-width: calc(700px - 2.5rem);
+      max-width: calc(100vw - 4.5rem);
+      overflow: hidden;
     `
   }

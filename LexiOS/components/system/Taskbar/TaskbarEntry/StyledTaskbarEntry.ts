@@ -71,7 +71,7 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
     display: flex;
     margin-bottom: ${({ theme }) => theme.sizes.taskbar.entry.borderSize};
     margin-left: .25rem;
-    padding: 4px;
+    padding: .25remtas;
 
     figcaption {
       color: ${({ theme }) => theme.colors.text};

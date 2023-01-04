@@ -47,15 +47,6 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   const topButtons: SidebarButtons = [
     {
       action: () =>
-      open(
-        "Browser"
-      ),
-      icon: <Icon icon='microphone' iconPrefix='fas' />,
-      name: "Speak",
-      ...(collapsed && { tooltip: "Speak to Lexi" }),
-    },
-    {
-      action: () =>
         document.body.requestFullscreen(),
       icon: <Icon icon='expand' iconPrefix='fas' />,
       name: "Fullscreen",

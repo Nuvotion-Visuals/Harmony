@@ -14,7 +14,7 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { backgroundColor, peekElement } = process || {};
+  const { backgroundColor, peekElement, maximized } = process || {};
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { zIndex, ...focusableProps } = useFocusable(id);
@@ -33,6 +33,7 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
       <StyledWindow
         $backgroundColor={backgroundColor}
         $isForeground={isForeground}
+        $isMaximized={maximized}
         {...focusableProps}
         {...windowTransitions}
       >

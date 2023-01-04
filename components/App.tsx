@@ -179,22 +179,21 @@ const Home = ({
     scrollToBottom()
 
     const guid = nanoid()
-    const queryTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-    
-    set_queryGuids([...queryGuids, guid])
-    set_queriesByGuid({
-      ...queriesByGuid,
-      [guid]: {
-        guid,
-        query,
-        queryTime,
-        loading: true,
-      }
-    });
-
+    const queryTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
     (async () => {
-      // send to server
-      try {
+      const latestQueryGuids = await getLatestQueryGuids()
+      set_queryGuids([...latestQueryGuids, guid])
+      set_queriesByGuid({
+        ...queriesByGuid,
+        [guid]: {
+          guid,
+          query,
+          queryTime,
+          loading: true,
+        }
+      })
+       // send to server
+       try {
         const action = {
           type: 'message',
           guid,
@@ -205,8 +204,8 @@ const Home = ({
       // failed to send to server
       catch(e) {
         const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-
-        set_queryGuids([...queryGuids, guid])
+        const latestQueryGuids = await getLatestQueryGuids()
+        set_queryGuids([...latestQueryGuids, guid])
         set_queriesByGuid({
           ...queriesByGuid,
           [guid]: {
@@ -388,13 +387,13 @@ const Home = ({
           <S.Center isMobile={isMobile || isTablet} isSidebarOpen={sidebarOpen} >
             <Box width='100%' maxWidth='700px'>
 
-            <TextInput 
+            {/* <TextInput 
               value={contentUrl}
               onChange={newValue => set_contentUrl(newValue)}
               icon='search'
               iconPrefix='fas'
               compact={true}
-            />
+            /> */}
             </Box>
 
           </S.Center>
@@ -464,9 +463,6 @@ const Home = ({
             active: router.asPath === '/realms'
           },
           {
-            type: 'spacer'
-          },
-          {
             type: 'title',
             title: 'Guide',
           },
@@ -497,40 +493,6 @@ const Home = ({
             icon: 'question',
             href: '/guide/faq',
             active: router.asPath === '/guide/faq'
-          },
-          {
-            type: 'spacer'
-          },
-          {
-            type: 'title',
-            title: 'Tools',
-          },
-          {
-            type: 'nav',
-            name: 'Invoke AI',
-            href: `/apps/invoke-ai`,
-            icon: 'i',
-            iconPrefix: 'fas',
-            active: router.asPath === `/apps/invoke-ai`
-          },
-          {
-            type: 'nav',
-            name: 'AVsync.LIVE',
-            href: `/apps/avsync-live`,
-            icon: 'a',
-            iconPrefix: 'fas',
-            active: router.asPath === `/apps/avsync-live`
-          },
-          {
-            type: 'nav',
-            name: 'Photopea',
-            href: `/apps/photopea`,
-            icon: 'p',
-            iconPrefix: 'fas',
-            active: router.asPath === `/apps/photopea`
-          },
-          {
-            type: 'spacer'
           },
           {
             type: 'title',
@@ -744,9 +706,6 @@ const Home = ({
             children: <ScriptInitializedIndicator scriptName='Ethics' />
           },
           {
-            type: 'spacer'
-          },
-          {
             type: 'title',
             title: 'Legal',
           },
@@ -765,9 +724,6 @@ const Home = ({
             icon: 'mask',
             iconPrefix: 'fas',
             active: router.asPath === '/legal/privacy-policy'
-          },
-          {
-            type: 'spacer'
           },
           {
             type: 'nav',
@@ -848,18 +804,18 @@ const Home = ({
                     '/scenes'
                   ])
                     ? children
-                    : <Page>
+                    : <S.AltPage>
                         {
                           children
                         }
-                      </Page>
+                      </S.AltPage>
                 }
                 
                
               </Box>
               {
                 router.route !== '/' ?
-                  <Box width='100%' py={.75}>
+                  <Box width='100%' pt={.75}>
                   <Page>
                   <Button
                     text={show ? 'Hide' : 'Show'}
@@ -871,38 +827,18 @@ const Home = ({
                   </Page>
                 
                 </Box>
-                : <Box py={.75} width='100%'>
-                    <Page>
-                      {
-                        initializedScriptNames.length === 0 &&
-                          <Button
-                            text='Lexi, read your AGI scripts'
-                            onClick={() => {
-                              const action = {
-                                type: 'initialize',
-                              }
-                              websocketClient.send(JSON.stringify(action))
-                            }}
-                            hero={true}
-                            expand={true}
-                            icon='theater-masks'
-                            iconPrefix='fas'
-                            secondary={true}
-                            disabled={initialized}
-                          />
-                      }
-                    </Page>
-                  </Box>
+                : null
               }
               
             </Box>
             <div ref={scrollToRef}></div>
           </S.Content>
 
-          <Page>
+          <Box px={.75}>
+            <S.AltPage>
             <S.Footer>
               <S.ButtonContainer>
-                <Gap disableWrap={true} autoWidth={true}>
+                <Box>
                   <Button 
                     icon={'plus'}
                     iconPrefix='fas'
@@ -936,12 +872,12 @@ const Home = ({
                     onClick={() => makeQuery(query, false)}
                     disabled={loading && queryGuids.length !== 0}
                   />
-                </Gap>
+                </Box>
               
               </S.ButtonContainer>
                 <RichTextEditor
                 value={query} onChange={(value : string) => set_query(value)} 
-                height={'276px'}
+                height={'160px'}
                 onEnter={(newQuery) => {
                   makeQuery(
                     newQuery.slice(0, -11), // remove unwanted linebreak
@@ -950,7 +886,8 @@ const Home = ({
                 }}
               />
             </S.Footer>
-        </Page>
+          </S.AltPage>
+        </Box>
       </S.Container>
       </Navigation>
       <Modal 
@@ -989,6 +926,7 @@ const Home = ({
                 onChange={newValue => set_videoURL(newValue)}
                 icon='youtube'
                 iconPrefix='fab'
+
               />
               <Button
                 text='Insert video transcript'
@@ -1027,40 +965,40 @@ const S = {
   `,
   Content: styled.div`
     width: 100%;
-    height: calc(100vh - calc(var(--F_Header_Height) + 300px)); 
+    height: calc(calc(100vh - calc(var(--F_Header_Height) + var(--L_Prompt_Height))) - calc(var(--L_Prompt_Padding) * 2)); 
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
     overflow-y: auto;
-    border-bottom: 1px solid var(--F_Surface_0);
     overflow-x: hidden;
     scroll-behavior: smooth;
+    background: var(--F_Background);
+  `,
+  AltPage: styled.div`
+    width: 700px;
+    max-width: calc(100vw - 1.5rem);
+
   `,
   Footer: styled.div`
     position:relative;
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    height: 288px;
-    padding-top: .75rem;
+    height: var(--L_Prompt_Height);
+    padding: var(--L_Prompt_Padding) 0;
     overflow-y: auto;
   `,
   ButtonContainer: styled.div`
     position: absolute;
-    right: 0;
-    top: .75rem;
+    right: 1px;
+    top: calc(var(--L_Prompt_Padding) + 1px);
+    border-radius: .75rem;
     z-index: 1;
+    background: var(--F_Background);
+
     button {
       background: none;
     }
-  `,
-  Response: styled.div<{
-    isLexi?: boolean
-  }>`
-    width: 100%;
-    background: ${props => props.isLexi ? 'var(--F_Background_Alternating)': 'var(--F_Background)'};
-    border-top: 1px solid var(--F_Surface_0);
-    padding: .75rem 0;
   `,
   FlexStart: styled.div<{
     wrap?: boolean
@@ -1095,28 +1033,9 @@ const S = {
     justify-content: center;
     pointer-events: none;
   `,
-  Meta: styled.div<{
-    monospace?: boolean
-  }>`
-    display: flex;
-    align-items: center;
-    color: var(--F_Font_Color_Disabled);
-    font-size: 12px;
-    font-family: ${props => props.monospace ? 'monospace' : 'inherit'};
-
-  `,
   VSpacer: styled.div`
     width: 100%;
     height: 100%;
-  `,
-  AvatarContainer: styled.div`
-    display: flex;
-    align-items: flex-start;
-    height: 100%;
-    gap: 1rem;
-  `,
-  Banner: styled.img`
-    width: 100%;
   `,
   Indicator: styled.div<{
     active?: boolean

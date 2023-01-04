@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { TASKBAR_HEIGHT } from "utils/constants";
 
 const StyledTaskbar = styled.nav`
-  background: var(--F_Background);
+  background: var(--F_Background_Alternating);
   bottom: 0;
   contain: size layout;
   height: ${TASKBAR_HEIGHT}px;

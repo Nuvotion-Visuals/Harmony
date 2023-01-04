@@ -28,7 +28,7 @@ console.log(params)
 const S = {
   App: styled.iframe`
     width: 100%;
-    height: calc(calc(100vh - calc(var(--F_Header_Height) + 300px)) - calc(var(--F_Input_Height) + 1.5rem)); 
+    height: calc(calc(100vh - calc(var(--F_Header_Height) + var(--L_Prompt_Height))) - calc(var(--L_Prompt_Padding) * 2));
     margin-top: .75rem;
   `
 }

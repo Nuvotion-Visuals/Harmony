@@ -1,3 +1,4 @@
+import { Box, copyToClipboard, Dropdown, Spacer, TextInput } from "@avsync.live/formation";
 import { bookmarks, config, HOME_PAGE } from "components/apps/Browser/config";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
@@ -13,6 +14,7 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { FAVICON_BASE_PATH, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
+import { Button as F_Button } from '@avsync.live/formation'
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -117,64 +119,119 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     }
   }, [id, linkElement]);
 
+  const [browswerUrl, set_browserUrl] = useState(initialUrl)
+  useEffect(() => {
+    currentUrl.current = history[position];
+    set_browserUrl(history[position]);
+  }, [history])
+
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    const originalSrc = iframe?.src;
+
+    function handleLoad() {
+      // Compare the iframe's current src to the original src
+      // If they are different, it means the src attribute has changed
+      if (iframe?.src !== originalSrc) {
+        alert(iframe?.src)
+      }
+    }
+
+    // Add an event listener to the iframe element to detect when the src attribute changes
+    iframe?.addEventListener('load', handleLoad);
+
+    // Return a cleanup function to remove the event listener when the component unmounts
+    return () => {
+      iframe?.removeEventListener('load', handleLoad);
+    };
+  }, [iframeRef?.current]);
+
   return (
     <StyledBrowser>
       <nav>
-        <div>
-          <Button
-            disabled={!canGoBack}
-            onClick={() => changeHistory(-1)}
-            {...label("Click to go back")}
-          >
-            <Arrow direction="left" />
-          </Button>
-          <Button
-            disabled={!canGoForward}
-            onClick={() => changeHistory(+1)}
-            {...label("Click to go forward")}
-          >
-            <Arrow direction="right" />
-          </Button>
-          <Button
-            disabled={loading}
-            onClick={() => setUrl(history[position])}
-            {...label("Reload this page")}
-          >
-            {loading ? <Stop /> : <Refresh />}
-          </Button>
-        </div>
-        <input
-          ref={inputRef}
-          defaultValue={initialUrl}
-          enterKeyHint="go"
-          onFocusCapture={() => inputRef.current?.select()}
-          onKeyDown={({ key }) => {
-            if (inputRef.current && key === "Enter") {
-              changeUrl(id, inputRef.current.value);
-              window.getSelection()?.removeAllRanges();
-              inputRef.current.blur();
-            }
-          }}
-          type="text"
+        <F_Button
+          icon='arrow-left'
+          iconPrefix='fas'
+          disabled={!canGoBack}
+          onClick={() => changeHistory(-1)}
         />
-      </nav>
-      <nav>
-        {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
-          <Button
-            key={name}
-            onClick={() => {
-              if (inputRef.current) {
-                inputRef.current.value = bookmarkUrl;
-              }
-
-              changeUrl(id, bookmarkUrl);
+        <F_Button
+          icon='arrow-right'
+          iconPrefix='fas'
+          disabled={!canGoForward}
+            onClick={() => changeHistory(+1)}
+        />
+        <F_Button
+          icon='refresh'
+          iconPrefix='fas'
+          disabled={loading}
+          onClick={() => setUrl(history[position])}
+        />
+          <TextInput
+            value={browswerUrl}
+            onChange={value => set_browserUrl(value)}
+            compact={true}
+            onEnter={() => {
+              changeUrl(id, browswerUrl);
+              window.getSelection()?.removeAllRanges();
+              inputRef.current?.blur();
             }}
-            {...label(`${name}\n${bookmarkUrl}`)}
-          >
-            <Icon alt={name} imgSize={16} src={icon} />
-          </Button>
-        ))}
+            ref={inputRef}
+        />
+        <F_Button
+          icon='copy'
+          iconPrefix='far'
+          disabled={loading}
+          onClick={() => copyToClipboard(browswerUrl)}
+
+        />
+      
+        <Dropdown
+          options={[
+            {
+              "icon": "ellipsis-vertical",
+              "iconPrefix": "fas",
+              "dropDownOptions": [
+                {
+                  "icon": "heart",
+                  "text": "Save"
+                },
+                {
+                  "icon": "paper-plane",
+                  "text": "Send"
+                },
+                {
+                  "icon": "plus",
+                  "iconPrefix": "fas",
+                  "text": "Add"
+                }
+              ]
+            }
+          ]}
+       />
       </nav>
+
+      <Box py={.25}>
+        <nav>
+          {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
+            <Button
+              key={name}
+              onClick={() => {
+                if (inputRef.current) {
+                  inputRef.current.value = bookmarkUrl;
+                }
+
+                changeUrl(id, bookmarkUrl);
+              }}
+              {...label(`${name}\n${bookmarkUrl}`)}
+            >
+              <Icon alt={name} imgSize={16} src={icon} />
+            </Button>
+          ))}
+        </nav>
+      </Box>
+      
       <iframe
         ref={iframeRef}
         onLoad={() => setLoading(false)}

@@ -75,7 +75,7 @@ const Preview = ({  } : Props) => {
     setDisabled(false)
   }, [formik.errors])
 
-  return (<Auth title='Welcome to Lexi.studio' logoSrc='/assets/lexi-favicon.svg'>
+  return (<Auth title='Welcome to Lexi.studio' logoSrc='/assets/lexi-circle.png'>
     <form 
       onSubmit={formik.handleSubmit}
       onKeyDown={e => {
@@ -131,7 +131,7 @@ const S = {
   `,
   Help: styled.div`
     font-size: var(--F_Font_Size_Label);
-    
+    font-family: Poppins;
     width: 100%;
   `
 }

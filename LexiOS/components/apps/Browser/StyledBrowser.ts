@@ -3,25 +3,19 @@ import styled from "styled-components";
 const StyledBrowser = styled.div`
   iframe {
     border: 0;
-    height: calc(100% - 36px - 33px);
+    height: calc(100% - 36px - 34px);
     width: 100%;
+    border-top: 1px solid var(--F_Surface);
+
   }
 
   nav {
     background-color: var(--F_Background);
     display: flex;
-    padding-bottom: calc(.5rem - 2px);
-    padding-top: 2px;
-    place-content: center;
-    place-items: center;
-
-    div {
-      display: flex;
-      justify-content: space-around;
-      min-width: 102px;
-      padding-left: 6px;
-      width: 102px;
-    }
+    align-items: center;
+    width: 100%;
+    gap: .125rem;
+    padding: 0 .25rem;
 
     button {
       border-radius: 50%;
@@ -32,11 +26,6 @@ const StyledBrowser = styled.div`
       transition: background 0.2s ease-in-out;
       width: 28px;
 
-      svg {
-        fill: rgb(240, 240, 240);
-        height: 22px;
-        width: 22px;
-      }
 
       &:hover {
         background-color: rgb(103, 103, 103);
@@ -49,25 +38,13 @@ const StyledBrowser = styled.div`
       &:disabled {
         background-color: inherit;
 
-        svg {
-          fill: rgb(152, 152, 152);
-        }
+      
       }
     }
 
-    &:not(:first-child) {
-      height: 33px;
-      justify-content: left;
-      padding: 0 8px;
-      border-bottom: 1px solid var(--F_Surface);
+   
 
-      button {
-        margin-bottom: 4px;
-        margin-right: 4px;
-      }
-    }
-
-    input {
+    /* input {
       background-color: var(--F_Surface);
       border-radius: 18px;
       color: rgb(255, 255, 255);
@@ -83,7 +60,7 @@ const StyledBrowser = styled.div`
       &:focus {
         box-shadow: var(--F_Outline_Focus);
       }
-    }
+    } */
   }
 `;
 

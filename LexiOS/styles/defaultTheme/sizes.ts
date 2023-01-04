@@ -45,7 +45,7 @@ const sizes = {
       borderSize: "2px",
       fontSize: "12px",
       iconSize: "16px",
-      maxWidth: "180px",
+      maxWidth: "160px",
       peekImage: {
         height: 82,
         margin: 8,

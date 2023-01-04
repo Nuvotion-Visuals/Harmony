@@ -24,6 +24,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   position: absolute;
   width: 100%;
   z-index: 10000;
+  border: 1px solid var(--F_Surface);
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   }

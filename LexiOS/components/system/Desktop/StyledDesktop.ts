@@ -9,7 +9,6 @@ const StyledDesktop = styled.main`
   overscroll-behavior: none;
   position: fixed;
   width: 100vw;
-
   > canvas {
     background-color: inherit;
     height: 100%;

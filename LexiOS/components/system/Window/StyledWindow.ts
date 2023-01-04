@@ -4,13 +4,15 @@ import styled from "styled-components";
 type StyledWindowProps = {
   $backgroundColor?: string;
   $isForeground: boolean;
+  $isMaximized?: boolean
 };
 
 const StyledWindow = styled(motion.section)<StyledWindowProps>`
   background: var(--F_Background);
-  border-radius: .5rem;
-  contain: strict;
+  outline: 1px solid var(--F_Surface);
+  border-radius: ${props => props.$isMaximized ? '0' : '.5rem'};
   height: 100%;
+  overflow: hidden;
   width: 100%;
   header + * {
     height: ${({ theme }) =>
