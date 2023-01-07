@@ -6,7 +6,7 @@ export async function imageToPrompt(imageUrl: string): Promise<void> {
     },
     body: JSON.stringify({
       input: {
-        image: 'http://192.168.1.128:1618/assets/lexi-typography.svg',
+        image: 'https://lexi.studio/assets/lexi-typography.svg',
       },
     }),
   });

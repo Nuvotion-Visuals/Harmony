@@ -8,7 +8,7 @@ type Post = {
 
 const Page = ({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     // will resolve posts to type Post[]
-  return (<S.App src='http://192.168.1.128:7860' allow='camera;microphone' allowFullScreen></S.App>)
+  return (<S.App src='https://invoke.lexi.studio' allow='camera;microphone' allowFullScreen></S.App>)
 }
   
 export default Page

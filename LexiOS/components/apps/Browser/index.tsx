@@ -241,8 +241,8 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         srcDoc={srcDoc || undefined}
         style={style}
         title={id}
-        allow='camera;microphone'
         {...config}
+        allow="microphone; camera; fullscreen; autoplay; encrypted-media"
       />
     </StyledBrowser>
   );

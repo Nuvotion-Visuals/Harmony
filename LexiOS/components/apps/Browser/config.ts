@@ -8,14 +8,14 @@ type Bookmark = {
 
 export const bookmarks: Bookmark[] = [
   {
-    icon: 'http://192.168.1.128:1618/assets/lexi-circle.png',
+    icon: 'https://lexi.studio/assets/lexi-circle.png',
     name: "Lexi.studio",
-    url: "http://192.168.1.128:1618/",
+    url: "https://lexi.studio/",
   },
   {
-    icon: 'http://192.168.1.128:1620/favicon.ico',
+    icon: 'https://frameworks.lexi.studio/favicon.ico',
     name: "Frameworks",
-    url: "http://192.168.1.128:1620/admin",
+    url: "https://frameworks.lexi.studio/admin",
   },
   {
     icon: 'https://avsync.live/favicon.ico',
@@ -28,9 +28,9 @@ export const bookmarks: Bookmark[] = [
     url: "https://avsync.live/mosh",
   },
   {
-    icon: 'http://192.168.1.128:7860/assets/logo.13003d72.png',
+    icon: 'https://invoke.lexi.studio/assets/logo.13003d72.png',
     name: "Invoke AI",
-    url: "http://192.168.1.128:7860",
+    url: "https://invoke.lexi.studio",
   },
   {
     icon: 'https://www.photopea.com/promo/icon512.png',
@@ -60,7 +60,7 @@ export const bookmarks: Bookmark[] = [
   {
     icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/2048px-Visual_Studio_Code_1.35_icon.svg.png',
     name: "Code",
-    url: "http://192.168.1.128:8443/",
+    url: "https://code.lexi.studio",
   },
   {
     icon: 'https://svgco.de/favicon.png',
@@ -75,4 +75,4 @@ export const config = {
     "allow-downloads allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts allow-fullscreen",
 };
 
-export const HOME_PAGE = "http://192.168.1.128:1618";
+export const HOME_PAGE = "https://lexi.studio";

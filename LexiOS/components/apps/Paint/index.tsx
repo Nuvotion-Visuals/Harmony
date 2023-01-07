@@ -155,6 +155,7 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
         style={style}
         title={id}
         width="100%"
+        allow="microphone; camera; fullscreen; autoplay; encrypted-media"
       />
     </StyledPaint>
   );

@@ -1,0 +1,41 @@
+version: '3'
+services:
+  goaccess:
+    image: xavierh/goaccess-for-nginxproxymanager:latest
+    container_name: lexi-proxy-nginx-goaccess
+    restart: always
+    environment:
+        - TZ=America/Chicago
+    ports:
+        - '7880:7880'
+    volumes:
+        - ./data/logs:/opt/log
+
+  app:
+    container_name: lexi-proxy-nginx-proxy-manager
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    environment:
+      DB_MYSQL_HOST: "db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "npm"
+      DB_MYSQL_PASSWORD: ${DB_PASSWORD}
+      DB_MYSQL_NAME: "npm"
+    volumes:
+      - ./data/nginx/data:/data
+      - ./data/nginx/letsencrypt:/etc/letsencrypt
+  db:
+    container_name: lexi-proxy-nginx-proxy-manager-db
+    image: 'jc21/mariadb-aria:latest'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'npm'
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./data/nginx/data/mysql:/var/lib/mysql

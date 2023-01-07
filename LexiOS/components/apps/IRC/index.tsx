@@ -96,6 +96,8 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
         src={ircSrc}
         title={id}
         width="100%"
+        allow="microphone; camera; fullscreen; autoplay; encrypted-media"
+        
       />
     </StyledIRC>
   );
