@@ -42,7 +42,7 @@ app.get('/tts', async (req, res) => {
 
 app.get('/', async (req, res) => {
   const text = `With LexiTTS, you can synthesize realistic speech using Google Cloud's neural text-to-speech capabilities.`
-  const audioUrl = `http://localhost:1621/tts?text=${encodeURIComponent(text)}`;
+  const audioUrl = `https://tts.lexi.studio/tts?text=${encodeURIComponent(text)}`;
   res.send(`
     <head><title>LexiTTS</title></head>
     <center>
@@ -60,7 +60,7 @@ app.get('/', async (req, res) => {
         <br />
         <br />
         <h3>New Text-to-Speech</h3>
-        <form action='http://localhost:1621/tts/ui'>
+        <form action='https://tts.lexi.studio/tts/ui'>
           <textarea name='text' style='width: 100%; min-height: 200px; padding: .75rem;'></textarea>
           <br />
           <br />
@@ -77,7 +77,7 @@ app.get('/', async (req, res) => {
 
 app.get('/tts/ui', async (req, res) => {
   const text = req.query.text;
-  const audioUrl = `http://localhost:1621/tts?text=${encodeURIComponent(text)}`;
+  const audioUrl = `https://tts.lexi.studio/tts?text=${encodeURIComponent(text)}`;
   res.send(`
     <head><title>LexiTTS</title></head>
     <center>
@@ -95,7 +95,7 @@ app.get('/tts/ui', async (req, res) => {
         <br />
         <br />
         <h3>New Text-to-Speech</h3>
-        <form action='http://localhost:1621/tts/ui'>
+        <form action='https://tts.lexi.studio/tts/ui'>
           <textarea name='text' style='width: 100%; min-height: 200px; padding: .75rem;'></textarea>
           <br />
           <br />
