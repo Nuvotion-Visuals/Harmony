@@ -13,7 +13,12 @@ async function connectToServer() {
 let websocketClient = {} as WebSocket
   
 export const getWebsocketClient = () => websocketClient;
+export const reconnect = () => {
+  (async () => {
+    websocketClient = await connectToServer()
+  })()
+}
 
 (async () => {
   websocketClient = await connectToServer()
-})();
+})()

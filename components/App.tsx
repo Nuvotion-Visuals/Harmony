@@ -9,7 +9,7 @@ import { convert } from 'html-to-text'
 const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
 const nanoid = customAlphabet(alphabet, 11)
 
-import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
+import { getWebsocketClient, reconnect } from '../Lexi/System/Connectvity/websocket-client'
 
 import {
   Button,
@@ -154,7 +154,9 @@ const Home = ({
           set_loading(false)
         }
       }
-      
+      websocketClient.onclose = () => {
+        reconnect()
+      }
     }
   }, [websocketClient])
 
@@ -200,7 +202,13 @@ const Home = ({
           guid,
           message: query
         }
-        websocketClient.send(JSON.stringify(action))
+
+        if (websocketClient.CLOSED || websocketClient.CLOSING) {
+          reconnect()
+        }
+        else {
+          websocketClient.send(JSON.stringify(action))
+        }
       }
       // failed to send to server
       catch(e) {
@@ -218,6 +226,7 @@ const Home = ({
             error: 'It seems the websocket request went wrong. You should reload the page.'
           }
         })
+
       }
 
       set_loading(false)

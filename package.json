@@ -1,6 +1,6 @@
 {
   "name": "lexi.studio",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Hi, I'm Lexi, a creative artifical general intelligence system (AGI) ready to work with you on artistic and technical projects.",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --watch 'server/index.ts' --exec 'ts-node' --project tsconfig.server.json server/index.ts",

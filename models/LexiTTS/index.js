@@ -41,22 +41,12 @@ app.get('/tts', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
-  const text = `With LexiTTS, you can synthesize realistic speech using Google Cloud's neural text-to-speech capabilities.`
-  const audioUrl = `https://tts.lexi.studio/tts?text=${encodeURIComponent(text)}`;
   res.send(`
     <head><title>LexiTTS</title></head>
     <center>
       <div style='font-family: sans-serif; text-align: justify; line-height: 1.5; width: 700px; max-width: calc(100% - 2rem);'>
         <h2>LexiTTS</h2>
         <p>Synthesize realistic speech using Google Cloud's neural text-to-speech capabilities.</p>
-        <h3>Speech</h3>
-        <audio controls autoplay style='width: 100%;'>
-          <source src="${audioUrl}" type="audio/wav">
-        </audio>
-        <h3>Text</h3>
-        <p >
-          ${text}
-        </p>
         <br />
         <br />
         <h3>New Text-to-Speech</h3>

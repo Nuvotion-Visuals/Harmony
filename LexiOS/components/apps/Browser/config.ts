@@ -38,6 +38,11 @@ export const bookmarks: Bookmark[] = [
     url: "https://photopea.com",
   },
   {
+    icon: 'https://editor.graphite.rs/favicon.ico',
+    name: "Graphite",
+    url: "https://editor.graphite.rs/",
+  },
+  {
     icon: "https://www.google.com/favicon.ico",
     name: "Google",
     url: "https://www.google.com/webhp?igu=1",
