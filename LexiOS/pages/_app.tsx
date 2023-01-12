@@ -50,7 +50,7 @@ library.add(
   fas.faChess, fas.faHandshakeSimple, fas.faGlobe, fas.faPaintBrush,
   fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette,
   fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap, fas.faP, fas.faT, fas.faUsers,
-  fas.faCheckSquare, fas.faFilm, fas.faExpand, fas.faGear, fas.faMusic
+  fas.faCheckSquare, fas.faFilm, fas.faExpand, fas.faGear, fas.faMusic, fas.faHome
 )
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => (

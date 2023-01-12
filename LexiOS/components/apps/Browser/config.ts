@@ -18,6 +18,11 @@ export const bookmarks: Bookmark[] = [
     url: "https://frameworks.lexi.studio/admin",
   },
   {
+    icon: 'https://search.lexi.studio/favicon.ico',
+    name: "Search",
+    url: "https://search.lexi.studio/",
+  },
+  {
     icon: 'https://avsync.live/favicon.ico',
     name: "AVsync.LIVE",
     url: "https://avsync.live/",
@@ -80,4 +85,4 @@ export const config = {
     "allow-downloads allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts allow-fullscreen",
 };
 
-export const HOME_PAGE = "https://lexi.studio";
+export const HOME_PAGE = "https://dash.lexi.studio";

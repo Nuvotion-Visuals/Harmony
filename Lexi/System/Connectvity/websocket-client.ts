@@ -1,5 +1,8 @@
 async function connectToServer() {
     const ws = new WebSocket('wss://ws.lexi.studio');
+    setInterval(() => {
+      ws.send('ping')
+    }, 30 * 1000)
     return new Promise<WebSocket>((resolve, reject) => {
       const timer = setInterval(() => {
         if(ws.readyState === 1) {
@@ -13,11 +16,6 @@ async function connectToServer() {
 let websocketClient = {} as WebSocket
   
 export const getWebsocketClient = () => websocketClient;
-export const reconnect = () => {
-  (async () => {
-    websocketClient = await connectToServer()
-  })()
-}
 
 (async () => {
   websocketClient = await connectToServer()

@@ -154,9 +154,6 @@ const Home = ({
           set_loading(false)
         }
       }
-      websocketClient.onclose = () => {
-        reconnect()
-      }
     }
   }, [websocketClient])
 
@@ -202,13 +199,7 @@ const Home = ({
           guid,
           message: query
         }
-
-        if (websocketClient.CLOSED || websocketClient.CLOSING) {
-          reconnect()
-        }
-        else {
-          websocketClient.send(JSON.stringify(action))
-        }
+        websocketClient.send(JSON.stringify(action))
       }
       // failed to send to server
       catch(e) {

@@ -164,6 +164,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             onClick={() => changeHistory(+1)}
             secondary
         />
+        
         <F_Button
           icon='refresh'
           iconPrefix='fas'
@@ -171,16 +172,22 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           onClick={() => setUrl(history[position])}
           secondary
         />
-          <TextInput
-            value={browswerUrl}
-            onChange={value => set_browserUrl(value)}
-            compact={true}
-            onEnter={() => {
-              changeUrl(id, browswerUrl);
-              window.getSelection()?.removeAllRanges();
-              inputRef.current?.blur();
-            }}
-            ref={inputRef}
+        <F_Button
+          icon='home'
+          iconPrefix='fas'
+          onClick={() => setUrl('https://dash.lexi.studio')}
+          secondary
+        />
+        <TextInput
+          value={browswerUrl}
+          onChange={value => set_browserUrl(value)}
+          compact={true}
+          onEnter={() => {
+            changeUrl(id, browswerUrl);
+            window.getSelection()?.removeAllRanges();
+            inputRef.current?.blur();
+          }}
+          ref={inputRef}
         />
         <F_Button
           icon='copy'

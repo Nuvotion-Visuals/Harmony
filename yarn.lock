@@ -1572,10 +1572,10 @@ character-reference-invalid@^1.0.0:
   resolved "https://registry.yarnpkg.com/character-reference-invalid/-/character-reference-invalid-1.1.4.tgz#083329cda0eae272ab3dbbf37e9a382c13af1560"
   integrity sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==
 
-chatgpt@^3.3.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/chatgpt/-/chatgpt-3.3.2.tgz#d2c185f944ba42df2625164ac465992dec1a683b"
-  integrity sha512-uGKkHRLIMLtZJ3Shv1JmvZzyyHn1I+jD4z2zjF0Zfipe2+U6c+Kd6tqjavmsDlyuCYcsO23VF1oX2hVbipQbPQ==
+chatgpt@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/chatgpt/-/chatgpt-3.4.1.tgz#d031b01ec63e8c490f6836f06021ede7117d2399"
+  integrity sha512-aCFJRvJI9+HhuDquNi6ZgTrM524imnmZVY9lyyDo0F9LYJgCrk/h3XVqbzKDREsDW0IG4jHWIm8Q7R90FCAJmA==
   dependencies:
     delay "^5.0.0"
     eventsource-parser "^0.0.5"
@@ -4349,14 +4349,23 @@ mdast-util-from-markdown@^1.0.0:
     unist-util-stringify-position "^3.0.0"
     uvu "^0.5.0"
 
+mdast-util-phrasing@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mdast-util-phrasing/-/mdast-util-phrasing-3.0.0.tgz#c44fcf6be61a3cb8da54ab2df22320e61d4537ce"
+  integrity sha512-S+QYsDRLkGi8U7o5JF1agKa/sdP+CNGXXLqC17pdTVL8FHHgQEiwFGa9yE5aYtUxNiFGYoaDy9V1kC85Sz86Gg==
+  dependencies:
+    "@types/mdast" "^3.0.0"
+    unist-util-is "^5.0.0"
+
 mdast-util-to-markdown@^1.0.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/mdast-util-to-markdown/-/mdast-util-to-markdown-1.4.0.tgz#bb0153a865dbc022975f403a156fb6399c494ddf"
-  integrity sha512-IjXARf/O8VGx/pc5SZ7syfydq1DYL9vd92orsG5U0b4GNCmAvXzu+n7sbzfIKrXwB0AVrYk3NV2kXl0AIi9LCA==
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/mdast-util-to-markdown/-/mdast-util-to-markdown-1.5.0.tgz#c13343cb3fc98621911d33b5cd42e7d0731171c6"
+  integrity sha512-bbv7TPv/WC49thZPg3jXuqzuvI45IL2EVAr/KxF0BSdHsU0ceFHOmwQn6evxAh1GaoK/6GQ1wp4R4oW2+LFL/A==
   dependencies:
     "@types/mdast" "^3.0.0"
     "@types/unist" "^2.0.0"
     longest-streak "^3.0.0"
+    mdast-util-phrasing "^3.0.0"
     mdast-util-to-string "^3.0.0"
     micromark-util-decode-string "^1.0.0"
     unist-util-visit "^4.0.0"

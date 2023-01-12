@@ -19,7 +19,7 @@
     "@google-cloud/text-to-speech": "^4.1.0",
     "axios": "^1.2.1",
     "body-parser": "^1.20.1",
-    "chatgpt": "^3.3.2",
+    "chatgpt": "^3.4.1",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",
     "cuid": "^2.1.8",
