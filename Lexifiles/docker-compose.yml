@@ -1,0 +1,13 @@
+version: "2"
+services:
+  filebrowser:
+    image: hurlenko/filebrowser
+    user: "${UID}:${GID}"
+    ports:
+    - 8999:8080
+    volumes:
+    - ../Lexisave/data/youtube/:/data/youtube
+    - ./data/filebrowser/CONFIG_DIR:/config
+    environment:
+    - FB_BASEURL=/filebrowser
+    restart: always

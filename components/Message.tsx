@@ -262,6 +262,7 @@ const Message = ({
     Content: styled.div`
       width: 100%;
       max-width: calc(100vw - 4.5rem);
+      
       overflow: hidden;
     `
   }
