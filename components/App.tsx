@@ -9,7 +9,7 @@ import { convert } from 'html-to-text'
 const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
 const nanoid = customAlphabet(alphabet, 11)
 
-import { getWebsocketClient, reconnect } from '../Lexi/System/Connectvity/websocket-client'
+import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 
 import {
   Button,

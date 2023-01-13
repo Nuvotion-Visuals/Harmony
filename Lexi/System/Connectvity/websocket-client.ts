@@ -1,7 +1,9 @@
 async function connectToServer() {
     const ws = new WebSocket('wss://ws.lexi.studio');
     setInterval(() => {
-      ws.send('ping')
+      ws.send(JSON.stringify({
+        type: 'ping'
+      }))
     }, 30 * 1000)
     return new Promise<WebSocket>((resolve, reject) => {
       const timer = setInterval(() => {

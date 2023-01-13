@@ -38,7 +38,8 @@ export async function speak(text: string, callback: (error: any) => void) {
 let audioCtx: any
 async function ttsRequest(text: string): Promise<AudioBuffer> {
   if (!audioCtx) {
-    audioCtx = new AudioContext()
+    
+    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
   }
   // const response = await fetch(`http://192.168.1.128:5500/api/tts?voice=larynx%3Aljspeech-glow_tts&lang=en&vocoder=high&denoiserStrength=.001&text=${text}.`)
   
