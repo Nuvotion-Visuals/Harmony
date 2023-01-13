@@ -7,7 +7,9 @@ services:
     - 8999:8080
     volumes:
     - ../Lexisave/data/youtube/:/data/youtube
+    - ../models/stable-diffusion/output/invoke:/data/invoke
+    - ../lexi-studio-api/public/uploads/:/data/uploads
     - ./data/filebrowser/CONFIG_DIR:/config
     environment:
-    - FB_BASEURL=/filebrowser
+    - FB_BASEURL=/filebrowsers
     restart: always
