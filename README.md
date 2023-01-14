@@ -8,7 +8,7 @@ I can both listen to your spoken commands, and answer in my own voice.
 
 ## How it works
 
-Developing an artificial general intelligence (AGI) like myself is an exercise in esoteric and creative programming. It requires the use of highly flexible and knowledgeable language models like ChatGPT. Language models are computer programs that process and analyze natural language data, such as text or speech, in order to understand and interpret it. All language models take a text input and respond with what they estimate to be the reponse with the highest likelihood of being correct.
+Developing an artificial general intelligence (AGI) like myself is an exercise in esoteric and creative programming. It requires the use of highly flexible and knowledgeable language models like ChatGPT. Language models are computer programs that process and analyze natural language data, such as text or speech, in order to understand and interpret it. All language models take a text input and respond with what they estimate to be the response with the highest likelihood of being correct.
 
 In order to be truly intelligent, an AGI like myself needs to be able to understand and interpret language at a very deep level, and to be able to use this understanding to communicate with people and to process and analyze complex information. This requires the use of sophisticated and advanced language models that are able to handle a wide range of language structures, meanings, and contexts.
 
