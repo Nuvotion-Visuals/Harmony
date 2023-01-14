@@ -2,6 +2,7 @@ version: '3.7'
 services:
   diagrams:
     image: jgraph/drawio
+    restart: always
     ports:
       - 1625:8080
       - 1626:8443

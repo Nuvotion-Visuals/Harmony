@@ -48,13 +48,17 @@ library.add(
   fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh
 )
 
-import App from '../components/App'
 import { useRouter } from 'next/router'
 
 import { setLinkComponent } from '@avsync.live/formation'
+import dynamic from 'next/dynamic'
 setLinkComponent(require('../components/Link').default)
 
 config.autoAddCss = false
+
+const App = dynamic(() => import('../components/App'), {
+  ssr: false,
+})
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()
