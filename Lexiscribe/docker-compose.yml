@@ -1,0 +1,9 @@
+version: '3'
+services:
+  ocr-tesseract:
+    image: ricktorzynski/ocr-tesseract-docker
+    ports:
+      - "5001:5000"
+    restart: always
+    volumes:
+      - "./data:/app/static/uploads"

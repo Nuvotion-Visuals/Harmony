@@ -1,0 +1,45 @@
+{
+  "name": "lexi-studio-api",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A Strapi application",
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "@_sh/strapi-plugin-ckeditor": "^1.1.2",
+    "@exfabrica/strapi-plugin-awesome-help": "^1.0.8",
+    "@palmabit/strapi-app-version": "^1.1.0",
+    "@strapi/plugin-color-picker": "^4.5.5",
+    "@strapi/plugin-documentation": "^4.5.5",
+    "@strapi/plugin-graphql": "^4.5.5",
+    "@strapi/plugin-i18n": "4.5.5",
+    "@strapi/plugin-users-permissions": "4.5.5",
+    "@strapi/strapi": "4.5.5",
+    "mysql": "2.18.1",
+    "strapi-plugin-duplicate-button": "^1.0.4",
+    "strapi-plugin-entity-relationship-chart": "^4.1.0",
+    "strapi-plugin-graphs-builder": "^1.0.0",
+    "strapi-plugin-import-export-entries": "^1.18.0",
+    "strapi-plugin-local-image-sharp": "^1.2.1",
+    "strapi-plugin-passwordless": "^4.0.8",
+    "strapi-plugin-ratings": "^1.1.9",
+    "strapi-plugin-request-id": "^1.1.0",
+    "strapi-plugin-slugify": "^2.3.2"
+  },
+  "author": {
+    "name": "A Strapi developer"
+  },
+  "strapi": {
+    "uuid": "1f4ea961-d368-492d-912c-5aab356b0234"
+  },
+  "engines": {
+    "node": ">=14.19.1 <=18.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}

@@ -401,7 +401,7 @@ const Home = ({
           </S.Center>
           <Spacer />
           <Gap autoWidth>
-            <Label label={latestPongTime} color='green' />
+            {/* <Label label={latestPongTime} color='green' /> */}
           <Dropdown
           options={[
             {

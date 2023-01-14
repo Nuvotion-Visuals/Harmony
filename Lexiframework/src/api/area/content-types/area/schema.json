@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "areas",
+  "info": {
+    "singularName": "area",
+    "pluralName": "areas",
+    "displayName": "Area",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "media": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "location": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::location.location"
+    },
+    "floorplans": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "address": {
+      "type": "string"
+    }
+  }
+}

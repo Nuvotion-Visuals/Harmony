@@ -1,0 +1,77 @@
+{
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Article",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "richtext"
+    },
+    "article_tags": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::article-tag.article-tag"
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::article.article"
+    },
+    "children": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::article.article"
+    },
+    "publication_date": {
+      "type": "datetime"
+    },
+    "attachments": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "related_articles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::article.article"
+    },
+    "author": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::entity.entity"
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::entity.entity"
+    }
+  }
+}

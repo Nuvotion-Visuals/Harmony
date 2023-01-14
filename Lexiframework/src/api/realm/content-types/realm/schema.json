@@ -1,0 +1,183 @@
+{
+  "kind": "collectionType",
+  "collectionName": "realms",
+  "info": {
+    "singularName": "realm",
+    "pluralName": "realms",
+    "displayName": "Realm",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "characters": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::character.character"
+    },
+    "location": {
+      "type": "richtext"
+    },
+    "time_period": {
+      "type": "richtext"
+    },
+    "culture": {
+      "type": "richtext"
+    },
+    "politics": {
+      "type": "richtext"
+    },
+    "economy": {
+      "type": "richtext"
+    },
+    "education": {
+      "type": "richtext"
+    },
+    "healthcare": {
+      "type": "richtext"
+    },
+    "military": {
+      "type": "richtext"
+    },
+    "arts": {
+      "type": "richtext"
+    },
+    "entertainment": {
+      "type": "richtext"
+    },
+    "transportation": {
+      "type": "richtext"
+    },
+    "technology": {
+      "type": "richtext"
+    },
+    "ecology": {
+      "type": "richtext"
+    },
+    "climate": {
+      "type": "richtext"
+    },
+    "geography": {
+      "type": "richtext"
+    },
+    "wildlife": {
+      "type": "richtext"
+    },
+    "resources": {
+      "type": "richtext"
+    },
+    "agriculture": {
+      "type": "richtext"
+    },
+    "social_welfare": {
+      "type": "richtext"
+    },
+    "history": {
+      "type": "richtext"
+    },
+    "language": {
+      "type": "richtext"
+    },
+    "currency": {
+      "type": "richtext"
+    },
+    "laws": {
+      "type": "richtext"
+    },
+    "government_structure": {
+      "type": "richtext"
+    },
+    "political_parties": {
+      "type": "richtext"
+    },
+    "media": {
+      "type": "richtext"
+    },
+    "telecommunications": {
+      "type": "richtext"
+    },
+    "sports": {
+      "type": "richtext"
+    },
+    "tourism": {
+      "type": "richtext"
+    },
+    "food": {
+      "type": "richtext"
+    },
+    "fashion": {
+      "type": "richtext"
+    },
+    "music": {
+      "type": "richtext"
+    },
+    "literature": {
+      "type": "richtext"
+    },
+    "theatre": {
+      "type": "richtext"
+    },
+    "cinema": {
+      "type": "richtext"
+    },
+    "television": {
+      "type": "richtext"
+    },
+    "advertising": {
+      "type": "richtext"
+    },
+    "public_services": {
+      "type": "richtext"
+    },
+    "environmental_policy": {
+      "type": "richtext"
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::realm.realm"
+    },
+    "children": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::realm.realm"
+    },
+    "is_real": {
+      "type": "boolean",
+      "default": false
+    },
+    "magic": {
+      "type": "richtext"
+    },
+    "commerce": {
+      "type": "richtext"
+    },
+    "religion": {
+      "type": "richtext"
+    },
+    "justice": {
+      "type": "richtext"
+    },
+    "equality": {
+      "type": "richtext"
+    },
+    "social_classes": {
+      "type": "richtext"
+    },
+    "locations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::location.location"
+    },
+    "entities": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entity.entity"
+    }
+  }
+}

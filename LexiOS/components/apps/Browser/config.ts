@@ -13,9 +13,9 @@ export const bookmarks: Bookmark[] = [
     url: "https://lexi.studio/",
   },
   {
-    icon: 'https://frameworks.lexi.studio/favicon.ico',
-    name: "Frameworks",
-    url: "https://frameworks.lexi.studio/admin",
+    icon: 'https://framework.lexi.studio/favicon.ico',
+    name: "Framework",
+    url: "https://framework.lexi.studio/admin",
   },
   {
     icon: 'https://search.lexi.studio/favicon.ico',

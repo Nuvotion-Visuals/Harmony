@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "project_issues",
+  "info": {
+    "singularName": "project-issue",
+    "pluralName": "project-issues",
+    "displayName": "Project Issue"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    }
+  }
+}
