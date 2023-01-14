@@ -152,6 +152,18 @@ wss.on('connection', function connection(ws: typeof WSS) {
       guid: string,
       messageTime: string,
     }
+    if (action.type === 'ping') {
+      ws.send(JSON.stringify({
+        type: 'pong',
+        message: {
+
+        },
+        time: new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}),
+        guid: action.guid,
+        status: 200,
+        messageTime: action.messageTime
+      }))
+    }
     if (action.type === 'message') {
       sendMessage(
         action.message,

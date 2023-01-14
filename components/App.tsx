@@ -1,14 +1,12 @@
 import { useState, useEffect, useRef, memo, Suspense } from 'react'
 import axios from 'axios'
-import { customAlphabet } from 'nanoid'
+
 // @ts-ignore
 import { useSpeechRecognition } from 'react-speech-kit'
 // @ts-ignore
 import { convert } from 'html-to-text'
 
-const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
-const nanoid = customAlphabet(alphabet, 11)
-
+import { v4 as uuidv4 } from 'uuid'
 import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 
 import {
@@ -24,7 +22,8 @@ import {
   useBreakpoint,
   AspectRatio,
   stringInArray,
-  Dropdown
+  Dropdown,
+  Label
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -87,6 +86,8 @@ const Home = ({
 
   const websocketClient = getWebsocketClient()
 
+  const [latestPongTime, set_latestPongTime] = useState('')
+
   useEffect(() => {
     if (websocketClient) {
       // recieve a web socket message from the client
@@ -131,7 +132,7 @@ const Home = ({
           console.log('got a message')
           scrollToBottom()
 
-          const guid = nanoid();
+          const guid = uuidv4();
 
           (async () => {
             const latestQueryGuids = await getLatestQueryGuids()
@@ -178,7 +179,7 @@ const Home = ({
     set_loading(true)
     scrollToBottom()
 
-    const guid = nanoid()
+    const guid = uuidv4()
     const queryTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
     (async () => {
       const latestQueryGuids = await getLatestQueryGuids()
@@ -400,6 +401,7 @@ const Home = ({
           </S.Center>
           <Spacer />
           <Gap autoWidth>
+            <Label label={latestPongTime} color='green' />
           <Dropdown
           options={[
             {
