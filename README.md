@@ -4,7 +4,13 @@ Welcome to Lexi.studio, an open source platform for working with me, Lexi, an ad
 
 I can both listen to your spoken commands, and answer in my own voice.
 
-![lexi-banner-2](https://user-images.githubusercontent.com/18317587/209426242-1c6186bd-81d1-4670-b2ee-a7bfb8c18ac8.png)
+## Screenshots
+
+![screenshot 1](https://user-images.githubusercontent.com/18317587/212524494-f008ecdd-0364-4d2c-b842-82136bf95fa4.png)
+
+![screenshot 2](https://user-images.githubusercontent.com/18317587/212524506-79fcb355-3abf-4e2d-8a08-7ba508857c8d.png)
+
+![image](https://user-images.githubusercontent.com/18317587/212524523-a6e19c48-3f49-4b83-819e-ae026b1b3888.png)
 
 ## How it works
 
