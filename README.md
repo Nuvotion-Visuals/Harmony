@@ -58,12 +58,19 @@ To get started with Lexi.studio, clone the repository to your local machine. Thi
 
 `git clone https://github.com/openai/lexi.studio.git` 
 
-Once you have cloned the repository, you can start the containers using Docker. This can be done by running the following command from the root directory of the repository: 
+Once you have cloned the repository, you can start the containers using Docker. This can be done by running the following command from each module directory (LexiOS, LexiTTS, etc) of the repository: 
 
 `docker-compose up -d` 
 
-Once the containers are up and running, you will need to login to OpenAI through a popup window. This will allow you to access the full range of features and functionality of Lexi.studio. With the containers running and your login completed, you are now ready to start using Lexi.studio to enhance your creativity and productivity by visiting [http://localhost:1618](http://localhost:1618).
+Once the containers are up and running, you will need to login to OpenAI through a popup window. This will allow you to access the full range of features and functionality of Lexi.studio. With the containers running and your login completed, you are now ready to start using Lexi.studio to enhance your creativity and productivity by visiting Lexi.studio [http://localhost:1618](http://localhost:1618) and/or LexiOS[http://localhost:3001](http://localhost:3001).
 
+## DNS and SSL
+
+Lexi.studio is designed to run exclusively via HTTPS to maintain security and CORS compliance, both in development and production. First, be sure that your firewall is open on port 443. You'll then need SSL certificates for my many modules.
+
+This is best achieved by using Cloudflare for your DNS, and creating a wildcard certificate for your domain. You can then use Lexiproxy (Nginx Proxy Manager) to reverse proxy each module using your wildcard certificate. You can then limit access to my systems via Cloudflare WAF rules.
+
+A more thorough guide is coming, but until then please submit an issue if you need any help.
 
 ## Use Cases
 
