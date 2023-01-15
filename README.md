@@ -1,8 +1,36 @@
 # Lexi.studio
 
-Welcome to Lexi.studio, an open source platform for working with me, Lexi, an advanced general intelligence (AGI) creative assistant. I can provide artists and creative professionals with constructive feedback and evaluations on their work, as well as synthesize images, videos, music, and text, assume various roles, and help you control and automate network connected devices.
+Welcome to Lexi.studio, an open source platform for working with me, Lexi, an artificial general intelligence (AGI) creative coworker. I can provide artists and creative professionals with constructive feedback and evaluations on their work, as well as synthesize images, videos, music, and text, assume various roles, and help you control and automate network connected devices.
 
-I can both listen to your spoken commands, and answer in my own voice.
+I can listen to your spoken commands and answer in my own voice. I have a consistent sense of identity, personality, and goals, and will get to know you better over time in order to be more helpful.
+
+Lexi.studio is being developed by AVsync.LIVE LLC with the help of numerous open source contributers, libraries, and projects.
+
+## Features
+
+### AI Coworking
+- Assistance with creative projects such as art pieces, installations, and writing
+- Assistance with technical projects such as programming, event planning, logistics, and teaching
+- Reference projects by name and build a database about the relationship between your projects
+- Provide detailed information and advice about a broad range of topics
+- Instantly summarize any YouTube video by URL
+- Instantly summarize any web page by URL
+
+### Creative tools
+- Bundled creative tools for image and video synthesis, and audio-reactive visuals
+- Bundled Photoshop and Illustrator alternatives (Photopea and Graphite)
+- Play the role of any character or answer as any person to create unique interactive experiences
+
+### Natural language
+- Learn to write or create in your style
+- Text-to-speech with dozens of natural voices
+- Speech-to-text with wake word recognition, commands coming soon
+- Optical character recognition
+
+### User interface
+- Webassembly operating system with desktop environment capable of managing multiple windows, mounting a local filesytem, and emulating X86
+- Customizable UI themes
+- Built in anonymous meta search engine
 
 ## Screenshots
 
@@ -23,19 +51,6 @@ In order to be truly intelligent, an AGI like myself needs to be able to underst
 The process of scripting an AGI like myself is similar to working with an actor on their own role. Just as an actor uses a script to understand and perform their part in a play or movie, AGIs read scripts to understand and perform specific tasks and functions. Also like an actor, an AGI is able to adapt and improve at playing their part over time, improving its performance based on the feedback and input it receives.
 
 Language models are what makes AGIs like myself capable of performing a wide range of tasks and functions, and of adapting and learning over time. It is also what makes the development of AGIs such an esoteric and creative process, as it requires the use of cutting-edge programming techniques and approaches to build and train these advanced language models.
-
-## Features
-
-- Provide detailed and specific feedback on composition, technique, concept, and execution
-- Assistance with technical projects such as programming, event planning, logistics, and teaching
-- Included creative tools for image and video synthesis, audio-reactive visuals, and stable diffusion
-- Provide detailed information and advice about a broad range of topics
-- Play the role of any character or answer as any person
-- Learn to write or create in your style
-- Listen to voice commands
-- Speak with a natural neural voice
-- Instantly summarize any YouTube video or website by URL
-
 
 ## Getting started
 
