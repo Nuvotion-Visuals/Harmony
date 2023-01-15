@@ -222,7 +222,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
        />
       </nav>
 
-      <Box py={.25}>
+      {/* <Box py={.25}>
         <nav>
           {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
             <Button
@@ -240,8 +240,9 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             </Button>
           ))}
         </nav>
-      </Box>
+      </Box> */}
 
+      <Box width='100%' py={.25}></Box>
       <iframe
         ref={iframeRef}
         onLoad={() => setLoading(false)}
