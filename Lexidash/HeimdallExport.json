@@ -1,0 +1,130 @@
+[
+  {
+    "title": "Lexi.studio",
+    "colour": "#121212",
+    "url": "https://lexi.studio",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Search",
+    "colour": "#121212",
+    "url": "https://search.lexi.studio",
+    "description": null,
+    "appid": "d3f896182b5c10b07918e295fce8c5aef054d266",
+    "appdescription": "A privacy-respecting, hackable metasearch engine."
+  },
+  {
+    "title": "Files",
+    "colour": "#121212",
+    "url": "https://files.lexi.studio",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Frameworks",
+    "colour": "#121212",
+    "url": "https://framework.lexi.studio/admin",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Optical character recognition",
+    "colour": "#121212",
+    "url": "https://ocr.lexi.studio",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Text-to-speech",
+    "colour": "#121212",
+    "url": "https://tts.lexi.studio",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Speech-to-text",
+    "colour": "#121212",
+    "url": "https://tts.lexi.studio",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Invoke",
+    "colour": "#121212",
+    "url": "https://invoke.lexi.studio",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Photopea",
+    "colour": "#121212",
+    "url": "https://photopea.com",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Graphite",
+    "colour": "#121212",
+    "url": "https://editor.graphite.rs/",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "YT Downloader",
+    "colour": "#121212",
+    "url": "https://youtube-dl.lexi.studio",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Diagrams",
+    "colour": "#121212",
+    "url": "https://diagrams.lexi.studio/",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Code",
+    "colour": "#121212",
+    "url": "https://code.lexi.studio",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "AVsync.LIVE",
+    "colour": "#121212",
+    "url": "https://AVsync.LIVE",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Mosh",
+    "colour": "#121212",
+    "url": "https://avsync.live/mosh",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  },
+  {
+    "title": "Matrix",
+    "colour": "#121212",
+    "url": "https://avsync.live/matrix",
+    "description": null,
+    "appid": "null",
+    "appdescription": null
+  }
+]

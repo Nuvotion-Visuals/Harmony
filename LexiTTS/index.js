@@ -44,7 +44,7 @@ app.get('/', async (req, res) => {
   res.send(`
     <head><title>LexiTTS</title></head>
     <center>
-      <div style='font-family: sans-serif; text-align: justify; line-height: 1.5; width: 700px; max-width: calc(100% - 2rem);'>
+      <div style='font-family: sans-serif; text-align: justify; line-height: 1.5; width: 700px; max-width: calc(100% - 2rem); background: #121212; color: white;'>
         <h2>LexiTTS</h2>
         <p>Synthesize realistic speech using Google Cloud's neural text-to-speech capabilities.</p>
         <br />
@@ -71,7 +71,7 @@ app.get('/tts/ui', async (req, res) => {
   res.send(`
     <head><title>LexiTTS</title></head>
     <center>
-      <div style='font-family: sans-serif; text-align: justify; line-height: 1.5; width: 700px; max-width: calc(100% - 2rem);'>
+      <div style='font-family: sans-serif; text-align: justify; line-height: 1.5; width: 700px; max-width: calc(100% - 2rem); background: #121212; color: white;'>
         <h2>LexiTTS</h2>
         <p>Synthesize realistic speech using Google Cloud's neural text-to-speech capabilities.</p>
         <h3>Speech</h3>
