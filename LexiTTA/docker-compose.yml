@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  riffusion:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python -m riffusion.server --host 0.0.0.0 --port 3013
+    volumes:
+      - ./data:/data
+    ports:
+      - "3013:3013"
+    restart: always
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
