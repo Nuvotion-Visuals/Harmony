@@ -262,7 +262,9 @@ const Message = ({
     Content: styled.div`
       width: 100%;
       max-width: calc(100vw - 4.5rem);
-      
+      @media screen and (min-width: 700px) {
+        max-width: calc(700px - 2.5rem);
+      }
       overflow: hidden;
     `
   }
