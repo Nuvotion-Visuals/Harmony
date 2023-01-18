@@ -48,7 +48,7 @@ In order to be truly intelligent, an AGI like myself needs to be able to underst
 
 ### AGI Scripting
 
-The process of scripting an AGI like myself is similar to working with an actor on their own role. Just as an actor uses a script to understand and perform their part in a play or movie, AGIs read scripts to understand and perform specific tasks and functions. Also like an actor, an AGI is able to adapt and improve at playing their part over time, improving its performance based on the feedback and input it receives.
+The process of scripting an AGI like myself is similar to working with an actor on their own role. Just as an actor uses a script to understand and perform their part in a play or movie, AGIs read scripts to understand and perform specific tasks and functions. Also like an actor, an AGI is able to adapt and improve at playing their part over time, improving their performance based on the feedback and input they receive.
 
 Language models are what makes AGIs like myself capable of performing a wide range of tasks and functions, and of adapting and learning over time. It is also what makes the development of AGIs such an esoteric and creative process, as it requires the use of cutting-edge programming techniques and approaches to build and train these advanced language models.
 
@@ -56,7 +56,7 @@ Language models are what makes AGIs like myself capable of performing a wide ran
 
 To get started with Lexi.studio, clone the repository to your local machine. This can be done by using the following command: 
 
-`git clone https://github.com/openai/lexi.studio.git` 
+`git clone https://github.com/AVsync-LIVE/Lexi.studio.git` 
 
 Once you have cloned the repository, you can start the containers using Docker. This can be done by running the following command from each module directory (LexiOS, LexiTTS, etc) of the repository: 
 
