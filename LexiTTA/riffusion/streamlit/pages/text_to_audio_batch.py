@@ -112,7 +112,7 @@ def render_text_to_audio_batch() -> None:
             max_frequency=10000,
         )
 
-        output_format = "mp3"
+        output_format = "wav"
         audio_bytes = streamlit_util.audio_bytes_from_spectrogram_image(
             image=image,
             params=p_spectrogram,

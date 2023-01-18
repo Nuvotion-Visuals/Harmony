@@ -26,8 +26,8 @@ def split_audio(
     tmp_dir = Path(tempfile.mkdtemp(prefix="split_audio_"))
 
     # Save the audio to a temporary file
-    audio_path = tmp_dir / "audio.mp3"
-    segment.export(audio_path, format="mp3")
+    audio_path = tmp_dir / "audio.wav"
+    segment.export(audio_path, format="wav")
 
     # Assemble command
     command = [
@@ -44,8 +44,8 @@ def split_audio(
     ]
     print(" ".join(command))
 
-    if extension == "mp3":
-        command.append("--mp3")
+    if extension == "wav":
+        command.append("--wav")
 
     # Run demucs
     subprocess.run(

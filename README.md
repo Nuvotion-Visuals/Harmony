@@ -103,7 +103,7 @@ We welcome contributions to the Lexi.studio platform. If you have ideas or sugge
 
 ## License
 
-Lexi.studio is released under the MIT License.
+[License](https://github.com/AVsync-LIVE/License/blob/main/LICENSE.md)
 
 ## Codebase Visualization
 

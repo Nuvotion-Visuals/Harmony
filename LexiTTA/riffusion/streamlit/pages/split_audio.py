@@ -34,11 +34,11 @@ def render_split_audio() -> None:
 
     device = streamlit_util.select_device(st.sidebar)
 
-    extension_options = ["mp3", "wav", "m4a", "ogg", "flac", "webm"]
+    extension_options = ["wav", "wav", "m4a", "ogg", "flac", "webm"]
     extension = st.sidebar.selectbox(
         "Output format",
         options=extension_options,
-        index=extension_options.index("mp3"),
+        index=extension_options.index("wav"),
     )
     assert extension is not None
 

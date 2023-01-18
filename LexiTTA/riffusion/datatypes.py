@@ -66,7 +66,7 @@ class InferenceOutput:
     # base64 encoded spectrogram image as a JPEG
     image: str
 
-    # base64 encoded audio clip as an MP3
+    # base64 encoded audio clip as an wav
     audio: str
 
     # The duration of the audio clip

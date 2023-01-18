@@ -200,7 +200,7 @@ def audio_bytes_from_spectrogram_image(
     image: Image.Image,
     params: SpectrogramParams,
     device: str = "cuda",
-    output_format: str = "mp3",
+    output_format: str = "wav",
 ) -> io.BytesIO:
     segment = audio_segment_from_spectrogram_image(image=image, params=params, device=device)
 
@@ -236,7 +236,7 @@ def select_audio_extension(container: T.Any = st.sidebar) -> str:
     """
     Dropdown to select an audio extension, with an intelligent default.
     """
-    default = "mp3" if pydub.AudioSegment.ffmpeg else "wav"
+    default = "wav" if pydub.AudioSegment.ffmpeg else "wav"
     extension = container.selectbox(
         "Output format",
         options=AUDIO_EXTENSIONS,
@@ -317,7 +317,7 @@ class StreamlitCounter:
 def display_and_download_audio(
     segment: pydub.AudioSegment,
     name: str,
-    extension: str = "mp3",
+    extension: str = "wav",
 ) -> None:
     """
     Display the given audio segment and provide a button to download it with

@@ -163,10 +163,10 @@ def compute_request(
         apply_filters=True,
     )
 
-    # Export audio to MP3 bytes
-    mp3_bytes = io.BytesIO()
-    segment.export(mp3_bytes, format="mp3")
-    mp3_bytes.seek(0)
+    # Export audio to wav bytes
+    wav_bytes = io.BytesIO()
+    segment.export(wav_bytes, format="wav")
+    wav_bytes.seek(0)
 
     # Export image to JPEG bytes
     image_bytes = io.BytesIO()
@@ -176,7 +176,7 @@ def compute_request(
     # Assemble the output dataclass
     output = InferenceOutput(
         image="data:image/jpeg;base64," + base64_util.encode(image_bytes),
-        audio="data:audio/mpeg;base64," + base64_util.encode(mp3_bytes),
+        audio="data:audio/mpeg;base64," + base64_util.encode(wav_bytes),
         duration_s=segment.duration_seconds,
     )
 

@@ -235,7 +235,7 @@ def get_prompt_inputs(
 
 @st.experimental_memo
 def run_interpolation(
-    inputs: InferenceInput, init_image: Image.Image, device: str = "cuda", extension: str = "mp3"
+    inputs: InferenceInput, init_image: Image.Image, device: str = "cuda", extension: str = "wav"
 ) -> T.Tuple[Image.Image, io.BytesIO]:
     """
     Cached function for riffusion interpolation.
