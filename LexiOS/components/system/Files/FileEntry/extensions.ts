@@ -40,7 +40,7 @@ const types = {
     type: "Picture File",
   },
   HtmlDocument: {
-    process: ["Browser", ...TEXT_EDITORS],
+    process: ["Lexiweb", ...TEXT_EDITORS],
     type: "HTML Document",
   },
   JsdosBundle: {

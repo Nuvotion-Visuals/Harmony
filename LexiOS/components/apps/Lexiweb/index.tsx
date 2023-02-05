@@ -1,7 +1,6 @@
 import { Box, copyToClipboard, Dropdown, Spacer, TextInput } from "@avsync.live/formation";
-import { bookmarks, config, HOME_PAGE } from "components/apps/Browser/config";
-import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
-import StyledBrowser from "components/apps/Browser/StyledBrowser";
+import { bookmarks, config, HOME_PAGE } from "components/apps/Lexiweb/config";
+import StyledBrowser from "components/apps/Lexiweb/StyledBrowser";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -51,7 +50,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         setLoading(true);
         setSrcDoc("");
         if (isHtml) setSrcDoc((await readFile(addressInput)).toString());
-        setIcon(id, processDirectory.Browser.icon);
+        // setIcon(id, processDirectory.Browser.icon);
 
         if (!isHtml) {
           const addressUrl = await getUrlOrSearch(addressInput);
@@ -69,33 +68,33 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             prependFileToTitle(name);
           }
 
-          if (addressInput.startsWith("ipfs://")) {
-            setIcon(id, "/System/Icons/Favicons/ipfs.webp");
-          } else {
-            const favicon = new Image();
-            const faviconUrl = `${
-              new URL(addressUrl).origin
-            }${FAVICON_BASE_PATH}`;
+          // if (addressInput.startsWith("ipfs://")) {
+          //   setIcon(id, "/System/Icons/Favicons/ipfs.webp");
+          // } else {
+          //   const favicon = new Image();
+          //   const faviconUrl = `${
+          //     new URL(addressUrl).origin
+          //   }${FAVICON_BASE_PATH}`;
 
-            favicon.addEventListener(
-              "error",
-              () => {
-                const { icon } =
-                  bookmarks?.find(
-                    ({ url: bookmarkUrl }) => bookmarkUrl === addressUrl
-                  ) || {};
+          //   favicon.addEventListener(
+          //     "error",
+          //     () => {
+          //       const { icon } =
+          //         bookmarks?.find(
+          //           ({ url: bookmarkUrl }) => bookmarkUrl === addressUrl
+          //         ) || {};
 
-                if (icon) setIcon(id, icon);
-              },
-              ONE_TIME_PASSIVE_EVENT
-            );
-            favicon.addEventListener(
-              "load",
-              () => setIcon(id, faviconUrl),
-              ONE_TIME_PASSIVE_EVENT
-            );
-            favicon.src = faviconUrl;
-          }
+          //       if (icon) setIcon(id, icon);
+          //     },
+          //     ONE_TIME_PASSIVE_EVENT
+          //   );
+          //   favicon.addEventListener(
+          //     "load",
+          //     () => setIcon(id, faviconUrl),
+          //     ONE_TIME_PASSIVE_EVENT
+          //   );
+          //   favicon.src = faviconUrl;
+          // }
         }
       }
     },
@@ -149,7 +148,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledBrowser>
-      <nav>
+       <nav>
         <F_Button
           icon='arrow-left'
           iconPrefix='fas'
@@ -175,7 +174,10 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         <F_Button
           icon='home'
           iconPrefix='fas'
-          onClick={() => setUrl('https://dash.lexi.studio')}
+          onClick={() => {
+            setUrl('https://dash.lexi.studio')
+            set_browserUrl('https://dash.lexi.studio')
+          }}
           secondary
         />
         <TextInput
@@ -222,7 +224,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
        />
       </nav>
 
-      {/* <Box py={.25}>
+      <Box py={.25}>
         <nav>
           {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
             <Button
@@ -240,7 +242,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             </Button>
           ))}
         </nav>
-      </Box> */}
+      </Box>
 
       <Box width='100%' py={.25}></Box>
       <iframe

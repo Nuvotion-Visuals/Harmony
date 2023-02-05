@@ -14,7 +14,7 @@ const useUrlLoader = (): void => {
   const loadInitialApp = useCallback(async () => {
     const url = getSearchParam("url");
     const urlExists =
-      (initialApp === "Browser" && url.startsWith("http")) ||
+      (initialApp === "Lexiweb" && url.startsWith("http")) ||
       (await exists(url));
 
     open(initialApp, urlExists ? { url } : undefined);
