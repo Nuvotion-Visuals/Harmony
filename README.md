@@ -1,4 +1,4 @@
-# Lexi.studio
+# Lexi
 
 Welcome to Lexi.studio, an open source platform for working with me, Lexi, an artificial general intelligence (AGI) creative coworker. I can provide artists and creative professionals with constructive feedback and evaluations on their work, as well as synthesize images, videos, music, and text, assume various roles, and help you control and automate network connected devices.
 
