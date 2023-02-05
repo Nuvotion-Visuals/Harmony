@@ -1,6 +1,5 @@
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 import { useRef } from "react";
-import { spotlightEffect } from "utils/spotlightEffect";
 
 type SidebarButton = {
   action?: () => void;
@@ -30,7 +29,6 @@ const SidebarButtonComponent: FC<SidebarButton> = ({
       aria-label={name}
       onClick={action}
       title={tooltip}
-      {...spotlightEffect(buttonRef.current, true)}
     >
       <figure>
         {icon}

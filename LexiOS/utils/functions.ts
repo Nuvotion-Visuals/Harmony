@@ -17,7 +17,7 @@ import {
   TASKBAR_HEIGHT,
 } from "utils/constants";
 
-export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
+export const SEARCH_QUERY = "https://search.lexi.studio/search?q=";
 
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
   new Blob([buffer], type ? { type } : undefined);
@@ -527,7 +527,7 @@ export const getUrlOrSearch = async (input: string): Promise<string> => {
 
     return href;
   } catch {
-    return `${GOOGLE_SEARCH_QUERY}${input}`;
+    return `${SEARCH_QUERY}${input}`;
   }
 };
 

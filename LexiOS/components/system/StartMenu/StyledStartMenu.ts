@@ -16,6 +16,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   bottom: ${TASKBAR_HEIGHT}px;
   contain: strict;
   display: flex;
+  flex-wrap: wrap;
   height: 100%;
   left: .5rem;
   margin-bottom: .5rem;
@@ -25,6 +26,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   width: 100%;
   z-index: 10000;
   border: 1px solid var(--F_Surface);
+  background: var(--F_Background);
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   }

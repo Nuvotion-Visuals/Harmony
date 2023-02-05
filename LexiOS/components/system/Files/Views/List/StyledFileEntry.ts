@@ -7,6 +7,7 @@ const StyledFileEntry = styled.li`
     height: 36px;
     padding-bottom: 1px;
     place-items: center;
+    border-radius: .25rem;
 
     figcaption {
       color: #fff;
@@ -41,8 +42,7 @@ const StyledFileEntry = styled.li`
     }
 
     &:hover {
-      background-color: hsla(0, 0%, 35%, 70%);
-      border: 1px solid hsla(0, 0%, 45%, 70%);
+      background-color: var(--F_Surface);
     }
   }
 `;

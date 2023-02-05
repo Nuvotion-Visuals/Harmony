@@ -57,7 +57,6 @@ import {
   isCanvasEmpty,
   isYouTubeUrl,
 } from "utils/functions";
-import { spotlightEffect } from "utils/spotlightEffect";
 
 const Down = dynamic(() =>
   import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
@@ -499,7 +498,6 @@ const FileEntry: FC<FileEntryProps> = ({
         <figure
           ref={figureRef}
           style={style}
-          {...(listView && spotlightEffect(figureRef.current))}
         >
           <Icon
             ref={iconRef}

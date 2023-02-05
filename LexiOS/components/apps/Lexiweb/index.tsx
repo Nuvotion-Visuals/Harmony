@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { FAVICON_BASE_PATH, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
-import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
+import { getUrlOrSearch, SEARCH_QUERY, label } from "utils/functions";
 import { Button as F_Button } from '@avsync.live/formation'
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
@@ -57,7 +57,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
           contentWindow.location.replace(addressUrl);
 
-          if (addressUrl.startsWith(GOOGLE_SEARCH_QUERY)) {
+          if (addressUrl.startsWith(SEARCH_QUERY)) {
             prependFileToTitle(`${addressInput} - Google Search`);
           } else {
             const { name = "" } =
@@ -224,7 +224,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
        />
       </nav>
 
-      <Box py={.25}>
+      {/* <Box py={.25}>
         <nav>
           {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
             <Button
@@ -242,7 +242,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             </Button>
           ))}
         </nav>
-      </Box>
+      </Box> */}
 
       <Box width='100%' py={.25}></Box>
       <iframe

@@ -1,10 +1,11 @@
+import { TextInput, Box, Button, Gap } from "@avsync.live/formation";
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
-import StyledStartMenuBackground from "components/system/StartMenu/StyledStartMenuBackground";
 import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
 import type { Variant } from "framer-motion";
 import { useLayoutEffect, useRef, useState } from "react";
+import styled from "styled-components";
 import {
   DEFAULT_SCROLLBAR_WIDTH,
   FOCUSABLE_ELEMENT,
@@ -62,7 +63,30 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <StyledStartMenuBackground $height={height} />
+      
+      <S.Inner>
+        <Box width={'100%'} p={.5}>
+        <Gap disableWrap>
+
+        <Button
+          icon='microphone'
+          iconPrefix='fas'
+          circle
+          secondary
+          onClick={() => {alert('test')}}
+        />
+        <TextInput
+          icon='search'
+          iconPrefix="fas"
+          value=''
+          onChange={() => {}}
+          compact
+        />
+
+        </Gap>
+
+      </Box>
+      
       <Sidebar height={height} />
       <FileManager
         url={`${HOME}/Start Menu`}
@@ -77,8 +101,19 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         skipSorting
         useNewFolderIcon
       />
+      </S.Inner>
+
     </StyledStartMenu>
   );
 };
 
 export default StartMenu;
+
+const S = {
+  Inner: styled.div`
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+
+  `
+}
