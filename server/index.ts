@@ -98,7 +98,14 @@ let currentMessageId = ''
 // send message to language model
 const sendMessage = (
   message: string,
-  callback: (arg0: {
+  onComplete: (arg0: {
+    status: number,
+    message?: string,
+    data: {
+      response: string
+    }
+  }) => void,
+  onProgress: (arg0: {
     status: number,
     message?: string,
     data: {
@@ -108,16 +115,17 @@ const sendMessage = (
 ) => {
   (async () => {
     try {
-      const { response, messageId } = await lexi.sendMessage(message, {
+      const { response, messageId } = await lexi.sendMessage(`${message}\n`, {
         conversationId: currentConversationId,
         parentMessageId: currentMessageId,
         timeoutMs: 2 * 60 * 1000,
         onProgress: (partialResponse: any) => {
-          console.log('🟣', partialResponse)
+          onProgress({ status: 200, data: { response: partialResponse.response } })
+          currentMessageId = partialResponse.messageId
         }
       })
       currentMessageId = messageId
-      callback({ status: 200, data: { response } })
+      onComplete({ status: 200, data: { response } })
     }
     catch(error) {
       if (error instanceof Error) {
@@ -127,7 +135,7 @@ const sendMessage = (
         // @ts-ignore
         const errorCode = Number((error.message || 'error 500').match(errorCodeRegex)?.[1])
 
-        callback({ 
+        onComplete({ 
           status: 500, 
           data: { 
             response: `I experienced the following error when trying to access my language model.${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning ? `<p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning}</p><p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.recommendation}</p>` : ''}<br><pre>${error.message}</pre><pre>${error.stack}</pre>`
@@ -176,6 +184,17 @@ wss.on('connection', function connection(ws: typeof WSS) {
 
           ws.send(JSON.stringify({
             type: 'response',
+            message: data.response || '',
+            guid: action.guid,
+            status,
+            messageTime: action.messageTime
+          }))
+        },
+        ({ data, status }) => {
+          // send response from language model to client
+          console.log('🟣', `Sending Lexi's response to client...`)
+          ws.send(JSON.stringify({
+            type: 'partial-response',
             message: data.response || '',
             guid: action.guid,
             status,
@@ -422,7 +441,7 @@ app.prepare().then(() => {
           const identityScript = await readMarkdownFile('./Lexi/Scripts/1. Identity/Readme.md')
           const {response, conversationId, messageId } = await lexi.sendMessage(identityScript, {
             onProgress: (partialResponse: any) => {
-              console.log('🟣', partialResponse)
+              currentMessageId = partialResponse.messageId
             }
           })
           console.log('🟣', response, conversationId, messageId)

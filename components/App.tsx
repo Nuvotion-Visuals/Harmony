@@ -122,6 +122,29 @@ const Home = ({
             listen()
           })
         }
+        if (wsmessage.type === 'partial-response') {
+          stop()
+          const { status, guid, type, message, queryTime } = wsmessage as any
+
+          const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+
+          set_queriesByGuid(queriesByGuid => ({
+            ...queriesByGuid,
+            [guid]: {
+              query: queriesByGuid[guid].query,
+              queryTime: queriesByGuid[guid].queryTime,
+              guid,
+              loading: false,
+              response: message,
+              responseTime
+            }
+          }))
+          scrollToBottom()
+
+          listenForWakeWord(() => {
+            listen()
+          })
+        }
         if (wsmessage.type === 'message') {
           stop()
           speak(wsmessage.response, () => {
