@@ -10,8 +10,6 @@ const StyledSidebar = styled.nav`
   top: 0;
   width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
   z-index: 1;
-
-  
 `;
 
 export default StyledSidebar;

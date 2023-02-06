@@ -84,12 +84,7 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
       padding-right: 1rem;
     }
 
-    picture {
-      height: ${({ theme }) => theme.sizes.taskbar.entry.iconSize};
-      position: relative;
-      top: 1px;
-      width: ${({ theme }) => theme.sizes.taskbar.entry.iconSize};
-    }
+    
   }
 `;
 

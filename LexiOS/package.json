@@ -1,12 +1,7 @@
 {
   "name": "lexios",
   "version": "1.0.0",
-  "description": "Lexi's virtual operating system that runs in the browser.",
-  "author": {
-    "name": "Dustin Brett",
-    "email": "dustinbrett@gmail.com",
-    "url": "https://dustinbrett.com"
-  },
+  "description": "Lexi's browser-based operating system.",
   "license": "MIT",
   "browserslist": [
     "defaults and supports es6 and not ie 11 and >1%"
@@ -31,7 +26,8 @@
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
     "test:watch": "jest --watch",
-    "unused-exports": "ts-unused-exports tsconfig.json --excludePathsFromReport=pages"
+    "unused-exports": "ts-unused-exports tsconfig.json --excludePathsFromReport=pages",
+    "regen-formation": "rm -rf node_modules/@avsync.live/formation && yarn remove @avsync.live/formation && yarn add @avsync.live/formation"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
@@ -42,7 +38,7 @@
     "styled-components": "^5"
   },
   "dependencies": {
-    "@avsync.live/formation": "^0.9.59",
+    "@avsync.live/formation": "^0.9.90",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
@@ -94,6 +90,7 @@
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",
     "browserfs": "https://github.com/jvilk/BrowserFS.git",
+    "canvas": "^2.11.0",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.7",
     "eruda": "^2.10.0",

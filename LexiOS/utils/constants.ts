@@ -321,14 +321,9 @@ export const TASKBAR_HEIGHT = 42;
 
 export const PACKAGE_DATA = {
   alias: "LexiOS",
-  author: {
-    email: "dustinbrett@gmail.com",
-    name: "Dustin Brett",
-    url: "https://dustinbrett.com",
-  },
-  description: "Desktop environment in the browser",
+  description: "Lexi's browser-based operating system.",
   license: "MIT",
-  version: "2.0.0",
+  version: "1.0.0",
 };
 
 export const BASE_ZIP_CONFIG: AsyncZipOptions = {

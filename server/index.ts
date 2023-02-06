@@ -111,7 +111,10 @@ const sendMessage = (
       const { response, messageId } = await lexi.sendMessage(message, {
         conversationId: currentConversationId,
         parentMessageId: currentMessageId,
-        timeoutMs: 2 * 60 * 1000
+        timeoutMs: 2 * 60 * 1000,
+        onProgress: (partialResponse: any) => {
+          console.log('🟣', partialResponse)
+        }
       })
       currentMessageId = messageId
       callback({ status: 200, data: { response } })
@@ -359,6 +362,7 @@ const countWords = (s: string): number => {
 
 // create app
 app.prepare().then(() => {
+  
   const server = express()
 
   server.use(
@@ -400,6 +404,7 @@ app.prepare().then(() => {
   //   return
   // })
 
+
   // login
   server.post('/auth/login', async (req: any, res: any) => {
     const { email, password } = req.body
@@ -413,7 +418,9 @@ app.prepare().then(() => {
             password
           })
           await lexi.initSession()
-          const {response, conversationId, messageId } = await lexi.sendMessage('Hello.', {
+
+          const identityScript = await readMarkdownFile('./Lexi/Scripts/1. Identity/Readme.md')
+          const {response, conversationId, messageId } = await lexi.sendMessage(identityScript, {
             onProgress: (partialResponse: any) => {
               console.log('🟣', partialResponse)
             }

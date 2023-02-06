@@ -1,4 +1,4 @@
-import { Box, copyToClipboard, Dropdown, Spacer, TextInput } from "@avsync.live/formation";
+import { Box, copyToClipboard, Dropdown, Gap, Spacer, TextInput } from "@avsync.live/formation";
 import { bookmarks, config, HOME_PAGE } from "components/apps/Lexiweb/config";
 import StyledBrowser from "components/apps/Lexiweb/StyledBrowser";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -148,20 +148,23 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledBrowser>
-       <nav>
+      <Box px={.5}>
+       <Gap disableWrap gap={.25}>
         <F_Button
           icon='arrow-left'
           iconPrefix='fas'
           disabled={!canGoBack}
           onClick={() => changeHistory(-1)}
           secondary
+          circle
         />
         <F_Button
           icon='arrow-right'
           iconPrefix='fas'
           disabled={!canGoForward}
-            onClick={() => changeHistory(+1)}
-            secondary
+          onClick={() => changeHistory(+1)}
+          secondary
+          circle
         />
         
         <F_Button
@@ -169,6 +172,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           iconPrefix='fas'
           disabled={loading}
           onClick={() => setUrl(history[position])}
+          circle
           secondary
         />
         <F_Button
@@ -178,6 +182,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             setUrl('https://dash.lexi.studio')
             set_browserUrl('https://dash.lexi.studio')
           }}
+          circle
           secondary
         />
         <TextInput
@@ -196,6 +201,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           iconPrefix='far'
           disabled={loading}
           onClick={() => copyToClipboard(browswerUrl)}
+          circle
           secondary
         />
       
@@ -222,8 +228,8 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             }
           ]}
        />
-      </nav>
-
+      </Gap>
+      </Box>
       {/* <Box py={.25}>
         <nav>
           {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
