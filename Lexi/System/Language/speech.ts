@@ -4,14 +4,29 @@ import { convert } from 'html-to-text'
 let audioBuffers: AudioBuffer[] = []
 let source: any
 
+/**
+ * Normalizes and tokenizes a string of text and synthesizes it into speech using the Lexi Studio TTS API.
+ *
+ * @remarks
+ * This method is part of the Speech subsystem.
+ *
+ * @param text - The text to synthesize into speech
+ * @param callback - The callback to call when speech synthesis is complete, or an error occurs
+ * @returns void
+ *
+ */
 export async function speak(text: string, callback: (error: any) => void) {
+  // Reset the audio buffer array
   audioBuffers = []
+
+  // If the text is empty, stop any current audio and return
   if (text === '') {
     if (source) {
       source.stop()
     }
     return
   }
+
   // Normalize the text: This means to convert the text into a standardized format, such as plaintext, in order to make it easier to process.
   const normalizedText = convert(text)
 
@@ -20,9 +35,12 @@ export async function speak(text: string, callback: (error: any) => void) {
 
   let firstRequestCompleted = false
   try {
+    // Request audio for each sentence and add it to the audio buffer array
     for (const sentence of sentences) {
       const audioBuffer = await ttsRequest(sentence)
       audioBuffers.push(audioBuffer)
+
+      // If this is the first sentence being processed, start speaking immediately after audio generation is complete
       if (!firstRequestCompleted) {
         speakSentences(() => {
           callback(null)
@@ -36,29 +54,52 @@ export async function speak(text: string, callback: (error: any) => void) {
 }
 
 let audioCtx: any
+
+/**
+ * Sends a request to the Lexi Studio TTS API for the given text and returns the response as an AudioBuffer.
+ *
+ * @remarks
+ * This method is part of the Speech subsystem.
+ *
+ * @param text - The text to generate audio for
+ * @returns A promise that resolves with an AudioBuffer containing the audio data for the given text
+ *
+ */
 async function ttsRequest(text: string): Promise<AudioBuffer> {
+  // If audio context does not exist, create a new one
   if (!audioCtx) {
-    
     audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
   }
-  // const response = await fetch(`http://192.168.1.128:5500/api/tts?voice=larynx%3Aljspeech-glow_tts&lang=en&vocoder=high&denoiserStrength=.001&text=${text}.`)
-  
-  // much better Google Cloud TTS
+
+  // Request audio from the Lexi Studio TTS API for the given text
   const response = await fetch(`https://tts.lexi.studio/tts?text=${text}.`)
-  
+
+  // Convert the response to an array buffer and decode it into an AudioBuffer
   const arrayBuffer = await response.arrayBuffer()
   return audioCtx.decodeAudioData(arrayBuffer)
 }
 
-// Synthesize the text: This means to generate speech output from the text, either by using a text-to-speech engine or by playing pre-recorded audio files.
+/**
+ * Synthesizes the audio buffers in the audioBuffers array and plays them in sequence using the Web Audio API.
+ *
+ * @remarks
+ * This method is part of the Speech subsystem.
+ *
+ * @param callback - The callback to call when all audio buffers have been played
+ * @returns void
+ *
+ */
 const speakSentences = (callback : () => void) => {
   let index = 0
 
   const speakSentence = () => {
+    // If all sentences have been spoken, call the callback and return
     if (index >= audioBuffers.length) {
       callback()
       return
     }
+
+    // Stop any current audio and create a new buffer source node with the next audio buffer
     if (source) {
       source.stop()
     }
@@ -66,11 +107,13 @@ const speakSentences = (callback : () => void) => {
     source = audioCtx.createBufferSource()
     source.buffer = audioBuffer
     source.connect(audioCtx.destination)
+
+    // Set the onended event handler to speak the next sentence and start speaking the current sentence
     source.onended = speakSentence
     source.start()
     index++
   }
 
+  // Start speaking the first sentence
   speakSentence()
 }
-

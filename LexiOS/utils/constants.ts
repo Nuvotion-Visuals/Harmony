@@ -322,8 +322,11 @@ export const TASKBAR_HEIGHT = 42;
 export const PACKAGE_DATA = {
   alias: "LexiOS",
   description: "Lexi's browser-based operating system.",
-  license: "MIT",
-  version: "1.0.0",
+  author: {
+    name: 'AVsync.LIVE LLC'
+  },
+  license: "https://github.com/AVsync-LIVE/License/blob/main/LICENSE.md",
+  version: "1.1.0",
 };
 
 export const BASE_ZIP_CONFIG: AsyncZipOptions = {

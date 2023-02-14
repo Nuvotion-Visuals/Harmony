@@ -1,4 +1,4 @@
-import { Box, copyToClipboard, Dropdown, Gap, Spacer, TextInput } from "@avsync.live/formation";
+import { Box, copyToClipboard, Dropdown, Gap, Spacer, TextInput, Button } from "@avsync.live/formation";
 import { bookmarks, config, HOME_PAGE } from "components/apps/Lexiweb/config";
 import StyledBrowser from "components/apps/Lexiweb/StyledBrowser";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -9,11 +9,8 @@ import processDirectory from "contexts/process/directory";
 import useHistory from "hooks/useHistory";
 import { extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Button from "styles/common/Button";
-import Icon from "styles/common/Icon";
 import { FAVICON_BASE_PATH, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import { getUrlOrSearch, SEARCH_QUERY, label } from "utils/functions";
-import { Button as F_Button } from '@avsync.live/formation'
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -148,34 +145,35 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledBrowser>
-      <Box px={.5}>
-       <Gap disableWrap gap={.25}>
-        <F_Button
+      <Box width='100%' py={.25}>
+      <Box px={.25}  width='100%'>
+       <Gap disableWrap gap={.125}>
+        <Button
           icon='arrow-left'
           iconPrefix='fas'
           disabled={!canGoBack}
           onClick={() => changeHistory(-1)}
-          secondary
+          minimal
           circle
         />
-        <F_Button
+        <Button
           icon='arrow-right'
           iconPrefix='fas'
           disabled={!canGoForward}
           onClick={() => changeHistory(+1)}
-          secondary
+          minimal
           circle
         />
         
-        <F_Button
+        <Button
           icon='refresh'
           iconPrefix='fas'
           disabled={loading}
           onClick={() => setUrl(history[position])}
           circle
-          secondary
+          minimal
         />
-        <F_Button
+        <Button
           icon='home'
           iconPrefix='fas'
           onClick={() => {
@@ -183,7 +181,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             set_browserUrl('https://dash.lexi.studio')
           }}
           circle
-          secondary
+          minimal
         />
         <TextInput
           value={browswerUrl}
@@ -196,13 +194,13 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           }}
           ref={inputRef}
         />
-        <F_Button
+        <Button
           icon='copy'
           iconPrefix='far'
           disabled={loading}
           onClick={() => copyToClipboard(browswerUrl)}
           circle
-          secondary
+          minimal
         />
       
         <Dropdown
@@ -230,27 +228,8 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
        />
       </Gap>
       </Box>
-      {/* <Box py={.25}>
-        <nav>
-          {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
-            <Button
-              key={name}
-              onClick={() => {
-                if (inputRef.current) {
-                  inputRef.current.value = bookmarkUrl;
-                }
 
-                changeUrl(id, bookmarkUrl);
-              }}
-              {...label(`${name}\n${bookmarkUrl}`)}
-            >
-              <Icon alt={name} imgSize={16} src={icon} />
-            </Button>
-          ))}
-        </nav>
-      </Box> */}
-
-      <Box width='100%' py={.25}></Box>
+      </Box>
       <iframe
         ref={iframeRef}
         onLoad={() => setLoading(false)}

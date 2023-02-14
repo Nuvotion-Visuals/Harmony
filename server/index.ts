@@ -115,7 +115,7 @@ const sendMessage = (
 ) => {
   (async () => {
     try {
-      const { response, messageId } = await lexi.sendMessage(`${message}\n`, {
+      const { response, messageId } = await lexi.sendMessage(`${message}\n(You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects)`, {
         conversationId: currentConversationId,
         parentMessageId: currentMessageId,
         timeoutMs: 2 * 60 * 1000,

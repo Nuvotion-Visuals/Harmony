@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo, Suspense } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 
 // @ts-ignore
@@ -85,8 +85,6 @@ const Home = ({
   const [query, set_query, getLatestQuery] = useExtendedState('')
 
   const websocketClient = getWebsocketClient()
-
-  const [latestPongTime, set_latestPongTime] = useState('')
 
   useEffect(() => {
     if (websocketClient) {
@@ -319,8 +317,10 @@ const Home = ({
     let timer = {} as any
     if (query && !ready && query !== '<p><br><p>' && !disableTimer) {
       timer = setTimeout(() => {
-        set_ready(true)
-      }, 2000)
+        makeQuery(query, false)
+        set_ready(false)
+        set_disableTimer(true)
+      }, 1000)
     }
     return () => {
       clearTimeout(timer)
@@ -332,36 +332,16 @@ const Home = ({
     onResult: (result : string) => {
       (async () => {
         const latestReady = await getLatestReady()
-        const latestQuery = await getLatestQuery()
 
-        if (latestReady) {
-          if (result.trim() === 'send' || result.trim() === 'set') {
-            console.log('send')
-            makeQuery(latestQuery, false)
-            set_disableTimer(true)
-            playSound('send')
-            stop()
-          }
-          if (result.trim() === 'clear') {
-            console.log('clear')
-            set_query('')
-            stop()
-            setTimeout(() => {
-              listen()
-            }, 500)
-          }
-          set_ready(false)
-        }
-        else {
-          set_ready(false)
+        if (!latestReady) {
           set_query(query + result)
           set_disableTimer(false)
         }
       })()
     },
   })
-  const [show, set_show] = useState(false) 
 
+  const [show, set_show] = useState(false) 
   useEffect(() => {
     scrollToBottom()
   }, [show])
@@ -835,7 +815,6 @@ const Home = ({
                 </>
                 )
               }
-          
            
             <Box hide={false} wrap={true} width='100%'>
               <Box width='100%' hide={!show}>
@@ -858,7 +837,6 @@ const Home = ({
                         }
                       </S.AltPage>
                 }
-                
                
               </Box>
               {
@@ -894,9 +872,9 @@ const Home = ({
                     onClick={() => set_open(true)}
                   />
                   <div>
-                    {
+                    {/* {
                       listening &&  `${(ready ? '"Send" or "Clear"' :'Listening...')}`
-                    }
+                    } */}
                   </div>
                 
                   <Button 
@@ -906,6 +884,7 @@ const Home = ({
                     onClick={() => {
                       if (listening) {
                         stop()
+                        set_disableTimer(true)
                       }
                       else {
                         listen()
