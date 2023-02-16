@@ -1,7 +1,3 @@
-
-
-
-
 // @ts-ignore
 import { convert } from 'html-to-text'
 
@@ -83,7 +79,7 @@ const speakSentences = (callback : () => void) => {
  * @returns void
  *
  */
-export async function speak(text: string, callback: (error: any) => void) {
+export const speak = async (text: string, callback: (error: any) => void) => {
   // Reset the audio buffer array
   audioBuffers = []
 
@@ -121,12 +117,11 @@ export async function speak(text: string, callback: (error: any) => void) {
   }
 }
 
-function combineStrings(arr: string[]): string {
+const combineSentences = (arr: string[]): string => {
   return arr.reduce((prev, curr) => prev + ' ' + curr, '');
 }
 
 type Sentence = string;
-type Callback = () => void;
 interface QueueManager {
   add: (sentence: Sentence) => void;
 }
@@ -135,23 +130,14 @@ const createQueueManager = (): QueueManager => {
   let queue: Sentence[] = [];
   let isProcessing = false;
 
-  const processSentence = async (sentence: Sentence, callback: Callback): Promise<void> => 
-    new Promise(resolve => {
-      speak(sentence, () => {
-        callback()
-        resolve()
-      })
-    });
-
   const processQueue = (): void => {
     isProcessing = true;
     const next = () => {
       if (queue.length > 0) {
-        // const sentence = queue.shift()!;
-        processSentence(combineStrings(queue), next);
-        console.log(combineStrings(queue))
+        speak(combineSentences(queue), next)
         queue = []
-      } else {
+      } 
+      else {
         isProcessing = false;
       }
     };
@@ -171,7 +157,7 @@ const queueManager = createQueueManager();
 
 let accumulatedSentences: string[] = [];
 
-function handleProgress(input: string): void {
+const handleProgress = (input: string): void => {
   // Split the input into sentences and loop over them
   const sentences = input.match(/[^.!?]+[.!?]+/g);
   if (sentences) {
