@@ -23,7 +23,6 @@ import {
   AspectRatio,
   stringInArray,
   Dropdown,
-  Label
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -57,7 +56,6 @@ interface Queries {
 interface Props {
   children: React.ReactNode
 }
-
 
 const Home = ({
   children
@@ -93,16 +91,7 @@ const Home = ({
         const wsmessage = JSON.parse(ev.data.toString())
         if (wsmessage.type === 'response') {
           stop()
-          // speak(wsmessage.message, () => {
-          //   set_disableTimer(true);
-          //   (async () => {
-          //     const latest_userInitiatedListen = await get_userInitialedListen()
-          //     if (latest_userInitiatedListen) {
-          //       listen()
-          //     }
-          //   })()
-            
-          // })
+        
           const { status, guid, type, message, queryTime } = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})

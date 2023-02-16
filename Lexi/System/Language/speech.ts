@@ -8,23 +8,12 @@ let source: any
 /**
  * Sends a request to the Lexi Studio TTS API for the given text and returns the response as an AudioBuffer.
  *
- * @remarks
- * This method is part of the Speech subsystem.
- *
  * @param text - The text to generate audio for
  * @returns A promise that resolves with an AudioBuffer containing the audio data for the given text
- *
  */
 async function ttsRequest(text: string): Promise<AudioBuffer> {
-  // If audio context does not exist, create a new one
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
-  }
-
-  // Request audio from the Lexi Studio TTS API for the given text
+  if (!audioCtx) { audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)() }
   const response = await fetch(`https://tts.lexi.studio/tts?text=${text}.`)
-
-  // Convert the response to an array buffer and decode it into an AudioBuffer
   const arrayBuffer = await response.arrayBuffer()
   return audioCtx.decodeAudioData(arrayBuffer)
 }
@@ -32,12 +21,8 @@ async function ttsRequest(text: string): Promise<AudioBuffer> {
 /**
  * Synthesizes the audio buffers in the audioBuffers array and plays them in sequence using the Web Audio API.
  *
- * @remarks
- * This method is part of the Speech subsystem.
- *
  * @param callback - The callback to call when all audio buffers have been played
  * @returns void
- *
  */
 const speakSentences = (callback : () => void) => {
   let index = 0
@@ -71,23 +56,17 @@ const speakSentences = (callback : () => void) => {
 /**
  * Normalizes and tokenizes a string of text and synthesizes it into speech using the Lexi Studio TTS API.
  *
- * @remarks
- * This method is part of the Speech subsystem.
- *
  * @param text - The text to synthesize into speech
  * @param callback - The callback to call when speech synthesis is complete, or an error occurs
  * @returns void
- *
  */
 export const speak = async (text: string, callback: (error: any) => void) => {
   // Reset the audio buffer array
   audioBuffers = []
 
   // If the text is empty, stop any current audio and return
-  if (text === '') {
-    if (source) {
-      source.stop()
-    }
+  if (text === '' && source) {
+    source.stop()
     return
   }
 
@@ -99,67 +78,53 @@ export const speak = async (text: string, callback: (error: any) => void) => {
 
   let firstRequestCompleted = false
   try {
-    // Request audio for each sentence and add it to the audio buffer array
+    // Request audio for each sentence and addToSpeechQueue it to the audio buffer array
     for (const sentence of sentences) {
       const audioBuffer = await ttsRequest(sentence)
       audioBuffers.push(audioBuffer)
 
       // If this is the first sentence being processed, start speaking immediately after audio generation is complete
       if (!firstRequestCompleted) {
-        speakSentences(() => {
-          callback(null)
-        })
+        speakSentences(() => callback(null))
         firstRequestCompleted = true
       }
     }
-  } catch (error) {
+  } 
+  catch (error) {
     callback(error)
   }
 }
 
-const combineSentences = (arr: string[]): string => {
-  return arr.reduce((prev, curr) => prev + ' ' + curr, '');
-}
+let queue: string[] = [];
+let isProcessing = false;
 
-type Sentence = string;
-interface QueueManager {
-  add: (sentence: Sentence) => void;
-}
-
-const createQueueManager = (): QueueManager => {
-  let queue: Sentence[] = [];
-  let isProcessing = false;
-
-  const processQueue = (): void => {
-    isProcessing = true;
-    const next = () => {
-      if (queue.length > 0) {
-        speak(combineSentences(queue), next)
-        queue = []
-      } 
-      else {
-        isProcessing = false;
-      }
-    };
-    next();
-  };
-
-  const add = (sentence: Sentence): void => {
-    queue.push(sentence);
-    if (!isProcessing) {
-      processQueue();
+const processSpeechQueue = (): void => {
+  isProcessing = true;
+  const next = () => {
+    if (queue.length > 0) {
+      const combineSentences = queue.reduce((prev, curr) => prev + ' ' + curr, '');
+      speak(combineSentences, next)
+      queue = []
+    } 
+    else {
+      isProcessing = false;
     }
   };
-
-  return { add };
+  next();
 };
-const queueManager = createQueueManager();
+
+const addToSpeechQueue = (sentence: string): void => {
+  queue.push(sentence);
+  if (!isProcessing) {
+    processSpeechQueue();
+  }
+};
 
 let accumulatedSentences: string[] = [];
 
-const handleProgress = (input: string): void => {
+export const speakStream = (text: string, isComplete: boolean) => {
   // Split the input into sentences and loop over them
-  const sentences = input.match(/[^.!?]+[.!?]+/g);
+  const sentences = text.match(/[^.!?]+[.!?]+/g);
   if (sentences) {
     for (const sentence of sentences) {
       // Trim leading and trailing whitespace from the sentence
@@ -171,25 +136,11 @@ const handleProgress = (input: string): void => {
   
       // Check if the sentence has already been logged
       if (!accumulatedSentences.includes(trimmedSentence)) {
-        queueManager.add(trimmedSentence)
+        addToSpeechQueue(trimmedSentence)
   
         // Add the sentence to the list of logged sentences
         accumulatedSentences.push(trimmedSentence);
       }
     }
   }
-  
-}
-
-export const speakStream = (text: string, isComplete: boolean) => {
-  // todo: make sentence currently being spoken available to UI for highlighting
-  // todo: add onComplete callback 
-  // todo: associate with message GUID to tie playback to specific message
-  // todo: add new sentences to audio buffer as soon as they are available for seemless speech
-  // todo: speak responses that happen not to include periods
-  // todo: do not speak unpronouncable characters like backticks
-  // todo: add function annotations
-  // todo: convert to es6 arrow functions
-  // todo: improve regex to properly say website domains and titles (Mr. Ms.)
-  handleProgress(text)
 }
