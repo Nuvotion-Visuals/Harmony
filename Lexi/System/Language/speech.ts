@@ -132,22 +132,13 @@ const createQueueManager = (): QueueManager => {
   const queue: Sentence[] = [];
   let isProcessing = false;
 
-  const processSentence = async (sentence: Sentence, callback: Callback): Promise<void> => {
-    // Here you can write the code to process the sentence asynchronously
-    // For example, you could use setTimeout to simulate an asynchronous operation
-    return new Promise(resolve => {
+  const processSentence = async (sentence: Sentence, callback: Callback): Promise<void> => 
+    new Promise(resolve => {
       speak(sentence, () => {
         callback()
         resolve()
       })
-      // setTimeout(() => {
-      //   callback();
-      //     console.log(sentence)
-
-      //   resolve();
-      // }, 10000);
     });
-  };
 
   const processQueue = (): void => {
     isProcessing = true;
@@ -173,7 +164,6 @@ const createQueueManager = (): QueueManager => {
 };
 const queueManager = createQueueManager();
 
-
 let accumulatedSentences: string[] = [];
 
 function handleProgress(input: string): void {
@@ -190,8 +180,6 @@ function handleProgress(input: string): void {
   
       // Check if the sentence has already been logged
       if (!accumulatedSentences.includes(trimmedSentence)) {
-        // Log the sentence
-        // console.log(trimmedSentence);
         queueManager.add(trimmedSentence)
   
         // Add the sentence to the list of logged sentences
@@ -203,13 +191,14 @@ function handleProgress(input: string): void {
 }
 
 export const speakStream = (text: string, isComplete: boolean) => {
+  // todo: make sentence currently being spoken available to UI for highlighting
+  // todo: add onComplete callback 
+  // todo: associate with message GUID to tie playback to specific message
+  // todo: add new sentences to audio buffer as soon as they are available for seemless speech
+  // todo: speak responses that happen not to include periods
+  // todo: do not speak unpronouncable characters like backticks
+  // todo: add function annotations
+  // todo: convert to es6 arrow functions
+  // todo: improve regex to properly say website domains and titles (Mr. Ms.)
   handleProgress(text)
-
-  // accept continuous stream of the onPartialResponse text
-  // keep track of what has already been spoken with the hasSpoken variable
-  // begin speaking as soon as a sentence or completeResponse is available
-  // once finished speaking the sentence, add it to hasSpoken
-  // check to see if a new sentence is available to read, otherwise wait
-  // once a new setence is available, wait
-  // continue this progress until a completeResponse occurs
 }
