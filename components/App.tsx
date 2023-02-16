@@ -30,7 +30,7 @@ import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import Message from './Message'
 import React from 'react'
-import { speak } from '../Lexi/System/Language/speech'
+import { speak, speakStream } from '../Lexi/System/Language/speech'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import { playSound } from '../Lexi/System/Language/sounds'
@@ -93,9 +93,16 @@ const Home = ({
         const wsmessage = JSON.parse(ev.data.toString())
         if (wsmessage.type === 'response') {
           stop()
-          speak(wsmessage.message, () => {
-            set_disableTimer(true)
-          })
+          // speak(wsmessage.message, () => {
+          //   set_disableTimer(true);
+          //   (async () => {
+          //     const latest_userInitiatedListen = await get_userInitialedListen()
+          //     if (latest_userInitiatedListen) {
+          //       listen()
+          //     }
+          //   })()
+            
+          // })
           const { status, guid, type, message, queryTime } = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
@@ -139,15 +146,11 @@ const Home = ({
           }))
           scrollToBottom()
 
-          listenForWakeWord(() => {
-            listen()
-          })
+          speakStream(wsmessage.message, false)
         }
         if (wsmessage.type === 'message') {
           stop()
-          speak(wsmessage.response, () => {
-            set_disableTimer(true)
-          })
+          
           const { message, response, messageTime, responseTime, queryTime, scriptName } = wsmessage as any
 
           console.log('got a message')
@@ -311,6 +314,8 @@ const Home = ({
     scrollToBottom()
   }, [loading])
 
+  // speech
+  const [userInitiatedListen, set_userInitiatedListen, get_userInitialedListen] = useExtendedState(false)
   const [ready, set_ready, getLatestReady] = useExtendedState(false)
   const [disableTimer, set_disableTimer] = useState(true)
   useEffect(() => {
@@ -320,6 +325,7 @@ const Home = ({
         makeQuery(query, false)
         set_ready(false)
         set_disableTimer(true)
+        stop()
       }, 1000)
     }
     return () => {
@@ -885,10 +891,12 @@ const Home = ({
                       if (listening) {
                         stop()
                         set_disableTimer(true)
+                        set_userInitiatedListen(false)
                       }
                       else {
                         listen()
                         set_ready(false)
+                        set_userInitiatedListen(true)
                       }
                     }}
                     blink={listening}

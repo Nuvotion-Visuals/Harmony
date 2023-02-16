@@ -1,3 +1,7 @@
+
+
+
+
 // @ts-ignore
 import { convert } from 'html-to-text'
 
@@ -116,4 +120,96 @@ const speakSentences = (callback : () => void) => {
 
   // Start speaking the first sentence
   speakSentence()
+}
+
+type Sentence = string;
+type Callback = () => void;
+interface QueueManager {
+  add: (sentence: Sentence) => void;
+}
+
+const createQueueManager = (): QueueManager => {
+  const queue: Sentence[] = [];
+  let isProcessing = false;
+
+  const processSentence = async (sentence: Sentence, callback: Callback): Promise<void> => {
+    // Here you can write the code to process the sentence asynchronously
+    // For example, you could use setTimeout to simulate an asynchronous operation
+    return new Promise(resolve => {
+      speak(sentence, () => {
+        callback()
+        resolve()
+      })
+      // setTimeout(() => {
+      //   callback();
+      //     console.log(sentence)
+
+      //   resolve();
+      // }, 10000);
+    });
+  };
+
+  const processQueue = (): void => {
+    isProcessing = true;
+    const next = () => {
+      if (queue.length > 0) {
+        const sentence = queue.shift()!;
+        processSentence(sentence, next);
+      } else {
+        isProcessing = false;
+      }
+    };
+    next();
+  };
+
+  const add = (sentence: Sentence): void => {
+    queue.push(sentence);
+    if (!isProcessing) {
+      processQueue();
+    }
+  };
+
+  return { add };
+};
+const queueManager = createQueueManager();
+
+
+let accumulatedSentences: string[] = [];
+
+function handleProgress(input: string): void {
+  // Split the input into sentences and loop over them
+  const sentences = input.match(/[^.!?]+[.!?]+/g);
+  if (sentences) {
+    for (const sentence of sentences) {
+      // Trim leading and trailing whitespace from the sentence
+      const trimmedSentence = sentence.trim();
+      if (trimmedSentence === '') {
+        // Ignore empty sentences
+        continue;
+      }
+  
+      // Check if the sentence has already been logged
+      if (!accumulatedSentences.includes(trimmedSentence)) {
+        // Log the sentence
+        // console.log(trimmedSentence);
+        queueManager.add(trimmedSentence)
+  
+        // Add the sentence to the list of logged sentences
+        accumulatedSentences.push(trimmedSentence);
+      }
+    }
+  }
+  
+}
+
+export const speakStream = (text: string, isComplete: boolean) => {
+  handleProgress(text)
+
+  // accept continuous stream of the onPartialResponse text
+  // keep track of what has already been spoken with the hasSpoken variable
+  // begin speaking as soon as a sentence or completeResponse is available
+  // once finished speaking the sentence, add it to hasSpoken
+  // check to see if a new sentence is available to read, otherwise wait
+  // once a new setence is available, wait
+  // continue this progress until a completeResponse occurs
 }
