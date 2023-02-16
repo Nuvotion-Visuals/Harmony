@@ -5,59 +5,9 @@
 // @ts-ignore
 import { convert } from 'html-to-text'
 
+let audioCtx: any
 let audioBuffers: AudioBuffer[] = []
 let source: any
-
-/**
- * Normalizes and tokenizes a string of text and synthesizes it into speech using the Lexi Studio TTS API.
- *
- * @remarks
- * This method is part of the Speech subsystem.
- *
- * @param text - The text to synthesize into speech
- * @param callback - The callback to call when speech synthesis is complete, or an error occurs
- * @returns void
- *
- */
-export async function speak(text: string, callback: (error: any) => void) {
-  // Reset the audio buffer array
-  audioBuffers = []
-
-  // If the text is empty, stop any current audio and return
-  if (text === '') {
-    if (source) {
-      source.stop()
-    }
-    return
-  }
-
-  // Normalize the text: This means to convert the text into a standardized format, such as plaintext, in order to make it easier to process.
-  const normalizedText = convert(text)
-
-  // Tokenize the text: This means to split the text into smaller units, such as words or sentences, in order to analyze or process it more easily.
-  const sentences = normalizedText.split('. ').filter((sentence : string) => sentence ! === '' || sentence !== '. ')
-
-  let firstRequestCompleted = false
-  try {
-    // Request audio for each sentence and add it to the audio buffer array
-    for (const sentence of sentences) {
-      const audioBuffer = await ttsRequest(sentence)
-      audioBuffers.push(audioBuffer)
-
-      // If this is the first sentence being processed, start speaking immediately after audio generation is complete
-      if (!firstRequestCompleted) {
-        speakSentences(() => {
-          callback(null)
-        })
-        firstRequestCompleted = true
-      }
-    }
-  } catch (error) {
-    callback(error)
-  }
-}
-
-let audioCtx: any
 
 /**
  * Sends a request to the Lexi Studio TTS API for the given text and returns the response as an AudioBuffer.
@@ -122,6 +72,59 @@ const speakSentences = (callback : () => void) => {
   speakSentence()
 }
 
+/**
+ * Normalizes and tokenizes a string of text and synthesizes it into speech using the Lexi Studio TTS API.
+ *
+ * @remarks
+ * This method is part of the Speech subsystem.
+ *
+ * @param text - The text to synthesize into speech
+ * @param callback - The callback to call when speech synthesis is complete, or an error occurs
+ * @returns void
+ *
+ */
+export async function speak(text: string, callback: (error: any) => void) {
+  // Reset the audio buffer array
+  audioBuffers = []
+
+  // If the text is empty, stop any current audio and return
+  if (text === '') {
+    if (source) {
+      source.stop()
+    }
+    return
+  }
+
+  // Normalize the text: This means to convert the text into a standardized format, such as plaintext, in order to make it easier to process.
+  const normalizedText = convert(text)
+
+  // Tokenize the text: This means to split the text into smaller units, such as words or sentences, in order to analyze or process it more easily.
+  const sentences = normalizedText.split('. ').filter((sentence : string) => sentence ! === '' || sentence !== '. ')
+
+  let firstRequestCompleted = false
+  try {
+    // Request audio for each sentence and add it to the audio buffer array
+    for (const sentence of sentences) {
+      const audioBuffer = await ttsRequest(sentence)
+      audioBuffers.push(audioBuffer)
+
+      // If this is the first sentence being processed, start speaking immediately after audio generation is complete
+      if (!firstRequestCompleted) {
+        speakSentences(() => {
+          callback(null)
+        })
+        firstRequestCompleted = true
+      }
+    }
+  } catch (error) {
+    callback(error)
+  }
+}
+
+function combineStrings(arr: string[]): string {
+  return arr.reduce((prev, curr) => prev + ' ' + curr, '');
+}
+
 type Sentence = string;
 type Callback = () => void;
 interface QueueManager {
@@ -129,7 +132,7 @@ interface QueueManager {
 }
 
 const createQueueManager = (): QueueManager => {
-  const queue: Sentence[] = [];
+  let queue: Sentence[] = [];
   let isProcessing = false;
 
   const processSentence = async (sentence: Sentence, callback: Callback): Promise<void> => 
@@ -144,8 +147,10 @@ const createQueueManager = (): QueueManager => {
     isProcessing = true;
     const next = () => {
       if (queue.length > 0) {
-        const sentence = queue.shift()!;
-        processSentence(sentence, next);
+        // const sentence = queue.shift()!;
+        processSentence(combineStrings(queue), next);
+        console.log(combineStrings(queue))
+        queue = []
       } else {
         isProcessing = false;
       }
