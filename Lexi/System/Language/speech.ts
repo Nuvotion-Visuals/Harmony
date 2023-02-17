@@ -3,6 +3,7 @@ import { convert } from 'html-to-text'
 
 let audioCtx: any
 let audioBuffers: AudioBuffer[] = []
+let audioBufferSentences: string[] = []
 let source: any
 
 /**
@@ -39,6 +40,7 @@ const speakSentences = (callback : () => void) => {
       source.stop()
     }
     const audioBuffer = audioBuffers[index]
+    const sentence = audioBufferSentences[index]
     source = audioCtx.createBufferSource()
     source.buffer = audioBuffer
     source.connect(audioCtx.destination)
@@ -46,6 +48,7 @@ const speakSentences = (callback : () => void) => {
     // Set the onended event handler to speak the next sentence and start speaking the current sentence
     source.onended = speakSentence
     source.start()
+    console.log(sentence)
     index++
   }
 
@@ -63,6 +66,7 @@ const speakSentences = (callback : () => void) => {
 export const speak = async (text: string, callback: (error: any) => void) => {
   // Reset the audio buffer array
   audioBuffers = []
+  audioBufferSentences = []
 
   // If the text is empty, stop any current audio and return
   if (text === '' && source) {
@@ -82,6 +86,7 @@ export const speak = async (text: string, callback: (error: any) => void) => {
     for (const sentence of sentences) {
       const audioBuffer = await ttsRequest(sentence)
       audioBuffers.push(audioBuffer)
+      audioBufferSentences.push(sentence)
 
       // If this is the first sentence being processed, start speaking immediately after audio generation is complete
       if (!firstRequestCompleted) {

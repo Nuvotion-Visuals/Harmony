@@ -33,6 +33,7 @@ import { speakStream } from '../Lexi/System/Language/speech'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import { playSound } from '../Lexi/System/Language/sounds'
+import { getArticleContent, getArticleTranscript, getYouTubeTranscript } from '../Lexi/System/Fetch/fetch'
 
 interface Queries {
   [guid: string]: {
@@ -229,62 +230,6 @@ const Home = ({
     })()
   }
 
-  const getArticleTranscript = () => {
-    (async () => {
-      try {
-
-        const getArticleTranscriptRes = await axios({
-          method: 'POST',
-          url: '/tools/parse-article',
-          data: {
-            contentUrl
-          }
-        })
-        const { status, data } = getArticleTranscriptRes
-        
-        if (status === 200) {
-          set_query(query + '\n' + convert(data.data.article.content))
-          set_open(false)
-        }
-        else {
-          alert('Could not get article transcript.')
-        }
-      }
-      catch(e) {
-        alert('Could not get article transcript.')
-      }
-
-      set_loading(false)
-    })()
-  }
-
-  const getYouTubeTranscript = () => {
-    (async () => {
-      try {
-        const getYouTubeTranscriptRes = await axios({
-          method: 'POST',
-          url: '/tools/parse-youtube-video',
-          data: {
-            videoUrl
-          }
-        })
-        const { status, data } = getYouTubeTranscriptRes
-        
-        if (status === 200 && data?.data?.transcript) {
-          set_query(query + '\n' + convert(data.data.transcript))
-          set_open(false)
-        }
-        else {
-          alert('Could not get YouTube transcript.')
-        }
-      }
-      catch(e) {
-        alert('Could not get article transcript.')
-      }
-      set_loading(false)
-    })()
-  }
-
   const queries = Object.keys(queriesByGuid).map(guid => queriesByGuid[guid]) 
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
@@ -343,16 +288,16 @@ const Home = ({
   }, [router.asPath])
 
   useEffect(() => {
-    const handleClick = () => {
+    listenForWakeWord(() => {
+      listen()
+      console.log('Heard wake word')
+    })
+    setInterval(() => {
       listenForWakeWord(() => {
         listen()
         console.log('Heard wake word')
       })
-    }
-    document.addEventListener("click", handleClick)
-    return () => {
-      document.removeEventListener("click", handleClick)
-    }
+    }, 8000)
   }, [])
 
   useEffect(() => {
@@ -364,15 +309,40 @@ const Home = ({
   const ScriptInitializedIndicator = ({ scriptName } : { scriptName: string}) => 
     <><Spacer /><S.Indicator active={initializedScriptNames.includes(scriptName)} title={`${queryGuids.includes(scriptName) ? 'Finished reading' : 'Have not read'} ${scriptName}`} /></>
 
+  const [search, set_search] = useState('')
+
+  const submitSearch = () => {
+    set_open(true)
+  }
+  
   return (
     <div>
       <Navigation
         navLogoSrc={'/assets/lexi-typography.svg'}
         open={sidebarOpen}
         onSetOpen={isSidebarOpen => set_sidebarOpen(isSidebarOpen)}
-        navChildren={<>
+        navChildren={<Gap disableWrap>
+          <Page noPadding>
+            <Gap disableWrap>
+              <TextInput
+                compact
+                icon='search'
+                iconPrefix='fas'
+                value={search}
+                onChange={newValue => set_search(newValue)}
+                onEnter={submitSearch}
+              />
+              <Button 
+                text='Search'
+                disabled={search === ''}
+                secondary={search === ''}
+                onClick={submitSearch}
+              />
+            </Gap>
+            
+          </Page>
           <Spacer />
-          <Gap autoWidth>
+          <Gap autoWidth disableWrap>
           <Dropdown
             options={[
               {
@@ -410,7 +380,7 @@ const Home = ({
             }
           </Gap>
          
-        </>}
+        </Gap>}
         navs={[
           {
             type: 'nav',
@@ -885,11 +855,13 @@ const Home = ({
         title='Insert content'
         icon='plus'
         iconPrefix='fas'
-        size='xl'
+        size='tall'
+        fullscreen
         isOpen={open}
         onClose={() => set_open(false)}
-        content={<S.FlexStart wrap={true}>
+        content={
           <Gap gap={1}>
+            <Page>
             <Gap>
               <TextInput 
                 value={contentUrl}
@@ -904,11 +876,22 @@ const Home = ({
                 iconPrefix='fas'
                   hero={true}
                   expand={true}
-                onClick={() => getArticleTranscript()}
+                onClick={() => {
+                  getArticleContent(contentUrl, 
+                    (content) => {
+                      set_query(query + '\n' + convert(content))
+                      set_open(false)
+                    },
+                    () => {
+                      alert('Could not get page content.')
+                    }
+                  )
+                 
+                }}
               />
-            </Gap>
-            <LineBreak />
+               <LineBreak />
             <Gap>
+
               <TextInput 
                 value={videoUrl}
                 label='YouTube Video URL'
@@ -923,12 +906,27 @@ const Home = ({
                 iconPrefix='fas'
                 hero={true}
                 expand={true}
-                onClick={() => getYouTubeTranscript()}
+                onClick={() => {
+                  getYouTubeTranscript(videoUrl,
+                    (transcript) => {
+                      set_query(query + '\n' + convert(transcript))
+                      set_open(false)
+                    },
+                    () => {
+
+                    }
+                  )
+                  }
+                }
               />
             </Gap>
-            <S.Iframe src='https://search.lexi.studio ' width='100%' height='500px'></S.Iframe>
+            </Gap>
+            </Page>
+           
+            <S.Iframe src={`https://search.lexi.studio/search?q=${search}`} width='100%'></S.Iframe>
+          
           </Gap>
-        </S.FlexStart>}
+        }
       />
     </div>
   )
@@ -939,7 +937,7 @@ export default Home
 const S = {
   Iframe: styled.iframe`
     width: 100%;
-    height: 500px;
+    height: calc(100% - 20rem);
     border-radius: 1rem;
     overflow: hidden;
     padding-bottom: 2rem;

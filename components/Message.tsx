@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Spacer, Gap, Icon, Dropdown, shareTextViaEmail, downloadFile, Button, copyToClipboard, StyleHTML, Avatar, LoadingSpinner, ParseHTML, HTMLtoMarkdown } from "@avsync.live/formation"
+import { Box, Spacer, Gap, Icon, Dropdown, shareTextViaEmail, downloadFile, Button, copyToClipboard, StyleHTML, Avatar, LoadingSpinner, ParseHTML, HTMLtoMarkdown, markdownToHTML } from "@avsync.live/formation"
 import { memo } from "react"
 import styled from "styled-components"
 
@@ -47,7 +47,7 @@ const Message = ({
                       <StyleHTML>
 
                     <S.Content>
-                        <ParseHTML markdown={query}/>
+                      <ParseHTML html={markdownToHTML(query)} />
                     </S.Content>
                     </StyleHTML>
 
