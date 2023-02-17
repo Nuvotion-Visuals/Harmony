@@ -33,7 +33,7 @@ import { speakStream } from '../Lexi/System/Language/speech'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import { playSound } from '../Lexi/System/Language/sounds'
-import { getArticleContent, getArticleTranscript, getYouTubeTranscript } from '../Lexi/System/Fetch/fetch'
+import { getArticleContent, getYouTubeTranscript } from '../Lexi/System/Fetch/fetch'
 
 interface Queries {
   [guid: string]: {
@@ -281,7 +281,7 @@ const Home = ({
   const [contentUrl, set_contentUrl] = useState('')
   const [videoUrl, set_videoURL] = useState('')
 
-  const [sidebarOpen, set_sidebarOpen] = useState(true)
+  const [sidebarOpen, set_sidebarOpen] = useState(false)
 
   useEffect(() => {
     scrollToBottom()
@@ -310,20 +310,56 @@ const Home = ({
     <><Spacer /><S.Indicator active={initializedScriptNames.includes(scriptName)} title={`${queryGuids.includes(scriptName) ? 'Finished reading' : 'Have not read'} ${scriptName}`} /></>
 
   const [search, set_search] = useState('')
+  const [url, set_url] = useState('')
 
   const submitSearch = () => {
     set_open(true)
+  }
+
+  const insertContentByUrl = () => {
+    const youtubeDomains = ['www.youtube.com', 'youtube.com', 'youtu.be']
+
+    const { hostname } = new URL(url);
+    if (youtubeDomains.includes(hostname)) {
+      getYouTubeTranscript(url,
+        (transcript) => {
+          set_query(query + '\n' + convert(transcript))
+          set_open(false)
+        },
+        () => {
+          alert('Could not get video transcript.')
+        }
+      )
+    }
+    else {
+      getArticleContent(url, 
+        (content) => {
+          set_query(query + '\n' + convert(content))
+          set_open(false)
+        },
+        () => {
+          alert('Could not get page content.')
+        }
+      )
+    }
   }
   
   return (
     <div>
       <Navigation
-        navLogoSrc={'/assets/lexi-typography.svg'}
+        navLogoSrc={'/assets/lexi-circle.png'}
         open={sidebarOpen}
         onSetOpen={isSidebarOpen => set_sidebarOpen(isSidebarOpen)}
         navChildren={<Gap disableWrap>
-          <Page noPadding>
-            <Gap disableWrap>
+          <Page >
+            <Box>
+              <Button 
+                icon='microphone'
+                circle
+                iconPrefix='fas'
+                onClick={() => set_search('')}
+                minimal
+              />
               <TextInput
                 compact
                 icon='search'
@@ -333,15 +369,25 @@ const Home = ({
                 onEnter={submitSearch}
               />
               <Button 
-                text='Search'
+                icon='times'
+                circle
+                iconPrefix='fas'
+                disabled={search === ''}
+                onClick={() => set_search('')}
+                minimal
+              />
+              <Button 
+                icon='arrow-right'
+                circle
+                iconPrefix='fas'
                 disabled={search === ''}
                 secondary={search === ''}
                 onClick={submitSearch}
               />
-            </Gap>
+            </Box>
             
           </Page>
-          <Spacer />
+          {/* <Spacer />
           <Gap autoWidth disableWrap>
           <Dropdown
             options={[
@@ -378,7 +424,7 @@ const Home = ({
                 />
               </Box>
             }
-          </Gap>
+          </Gap> */}
          
         </Gap>}
         navs={[
@@ -852,81 +898,80 @@ const Home = ({
       </S.Container>
       </Navigation>
       <Modal 
-        title='Insert content'
-        icon='plus'
+        title='Search and Insert'
+        icon='search'
         iconPrefix='fas'
         size='tall'
         fullscreen
         isOpen={open}
         onClose={() => set_open(false)}
         content={
-          <Gap gap={1}>
-            <Page>
-            <Gap>
+          <Box wrap height={'100%'} width='100%'>
+              <Gap gap={.75}>
+             <Box width='100%'>
               <TextInput 
-                value={contentUrl}
-                label='Webpage URL'
-                icon='globe'
+                value={url}
+                icon='link'
                 iconPrefix='fas'
-                onChange={newValue => set_contentUrl(newValue)}
+                onChange={newValue => set_url(newValue)}
+                compact
+              />
+              <Button 
+                icon='times'
+                circle
+                iconPrefix='fas'
+                disabled={search === ''}
+                onClick={() => set_url('')}
+                minimal
               />
               <Button
-                text='Insert webpage content'
                 icon='plus'
+                circle
+                secondary
                 iconPrefix='fas'
-                  hero={true}
-                  expand={true}
                 onClick={() => {
-                  getArticleContent(contentUrl, 
-                    (content) => {
-                      set_query(query + '\n' + convert(content))
-                      set_open(false)
-                    },
-                    () => {
-                      alert('Could not get page content.')
-                    }
-                  )
-                 
-                }}
-              />
-               <LineBreak />
-            <Gap>
-
-              <TextInput 
-                value={videoUrl}
-                label='YouTube Video URL'
-                onChange={newValue => set_videoURL(newValue)}
-                icon='youtube'
-                iconPrefix='fab'
-
-              />
-              <Button
-                text='Insert video transcript'
-                icon='plus'
-                iconPrefix='fas'
-                hero={true}
-                expand={true}
-                onClick={() => {
-                  getYouTubeTranscript(videoUrl,
-                    (transcript) => {
-                      set_query(query + '\n' + convert(transcript))
-                      set_open(false)
-                    },
-                    () => {
-
-                    }
-                  )
-                  }
+                  insertContentByUrl()
                 }
+              }
               />
+              
+            </Box>
+            <Box width='100%'>
+              <TextInput 
+                value={search}
+                icon='search'
+                iconPrefix='fas'
+                onChange={newValue => set_search(newValue)}
+                compact
+              />
+              <Button 
+                icon='times'
+                circle
+                iconPrefix='fas'
+                disabled={search === ''}
+                onClick={() => set_search('')}
+                minimal
+              />
+              <Button
+                icon='arrow-right'
+                circle
+                secondary
+                iconPrefix='fas'
+                onClick={() => {
+                  
+                }
+              }
+              />
+              
+            </Box>
             </Gap>
-            </Gap>
-            </Page>
-           
-            <S.Iframe src={`https://search.lexi.studio/search?q=${search}`} width='100%'></S.Iframe>
+            <Box width='100%' height='.5rem'></Box>
+            <S.Iframe src={search ? `https://search.lexi.studio/search?q=${search}` : ''} width='100%'></S.Iframe>
+            
+            </Box>
           
-          </Gap>
         }
+  
       />
     </div>
   )
@@ -937,10 +982,10 @@ export default Home
 const S = {
   Iframe: styled.iframe`
     width: 100%;
-    height: calc(100% - 20rem);
+    height: calc(100% - 5rem);
     border-radius: 1rem;
     overflow: hidden;
-    padding-bottom: 2rem;
+    background: var(--F_Background_Alternating);
   `,
   Container: styled.div`
     height: calc(100vh - var(--F_Header_Height));
