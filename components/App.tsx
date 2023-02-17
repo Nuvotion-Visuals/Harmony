@@ -19,26 +19,20 @@ import {
   Modal,
   TextInput,
   Spacer,
-  useBreakpoint,
   AspectRatio,
   stringInArray,
   Dropdown,
+  RichTextEditor
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import Message from './Message'
 import React from 'react'
-import { speak, speakStream } from '../Lexi/System/Language/speech'
+import { speakStream } from '../Lexi/System/Language/speech'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import { playSound } from '../Lexi/System/Language/sounds'
-
-import dynamic from 'next/dynamic'
-
-const RichTextEditor = dynamic(() => import('@avsync.live/formation').then(module => module.RichTextEditor), {
-  ssr: false,
-})
 
 interface Queries {
   [guid: string]: {
@@ -82,11 +76,10 @@ const Home = ({
 
   const [query, set_query, getLatestQuery] = useExtendedState('')
 
+  // websocket communication with server
   const websocketClient = getWebsocketClient()
-
   useEffect(() => {
     if (websocketClient) {
-      // recieve a web socket message from the client
       websocketClient.onmessage = (ev) => {
         const wsmessage = JSON.parse(ev.data.toString())
         if (wsmessage.type === 'response') {
@@ -110,7 +103,6 @@ const Home = ({
               responseTime
             }
           }))
-
 
           listenForWakeWord(() => {
             listen()
@@ -187,7 +179,7 @@ const Home = ({
     }
   }
 
-  const makeQuery = (query: string, initialize: boolean) => {
+  const makeQuery = (query: string) => {
     set_query('') // async so it's ok
     set_loading(true)
     scrollToBottom()
@@ -231,7 +223,6 @@ const Home = ({
             error: 'It seems the websocket request went wrong. You should reload the page.'
           }
         })
-
       }
 
       set_loading(false)
@@ -311,7 +302,7 @@ const Home = ({
     let timer = {} as any
     if (query && !ready && query !== '<p><br><p>' && !disableTimer) {
       timer = setTimeout(() => {
-        makeQuery(query, false)
+        makeQuery(query)
         set_ready(false)
         set_disableTimer(true)
         stop()
@@ -346,7 +337,6 @@ const Home = ({
   const [videoUrl, set_videoURL] = useState('')
 
   const [sidebarOpen, set_sidebarOpen] = useState(true)
-  const { isMobile, isTablet } = useBreakpoint()
 
   useEffect(() => {
     scrollToBottom()
@@ -356,7 +346,6 @@ const Home = ({
     const handleClick = () => {
       listenForWakeWord(() => {
         listen()
-        speak('', () => {})
         console.log('Heard wake word')
       })
     }
@@ -364,7 +353,7 @@ const Home = ({
     return () => {
       document.removeEventListener("click", handleClick)
     }
-  })
+  }, [])
 
   useEffect(() => {
     if (listening || ready) {
@@ -375,8 +364,6 @@ const Home = ({
   const ScriptInitializedIndicator = ({ scriptName } : { scriptName: string}) => 
     <><Spacer /><S.Indicator active={initializedScriptNames.includes(scriptName)} title={`${queryGuids.includes(scriptName) ? 'Finished reading' : 'Have not read'} ${scriptName}`} /></>
 
-  const [initialized, set_initialized] = useState(false)
-
   return (
     <div>
       <Navigation
@@ -384,47 +371,33 @@ const Home = ({
         open={sidebarOpen}
         onSetOpen={isSidebarOpen => set_sidebarOpen(isSidebarOpen)}
         navChildren={<>
-          <S.Center isMobile={isMobile || isTablet} isSidebarOpen={sidebarOpen} >
-            <Box width='100%' maxWidth='700px'>
-
-            {/* <TextInput 
-              value={contentUrl}
-              onChange={newValue => set_contentUrl(newValue)}
-              icon='search'
-              iconPrefix='fas'
-              compact={true}
-            /> */}
-            </Box>
-
-          </S.Center>
           <Spacer />
           <Gap autoWidth>
-            {/* <Label label={latestPongTime} color='green' /> */}
           <Dropdown
-          options={[
-            {
-              "icon": "gear",
-              "iconPrefix": "fas",
-              "dropDownOptions": [
-                {
-                  "icon": "fingerprint",
-                  iconPrefix: 'fas',
-                  "text": "Identity"
-                },
-                {
-                  "icon": "palette",
-                  iconPrefix: 'fas',
-                  "text": "Appearance"
-                },
-                {
-                  "icon": "volume-high",
-                  "iconPrefix": "fas",
-                  "text": "Sound"
-                }
-              ]
-            }
-          ]}
-       />
+            options={[
+              {
+                "icon": "gear",
+                "iconPrefix": "fas",
+                "dropDownOptions": [
+                  {
+                    "icon": "fingerprint",
+                    iconPrefix: 'fas',
+                    "text": "Identity"
+                  },
+                  {
+                    "icon": "palette",
+                    iconPrefix: 'fas',
+                    "text": "Appearance"
+                  },
+                  {
+                    "icon": "volume-high",
+                    "iconPrefix": "fas",
+                    "text": "Sound"
+                  }
+                ]
+              }
+            ]}
+        />
           {
             router.route !== 'login' && 
               <Box mr={.75}>
@@ -866,11 +839,6 @@ const Home = ({
                     circle={true}
                     onClick={() => set_open(true)}
                   />
-                  <div>
-                    {/* {
-                      listening &&  `${(ready ? '"Send" or "Clear"' :'Listening...')}`
-                    } */}
-                  </div>
                 
                   <Button 
                     icon={listening ? 'microphone-slash' : 'microphone'}
@@ -893,7 +861,7 @@ const Home = ({
                   <Button 
                     icon='paper-plane'
                     text='Send'
-                    onClick={() => makeQuery(query, false)}
+                    onClick={() => makeQuery(query)}
                     disabled={loading && queryGuids.length !== 0}
                   />
                 </Box>
@@ -902,10 +870,9 @@ const Home = ({
                 <RichTextEditor
                 value={query} onChange={(value : string) => set_query(value)} 
                 height={'160px'}
-                onEnter={(newQuery) => {
+                onEnter={newQuery => {
                   makeQuery(
                     newQuery.slice(0, -11), // remove unwanted linebreak
-                    false
                   )
                 }}
               />
@@ -937,9 +904,7 @@ const Home = ({
                 iconPrefix='fas'
                   hero={true}
                   expand={true}
-                onClick={() => {
-                  getArticleTranscript()
-                }}
+                onClick={() => getArticleTranscript()}
               />
             </Gap>
             <LineBreak />
@@ -958,12 +923,10 @@ const Home = ({
                 iconPrefix='fas'
                 hero={true}
                 expand={true}
-                onClick={() => {
-                  getYouTubeTranscript()
-                }}
+                onClick={() => getYouTubeTranscript()}
               />
             </Gap>
-            <S.Iframe src='https://www.google.com/search?igu=1 ' width='100%' height='500px'></S.Iframe>
+            <S.Iframe src='https://search.lexi.studio ' width='100%' height='500px'></S.Iframe>
           </Gap>
         </S.FlexStart>}
       />

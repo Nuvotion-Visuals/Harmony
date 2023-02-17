@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
 import React from 'react'
 
 
@@ -63,6 +64,16 @@ const App = dynamic(() => import('../components/App'), {
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()
   return <>
+  <Head>
+  <title>Lexi - Creative AGI</title>
+          <meta name="description" content="Lexi is a highly-intellegent virtual coworker for creative and technical projects" />
+          <link rel="icon" href="/favicon.ico" />
+          <meta property="og:title" content="Lexichat" />
+          <meta
+            property="og:image"
+            content="/assets/lexichat-preview.png"
+          />
+  </Head>
     {
       router.route === '/login'
         ? <Component {...pageProps} />
