@@ -173,9 +173,9 @@ const Home = ({
 
   const scrollToBottom = () => {
     if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
-      (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
+      (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement)?.scrollHeight
       setTimeout(() => {
-        (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement).scrollHeight
+        (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement)?.scrollHeight
       }, 1)
     }
   }
@@ -346,416 +346,7 @@ const Home = ({
   
   return (
     <div>
-      <Navigation
-        navLogoSrc={'/assets/lexi-circle.png'}
-        open={sidebarOpen}
-        onSetOpen={isSidebarOpen => set_sidebarOpen(isSidebarOpen)}
-        navChildren={<Gap disableWrap>
-          <Page >
-            <Box>
-              <Button 
-                icon='microphone'
-                circle
-                iconPrefix='fas'
-                onClick={() => set_search('')}
-                minimal
-              />
-              <TextInput
-                compact
-                icon='search'
-                iconPrefix='fas'
-                value={search}
-                onChange={newValue => set_search(newValue)}
-                onEnter={submitSearch}
-              />
-              <Button 
-                icon='times'
-                circle
-                iconPrefix='fas'
-                disabled={search === ''}
-                onClick={() => set_search('')}
-                minimal
-              />
-              <Button 
-                icon='arrow-right'
-                circle
-                iconPrefix='fas'
-                disabled={search === ''}
-                secondary={search === ''}
-                onClick={submitSearch}
-              />
-            </Box>
-            
-          </Page>
-          {/* <Spacer />
-          <Gap autoWidth disableWrap>
-          <Dropdown
-            options={[
-              {
-                "icon": "gear",
-                "iconPrefix": "fas",
-                "dropDownOptions": [
-                  {
-                    "icon": "fingerprint",
-                    iconPrefix: 'fas',
-                    "text": "Identity"
-                  },
-                  {
-                    "icon": "palette",
-                    iconPrefix: 'fas',
-                    "text": "Appearance"
-                  },
-                  {
-                    "icon": "volume-high",
-                    "iconPrefix": "fas",
-                    "text": "Sound"
-                  }
-                ]
-              }
-            ]}
-        />
-          {
-            router.route !== 'login' && 
-              <Box mr={.75}>
-                <Button
-                  text='Sign out'
-                  onClick={() => router.push('/login')}
-                  secondary={true}
-                />
-              </Box>
-            }
-          </Gap> */}
-         
-        </Gap>}
-        navs={[
-          {
-            type: 'nav',
-            name: 'Chat',
-            icon: 'message',
-            href: '/',
-            active: router.asPath === '/'
-          },
-          {
-            type: 'nav',
-            name: 'Projects',
-            icon: 'bookmark',
-            href: '/projects',
-            active: router.asPath === '/projects'
-          },
-          {
-            type: 'nav',
-            name: 'Tasks',
-            icon: 'check-square',
-            href: '/tasks',
-            active: router.asPath === '/tasks'
-          },
-          {
-            type: 'nav',
-            name: 'People',
-            icon: 'users',
-            href: '/people',
-            active: router.asPath === '/people'
-          },
-          {
-            type: 'nav',
-            name: 'Characters',
-            icon: 'people-arrows',
-            href: '/characters',
-            active: router.asPath === '/characters'
-          },
-          {
-            type: 'nav',
-            name: 'Entities',
-            icon: 'shapes',
-            href: '/entities',
-            active: router.asPath === '/entities'
-          },
-          {
-            type: 'nav',
-            name: 'Stories',
-            icon: 'book',
-            href: '/stories',
-            active: router.asPath === '/stories'
-          },
-          {
-            type: 'nav',
-            name: 'Scenes',
-            icon: 'film',
-            href: '/scenes',
-            active: router.asPath === '/scenes'
-          },
-          {
-            type: 'nav',
-            name: 'Realms',
-            icon: 'door-open',
-            href: '/realms',
-            active: router.asPath === '/realms'
-          },
-          {
-            type: 'title',
-            title: 'Guide',
-          },
-          {
-            type: 'nav',
-            name: 'Theory',
-            icon: 'flask',
-            href: '/guide/theory',
-            active: router.asPath === '/guide/theory'
-          },
-          {
-            type: 'nav',
-            name: 'How to script',
-            icon: 'scroll',
-            href: '/guide/how-to-script',
-            active: router.asPath === '/guide/how-to-script'
-          },
-          {
-            type: 'nav',
-            name: 'Recipes',
-            icon: 'book',
-            href: '/guide/recipes',
-            active: router.asPath === '/guide/recipes'
-          },
-          {
-            type: 'nav',
-            name: 'FAQ',
-            icon: 'question',
-            href: '/guide/faq',
-            active: router.asPath === '/guide/faq'
-          },
-          {
-            type: 'title',
-            title: 'Scripts',
-          },
-          {
-            type: 'nav',
-            name: 'Identity',
-            href: `/scripts/identity`,
-            icon: 'fingerprint',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/identity',
-            children: <ScriptInitializedIndicator scriptName='Identity' />
-          },
-          {
-            type: 'nav',
-            name: 'Capabilities',
-            href: `/scripts/capabilities`,
-            icon: 'brain',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/capabilities',
-            children: <ScriptInitializedIndicator scriptName='Capabilities' />
-          },
-          {
-            type: 'nav',
-            name: 'Behavior',
-            href: `/scripts/behavior`,
-            icon: 'puzzle-piece',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/behavior',
-            children: <ScriptInitializedIndicator scriptName='Behavior' />
-          },
-          {
-            type: 'nav',
-            name: 'Purpose',
-            href: `/scripts/purpose`,
-            icon: 'compass',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/purpose',
-            children: <ScriptInitializedIndicator scriptName='Purpose' />
-          },
-          {
-            type: 'nav',
-            name: 'Specialization',
-            href: `/scripts/specialization`,
-            icon: 'graduation-cap',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/specialization',
-            children: <ScriptInitializedIndicator scriptName='Specialization' />
-          },
-          {
-            type: 'nav',
-            name: 'Goals',
-            href: `/scripts/goals`,
-            icon: 'bullseye',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/goals',
-            children: <ScriptInitializedIndicator scriptName='Goals' />
-          },
-          {
-            type: 'nav',
-            name: 'Personality',
-            href: `/scripts/personality`,
-            icon: 'masks-theater',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/personality',
-            children: <ScriptInitializedIndicator scriptName='Personality' />
-          },
-          {
-            type: 'nav',
-            name: 'Communication',
-            href: `/scripts/communication`,
-            icon: 'comments',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/communication',
-            children: <ScriptInitializedIndicator scriptName='Communication' />
-          },
-          {
-            type: 'nav',
-            name: 'User experience',
-            href: `/scripts/user-experience`,
-            icon: 'mouse-pointer',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/user-experience',
-            children: <ScriptInitializedIndicator scriptName='User experience' />
-          },
-          {
-            type: 'nav',
-            name: 'Evaluation',
-            href: `/scripts/evaluation`,
-            icon: 'balance-scale',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/evaluation',
-            children: <ScriptInitializedIndicator scriptName='Evaluation' />
-          },
-          {
-            type: 'nav',
-            name: 'Brand',
-            href: `/scripts/brand`,
-            icon: 'tag',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/brand',
-            children: <ScriptInitializedIndicator scriptName='Brand' />
-          },
-          {
-            type: 'nav',
-            name: 'Evolution',
-            href: `/scripts/evolution`,
-            icon: 'dna',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/evolution',
-            children: <ScriptInitializedIndicator scriptName='Evolution' />
-          },
-          {
-            type: 'nav',
-            name: 'Limitations',
-            href: `/scripts/limitations`,
-            icon: 'traffic-light',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/limitations',
-            children: <ScriptInitializedIndicator scriptName='Limitations' />
-          },
-          {
-            type: 'nav',
-            name: 'Multimodality',
-            href: `/scripts/multimodality`,
-            icon: 'circle-nodes',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/multimodality',
-            children: <ScriptInitializedIndicator scriptName='Multimodality' />
-          },
-          {
-            type: 'nav',
-            name: 'Scaling',
-            href: `/scripts/scaling`,
-            icon: 'arrow-up-right-dots',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/scaling',
-            children: <ScriptInitializedIndicator scriptName='Scaling' />
-          },
-          {
-            type: 'nav',
-            name: 'Decision making',
-            href: `/scripts/decision-making`,
-            icon: 'diagram-project',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/decision-making',
-            children: <ScriptInitializedIndicator scriptName='Decision making' />
-          },
-          {
-            type: 'nav',
-            name: 'Cognition',
-            href: `/scripts/cognition`,
-            icon: 'brain',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/cognition',
-            children: <ScriptInitializedIndicator scriptName='Cognition' />
-          },
-          {
-            type: 'nav',
-            name: 'Creativity',
-            href: `/scripts/creativity`,
-            icon: 'palette',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/creativity',
-            children: <ScriptInitializedIndicator scriptName='Creativity' />
-          },
-          {
-            type: 'nav',
-            name: 'Context',
-            href: `/scripts/context`,
-            icon: 'earth-africa',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/context',
-            children: <ScriptInitializedIndicator scriptName='Context' />
-          },
-          {
-            type: 'nav',
-            name: 'Memory',
-            href: `/scripts/memory`,
-            icon: 'database',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/memory',
-            children: <ScriptInitializedIndicator scriptName='Memory' />
-          },
-          {
-            type: 'nav',
-            name: 'Stategy',
-            href: `/scripts/strategy`,
-            icon: 'chess-queen',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/strategy',
-            children: <ScriptInitializedIndicator scriptName='Strategy' />
-          },
-          {
-            type: 'nav',
-            name: 'Perception',
-            href: `/scripts/perception`,
-            icon: 'eye',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/perception',
-            children: <ScriptInitializedIndicator scriptName='Perception' />
-          },
-          {
-            type: 'nav',
-            name: 'Ethics',
-            href: `/scripts/ethics`,
-            icon: 'handshake-simple',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/ethics',
-            children: <ScriptInitializedIndicator scriptName='Ethics' />
-          },
-          {
-            type: 'title',
-            title: 'Legal',
-          },
-          {
-            type: 'nav',
-            name: 'Terms of service',
-            href: `/legal/terms-of-service`,
-            icon: 'shield-halved',
-            iconPrefix: 'fas',
-            active: router.asPath === '/legal/terms-of-service'
-          },
-          {
-            type: 'nav',
-            name: 'Privacy policy',
-            href: `/legal/privacy-policy`,
-            icon: 'mask',
-            iconPrefix: 'fas',
-            active: router.asPath === '/legal/privacy-policy'
-          }
-        ]}
-      >
+  
         <S.Container>
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
@@ -884,6 +475,7 @@ const Home = ({
               
               </S.ButtonContainer>
                 <RichTextEditor
+                
                 value={query} onChange={(value : string) => set_query(value)} 
                 height={'160px'}
                 onEnter={newQuery => {
@@ -896,7 +488,7 @@ const Home = ({
           </S.AltPage>
         </Box>
       </S.Container>
-      </Navigation>
+ 
       <Modal 
         title='Search and Insert'
         icon='search'
@@ -982,20 +574,20 @@ export default Home
 const S = {
   Iframe: styled.iframe`
     width: 100%;
-    height: calc(100% - 5rem);
+    height: 100%;
     border-radius: 1rem;
     overflow: hidden;
     background: var(--F_Background_Alternating);
   `,
   Container: styled.div`
-    height: calc(100vh - var(--F_Header_Height));
+    height: 100%;
     width: 100%;
     overflow: hidden;
     background: var(--F_Background);
   `,
   Content: styled.div`
     width: 100%;
-    height: calc(calc(100vh - calc(var(--F_Header_Height) + var(--L_Prompt_Height))) - calc(var(--L_Prompt_Padding) * 2)); 
+    height: calc(calc(100vh - calc(var(--F_Header_Height))) - calc(var(--L_Prompt_Padding) * 2)); 
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -1005,9 +597,8 @@ const S = {
     background: var(--F_Background);
   `,
   AltPage: styled.div`
-    width: 700px;
-    max-width: calc(100vw - 1.5rem);
-
+    max-width: 100%;
+    width: 100%;
   `,
   Footer: styled.div`
     position:relative;
@@ -1025,7 +616,6 @@ const S = {
     border-radius: .75rem;
     z-index: 1;
     background: var(--F_Background);
-
     button {
       background: none;
     }

@@ -46,13 +46,14 @@ library.add(
   fas.faChess, fas.faHandshakeSimple, fas.faGlobe, fas.faPaintBrush,
   fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette,
   fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap, fas.faP, fas.faT, fas.faUsers,
-  fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink
+  fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell
 )
 
 import { useRouter } from 'next/router'
 
 import { setLinkComponent } from '@avsync.live/formation'
 import dynamic from 'next/dynamic'
+import { SuperApp } from '../components/SuperApp'
 setLinkComponent(require('../components/Link').default)
 
 config.autoAddCss = false
@@ -77,9 +78,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     {
       router.route === '/login'
         ? <Component {...pageProps} />
-        : <App>
-            <Component {...pageProps} />
-          </App>
+        : <SuperApp />
       }
   </>
 }
