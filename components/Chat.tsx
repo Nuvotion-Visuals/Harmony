@@ -531,7 +531,7 @@ const S = {
     background: var(--F_Background_Alternating);
   `,
   Container: styled.div`
-    height: calc(calc(100vh - calc(2 * var(--F_Header_Height))) + 0rem);
+    height: calc(calc(100vh - calc(1 * var(--F_Header_Height))) + 0rem);
     width: 100%;
     overflow: hidden;
     background: var(--F_Background);

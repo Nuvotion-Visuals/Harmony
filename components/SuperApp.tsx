@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Chat from './Chat'
+import LogoPlaceholder from './LogoPlaceholder'
 interface Props {
   
 }
@@ -29,7 +30,16 @@ const SuperApp = ({ }: Props) => {
     switch(router.route) {
       case '/':
         return <S.Sidebar>
-        <Box height='var(--F_Header_Height)' width='100%'/>
+          <Box height='var(--F_Header_Height)' width='100%'/>
+          <Box p={.75} width='calc(100% - 1.5rem)'>
+            <Button
+              text='New chat'
+              icon='plus'
+              iconPrefix='fas'
+              secondary
+              expand
+            />
+          </Box>
         {
           [
             {
@@ -129,14 +139,7 @@ const SuperApp = ({ }: Props) => {
                 />
               </>
             },
-            {
-              type: 'nav',
-              icon: 'plus',
-              iconPrefix: 'fas',
-              name: 'New chat',
-              href: '/tasks',
-              active: router.asPath === '/tasks'
-            },
+           
           ].map(item => <Item {...item}/>)
         }
       </S.Sidebar>
@@ -144,52 +147,138 @@ const SuperApp = ({ }: Props) => {
       case '/search':
         return <S.Sidebar>
         <Box height='var(--F_Header_Height)' width='100%'/>
+      
         {
           [
             {
               type: 'nav',
               name: 'search term 1',
-              icon: 'search',
+              icon: 'clock',
               iconPrefix: 'fas',
               onClick: () => {
                 setActiveSwipeIndex(1)
               },
-              active: router.asPath === '/'
+              active: router.asPath === '/',
+              children: <>
+              <Dropdown
+                 options={[
+                   {
+                     "icon": "ellipsis-v",
+                     "iconPrefix": "fas",
+                     "dropDownOptions": [
+                       {
+                         "icon": "edit",
+                         iconPrefix: 'fas',
+                         "text": "Rename"
+                       },
+                       {
+                         "icon": "trash-alt",
+                         iconPrefix: 'fas',
+                         "text": "Delete"
+                       },
+
+                     ]
+                   }
+                 ]}
+               />
+             </>
             },
             {
               type: 'nav',
               name: 'search term 2',
-              icon: 'search',
+              icon: 'clock',
               iconPrefix: 'fas',
               onClick: () => {
                 setActiveSwipeIndex(2)
               },
-              active: router.asPath === '/search'
+              active: router.asPath === '/search',
+              children: <>
+              <Dropdown
+                 options={[
+                   {
+                     "icon": "ellipsis-v",
+                     "iconPrefix": "fas",
+                     "dropDownOptions": [
+                       {
+                         "icon": "edit",
+                         iconPrefix: 'fas',
+                         "text": "Rename"
+                       },
+                       {
+                         "icon": "trash-alt",
+                         iconPrefix: 'fas',
+                         "text": "Delete"
+                       },
+
+                     ]
+                   }
+                 ]}
+               />
+             </>
             },
             {
               type: 'nav',
               name: 'search term 3',
-              icon: 'search',
+              icon: 'clock',
               iconPrefix: 'fas',
               href: '/projects',
-              active: router.asPath === '/projects'
+              active: router.asPath === '/projects',
+              children: <>
+              <Dropdown
+                 options={[
+                   {
+                     "icon": "ellipsis-v",
+                     "iconPrefix": "fas",
+                     "dropDownOptions": [
+                       {
+                         "icon": "edit",
+                         iconPrefix: 'fas',
+                         "text": "Rename"
+                       },
+                       {
+                         "icon": "trash-alt",
+                         iconPrefix: 'fas',
+                         "text": "Delete"
+                       },
+
+                     ]
+                   }
+                 ]}
+               />
+             </>
             },
             {
               type: 'nav',
               name: 'search term 4',
               href: '/tasks',
               active: router.asPath === '/tasks',
-              icon: 'search',
+              icon: 'clock',
               iconPrefix: 'fas',
+              children: <>
+              <Dropdown
+                 options={[
+                   {
+                     "icon": "ellipsis-v",
+                     "iconPrefix": "fas",
+                     "dropDownOptions": [
+                       {
+                         "icon": "edit",
+                         iconPrefix: 'fas',
+                         "text": "Rename"
+                       },
+                       {
+                         "icon": "trash-alt",
+                         iconPrefix: 'fas',
+                         "text": "Delete"
+                       },
+
+                     ]
+                   }
+                 ]}
+               />
+             </>
             },
-            {
-              type: 'nav',
-              icon: 'plus',
-              iconPrefix: 'fas',
-              name: 'New search',
-              href: '/tasks',
-              active: router.asPath === '/tasks'
-            },
+           
           ].map(item => <Item {...item}/>)
         }
       </S.Sidebar>
@@ -197,6 +286,15 @@ const SuperApp = ({ }: Props) => {
   case '/projects':
     return <S.Sidebar>
     <Box height='var(--F_Header_Height)' width='100%'/>
+    <Box p={.75} width='calc(100% - 1.5rem)'>
+      <Button
+        text='New project'
+        icon='plus'
+        iconPrefix='fas'
+        secondary
+        expand
+      />
+    </Box>
     {
       [
         {
@@ -221,58 +319,11 @@ const SuperApp = ({ }: Props) => {
           href: '/projects',
           active: router.asPath === '/projects'
         },
-        {
-          type: 'nav',
-          icon: 'plus',
-          iconPrefix: 'fas',
-          name: 'New project',
-          href: '/tasks',
-          active: router.asPath === '/tasks'
-        },
+       
       ].map(item => <Item {...item}/>)
   }
 </S.Sidebar>
 
-case '/tools':
-  return <S.Sidebar>
-  <Box height='var(--F_Header_Height)' width='100%'/>
-  {
-    [
-      {
-        type: 'nav',
-        name: 'Text-to-speech',
-        onClick: () => {
-          setActiveSwipeIndex(1)
-        },
-        active: router.asPath === '/'
-      },
-      {
-        type: 'nav',
-        name: 'Speech-to-text',
-        onClick: () => {
-          setActiveSwipeIndex(2)
-        },
-        active: router.asPath === '/search'
-      },
-      {
-        type: 'nav',
-        name: 'Content writer',
-        onClick: () => {
-          setActiveSwipeIndex(2)
-        },
-        active: router.asPath === '/search'
-      },
-      {
-        type: 'nav',
-        icon: 'plus',
-        iconPrefix: 'fas',
-        name: 'New search',
-        href: '/tasks',
-        active: router.asPath === '/tasks'
-      },
-    ].map(item => <Item {...item}/>)
-  }
-</S.Sidebar>
     }
   }
 
@@ -287,41 +338,17 @@ case '/tools':
 
   const renderThirdPage = () => {
     return <S.ThirdPage>
-       
-          <S.Iframe 
-          src={search ? `https://search.lexi.studio/search?q=${search}` : ''} 
-          width='100%'></S.Iframe>
-           <Gap gap={.75}>
-            <Box width='100%' p={.5}>
-            <TextInput 
-              value={url}
-              icon='link'
-              iconPrefix='fas'
-              onChange={newValue => set_url(newValue)}
-              compact
-            />
-            <Button 
-              icon='times'
-              circle
-              iconPrefix='fas'
-              disabled={search === ''}
-              onClick={() => set_url('')}
-              minimal
-            />
-            <Button
-              icon='plus'
-              circle
-              secondary
-              iconPrefix='fas'
-              onClick={() => {
-                // insertContentByUrl()
-              }
-            }
-            />
-            
-          </Box>
-         
-          </Gap>
+      {
+        search
+        ? <S.Iframe 
+            src={search ? `https://search.lexi.studio/search?q=${search}` : ''} 
+            width='100%'
+          >
+            </S.Iframe>
+        : <><LogoPlaceholder /></>
+      }
+     
+        
     </S.ThirdPage>
   }
 
@@ -343,7 +370,7 @@ case '/tools':
           
         </div>
           <Page >
-            {/* <Box>
+            <Box>
               <TextInput
                 compact
                 icon='search'
@@ -369,7 +396,7 @@ case '/tools':
                 onClick={submitSearch}
                 minimal
               />
-            </Box> */}
+            </Box>
             
           </Page>
           {/* <Spacer />
@@ -470,61 +497,6 @@ case '/tools':
         href: `/search`,
         active: router.route === `/search`
     },
-    {
-        icon: 'bookmark',
-        iconPrefix: router.route === `/projects` ? 'fas' : 'fas',
-        title: 'Projects',
-        href: '/projects',
-        active: router.route === `/projects`
-    },
-    {
-        icon: 'wrench',
-        iconPrefix: router.route === `/tools` ? 'fas' : 'fas',
-        title: 'Tools',
-        href: '/tools',
-        active: router.route === `/tools`
-    }
-    ]}
-    navsSecondary={[
-    {
-        title: 'Discuss',
-        icon: 'message',
-        iconPrefix: 'fas',
-        href: `/spaces/${activeGuid}`,
-        active: stringInArray(router.route, [`/spaces/[guid]`]),
-        hideOptions: true,
-        onClick: incrementSwipeIndex
-    },
-    {
-        title: 'Notes',
-        icon: 'list',
-        iconPrefix: 'fas',
-        href: `/spaces/${activeGuid}/teams`,
-        active: stringInArray(router.route, [`/spaces/[guid]/notes`]),
-        hideOptions: true,
-        onClick: incrementSwipeIndex
-    },
-    {
-        title: 'Files',
-        icon: 'folder',
-        iconPrefix: 'fas',
-        href: `/spaces/${activeGuid}/files`,
-        hideOptions: true,
-        active: stringInArray(router.route, [
-        `/spaces/[guid]/files`,
-        ]),
-        onClick: incrementSwipeIndex
-    },
-    {
-        title: 'Tasks',
-        icon: 'check-square',
-        iconPrefix: 'fas',
-        href: `/spaces/${activeGuid}/tasks`,
-        hideOptions: true,
-        active: router.route.includes(`/spaces/[guid]/tasks`),
-        onClick: incrementSwipeIndex
-    },
-    
     ]}
   />
   </S.SuperApp>)
@@ -535,7 +507,7 @@ export default SuperApp
 const S = {
   Iframe: styled.iframe`
     width: 100%;
-    height: calc(calc(100% - var(--F_Input_Height)) - 1rem);
+    height: 100%;
     overflow: hidden;
   `,
   SuperApp: styled.div`
