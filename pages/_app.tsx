@@ -18,7 +18,7 @@ library.add(
   // @ts-ignore
   far.faHeart, far.faPaperPlane, far.faCheckSquare, far.faSquare,
   fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark,
-  far.faEnvelope,
+  far.faEnvelope, far.faMessage,
 
   fab.faYoutube, fab.faGithubAlt,
   
@@ -46,21 +46,23 @@ library.add(
   fas.faChess, fas.faHandshakeSimple, fas.faGlobe, fas.faPaintBrush,
   fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette,
   fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap, fas.faP, fas.faT, fas.faUsers,
-  fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell
+  fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell,
+  fas.faWrench, fas.faEdit, fas.faTrashAlt
 )
 
 import { useRouter } from 'next/router'
 
 import { setLinkComponent } from '@avsync.live/formation'
 import dynamic from 'next/dynamic'
-import { SuperApp } from '../components/SuperApp'
+
+const SuperApp = dynamic(() => import('../components/SuperApp'), {
+  ssr: false,
+});
+
+
 setLinkComponent(require('../components/Link').default)
 
 config.autoAddCss = false
-
-const App = dynamic(() => import('../components/App'), {
-  ssr: false,
-})
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()

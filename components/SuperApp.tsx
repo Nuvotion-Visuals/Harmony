@@ -1,15 +1,14 @@
-import { NavSpaces, NavTabs, Item, Placeholders, Box, DateAndTimePicker, stringInArray, useBreakpoint, Gap, Button, Page, TextInput } from '@avsync.live/formation'
+import { NavSpaces, NavTabs, Item, Placeholders, Box, DateAndTimePicker, stringInArray, useBreakpoint, Gap, Button, Page, TextInput, Dropdown } from '@avsync.live/formation'
 import router, { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { object } from 'yup'
 
-import App from './App'
+import Chat from './Chat'
 interface Props {
   
 }
 
-export const SuperApp = ({ }: Props) => {
+const SuperApp = ({ }: Props) => {
   const [ activeSwipeIndex, setActiveSwipeIndex ] = useState(0)
   const activeGuid = 'test'
   const { isMobile, isTablet } = useBreakpoint()
@@ -27,339 +26,303 @@ export const SuperApp = ({ }: Props) => {
 
 
   const renderFirstPage = () => {
-    return <Box wrap height='100%'>
-      <Box height='var(--F_Header_Height)' width='100%'/>
+    switch(router.route) {
+      case '/':
+        return <S.Sidebar>
+        <Box height='var(--F_Header_Height)' width='100%'/>
+        {
+          [
+            {
+              type: 'nav',
+              name: 'How to create AGI',
+              icon: 'message',
+              iconPrefix: 'far',
+              onClick: () => {
+                setActiveSwipeIndex(1)
+              },
+              active: router.asPath === '/',
+              children: <>
+               <Dropdown
+                  options={[
+                    {
+                      "icon": "ellipsis-v",
+                      "iconPrefix": "fas",
+                      "dropDownOptions": [
+                        {
+                          "icon": "edit",
+                          iconPrefix: 'fas',
+                          "text": "Rename"
+                        },
+                        {
+                          "icon": "trash-alt",
+                          iconPrefix: 'fas',
+                          "text": "Delete"
+                        },
+
+                      ]
+                    }
+                  ]}
+                />
+              </>
+            },
+            {
+              type: 'nav',
+              name: 'Writing good Typescript',
+              icon: 'message',
+              iconPrefix: 'far',
+              onClick: () => {
+                setActiveSwipeIndex(2)
+              },
+              active: router.asPath === '/search',
+              children: <>
+               <Dropdown
+                  options={[
+                    {
+                      "icon": "ellipsis-v",
+                      "iconPrefix": "fas",
+                      "dropDownOptions": [
+                        {
+                          "icon": "edit",
+                          iconPrefix: 'fas',
+                          "text": "Rename"
+                        },
+                        {
+                          "icon": "trash-alt",
+                          iconPrefix: 'fas',
+                          "text": "Delete"
+                        },
+
+                      ]
+                    }
+                  ]}
+                />
+              </>
+            },
+            {
+              type: 'nav',
+              name: 'Converting Typescript to Python',
+              icon: 'message',
+              iconPrefix: 'far',
+              href: '/projects',
+              active: router.asPath === '/projects',
+              children: <>
+               <Dropdown
+                  options={[
+                    {
+                      "icon": "ellipsis-v",
+                      "iconPrefix": "fas",
+                      "dropDownOptions": [
+                        {
+                          "icon": "edit",
+                          iconPrefix: 'fas',
+                          "text": "Rename"
+                        },
+                        {
+                          "icon": "trash-alt",
+                          iconPrefix: 'fas',
+                          "text": "Delete"
+                        },
+
+                      ]
+                    }
+                  ]}
+                />
+              </>
+            },
+            {
+              type: 'nav',
+              icon: 'plus',
+              iconPrefix: 'fas',
+              name: 'New chat',
+              href: '/tasks',
+              active: router.asPath === '/tasks'
+            },
+          ].map(item => <Item {...item}/>)
+        }
+      </S.Sidebar>
+
+      case '/search':
+        return <S.Sidebar>
+        <Box height='var(--F_Header_Height)' width='100%'/>
+        {
+          [
+            {
+              type: 'nav',
+              name: 'search term 1',
+              icon: 'search',
+              iconPrefix: 'fas',
+              onClick: () => {
+                setActiveSwipeIndex(1)
+              },
+              active: router.asPath === '/'
+            },
+            {
+              type: 'nav',
+              name: 'search term 2',
+              icon: 'search',
+              iconPrefix: 'fas',
+              onClick: () => {
+                setActiveSwipeIndex(2)
+              },
+              active: router.asPath === '/search'
+            },
+            {
+              type: 'nav',
+              name: 'search term 3',
+              icon: 'search',
+              iconPrefix: 'fas',
+              href: '/projects',
+              active: router.asPath === '/projects'
+            },
+            {
+              type: 'nav',
+              name: 'search term 4',
+              href: '/tasks',
+              active: router.asPath === '/tasks',
+              icon: 'search',
+              iconPrefix: 'fas',
+            },
+            {
+              type: 'nav',
+              icon: 'plus',
+              iconPrefix: 'fas',
+              name: 'New search',
+              href: '/tasks',
+              active: router.asPath === '/tasks'
+            },
+          ].map(item => <Item {...item}/>)
+        }
+      </S.Sidebar>
+
+  case '/projects':
+    return <S.Sidebar>
+    <Box height='var(--F_Header_Height)' width='100%'/>
+    {
+      [
+        {
+          type: 'nav',
+          name: 'AVsync.LIVE',
+          onClick: () => {
+            setActiveSwipeIndex(1)
+          },
+          active: router.asPath === '/'
+        },
+        {
+          type: 'nav',
+          name: 'Lexi.studio',
+          onClick: () => {
+            setActiveSwipeIndex(2)
+          },
+          active: router.asPath === '/search'
+        },
+        {
+          type: 'nav',
+          name: 'UAGC Installation',
+          href: '/projects',
+          active: router.asPath === '/projects'
+        },
+        {
+          type: 'nav',
+          icon: 'plus',
+          iconPrefix: 'fas',
+          name: 'New project',
+          href: '/tasks',
+          active: router.asPath === '/tasks'
+        },
+      ].map(item => <Item {...item}/>)
+  }
+</S.Sidebar>
+
+case '/tools':
+  return <S.Sidebar>
+  <Box height='var(--F_Header_Height)' width='100%'/>
+  {
+    [
       {
-        [
-          {
-            type: 'nav',
-            name: 'Chat',
-            icon: 'message',
-            iconPrefix: 'fas',
-            href: '/',
-            active: router.asPath === '/'
-          },
-          {
-            type: 'nav',
-            name: 'Projects',
-            icon: 'bookmark',
-            iconPrefix: 'fas',
-            href: '/projects',
-            active: router.asPath === '/projects'
-          },
-          {
-            type: 'nav',
-            name: 'Tasks',
-            icon: 'check-square',
-            iconPrefix: 'fas',
-            href: '/tasks',
-            active: router.asPath === '/tasks'
-          },
-          {
-            type: 'nav',
-            name: 'People',
-            icon: 'users',
-            iconPrefix: 'fas',
-            href: '/people',
-            active: router.asPath === '/people'
-          },
-          {
-            type: 'nav',
-            name: 'Characters',
-            icon: 'people-arrows',
-            iconPrefix: 'fas',
-            href: '/characters',
-            active: router.asPath === '/characters'
-          },
-          {
-            type: 'nav',
-            name: 'Entities',
-            icon: 'shapes',
-            iconPrefix: 'fas',
-            href: '/entities',
-            active: router.asPath === '/entities'
-          },
-          {
-            type: 'nav',
-            name: 'Stories',
-            icon: 'book',
-            iconPrefix: 'fas',
-            href: '/stories',
-            active: router.asPath === '/stories'
-          },
-          {
-            type: 'nav',
-            name: 'Scenes',
-            icon: 'film',
-            iconPrefix: 'fas',
-            href: '/scenes',
-            active: router.asPath === '/scenes'
-          },
-          {
-            type: 'nav',
-            name: 'Realms',
-            icon: 'door-open',
-            iconPrefix: 'fas',
-            href: '/realms',
-            active: router.asPath === '/realms'
-          },
-          {
-            type: 'title',
-            title: 'Guide',
-          },
-          {
-            type: 'nav',
-            name: 'Theory',
-            icon: 'flask',
-            iconPrefix: 'fas',
-            href: '/guide/theory',
-            active: router.asPath === '/guide/theory'
-          },
-          {
-            type: 'nav',
-            name: 'How to script',
-            icon: 'scroll',
-            iconPrefix: 'fas',
-            href: '/guide/how-to-script',
-            active: router.asPath === '/guide/how-to-script'
-          },
-          {
-            type: 'nav',
-            name: 'Recipes',
-            icon: 'book',
-            iconPrefix: 'fas',
-            href: '/guide/recipes',
-            active: router.asPath === '/guide/recipes'
-          },
-          {
-            type: 'nav',
-            name: 'FAQ',
-            icon: 'question',
-            iconPrefix: 'fas',
-            href: '/guide/faq',
-            active: router.asPath === '/guide/faq'
-          },
-          {
-            type: 'title',
-            title: 'Scripts',
-          },
-          {
-            type: 'nav',
-            name: 'Identity',
-            href: `/scripts/identity`,
-            icon: 'fingerprint',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/identity',
-          },
-          {
-            type: 'nav',
-            name: 'Capabilities',
-            href: `/scripts/capabilities`,
-            icon: 'brain',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/capabilities',
-          },
-          {
-            type: 'nav',
-            name: 'Behavior',
-            href: `/scripts/behavior`,
-            icon: 'puzzle-piece',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/behavior',
-          },
-          {
-            type: 'nav',
-            name: 'Purpose',
-            href: `/scripts/purpose`,
-            icon: 'compass',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/purpose',
-          },
-          {
-            type: 'nav',
-            name: 'Specialization',
-            href: `/scripts/specialization`,
-            icon: 'graduation-cap',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/specialization',
-          },
-          {
-            type: 'nav',
-            name: 'Goals',
-            href: `/scripts/goals`,
-            icon: 'bullseye',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/goals',
-          },
-          {
-            type: 'nav',
-            name: 'Personality',
-            href: `/scripts/personality`,
-            icon: 'masks-theater',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/personality',
-          },
-          {
-            type: 'nav',
-            name: 'Communication',
-            href: `/scripts/communication`,
-            icon: 'comments',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/communication',
-          },
-          {
-            type: 'nav',
-            name: 'User experience',
-            href: `/scripts/user-experience`,
-            icon: 'mouse-pointer',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/user-experience',
-          },
-          {
-            type: 'nav',
-            name: 'Evaluation',
-            href: `/scripts/evaluation`,
-            icon: 'balance-scale',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/evaluation',
-          },
-          {
-            type: 'nav',
-            name: 'Brand',
-            href: `/scripts/brand`,
-            icon: 'tag',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/brand',
-          },
-          {
-            type: 'nav',
-            name: 'Evolution',
-            href: `/scripts/evolution`,
-            icon: 'dna',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/evolution',
-          },
-          {
-            type: 'nav',
-            name: 'Limitations',
-            href: `/scripts/limitations`,
-            icon: 'traffic-light',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/limitations',
-          },
-          {
-            type: 'nav',
-            name: 'Multimodality',
-            href: `/scripts/multimodality`,
-            icon: 'circle-nodes',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/multimodality',
-          },
-          {
-            type: 'nav',
-            name: 'Scaling',
-            href: `/scripts/scaling`,
-            icon: 'arrow-up-right-dots',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/scaling',
-          },
-          {
-            type: 'nav',
-            name: 'Decision making',
-            href: `/scripts/decision-making`,
-            icon: 'diagram-project',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/decision-making',
-          },
-          {
-            type: 'nav',
-            name: 'Cognition',
-            href: `/scripts/cognition`,
-            icon: 'brain',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/cognition',
-          },
-          {
-            type: 'nav',
-            name: 'Creativity',
-            href: `/scripts/creativity`,
-            icon: 'palette',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/creativity',
-          },
-          {
-            type: 'nav',
-            name: 'Context',
-            href: `/scripts/context`,
-            icon: 'earth-africa',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/context',
-          },
-          {
-            type: 'nav',
-            name: 'Memory',
-            href: `/scripts/memory`,
-            icon: 'database',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/memory',
-          },
-          {
-            type: 'nav',
-            name: 'Stategy',
-            href: `/scripts/strategy`,
-            icon: 'chess-queen',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/strategy',
-          },
-          {
-            type: 'nav',
-            name: 'Perception',
-            href: `/scripts/perception`,
-            icon: 'eye',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/perception',
-          },
-          {
-            type: 'nav',
-            name: 'Ethics',
-            href: `/scripts/ethics`,
-            icon: 'handshake-simple',
-            iconPrefix: 'fas',
-            active: router.asPath === '/scripts/ethics',
-          },
-          {
-            type: 'title',
-            title: 'Legal',
-          },
-          {
-            type: 'nav',
-            name: 'Terms of service',
-            href: `/legal/terms-of-service`,
-            icon: 'shield-halved',
-            iconPrefix: 'fas',
-            active: router.asPath === '/legal/terms-of-service'
-          },
-          {
-            type: 'nav',
-            name: 'Privacy policy',
-            href: `/legal/privacy-policy`,
-            icon: 'mask',
-            iconPrefix: 'fas',
-            active: router.asPath === '/legal/privacy-policy'
-          }
-        ].map(item => <Item {...item}/>)
-      }
-    </Box>
+        type: 'nav',
+        name: 'Text-to-speech',
+        onClick: () => {
+          setActiveSwipeIndex(1)
+        },
+        active: router.asPath === '/'
+      },
+      {
+        type: 'nav',
+        name: 'Speech-to-text',
+        onClick: () => {
+          setActiveSwipeIndex(2)
+        },
+        active: router.asPath === '/search'
+      },
+      {
+        type: 'nav',
+        name: 'Content writer',
+        onClick: () => {
+          setActiveSwipeIndex(2)
+        },
+        active: router.asPath === '/search'
+      },
+      {
+        type: 'nav',
+        icon: 'plus',
+        iconPrefix: 'fas',
+        name: 'New search',
+        href: '/tasks',
+        active: router.asPath === '/tasks'
+      },
+    ].map(item => <Item {...item}/>)
+  }
+</S.Sidebar>
+    }
   }
 
   const renderSecondPage = () => {
     return <>
-      <App></App>
+      {
+        !isMobile && <S.HeaderSpacer />
+      }
+      <Chat></Chat>
     </>
   }
 
   const renderThirdPage = () => {
-    return <></>
+    return <S.ThirdPage>
+       
+          <S.Iframe 
+          src={search ? `https://search.lexi.studio/search?q=${search}` : ''} 
+          width='100%'></S.Iframe>
+           <Gap gap={.75}>
+            <Box width='100%' p={.5}>
+            <TextInput 
+              value={url}
+              icon='link'
+              iconPrefix='fas'
+              onChange={newValue => set_url(newValue)}
+              compact
+            />
+            <Button 
+              icon='times'
+              circle
+              iconPrefix='fas'
+              disabled={search === ''}
+              onClick={() => set_url('')}
+              minimal
+            />
+            <Button
+              icon='plus'
+              circle
+              secondary
+              iconPrefix='fas'
+              onClick={() => {
+                // insertContentByUrl()
+              }
+            }
+            />
+            
+          </Box>
+         
+          </Gap>
+    </S.ThirdPage>
   }
 
   const router = useRouter()
@@ -369,21 +332,18 @@ export const SuperApp = ({ }: Props) => {
 
   const submitSearch = () => {
     // set_open(true)
+    setActiveSwipeIndex(2)
   }
 
   return (<S.SuperApp>
     <S.NavHeader>
       <Gap disableWrap>
+        <div onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}>
         <S.Logo src='/assets/lexi-circle.png'/>
+          
+        </div>
           <Page >
-            <Box>
-              <Button 
-                icon='microphone'
-                circle
-                iconPrefix='fas'
-                onClick={() => set_search('')}
-                minimal
-              />
+            {/* <Box>
               <TextInput
                 compact
                 icon='search'
@@ -407,8 +367,9 @@ export const SuperApp = ({ }: Props) => {
                 disabled={search === ''}
                 secondary={search === ''}
                 onClick={submitSearch}
+                minimal
               />
-            </Box>
+            </Box> */}
             
           </Page>
           {/* <Spacer />
@@ -496,32 +457,32 @@ export const SuperApp = ({ }: Props) => {
     ]}
     navsPrimary={[
     {
-        icon: 'house',
+        icon: 'message',
         iconPrefix: router.route.includes(`/`) ? 'fas' : 'fas',
-        title: 'Home',
+        title: 'Chat',
         href: `/`,
-        active: router.route.includes(`/`)
+        active: router.route === `/`
     },
     {
         icon: 'search',
         iconPrefix: router.route.includes(`/search`) ? 'fas' : 'fas',
         title: 'Search',
         href: `/search`,
-        active: router.route.includes(`/search`)
+        active: router.route === `/search`
     },
     {
-        icon: 'bell',
-        iconPrefix: router.route === `/notifications` ? 'fas' : 'fas',
-        title: 'Notifications',
-        href: '/notifications',
-        active: router.route === `/notifications`
+        icon: 'bookmark',
+        iconPrefix: router.route === `/projects` ? 'fas' : 'fas',
+        title: 'Projects',
+        href: '/projects',
+        active: router.route === `/projects`
     },
     {
-        icon: 'user',
-        iconPrefix: router.route === `/profile` ? 'fas' : 'fas',
-        title: 'Profile',
-        href: '/profile',
-        active: router.route === `/profile`
+        icon: 'wrench',
+        iconPrefix: router.route === `/tools` ? 'fas' : 'fas',
+        title: 'Tools',
+        href: '/tools',
+        active: router.route === `/tools`
     }
     ]}
     navsSecondary={[
@@ -569,7 +530,14 @@ export const SuperApp = ({ }: Props) => {
   </S.SuperApp>)
 }
 
+export default SuperApp
+
 const S = {
+  Iframe: styled.iframe`
+    width: 100%;
+    height: calc(calc(100% - var(--F_Input_Height)) - 1rem);
+    overflow: hidden;
+  `,
   SuperApp: styled.div`
     width: 100%;
   `,
@@ -585,10 +553,24 @@ const S = {
     align-items: center;
     border-bottom: 1px solid var(--F_Surface);
   `,
+  HeaderSpacer: styled.div`
+    width: 100%;
+    height: var(--F_Header_Height);
+  `,
   Logo: styled.img`
     height: var(--F_Input_Height);
     width: var(--F_Input_Height);
     position: relative;
     left: .75rem;
+  `,
+  Sidebar: styled.div`
+    border-right: 1px solid var(--F_Surface);
+    width: calc(100% - 1px);
+    height: 100%;
+    overflow-y: auto;
+  `,
+  ThirdPage: styled.div`
+    height: 100%;
+    width: 100%;
   `
 }

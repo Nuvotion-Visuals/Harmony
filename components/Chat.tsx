@@ -345,7 +345,7 @@ const Home = ({
   }
   
   return (
-    <div>
+    <>
   
         <S.Container>
           <S.Content ref={scrollContainerRef}>
@@ -414,22 +414,7 @@ const Home = ({
                 }
                
               </Box>
-              {
-                router.route !== '/' ?
-                  <Box width='100%' pt={.75}>
-                  <Page>
-                  <Button
-                    text={show ? 'Hide' : 'Show'}
-                    icon={show ? 'eye-slash' : 'eye'}
-                    iconPrefix='fas'
-                    secondary={true}
-                    onClick={() => set_show(!show)}
-                  />
-                  </Page>
-                
-                </Box>
-                : null
-              }
+             
               
             </Box>
             <div ref={scrollToRef}></div>
@@ -474,8 +459,7 @@ const Home = ({
                 </Box>
               
               </S.ButtonContainer>
-                <RichTextEditor
-                
+              <RichTextEditor
                 value={query} onChange={(value : string) => set_query(value)} 
                 height={'160px'}
                 onEnter={newQuery => {
@@ -493,13 +477,11 @@ const Home = ({
         title='Search and Insert'
         icon='search'
         iconPrefix='fas'
-        size='tall'
-        fullscreen
+        size='sm'
         isOpen={open}
         onClose={() => set_open(false)}
         content={
-          <Box wrap height={'100%'} width='100%'>
-              <Gap gap={.75}>
+             
              <Box width='100%'>
               <TextInput 
                 value={url}
@@ -528,44 +510,13 @@ const Home = ({
               />
               
             </Box>
-            <Box width='100%'>
-              <TextInput 
-                value={search}
-                icon='search'
-                iconPrefix='fas'
-                onChange={newValue => set_search(newValue)}
-                compact
-              />
-              <Button 
-                icon='times'
-                circle
-                iconPrefix='fas'
-                disabled={search === ''}
-                onClick={() => set_search('')}
-                minimal
-              />
-              <Button
-                icon='arrow-right'
-                circle
-                secondary
-                iconPrefix='fas'
-                onClick={() => {
-                  
-                }
-              }
-              />
-              
-            </Box>
-            </Gap>
-            <Box width='100%' height='.5rem'></Box>
-            <S.Iframe src={search ? `https://search.lexi.studio/search?q=${search}` : ''} width='100%'></S.Iframe>
+          
             
-            </Box>
           
         }
   
       />
-    </div>
+    </>
   )
 }
 
@@ -580,14 +531,14 @@ const S = {
     background: var(--F_Background_Alternating);
   `,
   Container: styled.div`
-    height: 100%;
+    height: calc(calc(100vh - calc(2 * var(--F_Header_Height))) + 0rem);
     width: 100%;
     overflow: hidden;
     background: var(--F_Background);
   `,
   Content: styled.div`
     width: 100%;
-    height: calc(calc(100vh - calc(var(--F_Header_Height))) - calc(var(--L_Prompt_Padding) * 2)); 
+    height: calc(calc(calc(100% - var(--L_Prompt_Height))) - 1.5rem);
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -597,7 +548,7 @@ const S = {
     background: var(--F_Background);
   `,
   AltPage: styled.div`
-    max-width: 100%;
+    max-width: 700px;
     width: 100%;
   `,
   Footer: styled.div`
