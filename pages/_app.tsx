@@ -47,7 +47,7 @@ library.add(
   fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette,
   fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap, fas.faP, fas.faT, fas.faUsers,
   fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell,
-  fas.faWrench, fas.faEdit, fas.faTrashAlt
+  fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp
 )
 
 import { useRouter } from 'next/router'
@@ -55,7 +55,7 @@ import { useRouter } from 'next/router'
 import { setLinkComponent } from '@avsync.live/formation'
 import dynamic from 'next/dynamic'
 
-const SuperApp = dynamic(() => import('../components/SuperApp'), {
+const App = dynamic(() => import('../components/App'), {
   ssr: false,
 });
 
@@ -68,19 +68,23 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()
   return <>
   <Head>
-  <title>Lexi - Creative AGI</title>
-          <meta name="description" content="Lexi is a highly-intellegent virtual coworker for creative and technical projects" />
-          <link rel="icon" href="/favicon.ico" />
-          <meta property="og:title" content="Lexichat" />
-          <meta
-            property="og:image"
-            content="/assets/lexichat-preview.png"
-          />
+    <title>Lexi - Creative AGI</title>
+    <meta name="description" content="Hi, I'm Lexi, a creative AGI ready to help with your project." />
+    <link rel="icon" href="/favicon.ico" />
+    <meta property="og:title" content="Lexi" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <meta
+      property="og:image"
+      content="/assets/lexichat-preview.png"
+    />
   </Head>
     {
       router.route === '/login'
         ? <Component {...pageProps} />
-        : <SuperApp />
+        : <App>
+            <Component {...pageProps} />
+          </App>
       }
   </>
 }

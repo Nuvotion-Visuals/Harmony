@@ -22,7 +22,8 @@ import {
   AspectRatio,
   stringInArray,
   Dropdown,
-  RichTextEditor
+  RichTextEditor,
+  useBreakpoint
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -343,6 +344,8 @@ const Home = ({
       )
     }
   }
+
+  const { isMobile } = useBreakpoint()
   
   return (
     <>
@@ -350,7 +353,7 @@ const Home = ({
         <S.Container>
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
-              <Page>
+              {/* <Page>
                 <Box pb={.75}>
                   <div style={{borderRadius: '.75rem', width: '100%', overflow: 'hidden'}}>
                     <AspectRatio
@@ -360,7 +363,7 @@ const Home = ({
                     />
                   </div>
                 </Box>
-              </Page>
+              </Page> */}
               
               <Box width='100%' wrap={true} mt={queries.length > 0 ? .75 : 0}>
                 <S.FlexStart>
@@ -425,17 +428,48 @@ const Home = ({
             <S.Footer>
               <S.ButtonContainer>
                 <Box>
-                  <Button 
-                    icon={'plus'}
+                  <Dropdown
+                    icon='plus'
                     iconPrefix='fas'
-                    circle={true}
-                    onClick={() => set_open(true)}
+                    minimal
+                    circle
+                    items={[
+                      {
+                        children: <div onClick={e => e.stopPropagation()}>
+                          <Box minWidth={13.5}>
+                            <TextInput
+                              value={url}
+                              onChange={newValue => set_url(newValue)}
+                              iconPrefix='fas'
+                              compact
+                              placeholder='Insert from URL'
+                              canClear
+                              buttons={[
+                                {
+                                  icon: 'arrow-right',
+                                  iconPrefix: 'fas',
+                                  minimal: true,
+                                  onClick: () => {
+                                    insertContentByUrl()
+                                  }
+                                }
+                              ]}
+                            />
+                          </Box>
+                        </div>,
+                        onClick: () => {}
+                      },
+                      {
+                        title: 'Done'
+                      }
+                    ]}
                   />
                 
                   <Button 
                     icon={listening ? 'microphone-slash' : 'microphone'}
                     iconPrefix='fas'
                     circle={true}
+                    minimal
                     onClick={() => {
                       if (listening) {
                         stop()
@@ -451,8 +485,10 @@ const Home = ({
                     blink={listening}
                   />
                   <Button 
-                    icon='paper-plane'
+                    // icon='paper-plane'
+                    minimal
                     text='Send'
+                    iconPrefix='fas'
                     onClick={() => makeQuery(query)}
                     disabled={loading && queryGuids.length !== 0}
                   />
@@ -463,9 +499,11 @@ const Home = ({
                 value={query} onChange={(value : string) => set_query(value)} 
                 height={'160px'}
                 onEnter={newQuery => {
-                  makeQuery(
-                    newQuery.slice(0, -11), // remove unwanted linebreak
-                  )
+                  if (!isMobile) {
+                    makeQuery(
+                      newQuery.slice(0, -11), // remove unwanted linebreak
+                    )
+                  }
                 }}
               />
             </S.Footer>
@@ -567,9 +605,7 @@ const S = {
     border-radius: .75rem;
     z-index: 1;
     background: var(--F_Background);
-    button {
-      background: none;
-    }
+
   `,
   FlexStart: styled.div<{
     wrap?: boolean

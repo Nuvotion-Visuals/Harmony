@@ -11,20 +11,9 @@ interface Props {
 
 const SuperApp = ({ }: Props) => {
   const [ activeSwipeIndex, setActiveSwipeIndex ] = useState(0)
-  const activeGuid = 'test'
   const { isMobile, isTablet } = useBreakpoint()
 
-  const [activeSpaceIndex, set_activeSpaceIndex] = useState(2)
-
-  const incrementSwipeIndex = () => {
-    if (isMobile) {
-      setActiveSwipeIndex(1)
-    }
-    if (isTablet) {
-      setActiveSwipeIndex(0)
-    }
-  }
-
+  const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
 
   const renderFirstPage = () => {
     switch(router.route) {
@@ -51,29 +40,6 @@ const SuperApp = ({ }: Props) => {
                 setActiveSwipeIndex(1)
               },
               active: router.asPath === '/',
-              children: <>
-               <Dropdown
-                  options={[
-                    {
-                      "icon": "ellipsis-v",
-                      "iconPrefix": "fas",
-                      "dropDownOptions": [
-                        {
-                          "icon": "edit",
-                          iconPrefix: 'fas',
-                          "text": "Rename"
-                        },
-                        {
-                          "icon": "trash-alt",
-                          iconPrefix: 'fas',
-                          "text": "Delete"
-                        },
-
-                      ]
-                    }
-                  ]}
-                />
-              </>
             },
             {
               type: 'nav',
@@ -84,29 +50,6 @@ const SuperApp = ({ }: Props) => {
                 setActiveSwipeIndex(2)
               },
               active: router.asPath === '/search',
-              children: <>
-               <Dropdown
-                  options={[
-                    {
-                      "icon": "ellipsis-v",
-                      "iconPrefix": "fas",
-                      "dropDownOptions": [
-                        {
-                          "icon": "edit",
-                          iconPrefix: 'fas',
-                          "text": "Rename"
-                        },
-                        {
-                          "icon": "trash-alt",
-                          iconPrefix: 'fas',
-                          "text": "Delete"
-                        },
-
-                      ]
-                    }
-                  ]}
-                />
-              </>
             },
             {
               type: 'nav',
@@ -115,29 +58,6 @@ const SuperApp = ({ }: Props) => {
               iconPrefix: 'far',
               href: '/projects',
               active: router.asPath === '/projects',
-              children: <>
-               <Dropdown
-                  options={[
-                    {
-                      "icon": "ellipsis-v",
-                      "iconPrefix": "fas",
-                      "dropDownOptions": [
-                        {
-                          "icon": "edit",
-                          iconPrefix: 'fas',
-                          "text": "Rename"
-                        },
-                        {
-                          "icon": "trash-alt",
-                          iconPrefix: 'fas',
-                          "text": "Delete"
-                        },
-
-                      ]
-                    }
-                  ]}
-                />
-              </>
             },
            
           ].map(item => <Item {...item}/>)
@@ -158,30 +78,7 @@ const SuperApp = ({ }: Props) => {
               onClick: () => {
                 setActiveSwipeIndex(1)
               },
-              active: router.asPath === '/',
-              children: <>
-              <Dropdown
-                 options={[
-                   {
-                     "icon": "ellipsis-v",
-                     "iconPrefix": "fas",
-                     "dropDownOptions": [
-                       {
-                         "icon": "edit",
-                         iconPrefix: 'fas',
-                         "text": "Rename"
-                       },
-                       {
-                         "icon": "trash-alt",
-                         iconPrefix: 'fas',
-                         "text": "Delete"
-                       },
-
-                     ]
-                   }
-                 ]}
-               />
-             </>
+              active: router.asPath === '/'
             },
             {
               type: 'nav',
@@ -191,30 +88,7 @@ const SuperApp = ({ }: Props) => {
               onClick: () => {
                 setActiveSwipeIndex(2)
               },
-              active: router.asPath === '/search',
-              children: <>
-              <Dropdown
-                 options={[
-                   {
-                     "icon": "ellipsis-v",
-                     "iconPrefix": "fas",
-                     "dropDownOptions": [
-                       {
-                         "icon": "edit",
-                         iconPrefix: 'fas',
-                         "text": "Rename"
-                       },
-                       {
-                         "icon": "trash-alt",
-                         iconPrefix: 'fas',
-                         "text": "Delete"
-                       },
-
-                     ]
-                   }
-                 ]}
-               />
-             </>
+              active: router.asPath === '/search'
             },
             {
               type: 'nav',
@@ -222,30 +96,7 @@ const SuperApp = ({ }: Props) => {
               icon: 'clock',
               iconPrefix: 'fas',
               href: '/projects',
-              active: router.asPath === '/projects',
-              children: <>
-              <Dropdown
-                 options={[
-                   {
-                     "icon": "ellipsis-v",
-                     "iconPrefix": "fas",
-                     "dropDownOptions": [
-                       {
-                         "icon": "edit",
-                         iconPrefix: 'fas',
-                         "text": "Rename"
-                       },
-                       {
-                         "icon": "trash-alt",
-                         iconPrefix: 'fas',
-                         "text": "Delete"
-                       },
-
-                     ]
-                   }
-                 ]}
-               />
-             </>
+              active: router.asPath === '/projects'
             },
             {
               type: 'nav',
@@ -253,30 +104,7 @@ const SuperApp = ({ }: Props) => {
               href: '/tasks',
               active: router.asPath === '/tasks',
               icon: 'clock',
-              iconPrefix: 'fas',
-              children: <>
-              <Dropdown
-                 options={[
-                   {
-                     "icon": "ellipsis-v",
-                     "iconPrefix": "fas",
-                     "dropDownOptions": [
-                       {
-                         "icon": "edit",
-                         iconPrefix: 'fas',
-                         "text": "Rename"
-                       },
-                       {
-                         "icon": "trash-alt",
-                         iconPrefix: 'fas',
-                         "text": "Delete"
-                       },
-
-                     ]
-                   }
-                 ]}
-               />
-             </>
+              iconPrefix: 'fas'
             },
            
           ].map(item => <Item {...item}/>)
@@ -355,7 +183,6 @@ const SuperApp = ({ }: Props) => {
   const router = useRouter()
 
   const [search, set_search] = useState('')
-  const [url, set_url] = useState('')
 
   const submitSearch = () => {
     // set_open(true)
@@ -373,28 +200,20 @@ const SuperApp = ({ }: Props) => {
             <Box>
               <TextInput
                 compact
-                icon='search'
                 iconPrefix='fas'
+                placeholder='Search'
                 value={search}
                 onChange={newValue => set_search(newValue)}
                 onEnter={submitSearch}
-              />
-              <Button 
-                icon='times'
-                circle
-                iconPrefix='fas'
-                disabled={search === ''}
-                onClick={() => set_search('')}
-                minimal
-              />
-              <Button 
-                icon='arrow-right'
-                circle
-                iconPrefix='fas'
-                disabled={search === ''}
-                secondary={search === ''}
-                onClick={submitSearch}
-                minimal
+                canClear
+                buttons={[
+                  {
+                    minimal: true,
+                    icon: 'search',
+                    iconPrefix: 'fas',
+                    onClick: submitSearch
+                  },
+                ]}
               />
             </Box>
             
@@ -440,7 +259,10 @@ const SuperApp = ({ }: Props) => {
          
         </Gap>
     </S.NavHeader>
+
+    
   <NavSpaces
+    disableTablet
     activeSwipeIndex={activeSwipeIndex}
     onSwipe={index => setActiveSwipeIndex(index)}
     spaces={[]}
@@ -450,52 +272,27 @@ const SuperApp = ({ }: Props) => {
     firstPage={renderFirstPage()}
     secondPage={renderSecondPage()}
     thirdPage={renderThirdPage()}
-    dropdownOptions={[
-    {
-        icon: 'ellipsis-v',
-        iconPrefix: 'fas',
-        dropDownOptions: [
-        {
-            icon: 'user-plus',
-            iconPrefix: 'fas',
-            text: 'Invite'
-        },
-        {
-            icon: 'share',
-            iconPrefix: 'fas',
-            text: 'Share'
-        },
-        {
-            icon: 'archive',
-            iconPrefix: 'fas',
-            text: 'Archive',
-        },
-        {
-            icon: 'trash-alt',
-            text: 'Trash',
-            onClick: () => {
-            // ecEvent_Delete({
-            //   eventGuid: activeGuid
-            // })
-            }
-        },
-        ] 
-    }
-    ]}
     navsPrimary={[
     {
-        icon: 'message',
-        iconPrefix: router.route.includes(`/`) ? 'fas' : 'fas',
-        title: 'Chat',
-        href: `/`,
-        active: router.route === `/`
+      icon: 'message',
+      iconPrefix: router.route.includes(`/`) ? 'fas' : 'fas',
+      title: 'Chat',
+      href: `/`,
+      active: router.route === `/`
     },
     {
-        icon: 'search',
-        iconPrefix: router.route.includes(`/search`) ? 'fas' : 'fas',
-        title: 'Search',
-        href: `/search`,
-        active: router.route === `/search`
+      icon: 'search',
+      iconPrefix: router.route.includes(`/search`) ? 'fas' : 'fas',
+      title: 'Search',
+      href: `/search`,
+      active: router.route === `/search`
+    },
+    {
+      icon: 'user',
+      iconPrefix: router.route.includes(`/login`) ? 'fas' : 'fas',
+      title: 'Profile',
+      href: `/login`,
+      active: router.route === `/login`
     },
     ]}
   />

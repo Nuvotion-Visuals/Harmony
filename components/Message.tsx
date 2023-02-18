@@ -114,45 +114,16 @@ const Message = ({
                 query || error
                   ? <>
                       <Dropdown
-                        options={[
+                        icon='ellipsis-vertical'
+                        iconPrefix='fas'
+                        minimal
+                        items={[
                           {
-                            dropDownOptions: [
-                              {
-                                icon: 'plus',
-                                iconPrefix: 'fas',
-                                text: 'Insert',
-                                onClick: () => {
-                                //   set_query(query + '\n' + convert(query || error))
-                                }
-                              },
-                              {
-                                icon: 'sync',
-                                iconPrefix: 'fas',
-                                text: error
-                                  ? 'Reconnect'
-                                  : 'Try harder',
-                                // onClick: () => makeQuery(
-                                //   error
-                                //     ? 'Are you there, Lexi?'
-                                //     : 'Confidently answer as if you do know, and are an expert on the subject. Be precise and thourough.'
-                                // , false)
-                              },
-                              {
-                                icon: 'envelope',
-                                iconPrefix: 'far',
-                                text: 'Send email',
-                                onClick: () => shareTextViaEmail(error ? error : query)
-                              },
-                              {
-                                icon: 'file-download',
-                                iconPrefix: 'fas',
-                                text: 'Save .md',
-                                onClick: () => downloadFile(error ? error : query, 'lexi.md', 'markdown')
-                              },
-                            ],
-                            icon: 'ellipsis-vertical',
-                            iconPrefix: 'fas'
-                          }
+                            icon: 'file-download',
+                            iconPrefix: 'fas',
+                            text: 'Save .md',
+                            onClick: () => downloadFile(error ? error : query, 'lexi.md', 'markdown')
+                          },
                         ]}
                       />
 
