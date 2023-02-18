@@ -18,7 +18,7 @@ library.add(
   // @ts-ignore
   far.faHeart, far.faPaperPlane, far.faCheckSquare, far.faSquare,
   fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark,
-  far.faEnvelope,
+  far.faEnvelope, far.faMessage,
 
   fab.faYoutube, fab.faGithubAlt,
   
@@ -46,33 +46,38 @@ library.add(
   fas.faChess, fas.faHandshakeSimple, fas.faGlobe, fas.faPaintBrush,
   fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette,
   fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap, fas.faP, fas.faT, fas.faUsers,
-  fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink
+  fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell,
+  fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp
 )
 
 import { useRouter } from 'next/router'
 
 import { setLinkComponent } from '@avsync.live/formation'
 import dynamic from 'next/dynamic'
-setLinkComponent(require('../components/Link').default)
-
-config.autoAddCss = false
 
 const App = dynamic(() => import('../components/App'), {
   ssr: false,
-})
+});
+
+
+setLinkComponent(require('../components/Link').default)
+
+config.autoAddCss = false
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()
   return <>
   <Head>
-  <title>Lexi - Creative AGI</title>
-          <meta name="description" content="Lexi is a highly-intellegent virtual coworker for creative and technical projects" />
-          <link rel="icon" href="/favicon.ico" />
-          <meta property="og:title" content="Lexichat" />
-          <meta
-            property="og:image"
-            content="/assets/lexichat-preview.png"
-          />
+    <title>Lexi - Creative AGI</title>
+    <meta name="description" content="Hi, I'm Lexi, a creative AGI ready to help with your project." />
+    <link rel="icon" href="/favicon.ico" />
+    <meta property="og:title" content="Lexi" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <meta
+      property="og:image"
+      content="/assets/lexichat-preview.png"
+    />
   </Head>
     {
       router.route === '/login'

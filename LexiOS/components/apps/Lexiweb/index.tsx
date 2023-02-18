@@ -194,15 +194,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           }}
           ref={inputRef}
         />
-        <Button
-          icon='copy'
-          iconPrefix='far'
-          disabled={loading}
-          onClick={() => copyToClipboard(browswerUrl)}
-          circle
-          minimal
-        />
-      
+
         <Dropdown
           options={[
             {
