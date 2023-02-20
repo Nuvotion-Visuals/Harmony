@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.104":
-  version "0.9.104"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.104.tgz#a3b8d17147ec2070a70afcbbfedbe800a2fef385"
-  integrity sha512-RJMyjyVY7RnetQhU2kMUQCD1+4glcj8FS4dd+8ELBJB5X9RnRLJqFY24yRXmr9TgUEaK2ZHXLWMaJVrgL9qzDw==
+"@avsync.live/formation@^0.9.105":
+  version "0.9.105"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.105.tgz#095cb36d6ff9d51b67856de513f8fd4180fd7736"
+  integrity sha512-SCytVbKUAeKt4cZu8NymXyYQtrABQGN+lGK80NUKeViyFD4iZq0u9Z8mtnUbQtRIPQ5FrdKtayhHymsS7ptbkg==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
