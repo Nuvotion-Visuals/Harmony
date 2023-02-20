@@ -2,6 +2,9 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import React from 'react'
 
+// redux
+import { Provider } from 'react-redux'
+import { store } from 'redux-tk/store'
 
 import '@avsync.live/formation/dist/index.dark.css'
 
@@ -79,6 +82,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       content="/assets/lexichat-preview.png"
     />
   </Head>
+  <Provider store={store}>
     {
       router.route === '/login'
         ? <Component {...pageProps} />
@@ -86,6 +90,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             <Component {...pageProps} />
           </App>
       }
+    </Provider>
   </>
 }
 
