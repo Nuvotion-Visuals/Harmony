@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { use100vh } from 'react-div-100vh'
 
 // @ts-ignore
 import { useSpeechRecognition } from 'react-speech-kit'
@@ -45,6 +46,7 @@ const Chat = () => {
     set_userInitialedListening
   } = useLexi()
 
+  const true100vh = use100vh()
 
   // websocket communication with server
   const websocketClient = getWebsocketClient()
@@ -226,7 +228,7 @@ const Chat = () => {
   
   return (
     <>
-        <S.Container>
+        <S.Container true100vh={true100vh}>
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
               
@@ -360,8 +362,10 @@ const S = {
     overflow: hidden;
     background: var(--F_Background_Alternating);
   `,
-  Container: styled.div`
-    height: calc(calc(100vh - calc(1 * var(--F_Header_Height))) + 0rem);
+  Container: styled.div<{
+    true100vh: number | null
+  }>`
+    height: ${props => `calc(calc(${props.true100vh}px - calc(1 * var(--F_Header_Height))) + 0rem)`};
     width: 100%;
     overflow: hidden;
     background: var(--F_Background);
