@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
-import { use100vh } from 'react-div-100vh'
+import { useState, useEffect, useRef, useMemo } from 'react'
 
 // @ts-ignore
 import { useSpeechRecognition } from 'react-speech-kit'
@@ -8,6 +7,7 @@ import { convert } from 'html-to-text'
 
 import { v4 as uuidv4 } from 'uuid'
 import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
+import { use100vh } from 'react-div-100vh'
 
 import {
   Button,
@@ -31,8 +31,9 @@ import { listenForWakeWord } from '../Lexi/System/Language/listening'
 import { playSound } from '../Lexi/System/Language/sounds'
 import { getArticleContent, getYouTubeTranscript } from '../Lexi/System/Fetch/fetch'
 import { useLexi } from 'redux-tk/lexi/hook'
+import { ChatBox } from './ChatBox'
 
-const Chat = () => {
+const Chat = React.memo(() => {
   const {
     query,
     set_query,
@@ -224,11 +225,10 @@ const Chat = () => {
     }
   }
 
-  const { isMobile } = useBreakpoint()
   
   return (
     <>
-        <S.Container true100vh={true100vh}>
+        <S.Container true100vh={true100vh || 0}>
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
               
@@ -335,13 +335,9 @@ const Chat = () => {
                 </Box>
               
               </S.ButtonContainer>
-              <RichTextEditor
-                value={query} onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
-                height={'160px'}
-                onEnter={newQuery => {
-                  if (!isMobile) {
-                    sendMessageToLexi(query)
-                  }
+              <ChatBox
+                onEnter={() => {
+                  sendMessageToLexi(query)
                 }}
               />
             </S.Footer>
@@ -350,7 +346,7 @@ const Chat = () => {
       </S.Container>
     </>
   )
-}
+})
 
 export default Chat
 
@@ -363,9 +359,9 @@ const S = {
     background: var(--F_Background_Alternating);
   `,
   Container: styled.div<{
-    true100vh: number | null
+    true100vh: number 
   }>`
-    height: ${props => `calc(calc(${props.true100vh}px - calc(1 * var(--F_Header_Height))) + 0rem)`};
+    height: ${props => `calc(${props.true100vh}px - calc(1 * var(--F_Header_Height)))`};
     width: 100%;
     overflow: hidden;
     background: var(--F_Background);
@@ -401,7 +397,6 @@ const S = {
     border-radius: .75rem;
     z-index: 1;
     background: var(--F_Background);
-
   `,
   FlexStart: styled.div<{
     wrap?: boolean

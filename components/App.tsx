@@ -1,24 +1,21 @@
 import { NavSpaces, NavTabs, Item, Placeholders, Box, DateAndTimePicker, stringInArray, useBreakpoint, Gap, Button, Page, TextInput, Dropdown } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import { useLexi } from 'redux-tk/lexi/hook'
+import { useLayout } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
 import Chat from './Chat'
-import LogoPlaceholder from './LogoPlaceholder'
+import { Search } from './Search'
+import { SearchResults } from './SearchResults'
 interface Props {
   
 }
 
-const App = ({ }: Props) => {
-  const [ activeSwipeIndex, setActiveSwipeIndex ] = useState(0)
+const App = React.memo(({ }: Props) => {
   const { isMobile } = useBreakpoint()
 
+  const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
-
-  const {
-    searchQuery, set_searchQuery
-  } = useLexi()
 
   const renderFirstPage = () => {
     switch(router.route) {
@@ -171,26 +168,13 @@ const App = ({ }: Props) => {
 
   const renderThirdPage = () => {
     return <S.ThirdPage>
-      {
-        searchQuery
-        ? <S.Iframe 
-            src={searchQuery ? `https://search.lexi.studio/search?q=${searchQuery}` : ''} 
-            width='100%'
-          >
-            </S.Iframe>
-        : <><LogoPlaceholder /></>
-      }
-     
-        
+      <SearchResults />
     </S.ThirdPage>
   }
 
   const router = useRouter()
 
-  const submitSearch = () => {
-    // set_open(true)
-    setActiveSwipeIndex(2)
-  }
+  
 
   return (<S.SuperApp>
     <S.NavHeader>
@@ -198,29 +182,8 @@ const App = ({ }: Props) => {
         <div onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}>
           <S.Logo src='/assets/lexi-circle.png'/>
         </div>
-          <Page >
-            <Box>
-              <TextInput
-                compact
-                iconPrefix='fas'
-                placeholder='Search'
-                value={searchQuery}
-                onChange={newValue => set_searchQuery(newValue)}
-                onEnter={submitSearch}
-                canClear
-                buttons={[
-                  {
-                    minimal: true,
-                    icon: 'search',
-                    iconPrefix: 'fas',
-                    onClick: submitSearch
-                  },
-                ]}
-              />
-            </Box>
-            
-          </Page>
-        </Gap>
+        <Search />
+      </Gap>
     </S.NavHeader>
 
     
@@ -261,7 +224,7 @@ const App = ({ }: Props) => {
     ]}
   />
   </S.SuperApp>)
-}
+})
 
 export default App
 

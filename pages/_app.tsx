@@ -67,7 +67,7 @@ setLinkComponent(require('../components/Link').default)
 
 config.autoAddCss = false
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   const router = useRouter()
   return <>
   <Head>
@@ -92,6 +92,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       }
     </Provider>
   </>
-}
+})
 
 export default MyApp

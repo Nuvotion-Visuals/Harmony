@@ -15,5 +15,6 @@ export const useLayout = () => {
 
     // actions
     incrementActiveSwipeIndex: useCallback(() => dispatch(slice.actions.incrementActiveSwipeIndex()), [dispatch]),
+    setActiveSwipeIndex: useCallback((payload: number) => dispatch(slice.actions.setActiveSwipeIndex(payload)), [dispatch]),
   }
 }
