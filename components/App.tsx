@@ -1,6 +1,7 @@
 import { NavSpaces, NavTabs, Item, Placeholders, Box, DateAndTimePicker, stringInArray, useBreakpoint, Gap, Button, Page, TextInput, Dropdown } from '@avsync.live/formation'
-import router, { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import { useLexi } from 'redux-tk/lexi/hook'
 import styled from 'styled-components'
 
 import Chat from './Chat'
@@ -9,11 +10,15 @@ interface Props {
   
 }
 
-const SuperApp = ({ }: Props) => {
+const App = ({ }: Props) => {
   const [ activeSwipeIndex, setActiveSwipeIndex ] = useState(0)
-  const { isMobile, isTablet } = useBreakpoint()
+  const { isMobile } = useBreakpoint()
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
+
+  const {
+    searchQuery, set_searchQuery
+  } = useLexi()
 
   const renderFirstPage = () => {
     switch(router.route) {
@@ -160,16 +165,16 @@ const SuperApp = ({ }: Props) => {
       {
         !isMobile && <S.HeaderSpacer />
       }
-      <Chat></Chat>
+      <Chat />
     </>
   }
 
   const renderThirdPage = () => {
     return <S.ThirdPage>
       {
-        search
+        searchQuery
         ? <S.Iframe 
-            src={search ? `https://search.lexi.studio/search?q=${search}` : ''} 
+            src={searchQuery ? `https://search.lexi.studio/search?q=${searchQuery}` : ''} 
             width='100%'
           >
             </S.Iframe>
@@ -182,8 +187,6 @@ const SuperApp = ({ }: Props) => {
 
   const router = useRouter()
 
-  const [search, set_search] = useState('')
-
   const submitSearch = () => {
     // set_open(true)
     setActiveSwipeIndex(2)
@@ -193,8 +196,7 @@ const SuperApp = ({ }: Props) => {
     <S.NavHeader>
       <Gap disableWrap>
         <div onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}>
-        <S.Logo src='/assets/lexi-circle.png'/>
-          
+          <S.Logo src='/assets/lexi-circle.png'/>
         </div>
           <Page >
             <Box>
@@ -202,8 +204,8 @@ const SuperApp = ({ }: Props) => {
                 compact
                 iconPrefix='fas'
                 placeholder='Search'
-                value={search}
-                onChange={newValue => set_search(newValue)}
+                value={searchQuery}
+                onChange={newValue => set_searchQuery(newValue)}
                 onEnter={submitSearch}
                 canClear
                 buttons={[
@@ -218,50 +220,12 @@ const SuperApp = ({ }: Props) => {
             </Box>
             
           </Page>
-          {/* <Spacer />
-          <Gap autoWidth disableWrap>
-          <Dropdown
-            options={[
-              {
-                "icon": "gear",
-                "iconPrefix": "fas",
-                "dropDownOptions": [
-                  {
-                    "icon": "fingerprint",
-                    iconPrefix: 'fas',
-                    "text": "Identity"
-                  },
-                  {
-                    "icon": "palette",
-                    iconPrefix: 'fas',
-                    "text": "Appearance"
-                  },
-                  {
-                    "icon": "volume-high",
-                    "iconPrefix": "fas",
-                    "text": "Sound"
-                  }
-                ]
-              }
-            ]}
-        />
-          {
-            router.route !== 'login' && 
-              <Box mr={.75}>
-                <Button
-                  text='Sign out'
-                  onClick={() => router.push('/login')}
-                  secondary={true}
-                />
-              </Box>
-            }
-          </Gap> */}
-         
         </Gap>
     </S.NavHeader>
 
     
   <NavSpaces
+    dropdownOptions={[]}
     disableTablet
     activeSwipeIndex={activeSwipeIndex}
     onSwipe={index => setActiveSwipeIndex(index)}
@@ -299,7 +263,7 @@ const SuperApp = ({ }: Props) => {
   </S.SuperApp>)
 }
 
-export default SuperApp
+export default App
 
 const S = {
   Iframe: styled.iframe`

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import axios from 'axios'
 
 // @ts-ignore
 import { useSpeechRecognition } from 'react-speech-kit'
@@ -11,15 +10,10 @@ import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 
 import {
   Button,
-  Navigation,
-  Gap,
-  Page,
   Box,
-  LineBreak,
   Modal,
   TextInput,
   Spacer,
-  AspectRatio,
   stringInArray,
   Dropdown,
   RichTextEditor,
@@ -35,48 +29,22 @@ import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import { playSound } from '../Lexi/System/Language/sounds'
 import { getArticleContent, getYouTubeTranscript } from '../Lexi/System/Fetch/fetch'
+import { useLexi } from 'redux-tk/lexi/hook'
 
-interface Queries {
-  [guid: string]: {
-    guid: string,
-    query?: string,
-    queryTime: string,
-    response?: string,
-    responseTime?: string,
-    loading: boolean,
-    error?: string,
-    scriptName?: string
-  }
-}
+const Chat = () => {
+  const {
+    query,
+    set_query,
+    messagesByGuid,
+    sendMessage,
+    messageGuids,
+    onResponse,
+    onPartialResponse,
+    readyToSendTranscriptionMessage,
+    set_readyToSendTranscriptionMessage,
+    set_userInitialedListening
+  } = useLexi()
 
-interface Props {
-  children: React.ReactNode
-}
-
-const Home = ({
-  children
-} :Props) => {
-  function useExtendedState<T>(initialState: T) {
-    const [state, setState] = useState<T>(initialState);
-
-    const getLatestState = () => {
-      return new Promise<T>((resolve, reject) => {
-        setState((s) => {
-          resolve(s);
-          return s;
-        });
-      });
-    };
-  
-    return [state, setState, getLatestState] as const;
-  }
-
-  const [queriesByGuid, set_queriesByGuid, getLatestQueriesByGuid] = useExtendedState<Queries>({})
-  const [queryGuids, set_queryGuids, getLatestQueryGuids] = useExtendedState<string[]>([])
-
-  const [loading, set_loading] = useExtendedState(true)
-
-  const [query, set_query, getLatestQuery] = useExtendedState('')
 
   // websocket communication with server
   const websocketClient = getWebsocketClient()
@@ -84,6 +52,7 @@ const Home = ({
     if (websocketClient) {
       websocketClient.onmessage = (ev) => {
         const wsmessage = JSON.parse(ev.data.toString())
+        // got complete response from server
         if (wsmessage.type === 'response') {
           stop()
         
@@ -93,84 +62,35 @@ const Home = ({
           console.log('got a response')
           scrollToBottom()
 
-          set_queryGuids([...queryGuids, guid])
-          set_queriesByGuid(queriesByGuid => ({
-            ...queriesByGuid,
-            [guid]: {
-              query: queriesByGuid[guid].query,
-              queryTime: queriesByGuid[guid].queryTime,
-              guid,
-              loading: false,
-              response: message,
-              responseTime
-            }
-          }))
+          onResponse({
+            guid,
+            response: message,
+            responseTime
+          })
 
           listenForWakeWord(() => {
             listen()
           })
         }
+        // got partial response from server
         if (wsmessage.type === 'partial-response') {
           stop()
-          const { status, guid, type, message, queryTime } = wsmessage as any
+          const { guid, message } = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
 
-          set_queriesByGuid(queriesByGuid => ({
-            ...queriesByGuid,
-            [guid]: {
-              query: queriesByGuid[guid].query,
-              queryTime: queriesByGuid[guid].queryTime,
-              guid,
-              loading: false,
-              response: message,
-              responseTime
-            }
-          }))
+          onPartialResponse({
+            guid,
+            response: message,
+            responseTime
+          })
           scrollToBottom()
 
           speakStream(wsmessage.message, false)
         }
-        if (wsmessage.type === 'message') {
-          stop()
-          
-          const { message, response, messageTime, responseTime, queryTime, scriptName } = wsmessage as any
-
-          console.log('got a message')
-          scrollToBottom()
-
-          const guid = uuidv4();
-
-          (async () => {
-            const latestQueryGuids = await getLatestQueryGuids()
-
-            set_queryGuids([...latestQueryGuids, guid])
-            set_queriesByGuid(queriesByGuid => ({
-              ...queriesByGuid,
-              [guid]: {
-                guid,
-                loading: false,
-                response,
-                responseTime,
-                messageTime,
-                queryTime,
-                scriptName
-              }
-            }))
-          })()
-
-          set_loading(false)
-        }
       }
     }
   }, [websocketClient])
-
-  const [initializedScriptNames, set_initializedScriptNames] = useState<(string | undefined)[]>([])
-  useEffect(() => {
-    const newInitializedScriptNames = queryGuids.filter(guid => queriesByGuid?.[guid]?.scriptName).map(guid => queriesByGuid?.[guid]?.scriptName?.replace(/-/g, ' '))
-    console.log(newInitializedScriptNames)
-    set_initializedScriptNames(newInitializedScriptNames)
-  }, [queryGuids])
 
   const scrollToBottom = () => {
     if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
@@ -181,75 +101,54 @@ const Home = ({
     }
   }
 
-  const makeQuery = (query: string) => {
-    set_query('') // async so it's ok
-    set_loading(true)
-    scrollToBottom()
-
+  const sendMessageToLexi = (query: string) => {
     const guid = uuidv4()
     const queryTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
-    (async () => {
-      const latestQueryGuids = await getLatestQueryGuids()
-      set_queryGuids([...latestQueryGuids, guid])
-      set_queriesByGuid({
-        ...queriesByGuid,
-        [guid]: {
-          guid,
-          query,
-          queryTime,
-          loading: true,
-        }
+ 
+    sendMessage({
+      guid,
+      query,
+      queryTime,
+      loading: true,
+    })
+    scrollToBottom()
+    
+    // send to server
+    try {
+      const action = {
+        type: 'message',
+        guid,
+        message: query
+      }
+      websocketClient.send(JSON.stringify(action))
+    }
+    // failed to send to server
+    catch(e) {
+      const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+      sendMessage({
+        query,
+        queryTime,
+        guid,
+        loading: false,
+        responseTime,
+        error: 'It seems the websocket request went wrong. You should reload the page.'
       })
-       // send to server
-       try {
-        const action = {
-          type: 'message',
-          guid,
-          message: query
-        }
-        websocketClient.send(JSON.stringify(action))
-      }
-      // failed to send to server
-      catch(e) {
-        const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-        const latestQueryGuids = await getLatestQueryGuids()
-        set_queryGuids([...latestQueryGuids, guid])
-        set_queriesByGuid({
-          ...queriesByGuid,
-          [guid]: {
-            query,
-            queryTime,
-            guid,
-            loading: false,
-            responseTime,
-            error: 'It seems the websocket request went wrong. You should reload the page.'
-          }
-        })
-      }
 
-      set_loading(false)
-    })()
+    }
+
   }
-
-  const queries = Object.keys(queriesByGuid).map(guid => queriesByGuid[guid]) 
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const scrollToRef = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [loading])
-
   // speech
-  const [userInitiatedListen, set_userInitiatedListen, get_userInitialedListen] = useExtendedState(false)
-  const [ready, set_ready, getLatestReady] = useExtendedState(false)
   const [disableTimer, set_disableTimer] = useState(true)
   useEffect(() => {
     let timer = {} as any
-    if (query && !ready && query !== '<p><br><p>' && !disableTimer) {
+    if (query && !readyToSendTranscriptionMessage && query !== '<p><br><p>' && !disableTimer) {
       timer = setTimeout(() => {
-        makeQuery(query)
-        set_ready(false)
+        sendMessageToLexi(query)
+        set_readyToSendTranscriptionMessage(false)
         set_disableTimer(true)
         stop()
       }, 1000)
@@ -257,32 +156,20 @@ const Home = ({
     return () => {
       clearTimeout(timer)
     }
-  }, [ready, query, disableTimer])
+  }, [readyToSendTranscriptionMessage, query, disableTimer])
 
   const router = useRouter()
   const { listen, listening, stop } = useSpeechRecognition({
     onResult: (result : string) => {
       (async () => {
-        const latestReady = await getLatestReady()
+        if (!readyToSendTranscriptionMessage) {
 
-        if (!latestReady) {
-          set_query(query + result)
+          set_query(result)
           set_disableTimer(false)
         }
       })()
     },
   })
-
-  const [show, set_show] = useState(false) 
-  useEffect(() => {
-    scrollToBottom()
-  }, [show])
-
-  const [open, set_open] = useState(false)
-  const [contentUrl, set_contentUrl] = useState('')
-  const [videoUrl, set_videoURL] = useState('')
-
-  const [sidebarOpen, set_sidebarOpen] = useState(false)
 
   useEffect(() => {
     scrollToBottom()
@@ -302,20 +189,12 @@ const Home = ({
   }, [])
 
   useEffect(() => {
-    if (listening || ready) {
+    if (listening || readyToSendTranscriptionMessage) {
       playSound('listen')
     }
-  }, [listening, ready])
+  }, [listening, readyToSendTranscriptionMessage])
   
-  const ScriptInitializedIndicator = ({ scriptName } : { scriptName: string}) => 
-    <><Spacer /><S.Indicator active={initializedScriptNames.includes(scriptName)} title={`${queryGuids.includes(scriptName) ? 'Finished reading' : 'Have not read'} ${scriptName}`} /></>
-
-  const [search, set_search] = useState('')
   const [url, set_url] = useState('')
-
-  const submitSearch = () => {
-    set_open(true)
-  }
 
   const insertContentByUrl = () => {
     const youtubeDomains = ['www.youtube.com', 'youtube.com', 'youtu.be']
@@ -325,7 +204,6 @@ const Home = ({
       getYouTubeTranscript(url,
         (transcript) => {
           set_query(query + '\n' + convert(transcript))
-          set_open(false)
         },
         () => {
           alert('Could not get video transcript.')
@@ -336,7 +214,6 @@ const Home = ({
       getArticleContent(url, 
         (content) => {
           set_query(query + '\n' + convert(content))
-          set_open(false)
         },
         () => {
           alert('Could not get page content.')
@@ -349,77 +226,38 @@ const Home = ({
   
   return (
     <>
-  
         <S.Container>
           <S.Content ref={scrollContainerRef}>
             <S.VSpacer />
-              {/* <Page>
-                <Box pb={.75}>
-                  <div style={{borderRadius: '.75rem', width: '100%', overflow: 'hidden'}}>
-                    <AspectRatio
-                      ratio={21/9}
-                      backgroundSrc='/assets/lexi-banner-2.png'
-                      coverBackground={true}
-                    />
-                  </div>
-                </Box>
-              </Page> */}
               
-              <Box width='100%' wrap={true} mt={queries.length > 0 ? .75 : 0}>
+              <Box width='100%' wrap={true} mt={messageGuids.length > 0 ? .75 : 0}>
                 <S.FlexStart>
                 </S.FlexStart>
               </Box>
               {
-                queries.map(({query, response, guid, error}, index) => <>
+                messageGuids.map((guid, index) => <>
                 {
-                  queriesByGuid[guid].query &&  
+                  messagesByGuid[guid]?.query &&  
                   <Message 
-                      query={queriesByGuid[guid].query || ''} 
+                      query={messagesByGuid[guid]?.query || ''} 
                       speaker='User' 
                       guid={guid} 
-                      queryTime={queriesByGuid[guid].queryTime} 
-                      responseTime={queriesByGuid[guid].responseTime}
+                      queryTime={messagesByGuid[guid]?.queryTime} 
+                      responseTime={messagesByGuid[guid]?.responseTime}
                     />
                   }
                 
                   <Message 
-                    query={queriesByGuid[guid].response || ''} 
+                    query={messagesByGuid[guid]?.response || ''} 
                     speaker='Lexi' 
                     guid={guid} 
-                    error={error} 
-                    queryTime={queriesByGuid[guid].queryTime}  
-                    responseTime={queriesByGuid[guid].responseTime} 
+                    error={messagesByGuid[guid]?.error} 
+                    queryTime={messagesByGuid[guid]?.queryTime}  
+                    responseTime={messagesByGuid[guid]?.responseTime} 
                   />
                 </>
                 )
               }
-           
-            <Box hide={false} wrap={true} width='100%'>
-              <Box width='100%' hide={!show}>
-                {
-                  router.route.includes('/apps') || stringInArray(router.route, [
-                    '/framework',
-                    '/projects',
-                    '/characters',
-                    '/entities',
-                    '/realms',
-                    '/people',
-                    '/tasks',
-                    '/stories',
-                    '/scenes'
-                  ])
-                    ? children
-                    : <S.AltPage>
-                        {
-                          children
-                        }
-                      </S.AltPage>
-                }
-               
-              </Box>
-             
-              
-            </Box>
             <div ref={scrollToRef}></div>
           </S.Content>
 
@@ -474,35 +312,33 @@ const Home = ({
                       if (listening) {
                         stop()
                         set_disableTimer(true)
-                        set_userInitiatedListen(false)
+                        set_userInitialedListening(false)
                       }
                       else {
                         listen()
-                        set_ready(false)
-                        set_userInitiatedListen(true)
+                        set_readyToSendTranscriptionMessage(false)
+                        set_userInitialedListening(true)
                       }
                     }}
                     blink={listening}
                   />
-                  <Button 
-                    // icon='paper-plane'
-                    minimal
-                    text='Send'
-                    iconPrefix='fas'
-                    onClick={() => makeQuery(query)}
-                    disabled={loading && queryGuids.length !== 0}
-                  />
+                  <Box pr={.5}>
+                    <Button 
+                      icon={'paper-plane'}
+                      iconPrefix='fas'
+                      minimal
+                      onClick={() => sendMessageToLexi(query)}
+                    />
+                  </Box>
                 </Box>
               
               </S.ButtonContainer>
               <RichTextEditor
-                value={query} onChange={(value : string) => set_query(value)} 
+                value={query} onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
                 height={'160px'}
                 onEnter={newQuery => {
                   if (!isMobile) {
-                    makeQuery(
-                      newQuery.slice(0, -11), // remove unwanted linebreak
-                    )
+                    sendMessageToLexi(query)
                   }
                 }}
               />
@@ -510,55 +346,11 @@ const Home = ({
           </S.AltPage>
         </Box>
       </S.Container>
- 
-      <Modal 
-        title='Search and Insert'
-        icon='search'
-        iconPrefix='fas'
-        size='sm'
-        isOpen={open}
-        onClose={() => set_open(false)}
-        content={
-             
-             <Box width='100%'>
-              <TextInput 
-                value={url}
-                icon='link'
-                iconPrefix='fas'
-                onChange={newValue => set_url(newValue)}
-                compact
-              />
-              <Button 
-                icon='times'
-                circle
-                iconPrefix='fas'
-                disabled={search === ''}
-                onClick={() => set_url('')}
-                minimal
-              />
-              <Button
-                icon='plus'
-                circle
-                secondary
-                iconPrefix='fas'
-                onClick={() => {
-                  insertContentByUrl()
-                }
-              }
-              />
-              
-            </Box>
-          
-            
-          
-        }
-  
-      />
     </>
   )
 }
 
-export default Home
+export default Chat
 
 const S = {
   Iframe: styled.iframe`

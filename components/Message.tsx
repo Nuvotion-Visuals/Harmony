@@ -21,7 +21,7 @@ const Message = ({
     speaker?: string, 
     guid: string, 
     error?: string,
-    queryTime: string,
+    queryTime?: string,
     responseTime?: string
 }) => {
 
@@ -33,14 +33,13 @@ const Message = ({
         <Box width='100%' wrap={true} maxWidth={'700px'} >
 
         <S.AvatarContainer>
-                <Box pt={1}>
-                  <Avatar 
-                    src={isLexi ? '/assets/lexi-circle.png' : undefined}
-                    icon={isLexi ? undefined : 'user'}
-                    iconPrefix='fas'
-                    color={isLexi ? 'var(--F_Primary)' : 'var(--F_Surface_0)'}
-                  />
-                </Box>
+            <Box pt={1}>
+              <Avatar 
+                src={isLexi ? '/assets/lexi-circle.png' : undefined}
+                icon={isLexi ? undefined : 'user'}
+                iconPrefix='fas'
+              />
+            </Box>
             {
               query
                 ? <Spacer>
@@ -78,7 +77,7 @@ const Message = ({
 
               {
                 !isLexi
-                  ? <S.Meta>{new Date(queryTime).toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'})}</S.Meta>
+                  ? <S.Meta>{new Date(queryTime || new Date()).toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'})}</S.Meta>
                   : responseTime && 
                       <S.Meta>
                         <Gap disableWrap={true}>
@@ -89,7 +88,7 @@ const Message = ({
                             />
                             <Box>
                               {
-                                getTimeDifference(queryTime, responseTime)
+                                getTimeDifference(queryTime || '', responseTime)
                               }s
                             </Box>
                           </Gap>
@@ -167,27 +166,6 @@ const Message = ({
   export default Message
 
   const S = {
-    Container: styled.div`
-      height: calc(100vh - var(--F_Header_Height));
-      width: 100%;
-      overflow: hidden;
-      background: var(--F_Background);
-    `,
-    Footer: styled.div`
-      position:relative;
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
-      height: 288px;
-      padding-top: .75rem;
-      overflow-y: auto;
-    `,
-    ButtonContainer: styled.div`
-      position: absolute;
-      right: 0;
-      top: .75rem;
-      z-index: 1;
-    `,
     Message: styled.div<{
       isLexi?: boolean
     }>`
@@ -215,10 +193,6 @@ const Message = ({
       font-family: ${props => props.monospace ? 'monospace' : 'inherit'};
 
     `,
-    VSpacer: styled.div`
-      width: 100%;
-      height: 100%;
-    `,
     AvatarContainer: styled.div`
       display: flex;
       align-items: flex-start;
@@ -226,16 +200,5 @@ const Message = ({
       width: 700px;
       max-width: calc(100vw - 1.5rem);
       gap: 1rem;
-    `,
-    Banner: styled.img`
-      width: 100%;
-    `,
-    Content: styled.div`
-      width: 100%;
-      max-width: calc(100vw - 4.5rem);
-      @media screen and (min-width: 700px) {
-        max-width: calc(700px - 2.75rem);
-      }
-      overflow: hidden;
     `
   }
