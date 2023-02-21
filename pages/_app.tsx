@@ -20,7 +20,7 @@ library.add(
   // regular
   // @ts-ignore
   far.faHeart, far.faPaperPlane, far.faCheckSquare, far.faSquare,
-  fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark,
+  fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark, far.faEdit,
   far.faEnvelope, far.faMessage,
 
   fab.faYoutube, fab.faGithubAlt,
@@ -50,7 +50,7 @@ library.add(
   fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette,
   fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap, fas.faP, fas.faT, fas.faUsers,
   fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell,
-  fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp
+  fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp, fas.faSave, fas.faBan
 )
 
 import { useRouter } from 'next/router'

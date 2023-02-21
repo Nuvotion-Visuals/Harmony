@@ -1,3 +1,5 @@
+import { store } from 'redux-tk/store'
+
 // @ts-ignore
 import { convert } from 'html-to-text'
 
@@ -48,7 +50,13 @@ const speakSentences = (callback : () => void) => {
     // Set the onended event handler to speak the next sentence and start speaking the current sentence
     source.onended = speakSentence
     source.start()
-    console.log(sentence)
+    console.log(sentence.replace(/\n|\r/g, " "))
+
+    store.dispatch({
+      type: 'lexi/set_currentlySpeaking',
+      payload: sentence.replace(/\n|\r/g, " ")
+    })
+
     index++
   }
 
@@ -90,7 +98,13 @@ export const speak = async (text: string, callback: (error: any) => void) => {
 
       // If this is the first sentence being processed, start speaking immediately after audio generation is complete
       if (!firstRequestCompleted) {
-        speakSentences(() => callback(null))
+        speakSentences(() => {
+          callback(null)
+          store.dispatch({
+            type: 'lexi/set_currentlySpeaking',
+            payload: ''
+          })
+        })
         firstRequestCompleted = true
       }
     }

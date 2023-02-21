@@ -8,7 +8,8 @@ export interface Message {
 	responseTime?: string,
 	loading?: boolean,
 	error?: string,
-	scriptName?: string
+	scriptName?: string,
+	edited?: boolean
 }
 
 export interface MessagesByGuid {

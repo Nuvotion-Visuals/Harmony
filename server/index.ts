@@ -138,7 +138,7 @@ const sendMessageToLanguageModel = (
         onComplete({ 
           status: 500, 
           data: { 
-            response: `I experienced the following error when trying to access my language model.${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning ? `<p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning}</p><p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.recommendation}</p>` : ''}<br><pre>${error.message}</pre><pre>${error.stack}</pre>`
+            response: `I experienced the following error when trying to access my language model.<br />${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning ? `<p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning}</p><p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.recommendation}</p>` : ''}<br><pre>${error.message}</pre><pre>${error.stack}</pre>`
           }})
       }
     }

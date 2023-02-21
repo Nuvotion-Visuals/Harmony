@@ -44,6 +44,10 @@ export const useLexi = () => {
       dispatch(slice.actions.sendMessage(payload))
     }, [dispatch]),
 
+    updateMessage: useCallback((payload: Message) => {
+      dispatch(slice.actions.updateMessage(payload))
+    }, [dispatch]),
+
     set_query: useCallback((payload: RootState['lexi']['query']) => {
       dispatch(slice.actions.set_query(payload))
     }, [dispatch]),

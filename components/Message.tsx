@@ -1,33 +1,76 @@
-import { useState } from 'react'
-import { Box, Spacer, Gap, Icon, Dropdown, shareTextViaEmail, downloadFile, Button, copyToClipboard, StyleHTML, Avatar, LoadingSpinner, ParseHTML, HTMLtoMarkdown, markdownToHTML } from "@avsync.live/formation"
-import { memo } from "react"
+import React, { useEffect, useState } from 'react'
+import { Box, Spacer, Gap, Icon, Dropdown, shareTextViaEmail, downloadFile, Button, copyToClipboard, StyleHTML, Avatar, LoadingSpinner, ParseHTML, HTMLtoMarkdown, markdownToHTML, RichTextEditor } from "@avsync.live/formation"
 import styled from "styled-components"
-
+//@ts-ignore
+import { convert } from 'html-to-text'
 import { speak } from '../Lexi/System/Language/speech'
+import { useLexi } from 'redux-tk/lexi/hook'
 
 const getTimeDifference = (startTime: string, endTime: string) : number => {
-return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
+  return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
+}
+
+const highlightText = (html: string, currentlySpeaking: string | null): string => {
+  const openingTag = `<span style="color: var(--F_Primary_Variant)">`;
+  const closingTag = "</span>";
+  let len = 0;
+  if (currentlySpeaking) {
+    len = currentlySpeaking.length;
   }
 
-const Message = ({ 
-    query, 
-    speaker, 
-    guid, 
-    error,
-    queryTime,
-    responseTime
+  let startIndex = 0;
+  let index = currentlySpeaking ? html.indexOf(currentlySpeaking, startIndex) : -1;
+  let highlightedHtml = "";
+
+  while (index !== -1) {
+    // Append the HTML before the match
+    highlightedHtml += html.substring(startIndex, index);
+
+    // Append the highlighted match
+    highlightedHtml += openingTag + html.substring(index, index + len) + closingTag;
+
+    // Update the start index and search for the next match
+    startIndex = index + len;
+    index = html.indexOf(currentlySpeaking as string, startIndex);
+  }
+
+  // Append any remaining HTML after the last match
+  highlightedHtml += html.substring(startIndex);
+
+  return highlightedHtml;
+}
+
+const Message = React.memo(({ 
+  query, 
+  speaker, 
+  guid, 
+  error,
+  queryTime,
+  responseTime,
+  edited
 }: { 
-    query: string, 
-    speaker?: string, 
-    guid: string, 
-    error?: string,
-    queryTime?: string,
-    responseTime?: string
+  query: string, 
+  speaker?: string, 
+  guid: string, 
+  error?: string,
+  queryTime?: string,
+  responseTime?: string,
+  edited?: boolean
 }) => {
+    const [edit, set_edit] = useState(false)
 
     const [speaking, set_speaking] = useState(false)
 
+    const { updateMessage, currentlySpeaking } = useLexi()
+
     const isLexi = speaker === 'Lexi'
+
+    const [localValue, set_localValue] = useState(query)
+
+    useEffect(() => {
+      set_localValue(highlightText(query, (currentlySpeaking || '')))
+    }, [query, currentlySpeaking])
+
     return (<S.Message isLexi={isLexi}>
       <Box width='100%' wrap={true}>
         <Box width='100%' wrap={true} maxWidth={'700px'} >
@@ -40,15 +83,41 @@ const Message = ({
                 iconPrefix='fas'
               />
             </Box>
+
             {
               query
                 ? <Spacer>
-                      <StyleHTML>
 
                     <S.Content>
-                      <ParseHTML html={markdownToHTML(query)} />
+                      <RichTextEditor 
+                        value={`${localValue}`}
+                        readOnly={!edit}
+                        // onChange={(newValue : string) => set_localValue(newValue)}
+                      >
+                        <Button 
+                          icon='save'
+                          iconPrefix='fas'
+                          minimal
+                          onClick={() => {
+                            set_edit(false)
+                            updateMessage({
+                              guid,
+                              response: localValue
+                            })
+                          }}
+                        />
+                        <Button 
+                          icon='ban'
+                          iconPrefix='fas'
+                          minimal
+                          onClick={() => {
+                            set_edit(false)
+                            set_localValue(query)
+                          }}
+                        />
+                        <Box height='100%' />
+                      </RichTextEditor>
                     </S.Content>
-                    </StyleHTML>
 
                   </Spacer>
                 : error
@@ -73,8 +142,17 @@ const Message = ({
               <Box width='100%'>
               <Spacer />
               
-              <Gap autoWidth={true}>
+              <Box pr={.25}>
 
+                {
+                  edited &&
+                  <Icon
+                    icon={'edit'}
+                    iconPrefix='far'
+                  />
+                }
+              
+                            
               {
                 !isLexi
                   ? <S.Meta>{new Date(queryTime || new Date()).toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'})}</S.Meta>
@@ -82,6 +160,7 @@ const Message = ({
                       <S.Meta>
                         <Gap disableWrap={true}>
                           <Gap gap={.25} autoWidth={true}>
+                            
                             <Icon
                               icon={'clock'}
                               iconPrefix='far'
@@ -118,10 +197,34 @@ const Message = ({
                         minimal
                         items={[
                           {
+                            icon: 'copy',
+                            iconPrefix: 'fas',
+                            text: 'Copy Markdown',
+                            onClick: () => copyToClipboard(HTMLtoMarkdown(query))
+                          },
+                          {
+                            icon: 'copy',
+                            iconPrefix: 'fas',
+                            text: 'Copy HTML',
+                            onClick: () => copyToClipboard(query)
+                          },
+                          {
                             icon: 'file-download',
                             iconPrefix: 'fas',
-                            text: 'Save .md',
-                            onClick: () => downloadFile(error ? error : query, 'lexi.md', 'markdown')
+                            text: 'Save Markdown',
+                            onClick: () => downloadFile(error ? error : query, `lexi-${guid}.md`, 'markdown')
+                          },
+                          {
+                            icon: 'file-download',
+                            iconPrefix: 'fas',
+                            text: 'Save HTML',
+                            onClick: () => downloadFile(error ? error : query, `lexi-${guid}.html`, 'html')
+                          },
+                          {
+                            icon: 'edit',
+                            iconPrefix: 'fas',
+                            text: 'Edit',
+                            onClick: () => set_edit(true)
                           },
                         ]}
                       />
@@ -129,6 +232,7 @@ const Message = ({
                       <Button
                         icon={speaking ? 'stop' : 'play'}
                         blink={speaking}
+                        minimal
                         iconPrefix='fas'
                         circle={true}
                         onClick={() => {
@@ -148,65 +252,68 @@ const Message = ({
                       <Button
                         icon='copy'
                         iconPrefix='far'
+                        minimal
                         circle={true}
                         onClick={() => copyToClipboard(HTMLtoMarkdown(query))}
                       />
                     </>
                   : null
               }
-            </Gap>
+            </Box>
             </Box>
           </Box>
           </S.FlexStart>
         </Box>
       </Box>
     
-    </S.Message>)}
+    </S.Message>)
+})
   
-  export default Message
+export default Message
 
-  const S = {
-    Message: styled.div<{
-      isLexi?: boolean
-    }>`
-      width: 100%;
-      background: ${props => props.isLexi ? 'var(--F_Background_Alternating)': 'var(--F_Background)'};
-      padding: .75rem 0;
-      border-top: 1px solid var(--F_Surface_0);
-    `,
-    FlexStart: styled.div<{
-      wrap?: boolean
-    }>`
-      width: 100%;
-      display: flex;
-      align-items: flex-start;
-      flex-wrap: ${props => props.wrap? 'wrap' : 'noWrap'};
-      max-width: calc(100vw - 1.5rem);
-    `,
-    Meta: styled.div<{
-      monospace?: boolean
-    }>`
-      display: flex;
-      align-items: center;
-      color: var(--F_Font_Color_Disabled);
-      font-size: 12px;
-      font-family: ${props => props.monospace ? 'monospace' : 'inherit'};
+const S = {
+  Message: styled.div<{
+    isLexi?: boolean
+  }>`
+    width: 100%;
+    background: ${props => props.isLexi ? 'var(--F_Background_Alternating)': 'var(--F_Background)'};
+    padding: .75rem 0;
+    border-top: 1px solid var(--F_Surface_0);
+  `,
+  FlexStart: styled.div<{
+    wrap?: boolean
+  }>`
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: ${props => props.wrap? 'wrap' : 'noWrap'};
+    max-width: calc(100vw - 1.5rem);
+  `,
+  Meta: styled.div<{
+    monospace?: boolean
+  }>`
+    display: flex;
+    align-items: center;
+    color: var(--F_Font_Color_Disabled);
+    font-size: 12px;
+    font-family: ${props => props.monospace ? 'monospace' : 'inherit'};
 
-    `,
-    AvatarContainer: styled.div`
-      display: flex;
-      align-items: flex-start;
-      height: 100%;
-      width: 700px;
-      max-width: calc(100vw - 1.5rem);
-      gap: 1rem;
-    `,
-    Content: styled.div`
-      width: 100%;
-      max-width: calc(100vw - 4.5rem);
-      @media screen and (min-width: 700px) {
-        max-width: calc(700px - 2.75rem);
-      }
-      overflow: hidden;
-    `
-  }
+  `,
+  AvatarContainer: styled.div`
+    display: flex;
+    align-items: flex-start;
+    height: 100%;
+    width: 700px;
+    max-width: calc(100vw - 1.5rem);
+    gap: 1rem;
+  `,
+  Content: styled.div`
+    width: 100%;
+    max-width: calc(100vw - 4.25rem);
+    padding: .5rem 0;
+    @media screen and (min-width: 700px) {
+      max-width: calc(700px - 2.75rem);
+    }
+    overflow: hidden;
+  `
+}

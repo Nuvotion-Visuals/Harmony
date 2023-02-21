@@ -250,7 +250,7 @@ const Chat = React.memo(() => {
                   }
                 
                   <Message 
-                    query={messagesByGuid[guid]?.response || ''} 
+                    query={messagesByGuid[guid]?.response || ''}
                     speaker='Lexi' 
                     guid={guid} 
                     error={messagesByGuid[guid]?.error} 
@@ -266,7 +266,7 @@ const Chat = React.memo(() => {
           <Box px={.75}>
             <S.AltPage>
             <S.Footer>
-              <S.ButtonContainer>
+              {/* <S.ButtonContainer>
                 <Box>
                   <Dropdown
                     icon='plus'
@@ -334,7 +334,7 @@ const Chat = React.memo(() => {
                   </Box>
                 </Box>
               
-              </S.ButtonContainer>
+              </S.ButtonContainer> */}
               <ChatBox
                 onEnter={() => {
                   sendMessageToLexi(query)
