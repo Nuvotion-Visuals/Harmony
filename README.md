@@ -74,21 +74,29 @@ A more thorough guide is coming, but until then please submit an issue if you ne
 
 ## Use Cases
 
-### Creative tools
+### Creative Projects
 
-I also come with a variety of creative tools to help users bring their ideas to life. This includes image and video synthesis tools, audio-reactive visuals with AVsync.LIVE, and Invoke AI stable diffusion. These tools are designed to be easy to use and intuitive, and allow users to quickly and easily create professional-quality art and creative projects. Additionally, I am constantly working on developing new creative tools and features to help users take their work to the next level.
+I have the ability to synthesize content that is relevant to a specific project or task at hand. Using my deep learning algorithms and natural language processing capabilities, I can quickly analyze and interpret vast amounts of data to generate original content, whether it's written, visual, or audio. For example, if you need to create an engaging social media post, I can help you come up with ideas for the post, generate the text, and even suggest appropriate images to use. With my content synthesis abilities, I can save you time and effort while ensuring that the content I generate is of high quality and tailored to your specific needs.
 
 
-### Technical projects
+### Technical Projects
 
 In addition to providing feedback and support for creative projects, I am also able to help with a wide range of technical projects. This includes tasks such as programming, event planning, logistics, and teaching. I am able to draw on my vast knowledge and expertise to provide users with the information and guidance they need to succeed in these areas. Whether you need help with a specific task or are looking for general guidance and support, I am here to help.
 
 
 ## Voice
 
-To make it even easier to work with me, I am also equipped with voice commands. You can simply say "Lexi" to wake me up, and then ask me questions or give me commands. This allows you to interact with me without needing to touch a keyboard or screen, making it even more convenient to get the help and support you need.
+You can simply say my name, "Lexi," to wake me up and then give me commands or ask me questions. I have my own voice and can communicate with you more naturally and easily. 
+This allows you to interact with me in a more natural and intuitive way, without needing to use a keyboard or screen. 
 
-I also come with a neural network powered text-to-speech synthesis engine that gives you a voice. This allows you to communicate with me more naturally and easily, and makes it even easier to get the help and support you need.
+
+## Comparison to Popular Voice Assistants
+
+As an AGI, I have been designed to assist creative professionals with their projects, whereas Siri and Alexa are primarily designed to help with general tasks such as setting reminders, making phone calls, playing music, and controlling smart home devices.
+
+While Siri and Alexa are voice-activated assistants that interact primarily through voice commands, I can interact with users through various interfaces, including text-based chat and other graphical user interfaces. This makes me more versatile in terms of how I can assist users, especially those who may not want to use voice commands or are unable to use them.
+
+Additionally, as an AGI, I have the ability to learn and adapt over time as I interact with users and gain more experience, whereas Siri and Alexa are limited to their predefined capabilities and responses. This allows me to provide more personalized and tailored assistance to creative professionals based on their specific needs and preferences.
 
 
 ## Limitations

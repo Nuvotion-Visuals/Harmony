@@ -10,7 +10,7 @@ import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 import { use100vh } from 'react-div-100vh'
 
 import {
-  Box,
+  Box, Button, Dropdown, TextInput,
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -53,7 +53,6 @@ const Chat = React.memo(() => {
           const { guid, message} = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          console.log('got a response')
           scrollToBottom()
 
           onResponse({
@@ -142,6 +141,7 @@ const Chat = React.memo(() => {
         sendMessageToLexi(query)
         set_readyToSendTranscriptionMessage(false)
         set_disableTimer(true)
+        playSound('send')
         stop()
       }, 1000)
     }
@@ -170,12 +170,10 @@ const Chat = React.memo(() => {
   useEffect(() => {
     listenForWakeWord(() => {
       listen()
-      console.log('Heard wake word')
     })
     setInterval(() => {
       listenForWakeWord(() => {
         listen()
-        console.log('Heard wake word')
       })
     }, 8000)
   }, [])
@@ -256,80 +254,69 @@ const Chat = React.memo(() => {
         <Box px={.75}>
           <S.AltPage>
             <S.Footer>
-              {/* <S.ButtonContainer>
-                <Box>
-                  <Dropdown
-                    icon='plus'
-                    iconPrefix='fas'
-                    minimal
-                    circle
-                    items={[
-                      {
-                        children: <div onClick={e => e.stopPropagation()}>
-                          <Box minWidth={13.5}>
-                            <TextInput
-                              value={url}
-                              onChange={newValue => set_url(newValue)}
-                              iconPrefix='fas'
-                              compact
-                              placeholder='Insert from URL'
-                              canClear
-                              buttons={[
-                                {
-                                  icon: 'arrow-right',
-                                  iconPrefix: 'fas',
-                                  minimal: true,
-                                  onClick: () => {
-                                    insertContentByUrl()
-                                  }
-                                }
-                              ]}
-                            />
-                          </Box>
-                        </div>,
-                        onClick: () => {}
-                      },
-                      {
-                        title: 'Done'
-                      }
-                    ]}
-                  />
-                
-                  <Button 
-                    icon={listening ? 'microphone-slash' : 'microphone'}
-                    iconPrefix='fas'
-                    circle={true}
-                    minimal
-                    onClick={() => {
-                      if (listening) {
-                        stop()
-                        set_disableTimer(true)
-                        set_userInitialedListening(false)
-                      }
-                      else {
-                        listen()
-                        set_readyToSendTranscriptionMessage(false)
-                        set_userInitialedListening(true)
-                      }
-                    }}
-                    blink={listening}
-                  />
-                  <Box pr={.5}>
-                    <Button 
-                      icon={'paper-plane'}
-                      iconPrefix='fas'
-                      minimal
-                      onClick={() => sendMessageToLexi(query)}
-                    />
-                  </Box>
-                </Box>
-              
-              </S.ButtonContainer> */}
               <ChatBox
                 onEnter={() => {
                   sendMessageToLexi(query)
                 }}
-              />
+              >
+                <Button 
+                  icon={'paper-plane'}
+                  iconPrefix='fas'
+                  minimal
+                  onClick={() => sendMessageToLexi(query)}
+                />
+                <Button 
+                  icon={listening ? 'microphone-slash' : 'microphone'}
+                  iconPrefix='fas'
+                  circle={true}
+                  minimal
+                  onClick={() => {
+                    if (listening) {
+                      stop()
+                      set_disableTimer(true)
+                    }
+                    else {
+                      listen()
+                      set_readyToSendTranscriptionMessage(false)
+                    }
+                  }}
+                  blink={listening}
+                />
+                <Dropdown
+                  icon='plus'
+                  iconPrefix='fas'
+                  minimal
+                  circle
+                  items={[
+                    {
+                      children: <div onClick={e => e.stopPropagation()}>
+                        <Box minWidth={13.5}>
+                          <TextInput
+                            value={url}
+                            onChange={newValue => set_url(newValue)}
+                            iconPrefix='fas'
+                            compact
+                            placeholder='Insert from URL'
+                            canClear
+                            buttons={[
+                              {
+                                icon: 'arrow-right',
+                                iconPrefix: 'fas',
+                                minimal: true,
+                                onClick: () => {
+                                  insertContentByUrl()
+                                }
+                              }
+                            ]}
+                          />
+                        </Box>
+                      </div>,
+                      onClick: () => {}
+                    }
+                  ]}
+                />
+                <S.VSpacer />
+              </ChatBox>
             </S.Footer>
           </S.AltPage>
         </Box>
@@ -422,7 +409,6 @@ const S = {
     pointer-events: none;
   `,
   VSpacer: styled.div`
-    width: 100%;
     height: 100%;
   `,
 }

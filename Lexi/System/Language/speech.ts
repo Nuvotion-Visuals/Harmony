@@ -133,7 +133,7 @@ const processSpeechQueue = (): void => {
 };
 
 const addToSpeechQueue = (sentence: string): void => {
-  queue.push(sentence);
+  queue.push(sentence.replace(/#/g, ""));
   if (!isProcessing) {
     processSpeechQueue();
   }

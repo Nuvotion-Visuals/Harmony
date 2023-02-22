@@ -4,10 +4,11 @@ import { useLexi } from 'redux-tk/lexi/hook'
 import styled from 'styled-components'
 
 interface Props {
-  onEnter: () => void
+  onEnter: () => void,
+  children: React.ReactNode
 }
 
-export const ChatBox = ({ onEnter }: Props) => {
+export const ChatBox = ({ onEnter, children }: Props) => {
   const {
     query,
     set_query,
@@ -29,23 +30,9 @@ export const ChatBox = ({ onEnter }: Props) => {
       placeholder='Chat'
       outset
     >
-      <Button
-        icon='paper-plane'
-        iconPrefix='fas'
-        minimal
-        onClick={onEnter}
-      />
-      <Button
-        icon='microphone'
-        iconPrefix='fas'
-        minimal
-      />
-      <Button
-        icon='plus'
-        iconPrefix='fas'
-        minimal
-      />
-      <S.VSpacer />
+     {
+      children
+     }
     </RichTextEditor>
   </Box>)
 }

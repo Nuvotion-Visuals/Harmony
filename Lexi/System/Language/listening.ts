@@ -70,7 +70,6 @@ export function listenForWakeWord(callback: () => void) {
     // Start listening for the wake word
     recognition.start();
     // Log a message to the console indicating that the wake word is being listened for
-    console.log(`Listening for wake word "${wakeWord}"`);
     recognition.onended = () => 'not listening'
     // Set up the event handler for when the wake word is recognized
     recognition.onresult = (event: any) => {
