@@ -141,7 +141,7 @@ const addToSpeechQueue = (sentence: string): void => {
 
 let accumulatedSentences: string[] = [];
 
-export const speakStream = (text: string, isComplete: boolean) => {
+export const speakStream = (text: string, guid: string) => {
   // Split the input into sentences and loop over them
   const sentences = text.match(/[^.!?]+[.!?]+/g);
   if (sentences) {

@@ -12,7 +12,7 @@ interface Props {
 }
 
 const App = React.memo(({ }: Props) => {
-  const { isMobile, isDesktop } = useBreakpoint()
+  const { isMobile, isTablet, isDesktop } = useBreakpoint()
 
   const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
@@ -160,7 +160,7 @@ const App = React.memo(({ }: Props) => {
   const renderSecondPage = () => {
     return <>
       {
-        !isMobile && <S.HeaderSpacer />
+        !isMobile && !isTablet && <S.HeaderSpacer />
       }
       <Chat />
     </>

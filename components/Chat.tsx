@@ -79,7 +79,7 @@ const Chat = React.memo(() => {
           })
           scrollToBottom()
 
-          speakStream(wsmessage.message, false)
+          speakStream(wsmessage.message, guid)
         }
       }
     }
@@ -248,6 +248,7 @@ const Chat = React.memo(() => {
               </>
               )
             }
+
           <div ref={scrollToRef}></div>
         </S.Content>
 
