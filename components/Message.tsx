@@ -65,10 +65,10 @@ const Message = React.memo(({
 
     const isLexi = speaker === 'Lexi'
 
-    const [localValue, set_localValue] = useState(query)
+    const [localValue, set_localValue] = useState(markdownToHTML(query))
 
     useEffect(() => {
-      set_localValue(highlightText(query, (currentlySpeaking || '')))
+      set_localValue(highlightText(markdownToHTML(query), (currentlySpeaking || '')))
     }, [query, currentlySpeaking])
 
     return (<S.Message isLexi={isLexi}>
@@ -83,6 +83,7 @@ const Message = React.memo(({
                 iconPrefix='fas'
               />
             </Box>
+           
 
             {
               query
@@ -92,7 +93,7 @@ const Message = React.memo(({
                       <RichTextEditor 
                         value={`${localValue}`}
                         readOnly={!edit}
-                        // onChange={(newValue : string) => set_localValue(newValue)}
+                        onChange={(newValue : string) => set_localValue(newValue)}
                       >
                         <Button 
                           icon='save'
@@ -100,10 +101,18 @@ const Message = React.memo(({
                           minimal
                           onClick={() => {
                             set_edit(false)
-                            updateMessage({
-                              guid,
-                              response: localValue
-                            })
+                            if (isLexi) {
+                              updateMessage({
+                                guid,
+                                response: localValue,
+                              })
+                            }
+                            else {
+                              updateMessage({
+                                guid,
+                                query: localValue
+                              })
+                            }
                           }}
                         />
                         <Button 
@@ -144,14 +153,9 @@ const Message = React.memo(({
               
               <Box pr={.25}>
 
-                {
-                  edited &&
-                  <Icon
-                    icon={'edit'}
-                    iconPrefix='far'
-                  />
-                }
-              
+              {
+                edited && <Box mr={.5}><Icon icon='pencil' iconPrefix='fas' size='sm' /></Box>
+              }
                             
               {
                 !isLexi

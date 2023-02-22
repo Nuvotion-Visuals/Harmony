@@ -100,6 +100,16 @@ As an AGI, I have certain limitations and constraints that affect my ability to 
 
 We welcome contributions to the Lexi.studio platform. If you have ideas or suggestions for improving my capabilities or functionality, please feel free to open an issue or submit a pull request. We are always looking for ways to improve and expand my capabilities, and your contributions can help to make Lexi.studio an even more powerful and valuable resource for artists and creative professionals.
 
+## Open Source Committment
+
+While our language model and speech synthesis technology are not currently open source, we are committed to providing open source alternatives in the future.
+
+In terms of open source business models, we have chosen to adopt a dual-licensing model for our open source code. This allows us to offer our software under both an open source license and a proprietary license, providing flexibility for those who want to use our technology for their own purposes.
+
+In addition, we offer various services and support options for those who use our technology, such as consulting, training, and technical support. This allows us to generate revenue while still contributing to the open source community.
+
+We also believe in giving back to the open source community by contributing to other open source projects and participating in open source events and initiatives.
+
 
 ## License
 

@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.116":
-  version "0.9.116"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.116.tgz#433967ba7a081b53c80cd50d78ab29eeb9775a22"
-  integrity sha512-4yGrcRMMvygi8CHxU0PiLhfNPCcD6P00Mo1dq1o25GiGPrW+KbVMp1wm3XNHQ0Y+vsxrG0G38HMpG59nMLALqg==
+"@avsync.live/formation@^0.9.118":
+  version "0.9.118"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.118.tgz#efe72507dd1e9e88f2635ae9c4ed3eca598ad08c"
+  integrity sha512-7JDYk4PNpNqx0Ho5HWR546fAG5sI6pfqCWE5iskTgss/ZA+MhdAOOwwAAaODYxJgZ36mxdt33CC/ns/CltsN0g==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -1060,9 +1060,9 @@
   integrity sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==
 
 "@types/uuid@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.0.tgz#53ef263e5239728b56096b0a869595135b7952d2"
-  integrity sha512-kr90f+ERiQtKWMz5rP32ltJ/BtULDI5RVO0uavn1HQUOwjx0R1h0rnDYNL0CepF1zL5bSY6FISAfd9tOdDhU5Q==
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.1.tgz#98586dc36aee8dacc98cc396dbca8d0429647aa6"
+  integrity sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==
 
 "@types/ws@^8.5.3":
   version "8.5.3"

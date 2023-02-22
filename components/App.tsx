@@ -12,7 +12,7 @@ interface Props {
 }
 
 const App = React.memo(({ }: Props) => {
-  const { isMobile } = useBreakpoint()
+  const { isMobile, isDesktop } = useBreakpoint()
 
   const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
@@ -176,54 +176,54 @@ const App = React.memo(({ }: Props) => {
 
   
 
-  return (<S.SuperApp>
+  return (<S.App>
     <S.NavHeader>
-      <Gap disableWrap>
-        <div onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}>
-          <S.Logo src='/assets/lexi-circle.png'/>
-        </div>
-        <Search />
-      </Gap>
-    </S.NavHeader>
+      <S.Logo 
+        src='/assets/lexi-circle.png'
+        onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}
+      />
+      <S.Centered isDesktop={isDesktop}>
+      <Search />
 
-    
-  <NavSpaces
-    dropdownOptions={[]}
-    disableTablet
-    activeSwipeIndex={activeSwipeIndex}
-    onSwipe={index => setActiveSwipeIndex(index)}
-    spaces={[]}
-    activeSpaceIndex={activeSpaceIndex}
-    onSetActiveSpacesIndex={index => set_activeSpaceIndex(index)}
-    channels={[]}
-    firstPage={renderFirstPage()}
-    secondPage={renderSecondPage()}
-    thirdPage={renderThirdPage()}
-    navsPrimary={[
-    {
-      icon: 'message',
-      iconPrefix: router.route.includes(`/`) ? 'fas' : 'fas',
-      title: 'Chat',
-      href: `/`,
-      active: router.route === `/`
-    },
-    {
-      icon: 'search',
-      iconPrefix: router.route.includes(`/search`) ? 'fas' : 'fas',
-      title: 'Search',
-      href: `/search`,
-      active: router.route === `/search`
-    },
-    {
-      icon: 'user',
-      iconPrefix: router.route.includes(`/login`) ? 'fas' : 'fas',
-      title: 'Profile',
-      href: `/login`,
-      active: router.route === `/login`
-    },
-    ]}
-  />
-  </S.SuperApp>)
+      </S.Centered>
+    </S.NavHeader>
+    <NavSpaces
+      dropdownOptions={[]}
+      disableTablet
+      activeSwipeIndex={activeSwipeIndex}
+      onSwipe={index => setActiveSwipeIndex(index)}
+      spaces={[]}
+      activeSpaceIndex={activeSpaceIndex}
+      onSetActiveSpacesIndex={index => set_activeSpaceIndex(index)}
+      channels={[]}
+      firstPage={renderFirstPage()}
+      secondPage={renderSecondPage()}
+      thirdPage={renderThirdPage()}
+      navsPrimary={[
+      {
+        icon: 'message',
+        iconPrefix: router.route.includes(`/`) ? 'fas' : 'fas',
+        title: 'Chat',
+        href: `/`,
+        active: router.route === `/`
+      },
+      {
+        icon: 'search',
+        iconPrefix: router.route.includes(`/search`) ? 'fas' : 'fas',
+        title: 'Search',
+        href: `/search`,
+        active: router.route === `/search`
+      },
+      {
+        icon: 'user',
+        iconPrefix: router.route.includes(`/login`) ? 'fas' : 'fas',
+        title: 'Profile',
+        href: `/login`,
+        active: router.route === `/login`
+      },
+      ]}
+    />
+  </S.App>)
 })
 
 export default App
@@ -234,7 +234,7 @@ const S = {
     height: 100%;
     overflow: hidden;
   `,
-  SuperApp: styled.div`
+  App: styled.div`
     width: 100%;
   `,
   NavHeader: styled.div`
@@ -246,8 +246,20 @@ const S = {
     z-index: 9;
     background: var(--F_Background);
     display: flex;
+    gap: .75rem;
     align-items: center;
     border-bottom: 1px solid var(--F_Surface);
+  `,
+  Centered: styled.div<{
+    isDesktop: boolean
+  }>`
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: calc(100% - 94px);
+    width: ${props => props.isDesktop ? '100%' : 'calc(100% - 45px)'};
+
+    margin-left: ${props => props.isDesktop ? '-141px' : '22px'};
   `,
   HeaderSpacer: styled.div`
     width: 100%;

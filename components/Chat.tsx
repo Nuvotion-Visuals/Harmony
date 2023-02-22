@@ -234,6 +234,7 @@ const Chat = React.memo(() => {
                     guid={guid} 
                     queryTime={messagesByGuid[guid]?.queryTime} 
                     responseTime={messagesByGuid[guid]?.responseTime}
+                    edited={messagesByGuid[guid]?.edited}
                   />
                 }
               
@@ -244,6 +245,7 @@ const Chat = React.memo(() => {
                   error={messagesByGuid[guid]?.error} 
                   queryTime={messagesByGuid[guid]?.queryTime}  
                   responseTime={messagesByGuid[guid]?.responseTime} 
+                  edited={messagesByGuid[guid]?.edited} 
                 />
               </>
               )

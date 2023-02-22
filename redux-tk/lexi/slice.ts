@@ -80,14 +80,26 @@ export const slice = createSlice({
       }
     },
     updateMessage: (state, action: { payload: Message }) => {
-      const { guid, response } = action.payload
-      
-      state.messagesByGuid = {
-        ...state.messagesByGuid,
-        [guid]: {
-          ...state.messagesByGuid[guid],
-          response,
-          edited: true
+      const { guid, query, response } = action.payload
+
+      if (query) {
+        state.messagesByGuid = {
+          ...state.messagesByGuid,
+          [guid]: {
+            ...state.messagesByGuid[guid],
+            query,
+            edited: true
+          }
+        }
+      }
+      else if (response) {
+        state.messagesByGuid = {
+          ...state.messagesByGuid,
+          [guid]: {
+            ...state.messagesByGuid[guid],
+            response,
+            edited: true
+          }
         }
       }
     },
