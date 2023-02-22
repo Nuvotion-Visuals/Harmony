@@ -1,1 +1,0 @@
-<p>Pink Floyd</p><p><img src="https://cdn.britannica.com/64/23164-050-A7D2E9D9/Pink-Floyd.jpg?w=400&amp;h=300&amp;c=crop"></p><p>Pink Floyd is an english rock band</p>

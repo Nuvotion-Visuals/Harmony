@@ -10,15 +10,7 @@ import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 import { use100vh } from 'react-div-100vh'
 
 import {
-  Button,
   Box,
-  Modal,
-  TextInput,
-  Spacer,
-  stringInArray,
-  Dropdown,
-  RichTextEditor,
-  useBreakpoint
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -43,8 +35,7 @@ const Chat = React.memo(() => {
     onResponse,
     onPartialResponse,
     readyToSendTranscriptionMessage,
-    set_readyToSendTranscriptionMessage,
-    set_userInitialedListening
+    set_readyToSendTranscriptionMessage
   } = useLexi()
 
   const true100vh = use100vh()
@@ -59,7 +50,7 @@ const Chat = React.memo(() => {
         if (wsmessage.type === 'response') {
           stop()
         
-          const { status, guid, type, message, queryTime } = wsmessage as any
+          const { guid, message} = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
           console.log('got a response')
@@ -136,9 +127,7 @@ const Chat = React.memo(() => {
         responseTime,
         error: 'It seems the websocket request went wrong. You should reload the page.'
       })
-
     }
-
   }
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
@@ -228,43 +217,42 @@ const Chat = React.memo(() => {
   
   return (
     <>
-        <S.Container true100vh={true100vh || 0}>
-          <S.Content ref={scrollContainerRef}>
-            <S.VSpacer />
-              
-              <Box width='100%' wrap={true} mt={messageGuids.length > 0 ? .75 : 0}>
-                <S.FlexStart>
-                </S.FlexStart>
-              </Box>
+      <S.Container true100vh={true100vh || 0}>
+        <S.Content ref={scrollContainerRef}>
+          <S.VSpacer />
+            <Box width='100%' wrap={true} mt={messageGuids.length > 0 ? .75 : 0}>
+              <S.FlexStart>
+              </S.FlexStart>
+            </Box>
+            {
+              messageGuids.map((guid : string, index) => <>
               {
-                messageGuids.map((guid, index) => <>
-                {
-                  messagesByGuid[guid]?.query &&  
-                  <Message 
-                      query={messagesByGuid[guid]?.query || ''} 
-                      speaker='User' 
-                      guid={guid} 
-                      queryTime={messagesByGuid[guid]?.queryTime} 
-                      responseTime={messagesByGuid[guid]?.responseTime}
-                    />
-                  }
-                
-                  <Message 
-                    query={messagesByGuid[guid]?.response || ''}
-                    speaker='Lexi' 
+                messagesByGuid[guid]?.query &&  
+                <Message 
+                    query={messagesByGuid[guid]?.query || ''} 
+                    speaker='User' 
                     guid={guid} 
-                    error={messagesByGuid[guid]?.error} 
-                    queryTime={messagesByGuid[guid]?.queryTime}  
-                    responseTime={messagesByGuid[guid]?.responseTime} 
+                    queryTime={messagesByGuid[guid]?.queryTime} 
+                    responseTime={messagesByGuid[guid]?.responseTime}
                   />
-                </>
-                )
-              }
-            <div ref={scrollToRef}></div>
-          </S.Content>
+                }
+              
+                <Message 
+                  query={messagesByGuid[guid]?.response || ''}
+                  speaker='Lexi' 
+                  guid={guid} 
+                  error={messagesByGuid[guid]?.error} 
+                  queryTime={messagesByGuid[guid]?.queryTime}  
+                  responseTime={messagesByGuid[guid]?.responseTime} 
+                />
+              </>
+              )
+            }
+          <div ref={scrollToRef}></div>
+        </S.Content>
 
-          <Box px={.75}>
-            <S.AltPage>
+        <Box px={.75}>
+          <S.AltPage>
             <S.Footer>
               {/* <S.ButtonContainer>
                 <Box>
@@ -435,15 +423,4 @@ const S = {
     width: 100%;
     height: 100%;
   `,
-  Indicator: styled.div<{
-    active?: boolean
-  }>`
-    width: .75rem;
-    height: .75rem;
-    background-color: ${props => props.active ? 'var(--F_Font_Color_Success)' : 'var(--F_Surface_1)'};
-    animation: all 1s;
-    margin: .75rem;
-    margin-left: 0;
-    border-radius: 100%;
-  `
 }
