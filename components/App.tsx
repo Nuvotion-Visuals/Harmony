@@ -5,6 +5,7 @@ import { useLayout } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
 import Chat from './Chat'
+import { Compose } from './Compose'
 import { Search } from './Search'
 import { SearchResults } from './SearchResults'
 interface Props {
@@ -113,6 +114,12 @@ const App = React.memo(({ }: Props) => {
         }
       </S.Sidebar>
 
+  case '/compose':
+    return <S.Sidebar>
+    <Box height='var(--F_Header_Height)' width='100%'/>
+    <Compose />
+  </S.Sidebar>
+
   case '/projects':
     return <S.Sidebar>
     <Box height='var(--F_Header_Height)' width='100%'/>
@@ -206,6 +213,13 @@ const App = React.memo(({ }: Props) => {
         title: 'Chat',
         href: `/`,
         active: router.route === `/`
+      },
+      {
+        icon: 'edit',
+        iconPrefix: router.route.includes(`/compose`) ? 'fas' : 'fas',
+        title: 'Compose',
+        href: `/compose`,
+        active: router.route === `/compose`
       },
       {
         icon: 'search',

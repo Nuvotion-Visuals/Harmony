@@ -51,7 +51,8 @@ library.add(
   fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap, fas.faP, fas.faT, fas.faUsers,
   fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell,
   fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp, fas.faSave, fas.faBan, 
-  fas.faPencil, fas.faPencilAlt
+  fas.faPencil, fas.faPencilAlt, fas.faImage, fas.faVideo, fas.faMusic, fas.faFile,
+  fas.faCode, fas.faEnvelope, fas.faParagraph, fas.faBoltLightning
 )
 
 import { useRouter } from 'next/router'
