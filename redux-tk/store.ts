@@ -8,12 +8,14 @@ import { debounce } from 'lodash'
 // slices
 import { slice as layoutSlice } from './layout/slice'
 import { slice as lexiSlice } from './lexi/slice'
+import { slice as spacesSlice } from './spaces/slice'
 
 const debounceNotify = debounce(notify => notify())
 
 const rootReducer = combineReducers({
   layout: layoutSlice.reducer,
-  lexi: lexiSlice.reducer
+  lexi: lexiSlice.reducer,
+  spaces: spacesSlice.reducer
 })
 
 export const store = configureStore({
