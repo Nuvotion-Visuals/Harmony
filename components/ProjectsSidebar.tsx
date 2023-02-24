@@ -10,6 +10,8 @@ interface Props {
 
 export const ProjectsSidebar = ({ }: Props) => {
 
+  
+
   const [spaces, set_spaces] = useState([
     {
       name: 'Lexi',
