@@ -52,7 +52,7 @@ library.add(
   fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell,
   fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp, fas.faSave, fas.faBan, 
   fas.faPencil, fas.faPencilAlt, fas.faImage, fas.faVideo, fas.faMusic, fas.faFile,
-  fas.faCode, fas.faEnvelope, fas.faParagraph, fas.faBoltLightning
+  fas.faCode, fas.faEnvelope, fas.faParagraph, fas.faBoltLightning, fas.faChevronLeft,
 )
 
 import { useRouter } from 'next/router'
@@ -86,7 +86,7 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   </Head>
   <Provider store={store}>
     {
-      router.route === '/login'
+      router.route === '/login' || router.route === '/spaces/add'
         ? <Component {...pageProps} />
         : <App>
             <Component {...pageProps} />

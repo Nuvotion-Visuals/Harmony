@@ -21,6 +21,26 @@ export const select_activeAsset = (state: RootState): Asset | null => {
   return activeAssetGuid ? assetsByGuid[activeAssetGuid] || null : null;
 };
 
+export const select_spaceGuids = (state: RootState): Guid[] => {
+  return state.spaces.spaceGuids;
+};
+
+export const select_activeSpaceGuid = (state: RootState): Guid | null => {
+  return state.spaces.activeSpaceGuid;
+};
+
+export const select_projectsByGuid = (state: RootState): { [key: string]: Project } => {
+  return state.spaces.projectsByGuid;
+};
+
+export const select_groupsByGuid = (state: RootState): { [key: string]: Group } => {
+  return state.spaces.groupsByGuid;
+};
+
+export const select_assetsByGuid = (state: RootState): { [key: string]: Asset } => {
+  return state.spaces.assetsByGuid;
+};
+
 export const select_spacesInfo = (state: RootState): { name: string, previewSrc?: string, description?: string }[] => {
     const { spacesByGuid } = state.spaces;
     const spaces = Object.values(spacesByGuid);

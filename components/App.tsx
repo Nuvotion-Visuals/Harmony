@@ -5,7 +5,7 @@ import { useLayout } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
 import Chat from './Chat'
-import { ProjectsSidebar } from './ProjectsSidebar'
+import { SpaceSidebar } from './SpaceSidebar'
 import { Search } from './Search'
 import { SearchResults } from './SearchResults'
 interface Props {
@@ -22,7 +22,7 @@ const App = React.memo(({ }: Props) => {
   
         return <S.Sidebar>
           <Box height='var(--F_Header_Height)' width='100%'/>
-          <ProjectsSidebar />
+          <SpaceSidebar />
       </S.Sidebar>
   }
 
@@ -71,10 +71,10 @@ const App = React.memo(({ }: Props) => {
       navsPrimary={[
       {
         icon: 'list',
-        iconPrefix: router.route.includes(`/`) ? 'fas' : 'fas',
-        title: 'Projects',
-        href: `/`,
-        active: router.route === `/`
+        iconPrefix: router.route.includes(`/spaces`) ? 'fas' : 'fas',
+        title: 'Spaces',
+        href: `/spaces`,
+        active: router.route === `/spaces`
       },
       {
         icon: 'user',

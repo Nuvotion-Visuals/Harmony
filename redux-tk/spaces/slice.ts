@@ -64,6 +64,11 @@ export const slice = createSlice({
         group.assetGuids.push(assetGuid);
       }
     },
+    addProject: (state, action: PayloadAction<{ guid: Types.Guid; project: Types.Project }>) => {
+      const { guid, project } = action.payload;
+      state.projectGuids.push(guid);
+      state.projectsByGuid[guid] = project;
+    },
     removeProject: (state, action: PayloadAction<Types.Guid>) => {
       const guidToRemove = action.payload;
       state.projectGuids = state.projectGuids.filter((guid) => guid !== guidToRemove);

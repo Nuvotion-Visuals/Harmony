@@ -15,7 +15,12 @@ export const useSpaces = () => {
     activeProject: useSelector(selectors.select_activeProject, isEqual),
     activeGroup: useSelector(selectors.select_activeGroup, isEqual),
     activeAsset: useSelector(selectors.select_activeAsset, isEqual),
+    projectsByGuid: useSelector(selectors.select_projectsByGuid, isEqual),
+    groupsByGuid: useSelector(selectors.select_groupsByGuid, isEqual),
+    assetsByGuid: useSelector(selectors.select_assetsByGuid, isEqual),
     spacesInfo: useSelector(selectors.select_spacesInfo, isEqual),
+    spaceGuids: useSelector(selectors.select_spaceGuids, isEqual),
+    activeSpaceGuid: useSelector(selectors.select_activeSpaceGuid, isEqual),
 
     // reducers
     addSpace: useCallback((payload: { guid: Guid; space: Space }) => {
@@ -32,6 +37,9 @@ export const useSpaces = () => {
     }, [dispatch]),
     addAssetToGroup: useCallback((payload: { groupGuid: Guid; assetGuid: Guid }) => {
       dispatch(slice.actions.addAssetToGroup(payload));
+    }, [dispatch]),
+    addProject: useCallback((payload: { guid: Guid; project: Project }) => {
+      dispatch(slice.actions.addProject(payload));
     }, [dispatch]),
     removeProject: useCallback((payload: Guid) => {
       dispatch(slice.actions.removeProject(payload));
