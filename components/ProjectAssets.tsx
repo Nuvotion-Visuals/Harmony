@@ -1,13 +1,27 @@
-import { Label, Box, Gap, TextInput, Select, Button, LineBreak, ExpandableLists, Dropdown } from '@avsync.live/formation'
-import React, { Children, useEffect, useState } from 'react'
+import { Label, Spacer, Box, Gap, TextInput, Select, Button, LineBreak, ExpandableLists, Dropdown } from '@avsync.live/formation'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 interface Props {
   
 }
 
-export const Compose = ({ }: Props) => {
+export const ProjectAssets = ({ }: Props) => {
     const [value, set_value] = useState<any>([
+      {
+        expanded: true,
+        value: {
+          item: {
+            icon: 'message',
+            iconPrefix: 'fas',
+            labelColor: 'none',
+            text: 'Chat',
+          },
+          list: [
+  
+          ]
+        }
+      },
       {
         expanded: true,
         value: {
@@ -15,7 +29,7 @@ export const Compose = ({ }: Props) => {
             icon: 'image',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Images',
+            text: 'Images',
           },
           list: [
   
@@ -29,7 +43,7 @@ export const Compose = ({ }: Props) => {
             icon: 'video',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Videos',
+            text: 'Videos',
           },
           list: [
           ]
@@ -42,7 +56,7 @@ export const Compose = ({ }: Props) => {
             icon: 'globe',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Realms',
+            text: 'Realms',
           },
           list: [
           ]
@@ -55,7 +69,7 @@ export const Compose = ({ }: Props) => {
             icon: 'volume-up',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Sounds',
+            text: 'Sounds',
           },
           list: [
           ]
@@ -68,7 +82,7 @@ export const Compose = ({ }: Props) => {
             icon: 'music',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Music',
+            text: 'Music',
           },
           list: [
           ]
@@ -81,7 +95,7 @@ export const Compose = ({ }: Props) => {
             icon: 'bolt-lightning',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Visuals',
+            text: 'Visuals',
           },
           list: [
           ]
@@ -94,7 +108,7 @@ export const Compose = ({ }: Props) => {
             icon: 'file',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Documents',
+            text: 'Documents',
           },
           list: [
           ]
@@ -107,7 +121,7 @@ export const Compose = ({ }: Props) => {
             icon: 'envelope',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Emails',
+            text: 'Emails',
           },
           list: [
           ]
@@ -120,7 +134,7 @@ export const Compose = ({ }: Props) => {
             icon: 'book',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Story',
+            text: 'Story',
           },
           list: [ 
           ]
@@ -133,7 +147,7 @@ export const Compose = ({ }: Props) => {
             icon: 'users',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Characters',
+            text: 'Characters',
           },
           list: [
           ]
@@ -147,7 +161,7 @@ export const Compose = ({ }: Props) => {
             icon: 'code',
             iconPrefix: 'fas',
             labelColor: 'none',
-            title: 'Code',
+            text: 'Code',
           },
           list: [
           ]
@@ -173,7 +187,7 @@ export const Compose = ({ }: Props) => {
           },
           list: [
             {
-              title: 'Untitled',
+              text: 'Untitled',
               src: 'https://api.avsync.live/uploads/medium_scenes_12e25f0362.png',
               labelColor: 'none',
               onClick: () => {},
@@ -188,24 +202,16 @@ export const Compose = ({ }: Props) => {
     }
   
     return (<>
-      <Box p={.75}>
         <TextInput
-          placeholder='Search projects'
+          placeholder='Search assets'
           value={search}
           onChange={newVal => set_search(newVal)}
           compact
           secondaryIcon='search'
           iconPrefix='fas'
           canClear
-          buttons={[
-            {
-              icon: 'search',
-              iconPrefix: 'fas',
-              minimal: true
-            }
-          ]}
+          hideOutline
         />
-      </Box>
       
       <LineBreak />
     
@@ -215,20 +221,21 @@ export const Compose = ({ }: Props) => {
           value: {
             item: {
               ...expandableList.value.item,
-              children: <Gap>
-                <Label label={expandableList.value.list.length} labelColor={expandableList.value.list.length > 0 ? 'purple' : 'gray'} />
-                <Button 
-                  icon='plus' 
-                  iconPrefix='fas' 
-                  minimal 
-                  onClick={(e) => {
-                    add(i)
-                    e.stopPropagation()
-                  }} 
-                  />
-              </Gap>
+              children: <>
+                <Spacer />
+                  <Label label={expandableList.value.list.length} labelColor={expandableList.value.list.length > 0 ? 'purple' : 'gray'} />
+                  <Button 
+                    icon='plus' 
+                    iconPrefix='fas' 
+                    minimal 
+                    onClick={(e) => {
+                      add(i)
+                      e.stopPropagation()
+                    }} 
+                    />
+              </>
             },
-            list: expandableList.value.list.filter(listItem => listItem.title.toLowerCase().includes(search.toLowerCase())).map((listItem, listItemIndex1) =>
+            list: expandableList.value.list.filter(listItem => listItem.text.toLowerCase().includes(search.toLowerCase())).map((listItem, listItemIndex1) =>
               ({
                 ...listItem,
                 children: <Dropdown 
@@ -237,13 +244,13 @@ export const Compose = ({ }: Props) => {
                 minimal
                 items={[
                   {
-                    title: 'Rename',
+                    text: 'Rename',
                     icon: 'edit',
                     iconPrefix: 'fas',
                     onClick: () => {}
                   },
                   {
-                    title: 'Delete',
+                    text: 'Delete',
                     icon: 'trash-alt',
                     iconPrefix: 'fas',
                     onClick: () => {

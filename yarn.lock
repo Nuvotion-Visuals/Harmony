@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.118":
-  version "0.9.118"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.118.tgz#efe72507dd1e9e88f2635ae9c4ed3eca598ad08c"
-  integrity sha512-7JDYk4PNpNqx0Ho5HWR546fAG5sI6pfqCWE5iskTgss/ZA+MhdAOOwwAAaODYxJgZ36mxdt33CC/ns/CltsN0g==
+"@avsync.live/formation@^0.9.121":
+  version "0.9.121"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.121.tgz#f793b1e90a4348e253260ed13879aff5ae772ac9"
+  integrity sha512-HQV6qchj/uuxgXY8dvqZ1J6tgs8k/Ff85GCzwVvBX8w1A5KXabuqvebDNovyr/Go0HpDKIoki9eW5Ly+wB7HYA==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -5863,9 +5863,9 @@ react-dom@^16.13.1:
     scheduler "^0.19.1"
 
 react-easy-crop@^4.6.3:
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/react-easy-crop/-/react-easy-crop-4.7.1.tgz#6cae6df6d1c821b2b4946650c81c52ec69616410"
-  integrity sha512-F9EmLo90yWCR18voJki9upZF2GVsmPKQmu8vtTnUDFwb/PHblvMCKy/KUbu6/cniRmvPS2kiDjCUmMpAoDeJcw==
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/react-easy-crop/-/react-easy-crop-4.7.3.tgz#f77c32d1c78ebb04f275df5fcbf54ab640180d25"
+  integrity sha512-+LUQyKKAo10a28Q7whEDKs+mrGMctTDYDCT29++VYk3KKPivp/hPWWfZDrFebBOiezhGljFoi+bApH7DsVk2rg==
   dependencies:
     normalize-wheel "^1.0.1"
     tslib "2.0.1"

@@ -92,8 +92,8 @@ const handle = app.getRequestHandler()
 let languageModel = {} as any
 let ready = false
 
-let currentConversationId = ''
-let currentMessageId = ''
+let currentConversationId = 'NO_CURRENT_CONVERSATION_ID'
+let currentMessageId = 'NO_CURRENT_MESSAGE_ID'
 
 // send message to language model
 const sendMessageToLanguageModel = (
@@ -129,7 +129,7 @@ const sendMessageToLanguageModel = (
     }
     catch(error) {
       if (error instanceof Error) {
-        console.log('🟣', error)
+        console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
 
         const errorCodeRegex = /error (\d+)/;
         // @ts-ignore
@@ -153,7 +153,7 @@ const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', yea
 
 let initialized = false
 wss.on('connection', function connection(ws: typeof WSS) {
-  console.log('🟣', 'My web socket server is ready for connections')
+  console.log('🟣', `[${currentConversationId} - ${currentMessageId}] My web socket server is ready for connections`)
   // receive message from client
   ws.onmessage = (message: { data: string }) => {
     
@@ -192,7 +192,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
           }))
         },
         ({ data, status }) => {
-          console.log('🟣', `Sending Lexi's response to client...`)
+          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my partial response to the user: ${data.response}`)
           ws.send(JSON.stringify({
             // server sent partial response to message
             type: 'partial-response',
@@ -445,17 +445,18 @@ app.prepare().then(() => {
               currentMessageId = partialResponse.messageId
             }
           })
-          console.log('🟣', response, conversationId, messageId)
+
+          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my reponse to the user: ${response}`)
           currentConversationId = conversationId
           currentMessageId = messageId
-          console.log('🟣', response)
+
           req.session.loggedIn = true
           ready = true
           res.send({ status: 200 })
         }
         catch(e) {
           const error = e as any
-          console.log('🟣', error)
+          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
           const status = error.statusCode || error.code || 500
           const message = error.message || 'internal error'
           res.send({ status, message })
@@ -463,7 +464,7 @@ app.prepare().then(() => {
       })()
     }
     catch(e) {
-      console.log('🟣', e)
+      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${e}`)
       res.send({ status: 'failure', msg: 'Code validation failed' })
     }
   })
@@ -484,7 +485,7 @@ app.prepare().then(() => {
       // @ts-ignore
       .catch(e => {
         const error = e as any
-        console.log('🟣', error)
+        console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
         const status = error.statusCode || error.code || 500
         const message = error.message || 'internal error'
         res.send({ status, message })
@@ -492,7 +493,7 @@ app.prepare().then(() => {
     }
     catch(e) {
       const error = e as any
-      console.log('🟣', error)
+      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
       res.send({ status, message })
@@ -525,7 +526,7 @@ app.prepare().then(() => {
     }
     catch(e) {
       const error = e as any
-      console.log('🟣', error)
+      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
       res.send({ status, message })
@@ -540,6 +541,6 @@ app.prepare().then(() => {
 
   server.listen(<number>port, (err: any) => {
     if (err) throw err
-    console.log('🟣', `> Ready on http://192.168.1.128:${port}`)
+    console.log('🟣', `I'm listening on port ${port}.`)
   })
 })

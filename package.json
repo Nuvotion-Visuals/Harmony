@@ -13,7 +13,7 @@
     "kill-ws": "kill $(lsof -t -i:1619)"
   },
   "dependencies": {
-    "@avsync.live/formation": "^0.9.118",
+    "@avsync.live/formation": "^0.9.121",
     "@extractus/article-extractor": "^7.2.8-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
@@ -40,6 +40,7 @@
     "puppeteer": "^19.4.0",
     "puppeteer-core": "^19.4.0",
     "react": "18.2.0",
+    "react-div-100vh": "^0.7.0",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
     "react-speech-kit": "^3.0.1",

@@ -5,7 +5,7 @@ import { useLayout } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
 import Chat from './Chat'
-import { Compose } from './Compose'
+import { ProjectsSidebar } from './ProjectsSidebar'
 import { Search } from './Search'
 import { SearchResults } from './SearchResults'
 interface Props {
@@ -19,149 +19,11 @@ const App = React.memo(({ }: Props) => {
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
 
   const renderFirstPage = () => {
-    switch(router.route) {
-      case '/':
+  
         return <S.Sidebar>
           <Box height='var(--F_Header_Height)' width='100%'/>
-          <Box p={.75} width='calc(100% - 1.5rem)'>
-            <Button
-              text='New chat'
-              icon='plus'
-              iconPrefix='fas'
-              secondary
-              expand
-            />
-          </Box>
-        {
-          [
-            {
-              type: 'nav',
-              name: 'How to create AGI',
-              icon: 'message',
-              iconPrefix: 'far',
-              onClick: () => {
-                setActiveSwipeIndex(1)
-              },
-              active: router.asPath === '/',
-            },
-            {
-              type: 'nav',
-              name: 'Writing good Typescript',
-              icon: 'message',
-              iconPrefix: 'far',
-              onClick: () => {
-                setActiveSwipeIndex(2)
-              },
-              active: router.asPath === '/search',
-            },
-            {
-              type: 'nav',
-              name: 'Converting Typescript to Python',
-              icon: 'message',
-              iconPrefix: 'far',
-              href: '/projects',
-              active: router.asPath === '/projects',
-            },
-           
-          ].map(item => <Item {...item}/>)
-        }
+          <ProjectsSidebar />
       </S.Sidebar>
-
-      case '/search':
-        return <S.Sidebar>
-        <Box height='var(--F_Header_Height)' width='100%'/>
-      
-        {
-          [
-            {
-              type: 'nav',
-              name: 'search term 1',
-              icon: 'clock',
-              iconPrefix: 'fas',
-              onClick: () => {
-                setActiveSwipeIndex(1)
-              },
-              active: router.asPath === '/'
-            },
-            {
-              type: 'nav',
-              name: 'search term 2',
-              icon: 'clock',
-              iconPrefix: 'fas',
-              onClick: () => {
-                setActiveSwipeIndex(2)
-              },
-              active: router.asPath === '/search'
-            },
-            {
-              type: 'nav',
-              name: 'search term 3',
-              icon: 'clock',
-              iconPrefix: 'fas',
-              href: '/projects',
-              active: router.asPath === '/projects'
-            },
-            {
-              type: 'nav',
-              name: 'search term 4',
-              href: '/tasks',
-              active: router.asPath === '/tasks',
-              icon: 'clock',
-              iconPrefix: 'fas'
-            },
-           
-          ].map(item => <Item {...item}/>)
-        }
-      </S.Sidebar>
-
-  case '/compose':
-    return <S.Sidebar>
-    <Box height='var(--F_Header_Height)' width='100%'/>
-    <Compose />
-  </S.Sidebar>
-
-  case '/projects':
-    return <S.Sidebar>
-    <Box height='var(--F_Header_Height)' width='100%'/>
-    <Box p={.75} width='calc(100% - 1.5rem)'>
-      <Button
-        text='New project'
-        icon='plus'
-        iconPrefix='fas'
-        secondary
-        expand
-      />
-    </Box>
-    {
-      [
-        {
-          type: 'nav',
-          name: 'AVsync.LIVE',
-          onClick: () => {
-            setActiveSwipeIndex(1)
-          },
-          active: router.asPath === '/'
-        },
-        {
-          type: 'nav',
-          name: 'Lexi.studio',
-          onClick: () => {
-            setActiveSwipeIndex(2)
-          },
-          active: router.asPath === '/search'
-        },
-        {
-          type: 'nav',
-          name: 'UAGC Installation',
-          href: '/projects',
-          active: router.asPath === '/projects'
-        },
-       
-      ].map(item => <Item {...item}/>)
-  }
-</S.Sidebar>
-
-    }
   }
 
   const renderSecondPage = () => {
@@ -208,25 +70,11 @@ const App = React.memo(({ }: Props) => {
       thirdPage={renderThirdPage()}
       navsPrimary={[
       {
-        icon: 'message',
+        icon: 'list',
         iconPrefix: router.route.includes(`/`) ? 'fas' : 'fas',
-        title: 'Chat',
+        title: 'Projects',
         href: `/`,
         active: router.route === `/`
-      },
-      {
-        icon: 'edit',
-        iconPrefix: router.route.includes(`/compose`) ? 'fas' : 'fas',
-        title: 'Compose',
-        href: `/compose`,
-        active: router.route === `/compose`
-      },
-      {
-        icon: 'search',
-        iconPrefix: router.route.includes(`/search`) ? 'fas' : 'fas',
-        title: 'Search',
-        href: `/search`,
-        active: router.route === `/search`
       },
       {
         icon: 'user',
