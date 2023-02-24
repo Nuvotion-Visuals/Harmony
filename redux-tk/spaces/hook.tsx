@@ -6,7 +6,7 @@ import * as selectors from './selectors';
 import { slice } from './slice';
 import type { Guid, Space, Project, Group, Asset } from './types';
 
-export const useLexi = () => {
+export const useSpaces = () => {
   const dispatch = useDispatch();
 
   return {
@@ -16,7 +16,7 @@ export const useLexi = () => {
     activeGroup: useSelector(selectors.select_activeGroup, isEqual),
     activeAsset: useSelector(selectors.select_activeAsset, isEqual),
     spacesInfo: useSelector(selectors.select_spacesInfo, isEqual),
-    
+
     // reducers
     addSpace: useCallback((payload: { guid: Guid; space: Space }) => {
       dispatch(slice.actions.addSpace(payload));
