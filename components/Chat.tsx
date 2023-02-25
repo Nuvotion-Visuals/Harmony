@@ -155,8 +155,7 @@ const Chat = React.memo(() => {
     onResult: (result : string) => {
       (async () => {
         if (!readyToSendTranscriptionMessage) {
-
-          set_query(result)
+          set_query(query +  result)
           set_disableTimer(false)
         }
       })()

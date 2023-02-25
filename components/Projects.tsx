@@ -18,7 +18,7 @@ type List = {
 type Lists = List[]
 
 export const Projects = ({ }: Props) => {
-    const { activeSpace, projectsByGuid, addProjectToSpace, addProject } = useSpaces()
+    const { activeSpace, projectsByGuid, addProjectToSpace, addProject, removeGroup, addGroup, addGroupToProject } = useSpaces()
 
     const [value, set_value] = useState<Lists>([])
 
@@ -28,7 +28,6 @@ export const Projects = ({ }: Props) => {
           expanded: true,
           value: {
             item: {
-              src: projectsByGuid[projectGuid].previewSrc,
               labelColor: 'none',
               text: projectsByGuid[projectGuid].name,
             },
@@ -72,12 +71,13 @@ export const Projects = ({ }: Props) => {
       }) : expandableList)
       )
     }
-
-    const [newProjectName, set_newProjectName] = useState('')
-    const [newProjectDescription, set_newProjectDescription] = useState('')
   
+    const [newDescription, set_newDescription] = useState('')
+    const [newGroupName, set_newGroupName] = useState('')
+
+
     return (<>
-        <TextInput
+        {/* <TextInput
           placeholder='Search Space'
           value={search}
           onChange={newVal => set_search(newVal)}
@@ -85,89 +85,10 @@ export const Projects = ({ }: Props) => {
           iconPrefix='fas'
           canClear={!!search}
           hideOutline
-        />
+        /> */}
       
-      <LineBreak />
 
-        <Item
-          subtitle='Projects'
-          
-        >
-          <Spacer />
-          <Dropdown
-            icon='plus'
-            iconPrefix='fas'
-            minimal
-            circle
-            items={[
-              {
-                children: <div onClick={e => e.stopPropagation()}>
-                  <Box minWidth={13.5}>
-                    <TextInput
-                      value={newProjectName}
-                      onChange={newValue => set_newProjectName(newValue)}
-                      iconPrefix='fas'
-                      label='Name'
-                    
-                    />
-                    
-                  </Box>
-                </div>,
-              },
-              {
-                children: <div onClick={e => e.stopPropagation()}>
-                  <Box minWidth={13.5}>
-                    <TextInput
-                      value={newProjectDescription}
-                      onChange={newValue => set_newProjectDescription(newValue)}
-                      iconPrefix='fas'
-                      label='Description'
-
-                    />
-                    
-                  </Box>
-                </div>,
-              },
-              {
-                content: <>
-                  <Button
-                    {... {
-                      text: 'Add Project',
-                      icon: 'plus',
-                      iconPrefix: 'fas',
-                      minimal: true,
-                      onClick: () => {
-                        if (activeSpace?.guid) {
-                          const guid = generateUUID()
-                          addProject({
-                            guid,
-                            project: {
-                              guid,
-                              previewSrc: `https://image.pollinations.ai/prompt/${encodeURIComponent(newProjectDescription)}`,
-                              name: newProjectName,
-                              description: newProjectDescription,
-                              groupGuids: []
-                            }
-                          })
-                          addProjectToSpace({
-                            spaceGuid: activeSpace.guid,
-                            projectGuid: guid
-                          })
-                        }
-                      }
-                    }}
-                  />
-                  <AspectRatio
-                    ratio={2}
-                    backgroundSrc={`https://image.pollinations.ai/prompt/${encodeURIComponent(newProjectDescription)}`}
-                    coverBackground
-                  />
-                </>
-              }
-            ]}
-          />
-        </Item>
-    
+      
       <ExpandableLists 
         
         value={value.map((expandableList, i) => ({
@@ -177,7 +98,7 @@ export const Projects = ({ }: Props) => {
               ...expandableList.value.item,
               children: <>
                 <Spacer />
-                  <Dropdown
+                <Dropdown
                   icon='plus'
                   iconPrefix='fas'
                   minimal
@@ -185,40 +106,106 @@ export const Projects = ({ }: Props) => {
                   items={[
                     {
                       children: <div onClick={e => e.stopPropagation()}>
-                        <Box minWidth={13.5}>
+                      <Box minWidth={13.5} py={.25}>  
+                        <TextInput
+                          value={newGroupName}
+                          onChange={newValue => set_newGroupName(newValue)}
+                          iconPrefix='fas'
+                          autoFocus
+                          compact
+                          placeholder='New Group name'
+                          buttons={[
+                            {
+                              icon: 'arrow-right',
+                              iconPrefix: 'fas',
+                              minimal: true,
+                              onClick: () => {
+                                if (activeSpace?.guid) {
+                                  const guid = generateUUID()
+                                  addGroup({
+                                    guid,
+                                    group: {
+                                      guid,
+                                      name: newGroupName,
+                                      projectGuid: '',
+                                      assetGuids: []
+                                    }
+                                  })
+                                  addGroupToProject({
+                                    projectGuid: activeSpace.guid,
+                                    groupGuid: guid
+                                  })
+                                }
+                              }
+                            }
+                          ]}
+                        />
+                        </Box>
+                      </div>
+                    },
+                  ]}
+                />
+                <Dropdown
+                  icon='ellipsis-vertical'
+                  iconPrefix='fas'
+                  minimal
+                  circle
+                  items={[
+                    {
+                      children: <div onClick={e => e.stopPropagation()}>
+                        <Box minWidth={13.5} mt={.25}>
                           <TextInput
-                            value={newProjectName}
-                            onChange={newValue => set_newProjectName(newValue)}
+                            value={newGroupName}
+                            onChange={newValue => set_newGroupName(newValue)}
                             iconPrefix='fas'
-                            compact
-                            placeholder='Project name'
+                            label='Name'
                             buttons={[
                               {
-                                icon: 'arrow-right',
+                                icon: 'save',
                                 iconPrefix: 'fas',
                                 minimal: true,
                                 onClick: () => {
-                                  if (activeSpace?.guid) {
-                                    const guid = generateUUID()
-                                    addProject({
-                                      guid,
-                                      project: {
-                                        guid,
-                                        name: newProjectName,
-                                        groupGuids: []
-                                      }
-                                    })
-                                    addProjectToSpace({
-                                      spaceGuid: activeSpace.guid,
-                                      projectGuid: guid
-                                    })
-                                  }
+                                  // create team
                                 }
                               }
                             ]}
                           />
                         </Box>
                       </div>,
+                    },
+                    {
+                      children: <div onClick={e => e.stopPropagation()}>
+                        <Box minWidth={13.5} mb={.25}>
+                          <TextInput
+                            value={newDescription}
+                            onChange={newValue => set_newDescription(newValue)}
+                            iconPrefix='fas'
+                            label='Description'
+                            buttons={[
+                              {
+                                icon: 'save',
+                                iconPrefix: 'fas',
+                                minimal: true,
+                                onClick: () => {
+                                  // create team
+                                }
+                              }
+                            ]}
+                          />
+                        </Box>
+                      </div>,
+                    },
+                    {
+                      text: 'Delete',
+                      icon: 'trash-alt',
+                      iconPrefix: 'fas',
+                      onClick: () => {
+                        // if (activeSpaceGuid) {
+                        //   removeGroup(activeSpaceGuid)
+                        //   // router.push('/spaces')
+                        // }
+
+                      }
                     }
                   ]}
                 />

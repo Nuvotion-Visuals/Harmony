@@ -12,7 +12,7 @@ interface Props {
 
 export const SpaceSidebar = ({ }: Props) => {
   const router = useRouter()
-  const { spacesInfo, addSpace, setActiveSpaceGuid, spaceGuids, activeSpace, removeSpace, activeSpaceGuid } = useSpaces()
+  const { spacesInfo, addSpace, setActiveSpaceGuid, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, addProject, addProjectToSpace } = useSpaces()
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
 
@@ -26,6 +26,7 @@ export const SpaceSidebar = ({ }: Props) => {
   }, [activeSpaceIndex])
 
   const [newDescription, set_newDescription] = useState('')
+  const [newProjectName, set_newProjectName] = useState('')
 
   useEffect(() => {
     if (activeSpace?.name) {
@@ -67,6 +68,53 @@ export const SpaceSidebar = ({ }: Props) => {
         <Item
           pageTitle={activeSpace?.name}
         >
+           <Dropdown
+            icon='plus'
+            iconPrefix='fas'
+            minimal
+            circle
+            items={[
+              {
+                children: <div onClick={e => e.stopPropagation()}>
+                <Box minWidth={13.5} py={.25}>  
+                  <TextInput
+                    value={newProjectName}
+                    onChange={newValue => set_newProjectName(newValue)}
+                    iconPrefix='fas'
+                    compact
+                    autoFocus
+                    placeholder='New project name'
+                    buttons={[
+                      {
+                        icon: 'arrow-right',
+                        iconPrefix: 'fas',
+                        minimal: true,
+                        onClick: () => {
+                          set_newProjectName('')
+                          if (activeSpace?.guid) {
+                            const guid = generateUUID()
+                            addProject({
+                              guid,
+                              project: {
+                                guid,
+                                name: newProjectName,
+                                groupGuids: []
+                              }
+                            })
+                            addProjectToSpace({
+                              spaceGuid: activeSpace.guid,
+                              projectGuid: guid
+                            })
+                          }
+                        }
+                      }
+                    ]}
+                  />
+                  </Box>
+                </div>
+              },
+            ]}
+          />
           <Dropdown
             icon='ellipsis-vertical'
             iconPrefix='fas'
@@ -75,7 +123,7 @@ export const SpaceSidebar = ({ }: Props) => {
             items={[
               {
                 children: <div onClick={e => e.stopPropagation()}>
-                  <Box minWidth={13.5}>
+                  <Box minWidth={13.5} mt={.25}>
                     <TextInput
                       value={newSpaceName}
                       onChange={newValue => set_newSpaceName(newValue)}
@@ -97,7 +145,7 @@ export const SpaceSidebar = ({ }: Props) => {
               },
               {
                 children: <div onClick={e => e.stopPropagation()}>
-                  <Box minWidth={13.5}>
+                  <Box minWidth={13.5} mb={.25}>
                     <TextInput
                       value={newDescription}
                       onChange={newValue => set_newDescription(newValue)}
