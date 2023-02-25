@@ -4,15 +4,15 @@ import * as Types from './types';
 interface SpaceState {
   spaceGuids: Types.Guid[];
   spacesByGuid: Types.SpacesByGuid;
-  projectGuids: Types.Guid[];
-  projectsByGuid: Types.ProjectsByGuid;
   groupGuids: Types.Guid[];
   groupsByGuid: Types.GroupsByGuid;
+  channelGuids: Types.Guid[];
+  channelsByGuid: Types.ChannelsByGuid;
   assetGuids: Types.Guid[];
   assetsByGuid: Types.AssetsByGuid;
   activeSpaceGuid: Types.Guid | null;
-  activeProjectGuid: Types.Guid | null;
   activeGroupGuid: Types.Guid | null;
+  activeChannelGuid: Types.Guid | null;
   activeAssetGuid: Types.Guid | null;
 }
 
@@ -21,15 +21,15 @@ export const slice = createSlice({
   initialState: <SpaceState>{
     spaceGuids: [],
     spacesByGuid: {},
-    projectGuids: [],
-    projectsByGuid: {},
     groupGuids: [],
     groupsByGuid: {},
+    channelGuids: [],
+    channelsByGuid: {},
     assetGuids: [],
     assetsByGuid: {},
     activeSpaceGuid: null,
-    activeProjectGuid: null,
     activeGroupGuid: null,
+    activeChannelGuid: null,
     activeAssetGuid: null,
   },
   reducers: {
@@ -43,36 +43,26 @@ export const slice = createSlice({
       state.spaceGuids = state.spaceGuids.filter((guid) => guid !== guidToRemove);
       delete state.spacesByGuid[guidToRemove];
     },
-    addProjectToSpace: (state, action: PayloadAction<{ spaceGuid: Types.Guid; projectGuid: Types.Guid }>) => {
-      const { spaceGuid, projectGuid } = action.payload;
+    addGroupToSpace: (state, action: PayloadAction<{ spaceGuid: Types.Guid; groupGuid: Types.Guid }>) => {
+      const { spaceGuid, groupGuid } = action.payload;
       const space = state.spacesByGuid[spaceGuid];
       if (space) {
-        space.projectGuids.push(projectGuid);
+        space.groupGuids.push(groupGuid);
       }
     },
-    addGroupToProject: (state, action: PayloadAction<{ projectGuid: Types.Guid; groupGuid: Types.Guid }>) => {
-      const { projectGuid, groupGuid } = action.payload;
-      const project = state.projectsByGuid[projectGuid];
-      if (project) {
-        project.groupGuids.push(groupGuid);
-      }
-    },
-    addAssetToGroup: (state, action: PayloadAction<{ groupGuid: Types.Guid; assetGuid: Types.Guid }>) => {
-      const { groupGuid, assetGuid } = action.payload;
+    addChannelToGroup: (state, action: PayloadAction<{ groupGuid: Types.Guid; channelGuid: Types.Guid }>) => {
+      const { groupGuid, channelGuid } = action.payload;
       const group = state.groupsByGuid[groupGuid];
       if (group) {
-        group.assetGuids.push(assetGuid);
+        group.channelGuids.push(channelGuid);
       }
     },
-    addProject: (state, action: PayloadAction<{ guid: Types.Guid; project: Types.Project }>) => {
-      const { guid, project } = action.payload;
-      state.projectGuids.push(guid);
-      state.projectsByGuid[guid] = project;
-    },
-    removeProject: (state, action: PayloadAction<Types.Guid>) => {
-      const guidToRemove = action.payload;
-      state.projectGuids = state.projectGuids.filter((guid) => guid !== guidToRemove);
-      delete state.projectsByGuid[guidToRemove];
+    addAssetToChannel: (state, action: PayloadAction<{ channelGuid: Types.Guid; assetGuid: Types.Guid }>) => {
+      const { channelGuid, assetGuid } = action.payload;
+      const channel = state.channelsByGuid[channelGuid];
+      if (channel) {
+        channel.assetGuids.push(assetGuid);
+      }
     },
     addGroup: (state, action: PayloadAction<{ guid: Types.Guid; group: Types.Group }>) => {
       const { guid, group } = action.payload;
@@ -83,6 +73,16 @@ export const slice = createSlice({
       const guidToRemove = action.payload;
       state.groupGuids = state.groupGuids.filter((guid) => guid !== guidToRemove);
       delete state.groupsByGuid[guidToRemove];
+    },
+    addChannel: (state, action: PayloadAction<{ guid: Types.Guid; channel: Types.Channel }>) => {
+      const { guid, channel } = action.payload;
+      state.channelGuids.push(guid);
+      state.channelsByGuid[guid] = channel;
+    },
+    removeChannel: (state, action: PayloadAction<Types.Guid>) => {
+      const guidToRemove = action.payload;
+      state.channelGuids = state.channelGuids.filter((guid) => guid !== guidToRemove);
+      delete state.channelsByGuid[guidToRemove];
     },
     addAsset: (state, action: PayloadAction<{ guid: Types.Guid; asset: Types.Asset }>) => {
       const { guid, asset } = action.payload;
@@ -98,11 +98,11 @@ export const slice = createSlice({
     setActiveSpaceGuid: (state, action: PayloadAction<Types.Guid | null>) => {
       state.activeSpaceGuid = action.payload;
     },
-    setActiveProjectGuid: (state, action: PayloadAction<Types.Guid | null>) => {
-      state.activeProjectGuid = action.payload;
-    },
     setActiveGroupGuid: (state, action: PayloadAction<Types.Guid | null>) => {
       state.activeGroupGuid = action.payload;
+    },
+    setActiveChannelGuid: (state, action: PayloadAction<Types.Guid | null>) => {
+      state.activeChannelGuid = action.payload;
     },
     setActiveAssetGuid: (state, action: PayloadAction<Types.Guid | null>) => {
       state.activeAssetGuid = action.payload;
@@ -114,18 +114,18 @@ export const slice = createSlice({
         ...space,
       };
     },
-    updateProject: (state, action: PayloadAction<{ guid: Types.Guid; project: Types.Project }>) => {
-      const { guid, project } = action.payload;
-      state.projectsByGuid[guid] = {
-        ...state.projectsByGuid[guid],
-        ...project,
-      };
-    },
     updateGroup: (state, action: PayloadAction<{ guid: Types.Guid; group: Types.Group }>) => {
       const { guid, group } = action.payload;
       state.groupsByGuid[guid] = {
         ...state.groupsByGuid[guid],
         ...group,
+      };
+    },
+    updateChannel: (state, action: PayloadAction<{ guid: Types.Guid; channel: Types.Channel }>) => {
+      const { guid, channel } = action.payload;
+      state.channelsByGuid[guid] = {
+        ...state.channelsByGuid[guid],
+        ...channel,
       };
     },
     updateAsset: (state, action: PayloadAction<{ guid: Types.Guid; asset: Types.Asset }>) => {
@@ -135,5 +135,20 @@ export const slice = createSlice({
         ...asset,
       };
     },
+    removeGroupFromSpace: (state, action: PayloadAction<{ spaceGuid: Types.Guid; groupGuid: Types.Guid }>) => {
+      const { spaceGuid, groupGuid } = action.payload;
+      const space = state.spacesByGuid[spaceGuid];
+      if (space) {
+        space.groupGuids = space.groupGuids.filter((guid) => guid !== groupGuid);
+      }
+    },
+    removeChannelFromGroup: (state, action: PayloadAction<{ groupGuid: Types.Guid; channelGuid: Types.Guid }>) => {
+      const { groupGuid, channelGuid } = action.payload;
+      const group = state.groupsByGuid[groupGuid];
+      if (group) {
+        group.channelGuids = group.channelGuids.filter((guid) => guid !== channelGuid);
+      }
+    },
+    
   }
 })

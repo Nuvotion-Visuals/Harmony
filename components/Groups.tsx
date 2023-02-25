@@ -17,64 +17,39 @@ type List = {
 
 type Lists = List[]
 
-export const Projects = ({ }: Props) => {
-    const { activeSpace, projectsByGuid, addProjectToSpace, addProject, removeGroup, addGroup, addGroupToProject } = useSpaces()
+export const Groups = ({ }: Props) => {
+    const { activeSpace, groupsByGuid, addChannel, channelsByGuid, addChannelToGroup, removeChannel, removeGroup, removeChannelFromGroup, removeGroupFromSpace } = useSpaces()
 
     const [value, set_value] = useState<Lists>([])
 
+    const spaceGroupGuids = activeSpace?.groupGuids
+    const spaceChannelGuids = activeSpace?.groupGuids.map(groupGuid => groupsByGuid[groupGuid]?.channelGuids)
+
     useEffect(() => {
-      if (activeSpace?.projectGuids) {
-        set_value(activeSpace?.projectGuids.map(projectGuid => ({
-          expanded: true,
+      if (activeSpace?.groupGuids) {
+        set_value(activeSpace?.groupGuids.map((groupGuid, i) => ({
+          expanded: value[i]?.expanded || false,
           value: {
             item: {
+              icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
+              iconPrefix: 'fas',
               labelColor: 'none',
-              text: projectsByGuid[projectGuid].name,
+              subtitle: groupsByGuid[groupGuid].name,
             },
-            list: [
-    
-            ]
+            list: groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
+                icon: 'hashtag',
+                iconPrefix: 'fas',
+                labelColor: 'none',
+                subtitle: channelsByGuid[channelGuid].name
+            }))
           }
         })))
       }
      
-    }, [activeSpace?.projectGuids])
-
-    const [search, set_search] = useState('')
-
-    const add = (index: number) => {
-      set_value(value.map((expandableList, i) => i === index ? ({
-        ...expandableList,
-        expanded: true,
-        value: {
-          item: {
-            ...expandableList.value.item,
-            children: <Gap>
-            <Label label={expandableList.value.list.length.toString()} labelColor='purple' />
-              {
-                expandableList.value.item.children
-              }
-            </Gap>
-          },
-          list: [
-            {
-              text: 'Untitled',
-              src: 'https://api.avsync.live/uploads/medium_scenes_12e25f0362.png',
-              labelColor: 'none',
-              onClick: () => {},
-              
-            },
-            ...expandableList.value.list
-          ]
-          
-        }
-      }) : expandableList)
-      )
-    }
+    }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, spaceGroupGuids, spaceChannelGuids])
   
     const [newDescription, set_newDescription] = useState('')
-    const [newGroupName, set_newGroupName] = useState('')
-
+    const [newChannelName, set_newChannelName] = useState('')
 
     return (<>
         {/* <TextInput
@@ -86,7 +61,6 @@ export const Projects = ({ }: Props) => {
           canClear={!!search}
           hideOutline
         /> */}
-      
 
       
       <ExpandableLists 
@@ -108,12 +82,12 @@ export const Projects = ({ }: Props) => {
                       children: <div onClick={e => e.stopPropagation()}>
                       <Box minWidth={13.5} py={.25}>  
                         <TextInput
-                          value={newGroupName}
-                          onChange={newValue => set_newGroupName(newValue)}
+                          value={newChannelName}
+                          onChange={newValue => set_newChannelName(newValue)}
                           iconPrefix='fas'
                           autoFocus
                           compact
-                          placeholder='New Group name'
+                          placeholder='New Channel name'
                           buttons={[
                             {
                               icon: 'arrow-right',
@@ -122,18 +96,18 @@ export const Projects = ({ }: Props) => {
                               onClick: () => {
                                 if (activeSpace?.guid) {
                                   const guid = generateUUID()
-                                  addGroup({
+                                  addChannel({
                                     guid,
-                                    group: {
+                                    channel: {
                                       guid,
-                                      name: newGroupName,
-                                      projectGuid: '',
+                                      name: newChannelName,
+                                      groupGuid: activeSpace?.groupGuids[i],
                                       assetGuids: []
                                     }
                                   })
-                                  addGroupToProject({
-                                    projectGuid: activeSpace.guid,
-                                    groupGuid: guid
+                                  addChannelToGroup({
+                                    groupGuid: activeSpace.groupGuids[i],
+                                    channelGuid: guid
                                   })
                                 }
                               }
@@ -155,8 +129,8 @@ export const Projects = ({ }: Props) => {
                       children: <div onClick={e => e.stopPropagation()}>
                         <Box minWidth={13.5} mt={.25}>
                           <TextInput
-                            value={newGroupName}
-                            onChange={newValue => set_newGroupName(newValue)}
+                            value={newChannelName}
+                            onChange={newValue => set_newChannelName(newValue)}
                             iconPrefix='fas'
                             label='Name'
                             buttons={[
@@ -200,10 +174,7 @@ export const Projects = ({ }: Props) => {
                       icon: 'trash-alt',
                       iconPrefix: 'fas',
                       onClick: () => {
-                        // if (activeSpaceGuid) {
-                        //   removeGroup(activeSpaceGuid)
-                        //   // router.push('/spaces')
-                        // }
+                        removeGroupFromSpace({ spaceGuid: activeSpace?.guid, groupGuid: spaceGroupGuids[i]})
 
                       }
                     }
@@ -211,36 +182,41 @@ export const Projects = ({ }: Props) => {
                 />
               </>
             },
-            list: expandableList.value.list.filter(listItem => listItem.text.toLowerCase().includes(search.toLowerCase())).map((listItem, listItemIndex1) =>
+            list: expandableList.value.list
+            // .filter(listItem => listItem.text.toLowerCase().includes(search.toLowerCase()))
+            .map((listItem, listItemIndex1) =>
               ({
                 ...listItem,
+                onClick: () => {},
                 children: <Dropdown 
-                icon='ellipsis-vertical'
-                iconPrefix='fas'
-                minimal
-                items={[
-                  {
-                    text: 'Rename',
-                    icon: 'edit',
-                    iconPrefix: 'fas',
-                    onClick: () => {}
-                  },
-                  {
-                    text: 'Delete',
-                    icon: 'trash-alt',
-                    iconPrefix: 'fas',
-                    onClick: () => {
-                      set_value(value.map(valItem => ({
-                        ...valItem,
-                        value: {
-                          ...valItem.value,
-                          list: valItem.value.list.filter((val, listIndex) => listItemIndex1 !== listIndex)
-                        }
-                      })))
+                  icon='ellipsis-vertical'
+                  iconPrefix='fas'
+                  minimal
+                  items={[
+                    {
+                      text: 'Rename',
+                      icon: 'edit',
+                      iconPrefix: 'fas',
+                      onClick: () => {}
+                    },
+                    {
+                      text: 'Delete',
+                      icon: 'trash-alt',
+                      iconPrefix: 'fas',
+                      onClick: () => {
+                        removeChannelFromGroup({ groudId: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
+                        // removeChannel(spaceChannelGuids[i][listItemIndex1])
+                        // set_value(value.map(valItem => ({
+                        //   ...valItem,
+                        //   value: {
+                        //     ...valItem.value,
+                        //     list: valItem.value.list.filter((val, listIndex) => listItemIndex1 !== listIndex)
+                        //   }
+                        // })))
+                      }
                     }
-                  }
-                ]}
-              />
+                  ]}
+                />
               })  
             )
           }

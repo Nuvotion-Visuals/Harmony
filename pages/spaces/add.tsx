@@ -42,6 +42,7 @@ const Add = ({ }: Props) => {
             label='Name'
             value={name}
             onChange={newValue => set_name(newValue)}
+            autoFocus
           />
           <Gap disableWrap>
             <TextInput 
@@ -73,7 +74,7 @@ const Add = ({ }: Props) => {
                 space: {
                   guid,
                   name,
-                  projectGuids: [],
+                  groupGuids: [],
                   previewSrc: url,
                   description
                 }

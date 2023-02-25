@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { Projects } from 'components/Projects'
+import { Groups } from 'components/Groups'
 import { AspectRatio, Box, SpacesSidebar, generateUUID, Item, LineBreak, Dropdown, TextInput, Icon } from '@avsync.live/formation'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
@@ -12,7 +12,7 @@ interface Props {
 
 export const SpaceSidebar = ({ }: Props) => {
   const router = useRouter()
-  const { spacesInfo, addSpace, setActiveSpaceGuid, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, addProject, addProjectToSpace } = useSpaces()
+  const { spacesInfo, addSpace, setActiveSpaceGuid, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, addGroup, addGroupToSpace } = useSpaces()
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
 
@@ -26,7 +26,7 @@ export const SpaceSidebar = ({ }: Props) => {
   }, [activeSpaceIndex])
 
   const [newDescription, set_newDescription] = useState('')
-  const [newProjectName, set_newProjectName] = useState('')
+  const [newGroupName, set_newGroupName] = useState('')
 
   useEffect(() => {
     if (activeSpace?.name) {
@@ -37,7 +37,7 @@ export const SpaceSidebar = ({ }: Props) => {
     }
   }, [activeSpace?.name]) 
 
-  return (<S.ProjectsSidebar>
+  return (<S.GroupsSidebar>
     <SpacesSidebar 
       activeSpaceIndex={activeSpaceIndex}
       onClickIndex={(index : number) => set_activeSpaceIndex(index)}
@@ -78,32 +78,32 @@ export const SpaceSidebar = ({ }: Props) => {
                 children: <div onClick={e => e.stopPropagation()}>
                 <Box minWidth={13.5} py={.25}>  
                   <TextInput
-                    value={newProjectName}
-                    onChange={newValue => set_newProjectName(newValue)}
+                    value={newGroupName}
+                    onChange={newValue => set_newGroupName(newValue)}
                     iconPrefix='fas'
                     compact
                     autoFocus
-                    placeholder='New project name'
+                    placeholder='New group name'
                     buttons={[
                       {
                         icon: 'arrow-right',
                         iconPrefix: 'fas',
                         minimal: true,
                         onClick: () => {
-                          set_newProjectName('')
+                          set_newGroupName('')
                           if (activeSpace?.guid) {
                             const guid = generateUUID()
-                            addProject({
+                            addGroup({
                               guid,
-                              project: {
+                              group: {
                                 guid,
-                                name: newProjectName,
-                                groupGuids: []
+                                name: newGroupName,
+                                channelGuids: []
                               }
                             })
-                            addProjectToSpace({
+                            addGroupToSpace({
                               spaceGuid: activeSpace.guid,
-                              projectGuid: guid
+                              groupGuid: guid
                             })
                           }
                         }
@@ -182,13 +182,13 @@ export const SpaceSidebar = ({ }: Props) => {
         </Item>
         
       <LineBreak />
-      <Projects />
+      <Groups />
     </Box>
-  </S.ProjectsSidebar>)
+  </S.GroupsSidebar>)
 }
 
 const S = {
-  ProjectsSidebar: styled.div`
+  GroupsSidebar: styled.div`
     display: flex;
     height: calc(100% - var(--F_Header_Height));
     align-items: flex-start;

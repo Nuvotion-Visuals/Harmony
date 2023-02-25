@@ -9,19 +9,19 @@ export interface Asset {
   previewSrc?: string;
 }
 
-export interface Group {
+export interface Channel {
   guid: Guid;
   name: string;
-  projectGuid: Guid;
+  groupGuid: Guid;
   assetGuids: Guid[];
   description?: string;
   previewSrc?: string;
 }
 
-export interface Project {
+export interface Group {
   guid: Guid;
   name: string;
-  groupGuids: Guid[];
+  channelGuids: Guid[];
   description?: string;
   previewSrc?: string;
 }
@@ -30,22 +30,22 @@ export interface SpacesByGuid {
   [guid: string]: Space;
 }
 
-export interface GroupsByGuid {
-  [guid: string]: Group;
+export interface ChannelsByGuid {
+  [guid: string]: Channel;
 }
 
 export interface AssetsByGuid {
   [guid: string]: Asset;
 }
 
-export interface ProjectsByGuid {
-  [guid: string]: Project;
+export interface GroupsByGuid {
+  [guid: string]: Group;
 }
 
 export interface Space {
   guid: Guid;
   name: string;
-  projectGuids: Guid[];
+  groupGuids: Guid[];
   description?: string;
   previewSrc?: string;
 }
@@ -56,14 +56,17 @@ export interface SpaceByGuid {
 
 export interface SpaceAssets {
   [spaceGuid: string]: {
-    [groupGuid: string]: Asset[];
+    [channelGuid: string]: Asset[];
   };
+}
+
+export interface SpaceChannels {
+  [spaceGuid: string]: Channel[];
 }
 
 export interface SpaceGroups {
   [spaceGuid: string]: Group[];
 }
 
-export interface SpaceProjects {
-  [spaceGuid: string]: Project[];
-}
+// spaces -> groups -> channels -> assets
+// spaces -> channels -> channels -> groups -> assets

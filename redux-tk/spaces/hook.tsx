@@ -4,7 +4,7 @@ import { isEqual } from 'lodash';
 import type { RootState } from '../store';
 import * as selectors from './selectors';
 import { slice } from './slice';
-import type { Guid, Space, Project, Group, Asset } from './types';
+import type { Guid, Space, Group, Channel, Asset } from './types';
 
 export const useSpaces = () => {
   const dispatch = useDispatch();
@@ -12,11 +12,11 @@ export const useSpaces = () => {
   return {
     // selectors
     activeSpace: useSelector(selectors.select_activeSpace, isEqual),
-    activeProject: useSelector(selectors.select_activeProject, isEqual),
     activeGroup: useSelector(selectors.select_activeGroup, isEqual),
+    activeChannel: useSelector(selectors.select_activeChannel, isEqual),
     activeAsset: useSelector(selectors.select_activeAsset, isEqual),
-    projectsByGuid: useSelector(selectors.select_projectsByGuid, isEqual),
     groupsByGuid: useSelector(selectors.select_groupsByGuid, isEqual),
+    channelsByGuid: useSelector(selectors.select_channelsByGuid, isEqual),
     assetsByGuid: useSelector(selectors.select_assetsByGuid, isEqual),
     spacesInfo: useSelector(selectors.select_spacesInfo, isEqual),
     spaceGuids: useSelector(selectors.select_spaceGuids, isEqual),
@@ -29,26 +29,32 @@ export const useSpaces = () => {
     removeSpace: useCallback((payload: Guid) => {
       dispatch(slice.actions.removeSpace(payload));
     }, [dispatch]),
-    addProjectToSpace: useCallback((payload: { spaceGuid: Guid; projectGuid: Guid }) => {
-      dispatch(slice.actions.addProjectToSpace(payload));
+    addGroupToSpace: useCallback((payload: { spaceGuid: Guid; groupGuid: Guid }) => {
+      dispatch(slice.actions.addGroupToSpace(payload));
     }, [dispatch]),
-    addGroupToProject: useCallback((payload: { projectGuid: Guid; groupGuid: Guid }) => {
-      dispatch(slice.actions.addGroupToProject(payload));
+    removeGroupFromSpace: useCallback((payload: { spaceGuid: Guid; groupGuid: Guid }) => {
+      dispatch(slice.actions.removeGroupFromSpace(payload));
     }, [dispatch]),
-    addAssetToGroup: useCallback((payload: { groupGuid: Guid; assetGuid: Guid }) => {
-      dispatch(slice.actions.addAssetToGroup(payload));
+    addChannelToGroup: useCallback((payload: { groupGuid: Guid; channelGuid: Guid }) => {
+      dispatch(slice.actions.addChannelToGroup(payload));
     }, [dispatch]),
-    addProject: useCallback((payload: { guid: Guid; project: Project }) => {
-      dispatch(slice.actions.addProject(payload));
+    removeChannelFromGroup: useCallback((payload: { groupGuid: Guid; channelGuid: Guid }) => {
+      dispatch(slice.actions.removeChannelFromGroup(payload));
     }, [dispatch]),
-    removeProject: useCallback((payload: Guid) => {
-      dispatch(slice.actions.removeProject(payload));
+    addAssetToChannel: useCallback((payload: { channelGuid: Guid; assetGuid: Guid }) => {
+      dispatch(slice.actions.addAssetToChannel(payload));
     }, [dispatch]),
     addGroup: useCallback((payload: { guid: Guid; group: Group }) => {
       dispatch(slice.actions.addGroup(payload));
     }, [dispatch]),
     removeGroup: useCallback((payload: Guid) => {
       dispatch(slice.actions.removeGroup(payload));
+    }, [dispatch]),
+    addChannel: useCallback((payload: { guid: Guid; channel: Channel }) => {
+      dispatch(slice.actions.addChannel(payload));
+    }, [dispatch]),
+    removeChannel: useCallback((payload: Guid) => {
+      dispatch(slice.actions.removeChannel(payload));
     }, [dispatch]),
     addAsset: useCallback((payload: { guid: Guid; asset: Asset }) => {
       dispatch(slice.actions.addAsset(payload));
@@ -59,11 +65,11 @@ export const useSpaces = () => {
     setActiveSpaceGuid: useCallback((payload: Guid | null) => {
       dispatch(slice.actions.setActiveSpaceGuid(payload));
     }, [dispatch]),
-    setActiveProjectGuid: useCallback((payload: Guid | null) => {
-      dispatch(slice.actions.setActiveProjectGuid(payload));
-    }, [dispatch]),
     setActiveGroupGuid: useCallback((payload: Guid | null) => {
       dispatch(slice.actions.setActiveGroupGuid(payload));
+    }, [dispatch]),
+    setActiveChannelGuid: useCallback((payload: Guid | null) => {
+      dispatch(slice.actions.setActiveChannelGuid(payload));
     }, [dispatch]),
     setActiveAssetGuid: useCallback((payload: Guid | null) => {
       dispatch(slice.actions.setActiveAssetGuid(payload));
