@@ -71,54 +71,6 @@ export const SpaceSidebar = ({ }: Props) => {
                 pageTitle={activeSpace?.name}
               >
                 <Dropdown
-                  icon='plus'
-                  iconPrefix='fas'
-                  minimal
-                  circle
-                  items={[
-                    {
-                      children: <div onClick={e => e.stopPropagation()}>
-                      <Box minWidth={13.5} py={.25}>  
-                        <TextInput
-                          value={newGroupName}
-                          onChange={newValue => set_newGroupName(newValue)}
-                          iconPrefix='fas'
-                          compact
-                          autoFocus
-                          canClear={newGroupName !== ''}
-                          placeholder='New Group name'
-                          buttons={[
-                            {
-                              icon: 'plus',
-                              iconPrefix: 'fas',
-                              minimal: true,
-                              onClick: () => {
-                                set_newGroupName('')
-                                if (activeSpace?.guid) {
-                                  const guid = generateUUID()
-                                  addGroup({
-                                    guid,
-                                    group: {
-                                      guid,
-                                      name: newGroupName,
-                                      channelGuids: []
-                                    }
-                                  })
-                                  addGroupToSpace({
-                                    spaceGuid: activeSpace.guid,
-                                    groupGuid: guid
-                                  })
-                                }
-                              }
-                            }
-                          ]}
-                        />
-                        </Box>
-                      </div>
-                    },
-                  ]}
-                />
-                <Dropdown
                   icon='ellipsis-vertical'
                   iconPrefix='fas'
                   minimal
@@ -169,6 +121,44 @@ export const SpaceSidebar = ({ }: Props) => {
         
       
       <Groups />
+      <Item
+        content={<Box mr={-.5}>  
+        <TextInput
+          value={newGroupName}
+          onChange={newValue => set_newGroupName(newValue)}
+          iconPrefix='fas'
+          compact
+          placeholder='Add group'
+          hideOutline
+          buttons={[
+            {
+              icon: 'plus',
+              iconPrefix: 'fas',
+              minimal: true,
+              onClick: () => {
+                set_newGroupName('')
+                if (activeSpace?.guid) {
+                  const guid = generateUUID()
+                  addGroup({
+                    guid,
+                    group: {
+                      guid,
+                      name: newGroupName,
+                      channelGuids: []
+                    }
+                  })
+                  addGroupToSpace({
+                    spaceGuid: activeSpace.guid,
+                    groupGuid: guid
+                  })
+                }
+              }
+            }
+          ]}
+        />
+        </Box>}
+      />
+      
     </Box>
   </S.GroupsSidebar>)
 }

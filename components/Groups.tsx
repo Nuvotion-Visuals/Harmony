@@ -1,7 +1,8 @@
-import { Label, Spacer, Box, Gap, TextInput, Select, Button, LineBreak, ExpandableLists, Dropdown, Item, ItemProps, Icon, generateUUID, AspectRatio } from '@avsync.live/formation'
+import { Label, Spacer, Box, Gap, TextInput, Select, Button, LineBreak, ExpandableLists, Dropdown, Item, ItemProps, Icon, generateUUID, AspectRatio, LabelColor } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
+import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
 
 interface Props {
   
@@ -25,25 +26,73 @@ export const Groups = ({ }: Props) => {
     const spaceGroupGuids = activeSpace?.groupGuids
     const spaceChannelGuids = activeSpace?.groupGuids.map(groupGuid => groupsByGuid[groupGuid]?.channelGuids)
 
+    const add = (i : number) => {
+      if (activeSpace?.guid && newChannelName) {
+        const guid = generateUUID()
+        addChannel({
+          guid,
+          channel: {
+            guid,
+            name: newChannelName,
+            groupGuid: activeSpace?.groupGuids[i],
+            assetGuids: []
+          }
+        })
+        addChannelToGroup({
+          groupGuid: activeSpace.groupGuids[i],
+          channelGuid: guid
+        })
+      }
+      set_newChannelName('')
+    }
+
     useEffect(() => {
       if (activeSpace?.groupGuids) {
-        set_value(activeSpace?.groupGuids.map((groupGuid, i) => ({
-          expanded: value[i]?.expanded || false,
-          value: {
-            item: {
-              icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
-              iconPrefix: 'fas',
-              labelColor: 'none',
-              subtitle: groupsByGuid[groupGuid].name,
-            },
-            list: groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
-                icon: 'hashtag',
+        set_value(activeSpace?.groupGuids.map((groupGuid, i) => {
+          const groupsList = groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
+              icon: ('hashtag' as IconName),
+              iconPrefix: ('fas' as IconPrefix),
+              labelColor: ('none' as LabelColor),
+              text: channelsByGuid[channelGuid].name
+          }))
+          return ({
+            expanded: value[i]?.expanded || false,
+            value: {
+              item: {
+                icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
                 iconPrefix: 'fas',
                 labelColor: 'none',
-                subtitle: channelsByGuid[channelGuid].name
-            }))
+                text: groupsByGuid[groupGuid].name,
+              },
+              list: [
+                ...groupsList,
+                {
+                  content: <Box mr={-.5}><TextInput
+                    value={newChannelName}
+                    onChange={newValue => set_newChannelName(newValue)}
+                    iconPrefix='fas'
+                    autoFocus
+                    compact
+                    hideOutline
+                    placeholder='Add channel'
+                    onEnter={() => add(i)}
+                    buttons={[
+                      {
+                        icon: 'plus',
+                        iconPrefix: 'fas',
+                        minimal: true,
+                        onClick: () => add(i),
+                        disabled: !newChannelName
+                      }
+                    ]}
+                  />
+                </Box>
+                }
+              ]
+            }
           }
-        })))
+        )}
+        ))
       }
      
     }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, spaceGroupGuids, spaceChannelGuids])
@@ -72,53 +121,6 @@ export const Groups = ({ }: Props) => {
               ...expandableList.value.item,
               children: <>
                 <Spacer />
-                <Dropdown
-                  icon='plus'
-                  iconPrefix='fas'
-                  minimal
-                  circle
-                  items={[
-                    {
-                      children: <div onClick={e => e.stopPropagation()}>
-                      <Box minWidth={13.5} py={.25}>  
-                        <TextInput
-                          value={newChannelName}
-                          onChange={newValue => set_newChannelName(newValue)}
-                          iconPrefix='fas'
-                          autoFocus
-                          compact
-                          placeholder='New Channel name'
-                          buttons={[
-                            {
-                              icon: 'arrow-right',
-                              iconPrefix: 'fas',
-                              minimal: true,
-                              onClick: () => {
-                                if (activeSpace?.guid) {
-                                  const guid = generateUUID()
-                                  addChannel({
-                                    guid,
-                                    channel: {
-                                      guid,
-                                      name: newChannelName,
-                                      groupGuid: activeSpace?.groupGuids[i],
-                                      assetGuids: []
-                                    }
-                                  })
-                                  addChannelToGroup({
-                                    groupGuid: activeSpace.groupGuids[i],
-                                    channelGuid: guid
-                                  })
-                                }
-                              }
-                            }
-                          ]}
-                        />
-                        </Box>
-                      </div>
-                    },
-                  ]}
-                />
                 <Dropdown
                   icon='ellipsis-vertical'
                   iconPrefix='fas'
@@ -150,7 +152,7 @@ export const Groups = ({ }: Props) => {
               ({
                 ...listItem,
                 onClick: () => {},
-                children: <Dropdown 
+                children: listItem.text  && <Dropdown 
                   icon='ellipsis-vertical'
                   iconPrefix='fas'
                   minimal
