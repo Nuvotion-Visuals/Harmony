@@ -8,6 +8,7 @@ import Chat from './Chat'
 import { SpaceSidebar } from './SpaceSidebar'
 import { Search } from './Search'
 import { SearchResults } from './SearchResults'
+import { Add } from 'components/Add'
 interface Props {
   
 }
@@ -22,7 +23,12 @@ const App = React.memo(({ }: Props) => {
   
         return <S.Sidebar>
           <Box height='var(--F_Header_Height)' width='100%'/>
-          <SpaceSidebar />
+          {
+            router.route === '/spaces/add'
+             ? <Add />
+             :<SpaceSidebar />
+          }
+          
       </S.Sidebar>
   }
 

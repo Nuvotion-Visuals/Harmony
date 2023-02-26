@@ -126,48 +126,10 @@ export const Groups = ({ }: Props) => {
                   circle
                   items={[
                     {
-                      children: <div onClick={e => e.stopPropagation()}>
-                        <Box minWidth={13.5} mt={.25}>
-                          <TextInput
-                            value={newChannelName}
-                            onChange={newValue => set_newChannelName(newValue)}
-                            iconPrefix='fas'
-                            label='Name'
-                            buttons={[
-                              {
-                                icon: 'save',
-                                iconPrefix: 'fas',
-                                minimal: true,
-                                onClick: () => {
-                                  // create team
-                                }
-                              }
-                            ]}
-                          />
-                        </Box>
-                      </div>,
-                    },
-                    {
-                      children: <div onClick={e => e.stopPropagation()}>
-                        <Box minWidth={13.5} mb={.25}>
-                          <TextInput
-                            value={newDescription}
-                            onChange={newValue => set_newDescription(newValue)}
-                            iconPrefix='fas'
-                            label='Description'
-                            buttons={[
-                              {
-                                icon: 'save',
-                                iconPrefix: 'fas',
-                                minimal: true,
-                                onClick: () => {
-                                  // create team
-                                }
-                              }
-                            ]}
-                          />
-                        </Box>
-                      </div>,
+                      text: 'Edit',
+                      icon: 'edit',
+                      iconPrefix: 'fas',
+                      href: `/group/edit/${activeSpace?.groupGuids[i]}`
                     },
                     {
                       text: 'Delete',

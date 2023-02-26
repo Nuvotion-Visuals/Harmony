@@ -87,7 +87,7 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   </Head>
   <Provider store={store}>
     {
-      router.route === '/login' || router.route === '/spaces/add'
+      router.route === '/login'
         ? <Component {...pageProps} />
         : <App>
             <Component {...pageProps} />
