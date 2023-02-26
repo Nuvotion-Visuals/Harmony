@@ -37,6 +37,25 @@ export const SpaceSidebar = ({ }: Props) => {
     }
   }, [activeSpace?.name]) 
 
+  const add = () => {
+    set_newGroupName('')
+    if (activeSpace?.guid) {
+      const guid = generateUUID()
+      addGroup({
+        guid,
+        group: {
+          guid,
+          name: newGroupName,
+          channelGuids: []
+        }
+      })
+      addGroupToSpace({
+        spaceGuid: activeSpace.guid,
+        groupGuid: guid
+      })
+    }
+  }
+
   return (<S.GroupsSidebar>
     <SpacesSidebar 
       activeSpaceIndex={activeSpaceIndex}
@@ -83,7 +102,7 @@ export const SpaceSidebar = ({ }: Props) => {
                       href: '/spaces/edit'
                     },
                     {
-                      text: 'Delete',
+                      text: 'Remove',
                       icon: 'trash-alt',
                       iconPrefix: 'fas',
                       onClick: () => {
@@ -97,7 +116,6 @@ export const SpaceSidebar = ({ }: Props) => {
                   ]}
                 />
               </Item>
-              <LineBreak />
               </>
             : <Box py={.75}>
                 <Gap gap={.75}>
@@ -121,44 +139,31 @@ export const SpaceSidebar = ({ }: Props) => {
         
       
       <Groups />
-      <Item
-        content={<Box mr={-.5}>  
-        <TextInput
-          value={newGroupName}
-          onChange={newValue => set_newGroupName(newValue)}
-          iconPrefix='fas'
-          compact
-          placeholder='Add group'
-          hideOutline
-          buttons={[
-            {
-              icon: 'plus',
-              iconPrefix: 'fas',
-              minimal: true,
-              onClick: () => {
-                set_newGroupName('')
-                if (activeSpace?.guid) {
-                  const guid = generateUUID()
-                  addGroup({
-                    guid,
-                    group: {
-                      guid,
-                      name: newGroupName,
-                      channelGuids: []
-                    }
-                  })
-                  addGroupToSpace({
-                    spaceGuid: activeSpace.guid,
-                    groupGuid: guid
-                  })
+
+      {
+        activeSpace?.name &&
+          <Item
+            content={<Box mr={-.5}>  
+            <TextInput
+              value={newGroupName}
+              onChange={newValue => set_newGroupName(newValue)}
+              iconPrefix='fas'
+              compact
+              placeholder='Add group'
+              hideOutline
+              onEnter={add}
+              buttons={[
+                {
+                  icon: 'plus',
+                  iconPrefix: 'fas',
+                  minimal: true,
+                  onClick: add
                 }
-              }
-            }
-          ]}
-        />
-        </Box>}
-      />
-      
+              ]}
+            />
+            </Box>}
+          />
+      }
     </Box>
   </S.GroupsSidebar>)
 }

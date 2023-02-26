@@ -53,7 +53,7 @@ export const Groups = ({ }: Props) => {
               icon: ('hashtag' as IconName),
               iconPrefix: ('fas' as IconPrefix),
               labelColor: ('none' as LabelColor),
-              text: channelsByGuid[channelGuid].name
+              subtitle: channelsByGuid[channelGuid]?.name
           }))
           return ({
             expanded: value[i]?.expanded || false,
@@ -62,7 +62,7 @@ export const Groups = ({ }: Props) => {
                 icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
                 iconPrefix: 'fas',
                 labelColor: 'none',
-                text: groupsByGuid[groupGuid].name,
+                subtitle: groupsByGuid[groupGuid]?.name,
               },
               list: [
                 ...groupsList,
@@ -119,7 +119,7 @@ export const Groups = ({ }: Props) => {
           value: {
             item: {
               ...expandableList.value.item,
-              children: <>
+              children: <div onClick={e => e.stopPropagation()}>
                 <Spacer />
                 <Dropdown
                   icon='ellipsis-vertical'
@@ -134,7 +134,7 @@ export const Groups = ({ }: Props) => {
                       href: `/group/edit/${activeSpace?.groupGuids[i]}`
                     },
                     {
-                      text: 'Delete',
+                      text: 'Remove',
                       icon: 'trash-alt',
                       iconPrefix: 'fas',
                       onClick: () => {
@@ -144,7 +144,7 @@ export const Groups = ({ }: Props) => {
                     }
                   ]}
                 />
-              </>
+              </div>
             },
             list: expandableList.value.list
             // .filter(listItem => listItem.text.toLowerCase().includes(search.toLowerCase()))
@@ -152,35 +152,30 @@ export const Groups = ({ }: Props) => {
               ({
                 ...listItem,
                 onClick: () => {},
-                children: listItem.text  && <Dropdown 
+                children: listItem.subtitle  && <div onClick={e => e.stopPropagation()}><Dropdown 
                   icon='ellipsis-vertical'
                   iconPrefix='fas'
                   minimal
                   items={[
                     {
-                      text: 'Rename',
+                      text: 'Edit',
                       icon: 'edit',
                       iconPrefix: 'fas',
                       onClick: () => {}
                     },
                     {
-                      text: 'Delete',
+                      text: 'Remove',
                       icon: 'trash-alt',
                       iconPrefix: 'fas',
                       onClick: () => {
                         removeChannelFromGroup({ groudId: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
-                        // removeChannel(spaceChannelGuids[i][listItemIndex1])
-                        // set_value(value.map(valItem => ({
-                        //   ...valItem,
-                        //   value: {
-                        //     ...valItem.value,
-                        //     list: valItem.value.list.filter((val, listIndex) => listItemIndex1 !== listIndex)
-                        //   }
-                        // })))
+                        removeChannel(spaceChannelGuids[i][listItemIndex1])
+
                       }
                     }
                   ]}
                 />
+                </div>
               })  
             )
           }

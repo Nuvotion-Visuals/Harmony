@@ -1,0 +1,33 @@
+import { Button, Modal, Page, TextInput, generateUUID, Gap, AspectRatio } from '@avsync.live/formation'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import { useSpaces } from 'redux-tk/spaces/hook'
+import styled from 'styled-components'
+
+interface Props {
+  
+}
+
+const Add = ({ }: Props) => {
+  const router = useRouter()
+
+  const [name, set_name] = useState('')
+  const [description, set_description] = useState('')
+
+  const { addSpace } = useSpaces()
+
+  const [url, set_url] = useState('')
+
+  return (<S.new>
+    
+        
+  </S.new>)
+}
+
+export default Add
+
+const S = {
+  new: styled.div`
+    
+  `
+}
