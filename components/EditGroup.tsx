@@ -8,16 +8,19 @@ interface Props {
   
 }
 
-export const Add = ({ }: Props) => {
+export const EditGroup = ({ }: Props) => {
   const router = useRouter()
+  const { groupGuid } = router.query
 
-  const [name, set_name] = useState('')
-  const [description, set_description] = useState('')
-  const [prompt, set_prompt] = useState('')
+  const { activeSpaceGuid, updateGroup, groupsByGuid } = useSpaces()
 
-  const { addSpace } = useSpaces()
+  const activeGroup = groupsByGuid[groupGuid as string]
 
-  const [url, set_url] = useState('')
+  const [name, set_name] = useState(activeGroup?.name || '')
+  const [description, set_description] = useState(activeGroup?.description || '')
+  const [prompt, set_prompt] = useState(activeGroup?.description || '')
+
+  const [url, set_url] = useState(activeGroup?.previewSrc)
 
   return (<S.new>
     <Box  my={.25} >
@@ -28,7 +31,7 @@ export const Add = ({ }: Props) => {
       minimal
     />
      <Item
-      pageTitle='Add Space'
+      pageTitle='Edit Group'
     />
     </Box>
    
@@ -37,11 +40,11 @@ export const Add = ({ }: Props) => {
         <Gap gap={.75}>
         {
         url &&
-            <AspectRatio
+          <AspectRatio
             ratio={2}
             backgroundSrc={url}
             coverBackground
-            />
+          />
         }
         <TextInput 
           label='Name'
@@ -76,27 +79,30 @@ export const Add = ({ }: Props) => {
         </Gap>
         
         <Button
-        hero
-        expand
-        primary={name !== ''}
-        disabled={name === ''}
-        onClick={() => {
-            const guid = generateUUID()
-            addSpace({
-            guid,
-            space: {
-                guid,
-                name,
-                groupGuids: [],
-                previewSrc: url,
-                description
+          hero
+          expand
+          primary={name !== ''}
+          disabled={name === ''}
+          onClick={() => {
+            if (name && activeGroup?.guid) {
+              updateGroup({
+              guid: activeGroup.guid,
+              group: {
+                  guid: activeGroup.guid,
+                  channelGuids: activeGroup.channelGuids,
+                  name,
+                  previewSrc: url,
+                  description
+              }
+              })
+              setTimeout(() => {
+                router.push(`/spaces/${activeSpaceGuid}`)
+              }, 1)
             }
-            })
-            router.push('/spaces')
-        }}
-        text='Add'
-        icon='plus'
-        iconPrefix='fas'
+          }}
+          text='Save'
+          icon='save'
+          iconPrefix='fas'
         />
         </Gap>
     </Box>

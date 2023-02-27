@@ -7,23 +7,31 @@ import { useSpaces } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
 
 interface Props {
-  
+
 }
 
 export const SpaceSidebar = ({ }: Props) => {
   const router = useRouter()
+
+  const { spaceGuid } = router.query
+
   const { spacesInfo, addSpace, setActiveSpaceGuid, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, addGroup, addGroupToSpace } = useSpaces()
 
-  const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
+  const [activeSpaceIndex, set_activeSpaceIndex] = useState(spaceGuids.indexOf(spaceGuid as string))
 
   const [newSpaceName, set_newSpaceName] = useState(activeSpace?.name || '')
 
-
   useEffect(() => {
-    if (spacesInfo.length > 0) {
-      setActiveSpaceGuid(spaceGuids[activeSpaceIndex])
-    }
-  }, [activeSpaceIndex])
+    set_activeSpaceIndex(spaceGuids.indexOf(spaceGuid as string))
+  }, [spaceGuid])
+
+
+  // useEffect(() => {
+  //   if (spacesInfo.length > 0) {
+  //     setActiveSpaceGuid(spaceGuids[activeSpaceIndex])
+  //   }
+  // }, [activeSpaceIndex])
+  
 
   const [newDescription, set_newDescription] = useState('')
   const [newGroupName, set_newGroupName] = useState('')
@@ -64,6 +72,7 @@ export const SpaceSidebar = ({ }: Props) => {
         ...spacesInfo.map(space => (
           {
             name: space.name,
+            href: `/spaces/${space.guid}`,
             src: space.previewSrc
           }
         )),
@@ -99,7 +108,7 @@ export const SpaceSidebar = ({ }: Props) => {
                       text: 'Edit',
                       icon: 'edit',
                       iconPrefix: 'fas',
-                      href: '/spaces/edit'
+                      href: `/spaces/${activeSpaceGuid}/edit`
                     },
                     {
                       text: 'Remove',
@@ -124,10 +133,6 @@ export const SpaceSidebar = ({ }: Props) => {
                   title='Create a Space'
                   subtitle='Spaces organize your work into groups of channels.'
                 />
-                <Item
-                  text='Templates'
-                  subtitle='Choose from Templates like Business, Personal, Event, and more.'
-                />
                  <Item
                   text="Let's Work Together"
                   subtitle='Hi, my name is Lexi. I can help you with any project. Think of me as your virtual coworker.'
@@ -135,9 +140,7 @@ export const SpaceSidebar = ({ }: Props) => {
                 </Gap>
               </Box>
         }
-        
-        
-      
+ 
       <Groups />
 
       {
@@ -150,6 +153,7 @@ export const SpaceSidebar = ({ }: Props) => {
               iconPrefix='fas'
               compact
               placeholder='Add group'
+              autoFocus
               hideOutline
               onEnter={add}
               buttons={[

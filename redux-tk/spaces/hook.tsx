@@ -29,6 +29,9 @@ export const useSpaces = () => {
     removeSpace: useCallback((payload: Guid) => {
       dispatch(slice.actions.removeSpace(payload));
     }, [dispatch]),
+    updateSpace: useCallback((payload: { guid: Guid; space: Space }) => {
+      dispatch(slice.actions.updateSpace(payload));
+    }, [dispatch]),
     addGroupToSpace: useCallback((payload: { spaceGuid: Guid; groupGuid: Guid }) => {
       dispatch(slice.actions.addGroupToSpace(payload));
     }, [dispatch]),
@@ -50,8 +53,14 @@ export const useSpaces = () => {
     removeGroup: useCallback((payload: Guid) => {
       dispatch(slice.actions.removeGroup(payload));
     }, [dispatch]),
+    updateGroup: useCallback((payload: { guid: Guid; group: Group }) => {
+      dispatch(slice.actions.updateGroup(payload));
+    }, [dispatch]),
     addChannel: useCallback((payload: { guid: Guid; channel: Channel }) => {
       dispatch(slice.actions.addChannel(payload));
+    }, [dispatch]),
+    updateChannel: useCallback((payload: { guid: Guid; channel: Channel }) => {
+      dispatch(slice.actions.updateChannel(payload));
     }, [dispatch]),
     removeChannel: useCallback((payload: Guid) => {
       dispatch(slice.actions.removeChannel(payload));

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
+import { useRouter } from 'next/router'
 
 interface Props {
   
@@ -19,7 +20,11 @@ type List = {
 type Lists = List[]
 
 export const Groups = ({ }: Props) => {
-    const { activeSpace, groupsByGuid, addChannel, channelsByGuid, addChannelToGroup, removeChannel, removeGroup, removeChannelFromGroup, removeGroupFromSpace } = useSpaces()
+    const router = useRouter()
+
+    const { activeSpace, activeSpaceGuid, groupsByGuid, addChannel, channelsByGuid, addChannelToGroup, removeChannel, removeGroup, removeChannelFromGroup, removeGroupFromSpace } = useSpaces()
+
+    const [newChannelName, set_newChannelName] = useState('')
 
     const [value, set_value] = useState<Lists>([])
 
@@ -45,18 +50,21 @@ export const Groups = ({ }: Props) => {
       }
       set_newChannelName('')
     }
+    
 
     useEffect(() => {
       if (activeSpace?.groupGuids) {
         set_value(activeSpace?.groupGuids.map((groupGuid, i) => {
           const groupsList = groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
-              icon: ('hashtag' as IconName),
-              iconPrefix: ('fas' as IconPrefix),
-              labelColor: ('none' as LabelColor),
-              subtitle: channelsByGuid[channelGuid]?.name
+            icon: ('hashtag' as IconName),
+            iconPrefix: ('fas' as IconPrefix),
+            labelColor: ('none' as LabelColor),
+            subtitle: channelsByGuid[channelGuid]?.name,
+            href: `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`,
+            active: router.asPath === `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`
           }))
           return ({
-            expanded: value[i]?.expanded || false,
+            expanded: value[i]?.expanded || true,
             value: {
               item: {
                 icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
@@ -95,10 +103,9 @@ export const Groups = ({ }: Props) => {
         ))
       }
      
-    }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, spaceGroupGuids, spaceChannelGuids])
+    }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, newChannelName, router.asPath, activeSpaceGuid])
   
     const [newDescription, set_newDescription] = useState('')
-    const [newChannelName, set_newChannelName] = useState('')
 
     return (<>
         {/* <TextInput
@@ -131,7 +138,7 @@ export const Groups = ({ }: Props) => {
                       text: 'Edit',
                       icon: 'edit',
                       iconPrefix: 'fas',
-                      href: `/group/edit/${activeSpace?.groupGuids[i]}`
+                      href: `/spaces/${activeSpaceGuid}/groups/${activeSpace?.groupGuids[i]}/edit`
                     },
                     {
                       text: 'Remove',
@@ -170,7 +177,6 @@ export const Groups = ({ }: Props) => {
                       onClick: () => {
                         removeChannelFromGroup({ groudId: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
                         removeChannel(spaceChannelGuids[i][listItemIndex1])
-
                       }
                     }
                   ]}

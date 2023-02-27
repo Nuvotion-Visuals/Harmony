@@ -1,26 +1,14 @@
-import { Button, Modal, Page, TextInput, generateUUID, Gap, AspectRatio } from '@avsync.live/formation'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import React from 'react'
 import styled from 'styled-components'
+import { AddSpace } from 'components/AddSpace'
 
 interface Props {
   
 }
 
 const Add = ({ }: Props) => {
-  const router = useRouter()
-
-  const [name, set_name] = useState('')
-  const [description, set_description] = useState('')
-
-  const { addSpace } = useSpaces()
-
-  const [url, set_url] = useState('')
-
   return (<S.new>
-    
-        
+    <AddSpace />
   </S.new>)
 }
 

@@ -41,10 +41,11 @@ export const select_assetsByGuid = (state: RootState): { [key: string]: Asset } 
   return state.spaces.assetsByGuid;
 };
 
-export const select_spacesInfo = (state: RootState): { name: string, previewSrc?: string, description?: string }[] => {
+export const select_spacesInfo = (state: RootState): { name: string, previewSrc?: string, description?: string, guid: string }[] => {
     const { spacesByGuid } = state.spaces;
     const spaces = Object.values(spacesByGuid);
     return spaces.map((space) => ({
+      guid: space.guid,
       name: space.name,
       previewSrc: space.previewSrc,
       description: space.description,

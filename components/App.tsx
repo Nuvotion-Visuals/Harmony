@@ -1,6 +1,6 @@
 import { NavSpaces, NavTabs, Item, Placeholders, Box, DateAndTimePicker, stringInArray, useBreakpoint, Gap, Button, Page, TextInput, Dropdown } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLayout } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
@@ -8,28 +8,42 @@ import Chat from './Chat'
 import { SpaceSidebar } from './SpaceSidebar'
 import { Search } from './Search'
 import { SearchResults } from './SearchResults'
-import { Add } from 'components/Add'
+import { AddSpace } from './AddSpace'
+import { EditSpace } from './EditSpace'
+import { EditGroup } from './EditGroup'
+import { useSpaces } from 'redux-tk/spaces/hook'
 interface Props {
-  
+  children: React.ReactNode
 }
 
-const App = React.memo(({ }: Props) => {
+const App = ({ children }: Props) => {
+
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
 
   const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
+  const { setActiveSpaceGuid } = useSpaces()
+
+  const renderInnerSidebar = () => {
+    switch(router.route) {
+      case '/spaces/add':
+        return <AddSpace />
+      case '/spaces/[spaceGuid]/edit':
+        return <EditSpace />
+      case '/spaces/[spaceGuid]/groups/[groupGuid]/edit':
+        return <EditGroup />
+      default:
+        return <SpaceSidebar />
+    }
+  }
 
   const renderFirstPage = () => {
-  
-        return <S.Sidebar>
-          <Box height='var(--F_Header_Height)' width='100%'/>
-          {
-            router.route === '/spaces/add'
-             ? <Add />
-             :<SpaceSidebar />
-          }
-          
-      </S.Sidebar>
+    return <S.Sidebar>
+      <Box height='var(--F_Header_Height)' width='100%'/>
+      { 
+        renderInnerSidebar() 
+      }
+    </S.Sidebar>
   }
 
   const renderSecondPage = () => {
@@ -48,8 +62,11 @@ const App = React.memo(({ }: Props) => {
   }
 
   const router = useRouter()
+  const { spaceGuid } = router.query
 
-  
+  useEffect(() => {
+    setActiveSpaceGuid(spaceGuid as string)
+  }, [spaceGuid])
 
   return (<S.App>
     <S.NavHeader>
@@ -92,7 +109,7 @@ const App = React.memo(({ }: Props) => {
       ]}
     />
   </S.App>)
-})
+}
 
 export default App
 
