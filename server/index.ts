@@ -84,9 +84,11 @@ const errorMessagesLanguageModelServer = {
 }
 
 require('dotenv').config()
-const port = parseInt(process.env.PORT || '1618', 10)
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
+const LEXISERVER_PORT = parseInt(process.env.LEXISERVER_PORT || '1618')
+const LEXIWEBSOCKETSERVER_PORT = parseInt(process.env.LEXIWEBSOCKETSERVER_PORT || '1619')
+const DEV = process.env.NODE_ENV !== 'production'
+
+const app = next({ dev: DEV })
 const handle = app.getRequestHandler()
 
 let languageModel = {} as any
@@ -147,7 +149,7 @@ const sendMessageToLanguageModel = (
 
 // initalize websocket server
 const WSS = require('ws').WebSocketServer;
-const wss = new WSS({ port: 1619 });
+const wss = new WSS({ port: LEXIWEBSOCKETSERVER_PORT });
 let websock = {} as typeof WSS
 const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'});
 
@@ -539,8 +541,8 @@ app.prepare().then(() => {
   
   server.all('*', (req: Request, res: Response) => handle(req, res))
 
-  server.listen(<number>port, (err: any) => {
+  server.listen(<number>LEXISERVER_PORT, (err: any) => {
     if (err) throw err
-    console.log('🟣', `I'm listening on port ${port}.`)
+    console.log('🟣', `I'm listening on port ${LEXISERVER_PORT}.`)
   })
 })

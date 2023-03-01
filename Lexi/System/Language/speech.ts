@@ -16,7 +16,7 @@ let source: any
  */
 async function ttsRequest(text: string): Promise<AudioBuffer> {
   if (!audioCtx) { audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)() }
-  const response = await fetch(`https://tts.lexi.studio/tts?text=${text}.`)
+  const response = await fetch(`${process.env.NEXT_PUBLIC_LEXITTS_URL || 'http://localhost:1621'}/tts?text=${text}.`)
   const arrayBuffer = await response.arrayBuffer()
   return audioCtx.decodeAudioData(arrayBuffer)
 }

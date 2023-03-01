@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 
 async function connectToServer() {
-    const ws = new WebSocket('wss://ws.lexi.studio');
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_LEXIWEBSOCKETSERVER_URL || 'ws://ws.localhost:1619');
 
     let latestPing = null
     let latestPong = null
@@ -21,7 +21,6 @@ async function connectToServer() {
     setInterval(() => {
       ping()
     }, 30 * 1000)
-
 
     ws.onmessage = (ev) => {
       const wsmessage = JSON.parse(ev.data.toString())
