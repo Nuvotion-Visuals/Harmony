@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 
 async function connectToServer() {
-    const ws = new WebSocket(process.env.NEXT_PUBLIC_LEXIWEBSOCKETSERVER_URL || 'ws://ws.localhost:1619');
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_LEXIWEBSOCKETSERVER_URL || 'ws://localhost:1619');
 
     let latestPing = null
     let latestPong = null
