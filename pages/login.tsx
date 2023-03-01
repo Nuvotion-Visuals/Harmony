@@ -87,7 +87,7 @@ const Preview = ({  } : Props) => {
     >
       <StyleHTML>
         
-        <S.Help>Hi, I'm Lexi, a creative AGI ready help with any artistic or technical project.</S.Help>
+        <S.Help>Hi, I'm Lexi, a creative AGI ready to help you with any artistic or technical project.</S.Help>
         </StyleHTML>
       <Gap gap={1}>
         

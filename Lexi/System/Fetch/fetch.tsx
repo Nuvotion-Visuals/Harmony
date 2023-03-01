@@ -69,3 +69,4 @@ export const getArticleContent = (
         errorCallback(error);
       });
   };
+  

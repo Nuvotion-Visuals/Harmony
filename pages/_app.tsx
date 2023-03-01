@@ -2,6 +2,9 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import React from 'react'
 
+// redux
+import { Provider } from 'react-redux'
+import { store } from 'redux-tk/store'
 
 import '@avsync.live/formation/dist/index.dark.css'
 
@@ -17,8 +20,8 @@ library.add(
   // regular
   // @ts-ignore
   far.faHeart, far.faPaperPlane, far.faCheckSquare, far.faSquare,
-  fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark,
-  far.faEnvelope, far.faMessage,
+  fas.faEnvelope, far.faCopy, far.faClock, far.faBookmark, far.faEdit,
+  far.faEnvelope, far.faMessage, 
 
   fab.faYoutube, fab.faGithubAlt,
   
@@ -47,7 +50,10 @@ library.add(
   fas.faArrowUpRightDots, fas.faEarthAfrica, fas.faChessQueen, fas.faPalette,
   fas.faShapes, fas.faDoorOpen, fas.faMap, fas.faSitemap, fas.faP, fas.faT, fas.faUsers,
   fas.faCheckSquare, fas.faFilm, fas.faVolumeHigh, fas.faLink, fas.faHouse, fas.faBell,
-  fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp
+  fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp, fas.faSave, fas.faBan, 
+  fas.faPencil, fas.faPencilAlt, fas.faImage, fas.faVideo, fas.faMusic, fas.faFile,
+  fas.faCode, fas.faEnvelope, fas.faParagraph, fas.faBoltLightning, fas.faChevronLeft,
+  fas.faChevronDown, fas.faChevronRight, fas.faHashtag, fas.faCaretRight, fas.faCaretDown
 )
 
 import { useRouter } from 'next/router'
@@ -64,7 +70,7 @@ setLinkComponent(require('../components/Link').default)
 
 config.autoAddCss = false
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   const router = useRouter()
   return <>
   <Head>
@@ -79,6 +85,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       content="/assets/lexichat-preview.png"
     />
   </Head>
+  <Provider store={store}>
     {
       router.route === '/login'
         ? <Component {...pageProps} />
@@ -86,7 +93,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             <Component {...pageProps} />
           </App>
       }
+    </Provider>
   </>
-}
+})
 
 export default MyApp

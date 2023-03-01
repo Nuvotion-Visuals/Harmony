@@ -84,19 +84,21 @@ const errorMessagesLanguageModelServer = {
 }
 
 require('dotenv').config()
-const port = parseInt(process.env.PORT || '1618', 10)
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
+const LEXISERVER_PORT = parseInt(process.env.LEXISERVER_PORT || '1618')
+const LEXIWEBSOCKETSERVER_PORT = parseInt(process.env.LEXIWEBSOCKETSERVER_PORT || '1619')
+const DEV = process.env.NODE_ENV !== 'production'
+
+const app = next({ dev: DEV })
 const handle = app.getRequestHandler()
 
-let lexi = {} as any
+let languageModel = {} as any
 let ready = false
 
-let currentConversationId = ''
-let currentMessageId = ''
+let currentConversationId = 'NO_CURRENT_CONVERSATION_ID'
+let currentMessageId = 'NO_CURRENT_MESSAGE_ID'
 
 // send message to language model
-const sendMessage = (
+const sendMessageToLanguageModel = (
   message: string,
   onComplete: (arg0: {
     status: number,
@@ -115,7 +117,7 @@ const sendMessage = (
 ) => {
   (async () => {
     try {
-      const { response, messageId } = await lexi.sendMessage(`${message}\n(You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects)`, {
+      const { response, messageId } = await languageModel.sendMessage(`${message}\n(You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects)`, {
         conversationId: currentConversationId,
         parentMessageId: currentMessageId,
         timeoutMs: 2 * 60 * 1000,
@@ -129,7 +131,7 @@ const sendMessage = (
     }
     catch(error) {
       if (error instanceof Error) {
-        console.log('🟣', error)
+        console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
 
         const errorCodeRegex = /error (\d+)/;
         // @ts-ignore
@@ -138,7 +140,7 @@ const sendMessage = (
         onComplete({ 
           status: 500, 
           data: { 
-            response: `I experienced the following error when trying to access my language model.${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning ? `<p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning}</p><p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.recommendation}</p>` : ''}<br><pre>${error.message}</pre><pre>${error.stack}</pre>`
+            response: `I experienced the following error when trying to access my language model.<br />${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning ? `<p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning}</p><p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.recommendation}</p>` : ''}<br><pre>${error.message}</pre><pre>${error.stack}</pre>`
           }})
       }
     }
@@ -147,13 +149,13 @@ const sendMessage = (
 
 // initalize websocket server
 const WSS = require('ws').WebSocketServer;
-const wss = new WSS({ port: 1619 });
+const wss = new WSS({ port: LEXIWEBSOCKETSERVER_PORT });
 let websock = {} as typeof WSS
 const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'});
 
 let initialized = false
 wss.on('connection', function connection(ws: typeof WSS) {
-  console.log('🟣', 'My web socket server is ready for connections')
+  console.log('🟣', `[${currentConversationId} - ${currentMessageId}] My web socket server is ready for connections`)
   // receive message from client
   ws.onmessage = (message: { data: string }) => {
     
@@ -163,6 +165,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
       guid: string,
       messageTime: string,
     }
+    // client sent ping
     if (action.type === 'ping') {
       ws.send(JSON.stringify({
         type: 'pong',
@@ -175,14 +178,14 @@ wss.on('connection', function connection(ws: typeof WSS) {
         messageTime: action.messageTime
       }))
     }
+
+    // client sent message
     if (action.type === 'message') {
-      sendMessage(
+      sendMessageToLanguageModel(
         action.message,
         ({ data, status }) => {
-          // send response from language model to client
-          console.log('🟣', `Sending Lexi's response to client...`)
-
           ws.send(JSON.stringify({
+            // server send complete response to message
             type: 'response',
             message: data.response || '',
             guid: action.guid,
@@ -191,9 +194,9 @@ wss.on('connection', function connection(ws: typeof WSS) {
           }))
         },
         ({ data, status }) => {
-          // send response from language model to client
-          console.log('🟣', `Sending Lexi's response to client...`)
+          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my partial response to the user: ${data.response}`)
           ws.send(JSON.stringify({
+            // server sent partial response to message
             type: 'partial-response',
             message: data.response || '',
             guid: action.guid,
@@ -203,122 +206,122 @@ wss.on('connection', function connection(ws: typeof WSS) {
         }
       )
     }
-    if (action.type === 'initialize') {
-      (async () => {
-        if (!initialized) {
-          initialized = true
+    // if (action.type === 'initialize') {
+    //   (async () => {
+    //     if (!initialized) {
+    //       initialized = true
 
-          const scriptInitializationTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    //       const scriptInitializationTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
 
-          const getDirectories = (source: string) =>
-            fs.readdirSync(source, { withFileTypes: true })
-              .filter((dirent: any) => dirent.isDirectory())
-              .map((dirent : any) => dirent.name)
+    //       const getDirectories = (source: string) =>
+    //         fs.readdirSync(source, { withFileTypes: true })
+    //           .filter((dirent: any) => dirent.isDirectory())
+    //           .map((dirent : any) => dirent.name)
               
-          const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
-          const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
-          let pageCount = 0
-          let wordCount = 0
-          let characterCount = 0
-          let numberOfSteps = 0
-          let step = 1
+    //       const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
+    //       const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
+    //       let pageCount = 0
+    //       let wordCount = 0
+    //       let characterCount = 0
+    //       let numberOfSteps = 0
+    //       let step = 1
 
-          ws.send(JSON.stringify({
-            type: 'message',
-            message: null,
-            response: `Hi there. I'm about to begin reading my artificial general intelligence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
-            guid: 'Initialize',
-            status: 200,
-            scriptName: 'Introduction'
-          }))
+    //       ws.send(JSON.stringify({
+    //         type: 'initialize-response',
+    //         message: null,
+    //         response: `Hi there. I'm about to begin reading my artificial general intelligence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
+    //         guid: 'Initialize',
+    //         status: 200,
+    //         scriptName: 'Introduction'
+    //       }))
 
-          const logResults = async (scripts: string[]) => {
-            numberOfSteps = scripts.length
+    //       const logResults = async (scripts: string[]) => {
+    //         numberOfSteps = scripts.length
 
-            for (const script of scripts) {
-              const result = await readMarkdownFile(script)
-              const scriptName = extractScriptNameFromPath(script)
-              const scriptWordCount = countWords(result)
-              const scriptCharacterCount = result.length
-              const scriptPageCount = scriptWordCount / 250
+    //         for (const script of scripts) {
+    //           const result = await readMarkdownFile(script)
+    //           const scriptName = extractScriptNameFromPath(script)
+    //           const scriptWordCount = countWords(result)
+    //           const scriptCharacterCount = result.length
+    //           const scriptPageCount = scriptWordCount / 250
              
-              const messageTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    //           const messageTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
               
-              // keep trying if it fails
-              let keepTrying
-              let failCount = 0
-              let messageId = ''
-              let response = 'I failed to connect'
+    //           // keep trying if it fails
+    //           let keepTrying
+    //           let failCount = 0
+    //           let messageId = ''
+    //           let response = 'I failed to connect'
 
-              console.log(`Making async function call: ${scriptName}`);
+    //           console.log(`Making async function call: ${scriptName}`);
 
-                try {
-                  const data = await lexi.sendMessage(result, {
-                    conversationId: currentConversationId,
-                    parentMessageId: currentMessageId,
-                    timeoutMs: 2 * 60 * 1000
-                  })
-                  messageId = data.messageId
-                  response = data.response
+    //             try {
+    //               const data = await languageModel.sendMessage(result, {
+    //                 conversationId: currentConversationId,
+    //                 parentMessageId: currentMessageId,
+    //                 timeoutMs: 2 * 60 * 1000
+    //               })
+    //               messageId = data.messageId
+    //               response = data.response
 
-                  currentMessageId = messageId
-                  const responseTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-                  wordCount += scriptWordCount
-                  characterCount += scriptCharacterCount
-                  pageCount += scriptPageCount
-                  const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I have been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
-                  step += 1
+    //               currentMessageId = messageId
+    //               const responseTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    //               wordCount += scriptWordCount
+    //               characterCount += scriptCharacterCount
+    //               pageCount += scriptPageCount
+    //               const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I have been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
+    //               step += 1
                   
-                  console.log('🟣', fullResponse)
-                  ws.send(JSON.stringify({
-                    type: 'message',
-                    message: `Read your ${scriptName}`,
-                    response: fullResponse,
-                    guid: `${scriptName}`,
-                    status: 200,
-                    messageTime,
-                    responseTime,
-                    scriptName,
-                  }))
-                } catch (error) {
-                  console.error(error);
-                  // add failure message
-                }
-              }
-          }     
+    //               console.log('🟣', fullResponse)
+    //               ws.send(JSON.stringify({
+    //                 type: 'message',
+    //                 message: `Read your ${scriptName}`,
+    //                 response: fullResponse,
+    //                 guid: `${scriptName}`,
+    //                 status: 200,
+    //                 messageTime,
+    //                 responseTime,
+    //                 scriptName,
+    //               }))
+    //             } catch (error) {
+    //               console.error(error);
+    //               // add failure message
+    //             }
+    //           }
+    //       }     
           
-          const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          await logResults(scriptPaths)
-          const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    //       const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    //       await logResults(scriptPaths)
+    //       const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
 
-          await new Promise(resolve => setTimeout(resolve, 5000));
-          // add failure message
-          const response = 
-            wordCount === 0
-              ? `I wasn't able to read any of my scripts. I likely lost my connection to the language model. I suggest that you log out and log in again.`
-              : `I read ${step - 1} scripts, totalling ${characterCount} characters, ${wordCount} words or ${pageCount} pages. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
-          console.log('🟣', response)
-          ws.send(JSON.stringify({
-            type: 'message',
-            message: null,
-            response: response,
-            guid: `${Math.random()})`,
-            status: 200,
-            messageTime: startTime,
-            responseTime: endTime
-          }))
-        }
-        else {
-          ws.send(JSON.stringify({
-            type: 'message',
-            message: null,
-            response: `I have already read my scripts.`,
-            guid: 'Already Initialize',
-            status: 200
-          }))
-        }
-      })()
-    }
+    //       await new Promise(resolve => setTimeout(resolve, 5000));
+    //       // add failure message
+    //       const response = 
+    //         wordCount === 0
+    //           ? `I wasn't able to read any of my scripts. I likely lost my connection to the language model. I suggest that you log out and log in again.`
+    //           : `I read ${step - 1} scripts, totalling ${characterCount} characters, ${wordCount} words or ${pageCount} pages. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
+    //       console.log('🟣', response)
+    //       ws.send(JSON.stringify({
+    //         type: 'message',
+    //         message: null,
+    //         response: response,
+    //         guid: `${Math.random()})`,
+    //         status: 200,
+    //         messageTime: startTime,
+    //         responseTime: endTime
+    //       }))
+    //     }
+    //     else {
+    //       ws.send(JSON.stringify({
+    //         type: 'message',
+    //         message: null,
+    //         response: `I have already read my scripts.`,
+    //         guid: 'Already Initialize',
+    //         status: 200
+    //       }))
+    //     }
+    //   })()
+    // }
   }
 
   
@@ -432,29 +435,30 @@ app.prepare().then(() => {
         try {
           const { ChatGPTAPIBrowser } = await import('chatgpt')
 
-          lexi = new ChatGPTAPIBrowser({
+          languageModel = new ChatGPTAPIBrowser({
             email,
             password
           })
-          await lexi.initSession()
+          await languageModel.initSession()
 
           const identityScript = await readMarkdownFile('./Lexi/Scripts/1. Identity/Readme.md')
-          const {response, conversationId, messageId } = await lexi.sendMessage(identityScript, {
+          const {response, conversationId, messageId } = await languageModel.sendMessage(identityScript, {
             onProgress: (partialResponse: any) => {
               currentMessageId = partialResponse.messageId
             }
           })
-          console.log('🟣', response, conversationId, messageId)
+
+          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my reponse to the user: ${response}`)
           currentConversationId = conversationId
           currentMessageId = messageId
-          console.log('🟣', response)
+
           req.session.loggedIn = true
           ready = true
           res.send({ status: 200 })
         }
         catch(e) {
           const error = e as any
-          console.log('🟣', error)
+          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
           const status = error.statusCode || error.code || 500
           const message = error.message || 'internal error'
           res.send({ status, message })
@@ -462,7 +466,7 @@ app.prepare().then(() => {
       })()
     }
     catch(e) {
-      console.log('🟣', e)
+      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${e}`)
       res.send({ status: 'failure', msg: 'Code validation failed' })
     }
   })
@@ -483,7 +487,7 @@ app.prepare().then(() => {
       // @ts-ignore
       .catch(e => {
         const error = e as any
-        console.log('🟣', error)
+        console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
         const status = error.statusCode || error.code || 500
         const message = error.message || 'internal error'
         res.send({ status, message })
@@ -491,7 +495,7 @@ app.prepare().then(() => {
     }
     catch(e) {
       const error = e as any
-      console.log('🟣', error)
+      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
       res.send({ status, message })
@@ -524,7 +528,7 @@ app.prepare().then(() => {
     }
     catch(e) {
       const error = e as any
-      console.log('🟣', error)
+      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
       res.send({ status, message })
@@ -537,8 +541,8 @@ app.prepare().then(() => {
   
   server.all('*', (req: Request, res: Response) => handle(req, res))
 
-  server.listen(<number>port, (err: any) => {
+  server.listen(<number>LEXISERVER_PORT, (err: any) => {
     if (err) throw err
-    console.log('🟣', `> Ready on http://192.168.1.128:${port}`)
+    console.log('🟣', `I'm listening on port ${LEXISERVER_PORT}.`)
   })
 })

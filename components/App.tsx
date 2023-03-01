@@ -1,305 +1,117 @@
 import { NavSpaces, NavTabs, Item, Placeholders, Box, DateAndTimePicker, stringInArray, useBreakpoint, Gap, Button, Page, TextInput, Dropdown } from '@avsync.live/formation'
-import router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import { useLayout } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
 import Chat from './Chat'
-import LogoPlaceholder from './LogoPlaceholder'
+import { SpaceSidebar } from './SpaceSidebar'
+import { Search } from './Search'
+import { SearchResults } from './SearchResults'
+import { AddSpace } from './AddSpace'
+import { EditSpace } from './EditSpace'
+import { EditGroup } from './EditGroup'
+import { useSpaces } from 'redux-tk/spaces/hook'
 interface Props {
-  
+  children: React.ReactNode
 }
 
-const SuperApp = ({ }: Props) => {
-  const [ activeSwipeIndex, setActiveSwipeIndex ] = useState(0)
-  const { isMobile, isTablet } = useBreakpoint()
+const App = ({ children }: Props) => {
 
+  const { isMobile, isTablet, isDesktop } = useBreakpoint()
+
+  const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
+  const { setActiveSpaceGuid } = useSpaces()
+
+  const renderInnerSidebar = () => {
+    switch(router.route) {
+      case '/spaces/add':
+        return <AddSpace />
+      case '/spaces/[spaceGuid]/edit':
+        return <EditSpace />
+      case '/spaces/[spaceGuid]/groups/[groupGuid]/edit':
+        return <EditGroup />
+      default:
+        return <SpaceSidebar />
+    }
+  }
 
   const renderFirstPage = () => {
-    switch(router.route) {
-      case '/':
-        return <S.Sidebar>
-          <Box height='var(--F_Header_Height)' width='100%'/>
-          <Box p={.75} width='calc(100% - 1.5rem)'>
-            <Button
-              text='New chat'
-              icon='plus'
-              iconPrefix='fas'
-              secondary
-              expand
-            />
-          </Box>
-        {
-          [
-            {
-              type: 'nav',
-              name: 'How to create AGI',
-              icon: 'message',
-              iconPrefix: 'far',
-              onClick: () => {
-                setActiveSwipeIndex(1)
-              },
-              active: router.asPath === '/',
-            },
-            {
-              type: 'nav',
-              name: 'Writing good Typescript',
-              icon: 'message',
-              iconPrefix: 'far',
-              onClick: () => {
-                setActiveSwipeIndex(2)
-              },
-              active: router.asPath === '/search',
-            },
-            {
-              type: 'nav',
-              name: 'Converting Typescript to Python',
-              icon: 'message',
-              iconPrefix: 'far',
-              href: '/projects',
-              active: router.asPath === '/projects',
-            },
-           
-          ].map(item => <Item {...item}/>)
-        }
-      </S.Sidebar>
-
-      case '/search':
-        return <S.Sidebar>
-        <Box height='var(--F_Header_Height)' width='100%'/>
-      
-        {
-          [
-            {
-              type: 'nav',
-              name: 'search term 1',
-              icon: 'clock',
-              iconPrefix: 'fas',
-              onClick: () => {
-                setActiveSwipeIndex(1)
-              },
-              active: router.asPath === '/'
-            },
-            {
-              type: 'nav',
-              name: 'search term 2',
-              icon: 'clock',
-              iconPrefix: 'fas',
-              onClick: () => {
-                setActiveSwipeIndex(2)
-              },
-              active: router.asPath === '/search'
-            },
-            {
-              type: 'nav',
-              name: 'search term 3',
-              icon: 'clock',
-              iconPrefix: 'fas',
-              href: '/projects',
-              active: router.asPath === '/projects'
-            },
-            {
-              type: 'nav',
-              name: 'search term 4',
-              href: '/tasks',
-              active: router.asPath === '/tasks',
-              icon: 'clock',
-              iconPrefix: 'fas'
-            },
-           
-          ].map(item => <Item {...item}/>)
-        }
-      </S.Sidebar>
-
-  case '/projects':
     return <S.Sidebar>
-    <Box height='var(--F_Header_Height)' width='100%'/>
-    <Box p={.75} width='calc(100% - 1.5rem)'>
-      <Button
-        text='New project'
-        icon='plus'
-        iconPrefix='fas'
-        secondary
-        expand
-      />
-    </Box>
-    {
-      [
-        {
-          type: 'nav',
-          name: 'AVsync.LIVE',
-          onClick: () => {
-            setActiveSwipeIndex(1)
-          },
-          active: router.asPath === '/'
-        },
-        {
-          type: 'nav',
-          name: 'Lexi.studio',
-          onClick: () => {
-            setActiveSwipeIndex(2)
-          },
-          active: router.asPath === '/search'
-        },
-        {
-          type: 'nav',
-          name: 'UAGC Installation',
-          href: '/projects',
-          active: router.asPath === '/projects'
-        },
-       
-      ].map(item => <Item {...item}/>)
-  }
-</S.Sidebar>
-
-    }
+      <Box height='var(--F_Header_Height)' width='100%'/>
+      { 
+        renderInnerSidebar() 
+      }
+    </S.Sidebar>
   }
 
   const renderSecondPage = () => {
     return <>
       {
-        !isMobile && <S.HeaderSpacer />
+        !isMobile && !isTablet && <S.HeaderSpacer />
       }
-      <Chat></Chat>
+      <Chat />
     </>
   }
 
   const renderThirdPage = () => {
     return <S.ThirdPage>
-      {
-        search
-        ? <S.Iframe 
-            src={search ? `https://search.lexi.studio/search?q=${search}` : ''} 
-            width='100%'
-          >
-            </S.Iframe>
-        : <><LogoPlaceholder /></>
-      }
-     
-        
+      <SearchResults />
     </S.ThirdPage>
   }
 
   const router = useRouter()
+  const { spaceGuid } = router.query
 
-  const [search, set_search] = useState('')
+  useEffect(() => {
+    setActiveSpaceGuid(spaceGuid as string)
+  }, [spaceGuid])
 
-  const submitSearch = () => {
-    // set_open(true)
-    setActiveSwipeIndex(2)
-  }
-
-  return (<S.SuperApp>
+  return (<S.App>
     <S.NavHeader>
-      <Gap disableWrap>
-        <div onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}>
-        <S.Logo src='/assets/lexi-circle.png'/>
-          
-        </div>
-          <Page >
-            <Box>
-              <TextInput
-                compact
-                iconPrefix='fas'
-                placeholder='Search'
-                value={search}
-                onChange={newValue => set_search(newValue)}
-                onEnter={submitSearch}
-                canClear
-                buttons={[
-                  {
-                    minimal: true,
-                    icon: 'search',
-                    iconPrefix: 'fas',
-                    onClick: submitSearch
-                  },
-                ]}
-              />
-            </Box>
-            
-          </Page>
-          {/* <Spacer />
-          <Gap autoWidth disableWrap>
-          <Dropdown
-            options={[
-              {
-                "icon": "gear",
-                "iconPrefix": "fas",
-                "dropDownOptions": [
-                  {
-                    "icon": "fingerprint",
-                    iconPrefix: 'fas',
-                    "text": "Identity"
-                  },
-                  {
-                    "icon": "palette",
-                    iconPrefix: 'fas',
-                    "text": "Appearance"
-                  },
-                  {
-                    "icon": "volume-high",
-                    "iconPrefix": "fas",
-                    "text": "Sound"
-                  }
-                ]
-              }
-            ]}
-        />
-          {
-            router.route !== 'login' && 
-              <Box mr={.75}>
-                <Button
-                  text='Sign out'
-                  onClick={() => router.push('/login')}
-                  secondary={true}
-                />
-              </Box>
-            }
-          </Gap> */}
-         
-        </Gap>
-    </S.NavHeader>
+      <S.Logo 
+        src='/assets/lexi-circle.png'
+        onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}
+      />
+      <S.Centered isDesktop={isDesktop}>
+      <Search />
 
-    
-  <NavSpaces
-    disableTablet
-    activeSwipeIndex={activeSwipeIndex}
-    onSwipe={index => setActiveSwipeIndex(index)}
-    spaces={[]}
-    activeSpaceIndex={activeSpaceIndex}
-    onSetActiveSpacesIndex={index => set_activeSpaceIndex(index)}
-    channels={[]}
-    firstPage={renderFirstPage()}
-    secondPage={renderSecondPage()}
-    thirdPage={renderThirdPage()}
-    navsPrimary={[
-    {
-      icon: 'message',
-      iconPrefix: router.route.includes(`/`) ? 'fas' : 'fas',
-      title: 'Chat',
-      href: `/`,
-      active: router.route === `/`
-    },
-    {
-      icon: 'search',
-      iconPrefix: router.route.includes(`/search`) ? 'fas' : 'fas',
-      title: 'Search',
-      href: `/search`,
-      active: router.route === `/search`
-    },
-    {
-      icon: 'user',
-      iconPrefix: router.route.includes(`/login`) ? 'fas' : 'fas',
-      title: 'Profile',
-      href: `/login`,
-      active: router.route === `/login`
-    },
-    ]}
-  />
-  </S.SuperApp>)
+      </S.Centered>
+    </S.NavHeader>
+    <NavSpaces
+      dropdownOptions={[]}
+      disableTablet
+      activeSwipeIndex={activeSwipeIndex}
+      onSwipe={index => setActiveSwipeIndex(index)}
+      spaces={[]}
+      activeSpaceIndex={activeSpaceIndex}
+      onSetActiveSpacesIndex={index => set_activeSpaceIndex(index)}
+      channels={[]}
+      firstPage={renderFirstPage()}
+      secondPage={renderSecondPage()}
+      thirdPage={renderThirdPage()}
+      navsPrimary={[
+      {
+        icon: 'list',
+        iconPrefix: router.route.includes(`/spaces`) ? 'fas' : 'fas',
+        title: 'Spaces',
+        href: `/spaces`,
+        active: router.route === `/spaces`
+      },
+      {
+        icon: 'user',
+        iconPrefix: router.route.includes(`/login`) ? 'fas' : 'fas',
+        title: 'Profile',
+        href: `/login`,
+        active: router.route === `/login`
+      },
+      ]}
+    />
+  </S.App>)
 }
 
-export default SuperApp
+export default App
 
 const S = {
   Iframe: styled.iframe`
@@ -307,7 +119,7 @@ const S = {
     height: 100%;
     overflow: hidden;
   `,
-  SuperApp: styled.div`
+  App: styled.div`
     width: 100%;
   `,
   NavHeader: styled.div`
@@ -319,8 +131,20 @@ const S = {
     z-index: 9;
     background: var(--F_Background);
     display: flex;
+    gap: .75rem;
     align-items: center;
     border-bottom: 1px solid var(--F_Surface);
+  `,
+  Centered: styled.div<{
+    isDesktop: boolean
+  }>`
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: calc(100% - 94px);
+    width: ${props => props.isDesktop ? '100%' : 'calc(100% - 45px)'};
+
+    margin-left: ${props => props.isDesktop ? '-141px' : '22px'};
   `,
   HeaderSpacer: styled.div`
     width: 100%;

@@ -1,5 +1,6 @@
 :root {
   --F_Primary: #800080;
+  --F_Primary_Variant: #FF99FF;
   --F_Primary_Hover: #990099;
   --F_Font_Color_Error: #d70a53;
   --F_Font_Family: 'Poppins';
@@ -7,6 +8,9 @@
   --L_Prompt_Padding: .75rem;
 }
 
+html, body {
+  font-family: 'Poppins' !important;
+}
 
 @font-face {
   font-family: 'Poppins';
@@ -14,4 +18,3 @@
   font-weight: normal;
   font-style: normal;
 }
-

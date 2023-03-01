@@ -1,3 +1,5 @@
+import { store } from 'redux-tk/store'
+
 // @ts-ignore
 import { convert } from 'html-to-text'
 
@@ -14,7 +16,7 @@ let source: any
  */
 async function ttsRequest(text: string): Promise<AudioBuffer> {
   if (!audioCtx) { audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)() }
-  const response = await fetch(`https://tts.lexi.studio/tts?text=${text}.`)
+  const response = await fetch(`${process.env.NEXT_PUBLIC_LEXITTS_URL || 'http://localhost:1621'}/tts?text=${text}.`)
   const arrayBuffer = await response.arrayBuffer()
   return audioCtx.decodeAudioData(arrayBuffer)
 }
@@ -48,7 +50,13 @@ const speakSentences = (callback : () => void) => {
     // Set the onended event handler to speak the next sentence and start speaking the current sentence
     source.onended = speakSentence
     source.start()
-    console.log(sentence)
+    console.log(sentence.replace(/\n|\r/g, " "))
+
+    store.dispatch({
+      type: 'lexi/set_currentlySpeaking',
+      payload: sentence.replace(/\n|\r/g, " ")
+    })
+
     index++
   }
 
@@ -90,7 +98,13 @@ export const speak = async (text: string, callback: (error: any) => void) => {
 
       // If this is the first sentence being processed, start speaking immediately after audio generation is complete
       if (!firstRequestCompleted) {
-        speakSentences(() => callback(null))
+        speakSentences(() => {
+          callback(null)
+          store.dispatch({
+            type: 'lexi/set_currentlySpeaking',
+            payload: ''
+          })
+        })
         firstRequestCompleted = true
       }
     }
@@ -119,7 +133,7 @@ const processSpeechQueue = (): void => {
 };
 
 const addToSpeechQueue = (sentence: string): void => {
-  queue.push(sentence);
+  queue.push(sentence.replace(/#/g, ""));
   if (!isProcessing) {
     processSpeechQueue();
   }
@@ -127,7 +141,7 @@ const addToSpeechQueue = (sentence: string): void => {
 
 let accumulatedSentences: string[] = [];
 
-export const speakStream = (text: string, isComplete: boolean) => {
+export const speakStream = (text: string, guid: string) => {
   // Split the input into sentences and loop over them
   const sentences = text.match(/[^.!?]+[.!?]+/g);
   if (sentences) {

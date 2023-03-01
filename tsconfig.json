@@ -17,7 +17,8 @@
     "resolveJsonModule": true,
     "jsx": "preserve",
     "incremental": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "baseUrl": "."
   },
   "include": [
     "next-env.d.ts",
@@ -25,6 +26,9 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "LexiOS",
+    "LexiTTA",
+    "Lexiframework"
   ]
 }

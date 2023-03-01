@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
-import axios from 'axios'
+import { useState, useEffect, useRef, useMemo } from 'react'
 
 // @ts-ignore
 import { useSpeechRecognition } from 'react-speech-kit'
@@ -8,22 +7,10 @@ import { convert } from 'html-to-text'
 
 import { v4 as uuidv4 } from 'uuid'
 import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
+import { use100vh } from 'react-div-100vh'
 
 import {
-  Button,
-  Navigation,
-  Gap,
-  Page,
-  Box,
-  LineBreak,
-  Modal,
-  TextInput,
-  Spacer,
-  AspectRatio,
-  stringInArray,
-  Dropdown,
-  RichTextEditor,
-  useBreakpoint
+  Box, Button, Dropdown, TextInput,
 } from '@avsync.live/formation'
 
 import styled from 'styled-components'
@@ -35,48 +22,23 @@ import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import { playSound } from '../Lexi/System/Language/sounds'
 import { getArticleContent, getYouTubeTranscript } from '../Lexi/System/Fetch/fetch'
+import { useLexi } from 'redux-tk/lexi/hook'
+import { ChatBox } from './ChatBox'
 
-interface Queries {
-  [guid: string]: {
-    guid: string,
-    query?: string,
-    queryTime: string,
-    response?: string,
-    responseTime?: string,
-    loading: boolean,
-    error?: string,
-    scriptName?: string
-  }
-}
+const Chat = React.memo(() => {
+  const {
+    query,
+    set_query,
+    messagesByGuid,
+    sendMessage,
+    messageGuids,
+    onResponse,
+    onPartialResponse,
+    readyToSendTranscriptionMessage,
+    set_readyToSendTranscriptionMessage
+  } = useLexi()
 
-interface Props {
-  children: React.ReactNode
-}
-
-const Home = ({
-  children
-} :Props) => {
-  function useExtendedState<T>(initialState: T) {
-    const [state, setState] = useState<T>(initialState);
-
-    const getLatestState = () => {
-      return new Promise<T>((resolve, reject) => {
-        setState((s) => {
-          resolve(s);
-          return s;
-        });
-      });
-    };
-  
-    return [state, setState, getLatestState] as const;
-  }
-
-  const [queriesByGuid, set_queriesByGuid, getLatestQueriesByGuid] = useExtendedState<Queries>({})
-  const [queryGuids, set_queryGuids, getLatestQueryGuids] = useExtendedState<string[]>([])
-
-  const [loading, set_loading] = useExtendedState(true)
-
-  const [query, set_query, getLatestQuery] = useExtendedState('')
+  const true100vh = use100vh()
 
   // websocket communication with server
   const websocketClient = getWebsocketClient()
@@ -84,93 +46,44 @@ const Home = ({
     if (websocketClient) {
       websocketClient.onmessage = (ev) => {
         const wsmessage = JSON.parse(ev.data.toString())
+        // got complete response from server
         if (wsmessage.type === 'response') {
           stop()
         
-          const { status, guid, type, message, queryTime } = wsmessage as any
+          const { guid, message} = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          console.log('got a response')
           scrollToBottom()
 
-          set_queryGuids([...queryGuids, guid])
-          set_queriesByGuid(queriesByGuid => ({
-            ...queriesByGuid,
-            [guid]: {
-              query: queriesByGuid[guid].query,
-              queryTime: queriesByGuid[guid].queryTime,
-              guid,
-              loading: false,
-              response: message,
-              responseTime
-            }
-          }))
+          onResponse({
+            guid,
+            response: message,
+            responseTime
+          })
 
           listenForWakeWord(() => {
             listen()
           })
         }
+        // got partial response from server
         if (wsmessage.type === 'partial-response') {
           stop()
-          const { status, guid, type, message, queryTime } = wsmessage as any
+          const { guid, message } = wsmessage as any
 
           const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
 
-          set_queriesByGuid(queriesByGuid => ({
-            ...queriesByGuid,
-            [guid]: {
-              query: queriesByGuid[guid].query,
-              queryTime: queriesByGuid[guid].queryTime,
-              guid,
-              loading: false,
-              response: message,
-              responseTime
-            }
-          }))
+          onPartialResponse({
+            guid,
+            response: message,
+            responseTime
+          })
           scrollToBottom()
 
-          speakStream(wsmessage.message, false)
-        }
-        if (wsmessage.type === 'message') {
-          stop()
-          
-          const { message, response, messageTime, responseTime, queryTime, scriptName } = wsmessage as any
-
-          console.log('got a message')
-          scrollToBottom()
-
-          const guid = uuidv4();
-
-          (async () => {
-            const latestQueryGuids = await getLatestQueryGuids()
-
-            set_queryGuids([...latestQueryGuids, guid])
-            set_queriesByGuid(queriesByGuid => ({
-              ...queriesByGuid,
-              [guid]: {
-                guid,
-                loading: false,
-                response,
-                responseTime,
-                messageTime,
-                queryTime,
-                scriptName
-              }
-            }))
-          })()
-
-          set_loading(false)
+          speakStream(wsmessage.message, guid)
         }
       }
     }
   }, [websocketClient])
-
-  const [initializedScriptNames, set_initializedScriptNames] = useState<(string | undefined)[]>([])
-  useEffect(() => {
-    const newInitializedScriptNames = queryGuids.filter(guid => queriesByGuid?.[guid]?.scriptName).map(guid => queriesByGuid?.[guid]?.scriptName?.replace(/-/g, ' '))
-    console.log(newInitializedScriptNames)
-    set_initializedScriptNames(newInitializedScriptNames)
-  }, [queryGuids])
 
   const scrollToBottom = () => {
     if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
@@ -181,108 +94,73 @@ const Home = ({
     }
   }
 
-  const makeQuery = (query: string) => {
-    set_query('') // async so it's ok
-    set_loading(true)
-    scrollToBottom()
-
+  const sendMessageToLexi = (query: string) => {
     const guid = uuidv4()
     const queryTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
-    (async () => {
-      const latestQueryGuids = await getLatestQueryGuids()
-      set_queryGuids([...latestQueryGuids, guid])
-      set_queriesByGuid({
-        ...queriesByGuid,
-        [guid]: {
-          guid,
-          query,
-          queryTime,
-          loading: true,
-        }
+ 
+    sendMessage({
+      guid,
+      query,
+      queryTime,
+      loading: true,
+    })
+    scrollToBottom()
+    
+    // send to server
+    try {
+      const action = {
+        type: 'message',
+        guid,
+        message: query
+      }
+      websocketClient.send(JSON.stringify(action))
+    }
+    // failed to send to server
+    catch(e) {
+      const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
+      sendMessage({
+        query,
+        queryTime,
+        guid,
+        loading: false,
+        responseTime,
+        error: 'It seems the websocket request went wrong. You should reload the page.'
       })
-       // send to server
-       try {
-        const action = {
-          type: 'message',
-          guid,
-          message: query
-        }
-        websocketClient.send(JSON.stringify(action))
-      }
-      // failed to send to server
-      catch(e) {
-        const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-        const latestQueryGuids = await getLatestQueryGuids()
-        set_queryGuids([...latestQueryGuids, guid])
-        set_queriesByGuid({
-          ...queriesByGuid,
-          [guid]: {
-            query,
-            queryTime,
-            guid,
-            loading: false,
-            responseTime,
-            error: 'It seems the websocket request went wrong. You should reload the page.'
-          }
-        })
-      }
-
-      set_loading(false)
-    })()
+    }
   }
-
-  const queries = Object.keys(queriesByGuid).map(guid => queriesByGuid[guid]) 
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const scrollToRef = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [loading])
-
   // speech
-  const [userInitiatedListen, set_userInitiatedListen, get_userInitialedListen] = useExtendedState(false)
-  const [ready, set_ready, getLatestReady] = useExtendedState(false)
   const [disableTimer, set_disableTimer] = useState(true)
   useEffect(() => {
     let timer = {} as any
-    if (query && !ready && query !== '<p><br><p>' && !disableTimer) {
+    if (query && !readyToSendTranscriptionMessage && query !== '<p><br><p>' && !disableTimer) {
       timer = setTimeout(() => {
-        makeQuery(query)
-        set_ready(false)
+        sendMessageToLexi(query)
+        set_readyToSendTranscriptionMessage(false)
         set_disableTimer(true)
+        playSound('send')
         stop()
       }, 1000)
     }
     return () => {
       clearTimeout(timer)
     }
-  }, [ready, query, disableTimer])
+  }, [readyToSendTranscriptionMessage, query, disableTimer])
 
   const router = useRouter()
   const { listen, listening, stop } = useSpeechRecognition({
     onResult: (result : string) => {
       (async () => {
-        const latestReady = await getLatestReady()
-
-        if (!latestReady) {
-          set_query(query + result)
+        if (!readyToSendTranscriptionMessage) {
+          set_query(query +  result)
           set_disableTimer(false)
         }
       })()
     },
   })
-
-  const [show, set_show] = useState(false) 
-  useEffect(() => {
-    scrollToBottom()
-  }, [show])
-
-  const [open, set_open] = useState(false)
-  const [contentUrl, set_contentUrl] = useState('')
-  const [videoUrl, set_videoURL] = useState('')
-
-  const [sidebarOpen, set_sidebarOpen] = useState(false)
 
   useEffect(() => {
     scrollToBottom()
@@ -291,31 +169,21 @@ const Home = ({
   useEffect(() => {
     listenForWakeWord(() => {
       listen()
-      console.log('Heard wake word')
     })
     setInterval(() => {
       listenForWakeWord(() => {
         listen()
-        console.log('Heard wake word')
       })
     }, 8000)
   }, [])
 
   useEffect(() => {
-    if (listening || ready) {
+    if (listening || readyToSendTranscriptionMessage) {
       playSound('listen')
     }
-  }, [listening, ready])
+  }, [listening, readyToSendTranscriptionMessage])
   
-  const ScriptInitializedIndicator = ({ scriptName } : { scriptName: string}) => 
-    <><Spacer /><S.Indicator active={initializedScriptNames.includes(scriptName)} title={`${queryGuids.includes(scriptName) ? 'Finished reading' : 'Have not read'} ${scriptName}`} /></>
-
-  const [search, set_search] = useState('')
   const [url, set_url] = useState('')
-
-  const submitSearch = () => {
-    set_open(true)
-  }
 
   const insertContentByUrl = () => {
     const youtubeDomains = ['www.youtube.com', 'youtube.com', 'youtu.be']
@@ -325,7 +193,6 @@ const Home = ({
       getYouTubeTranscript(url,
         (transcript) => {
           set_query(query + '\n' + convert(transcript))
-          set_open(false)
         },
         () => {
           alert('Could not get video transcript.')
@@ -336,7 +203,6 @@ const Home = ({
       getArticleContent(url, 
         (content) => {
           set_query(query + '\n' + convert(content))
-          set_open(false)
         },
         () => {
           alert('Could not get page content.')
@@ -345,220 +211,121 @@ const Home = ({
     }
   }
 
-  const { isMobile } = useBreakpoint()
   
   return (
     <>
-  
-        <S.Container>
-          <S.Content ref={scrollContainerRef}>
-            <S.VSpacer />
-              {/* <Page>
-                <Box pb={.75}>
-                  <div style={{borderRadius: '.75rem', width: '100%', overflow: 'hidden'}}>
-                    <AspectRatio
-                      ratio={21/9}
-                      backgroundSrc='/assets/lexi-banner-2.png'
-                      coverBackground={true}
-                    />
-                  </div>
-                </Box>
-              </Page> */}
-              
-              <Box width='100%' wrap={true} mt={queries.length > 0 ? .75 : 0}>
-                <S.FlexStart>
-                </S.FlexStart>
-              </Box>
-              {
-                queries.map(({query, response, guid, error}, index) => <>
-                {
-                  queriesByGuid[guid].query &&  
-                  <Message 
-                      query={queriesByGuid[guid].query || ''} 
-                      speaker='User' 
-                      guid={guid} 
-                      queryTime={queriesByGuid[guid].queryTime} 
-                      responseTime={queriesByGuid[guid].responseTime}
-                    />
-                  }
-                
-                  <Message 
-                    query={queriesByGuid[guid].response || ''} 
-                    speaker='Lexi' 
-                    guid={guid} 
-                    error={error} 
-                    queryTime={queriesByGuid[guid].queryTime}  
-                    responseTime={queriesByGuid[guid].responseTime} 
-                  />
-                </>
-                )
-              }
-           
-            <Box hide={false} wrap={true} width='100%'>
-              <Box width='100%' hide={!show}>
-                {
-                  router.route.includes('/apps') || stringInArray(router.route, [
-                    '/framework',
-                    '/projects',
-                    '/characters',
-                    '/entities',
-                    '/realms',
-                    '/people',
-                    '/tasks',
-                    '/stories',
-                    '/scenes'
-                  ])
-                    ? children
-                    : <S.AltPage>
-                        {
-                          children
-                        }
-                      </S.AltPage>
-                }
-               
-              </Box>
-             
-              
+      <S.Container true100vh={true100vh || 0}>
+        <S.Content ref={scrollContainerRef}>
+          <S.VSpacer />
+            <Box width='100%' wrap={true} mt={messageGuids.length > 0 ? .75 : 0}>
+              <S.FlexStart>
+              </S.FlexStart>
             </Box>
-            <div ref={scrollToRef}></div>
-          </S.Content>
-
-          <Box px={.75}>
-            <S.AltPage>
-            <S.Footer>
-              <S.ButtonContainer>
-                <Box>
-                  <Dropdown
-                    icon='plus'
-                    iconPrefix='fas'
-                    minimal
-                    circle
-                    items={[
-                      {
-                        children: <div onClick={e => e.stopPropagation()}>
-                          <Box minWidth={13.5}>
-                            <TextInput
-                              value={url}
-                              onChange={newValue => set_url(newValue)}
-                              iconPrefix='fas'
-                              compact
-                              placeholder='Insert from URL'
-                              canClear
-                              buttons={[
-                                {
-                                  icon: 'arrow-right',
-                                  iconPrefix: 'fas',
-                                  minimal: true,
-                                  onClick: () => {
-                                    insertContentByUrl()
-                                  }
-                                }
-                              ]}
-                            />
-                          </Box>
-                        </div>,
-                        onClick: () => {}
-                      },
-                      {
-                        title: 'Done'
-                      }
-                    ]}
+            {
+              messageGuids.map((guid : string, index) => <>
+              {
+                messagesByGuid[guid]?.query &&  
+                <Message 
+                    query={messagesByGuid[guid]?.query || ''} 
+                    speaker='User' 
+                    guid={guid} 
+                    queryTime={messagesByGuid[guid]?.queryTime} 
+                    responseTime={messagesByGuid[guid]?.responseTime}
+                    edited={messagesByGuid[guid]?.edited}
                   />
-                
-                  <Button 
-                    icon={listening ? 'microphone-slash' : 'microphone'}
-                    iconPrefix='fas'
-                    circle={true}
-                    minimal
-                    onClick={() => {
-                      if (listening) {
-                        stop()
-                        set_disableTimer(true)
-                        set_userInitiatedListen(false)
-                      }
-                      else {
-                        listen()
-                        set_ready(false)
-                        set_userInitiatedListen(true)
-                      }
-                    }}
-                    blink={listening}
-                  />
-                  <Button 
-                    // icon='paper-plane'
-                    minimal
-                    text='Send'
-                    iconPrefix='fas'
-                    onClick={() => makeQuery(query)}
-                    disabled={loading && queryGuids.length !== 0}
-                  />
-                </Box>
+                }
               
-              </S.ButtonContainer>
-              <RichTextEditor
-                value={query} onChange={(value : string) => set_query(value)} 
-                height={'160px'}
-                onEnter={newQuery => {
-                  if (!isMobile) {
-                    makeQuery(
-                      newQuery.slice(0, -11), // remove unwanted linebreak
-                    )
-                  }
+                <Message 
+                  query={messagesByGuid[guid]?.response || ''}
+                  speaker='Lexi' 
+                  guid={guid} 
+                  error={messagesByGuid[guid]?.error} 
+                  queryTime={messagesByGuid[guid]?.queryTime}  
+                  responseTime={messagesByGuid[guid]?.responseTime} 
+                  edited={messagesByGuid[guid]?.edited} 
+                />
+              </>
+              )
+            }
+
+          <div ref={scrollToRef}></div>
+        </S.Content>
+
+        <Box px={.75}>
+          <S.AltPage>
+            <S.Footer>
+              <ChatBox
+                onEnter={() => {
+                  sendMessageToLexi(query)
                 }}
-              />
+              >
+                <Button 
+                  icon={'paper-plane'}
+                  iconPrefix='fas'
+                  minimal
+                  onClick={() => sendMessageToLexi(query)}
+                />
+                <Button 
+                  icon={listening ? 'microphone-slash' : 'microphone'}
+                  iconPrefix='fas'
+                  circle={true}
+                  minimal
+                  onClick={() => {
+                    if (listening) {
+                      stop()
+                      set_disableTimer(true)
+                    }
+                    else {
+                      listen()
+                      set_readyToSendTranscriptionMessage(false)
+                    }
+                  }}
+                  blink={listening}
+                />
+                <Dropdown
+                  icon='plus'
+                  iconPrefix='fas'
+                  minimal
+                  circle
+                  items={[
+                    {
+                      children: <div onClick={e => e.stopPropagation()}>
+                        <Box minWidth={13.5}>
+                          <TextInput
+                            value={url}
+                            onChange={newValue => set_url(newValue)}
+                            iconPrefix='fas'
+                            compact
+                            placeholder='Insert from URL'
+                            canClear
+                            buttons={[
+                              {
+                                icon: 'arrow-right',
+                                iconPrefix: 'fas',
+                                minimal: true,
+                                onClick: () => {
+                                  insertContentByUrl()
+                                }
+                              }
+                            ]}
+                          />
+                        </Box>
+                      </div>,
+                      onClick: () => {}
+                    }
+                  ]}
+                />
+                <S.VSpacer />
+              </ChatBox>
             </S.Footer>
           </S.AltPage>
         </Box>
       </S.Container>
- 
-      <Modal 
-        title='Search and Insert'
-        icon='search'
-        iconPrefix='fas'
-        size='sm'
-        isOpen={open}
-        onClose={() => set_open(false)}
-        content={
-             
-             <Box width='100%'>
-              <TextInput 
-                value={url}
-                icon='link'
-                iconPrefix='fas'
-                onChange={newValue => set_url(newValue)}
-                compact
-              />
-              <Button 
-                icon='times'
-                circle
-                iconPrefix='fas'
-                disabled={search === ''}
-                onClick={() => set_url('')}
-                minimal
-              />
-              <Button
-                icon='plus'
-                circle
-                secondary
-                iconPrefix='fas'
-                onClick={() => {
-                  insertContentByUrl()
-                }
-              }
-              />
-              
-            </Box>
-          
-            
-          
-        }
-  
-      />
     </>
   )
-}
+})
 
-export default Home
+export default Chat
 
 const S = {
   Iframe: styled.iframe`
@@ -568,8 +335,10 @@ const S = {
     overflow: hidden;
     background: var(--F_Background_Alternating);
   `,
-  Container: styled.div`
-    height: calc(calc(100vh - calc(1 * var(--F_Header_Height))) + 0rem);
+  Container: styled.div<{
+    true100vh: number 
+  }>`
+    height: ${props => `calc(${props.true100vh}px - calc(1 * var(--F_Header_Height)))`};
     width: 100%;
     overflow: hidden;
     background: var(--F_Background);
@@ -605,7 +374,6 @@ const S = {
     border-radius: .75rem;
     z-index: 1;
     background: var(--F_Background);
-
   `,
   FlexStart: styled.div<{
     wrap?: boolean
@@ -641,18 +409,6 @@ const S = {
     pointer-events: none;
   `,
   VSpacer: styled.div`
-    width: 100%;
     height: 100%;
   `,
-  Indicator: styled.div<{
-    active?: boolean
-  }>`
-    width: .75rem;
-    height: .75rem;
-    background-color: ${props => props.active ? 'var(--F_Font_Color_Success)' : 'var(--F_Surface_1)'};
-    animation: all 1s;
-    margin: .75rem;
-    margin-left: 0;
-    border-radius: 100%;
-  `
 }
