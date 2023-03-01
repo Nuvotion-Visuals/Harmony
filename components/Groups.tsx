@@ -1,13 +1,17 @@
-import { Label, Spacer, Box, Gap, TextInput, Select, Button, LineBreak, ExpandableLists, Dropdown, Item, ItemProps, Icon, generateUUID, AspectRatio, LabelColor } from '@avsync.live/formation'
+import { 
+  Spacer, 
+  Box, 
+  TextInput, 
+  ExpandableLists, 
+  Dropdown, 
+  ItemProps, 
+  generateUUID, 
+  LabelColor 
+} from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
-import styled from 'styled-components'
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
 import { useRouter } from 'next/router'
-
-interface Props {
-  
-}
 
 type List = {
   expanded: boolean,
@@ -19,10 +23,24 @@ type List = {
 
 type Lists = List[]
 
+interface Props {
+  
+}
+
 export const Groups = ({ }: Props) => {
     const router = useRouter()
 
-    const { activeSpace, activeSpaceGuid, groupsByGuid, addChannel, channelsByGuid, addChannelToGroup, removeChannel, removeGroup, removeChannelFromGroup, removeGroupFromSpace } = useSpaces()
+    const { 
+      activeSpace, 
+      activeSpaceGuid, 
+      groupsByGuid, 
+      addChannel, 
+      channelsByGuid, 
+      addChannelToGroup, 
+      removeChannel, 
+      removeChannelFromGroup, 
+      removeGroupFromSpace 
+    } = useSpaces()
 
     const [newChannelName, set_newChannelName] = useState('')
 
@@ -50,7 +68,6 @@ export const Groups = ({ }: Props) => {
       }
       set_newChannelName('')
     }
-    
 
     useEffect(() => {
       if (activeSpace?.groupGuids) {
@@ -105,23 +122,10 @@ export const Groups = ({ }: Props) => {
      
     }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, newChannelName, router.asPath, activeSpaceGuid])
   
-    const [newDescription, set_newDescription] = useState('')
-
     return (<>
-        {/* <TextInput
-          placeholder='Search Space'
-          value={search}
-          onChange={newVal => set_search(newVal)}
-          compact
-          iconPrefix='fas'
-          canClear={!!search}
-          hideOutline
-        /> */}
-
-      
       <ExpandableLists 
-        
         value={value.map((expandableList, i) => ({
+          reorderId: `list_${i}`,
           ...expandableList,
           value: {
             item: {
@@ -145,8 +149,9 @@ export const Groups = ({ }: Props) => {
                       icon: 'trash-alt',
                       iconPrefix: 'fas',
                       onClick: () => {
-                        removeGroupFromSpace({ spaceGuid: activeSpace?.guid, groupGuid: spaceGroupGuids[i]})
-
+                        if (activeSpace?.guid && spaceGroupGuids?.length) {
+                          removeGroupFromSpace({ spaceGuid: activeSpace?.guid, groupGuid: spaceGroupGuids[i]})
+                        }
                       }
                     }
                   ]}
@@ -175,8 +180,10 @@ export const Groups = ({ }: Props) => {
                       icon: 'trash-alt',
                       iconPrefix: 'fas',
                       onClick: () => {
-                        removeChannelFromGroup({ groudId: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
-                        removeChannel(spaceChannelGuids[i][listItemIndex1])
+                        if (spaceGroupGuids?.length && spaceChannelGuids?.length) {
+                          removeChannelFromGroup({ groupGuid: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
+                          removeChannel(spaceChannelGuids[i][listItemIndex1])
+                        }
                       }
                     }
                   ]}
@@ -190,10 +197,4 @@ export const Groups = ({ }: Props) => {
       />
     </>
     )
-}
-
-const S = {
-  Compose: styled.div`
-    
-  `
 }
