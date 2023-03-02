@@ -10,18 +10,12 @@ const { fetchTranscript } = require('youtube-transcript').default
 const cookieParser = require('cookie-parser')
 const cookieSession = require('cookie-session')
 
-const { extract } = require('@extractus/article-extractor')
-
-const { getSubtitles } = require('youtube-captions-scraper')
-
 const bodyParser = require('body-parser')
-
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 
-const getTimeDifference = (startTime: string, endTime: string) : number => {
-  return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
-}
+const { extract } = require('@extractus/article-extractor')
+const { getSubtitles } = require('youtube-captions-scraper')
 
 const numberWithCommas = (x: number | string) =>
   (typeof x === 'string' ? x : x.toString()).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -102,22 +96,21 @@ const initializeLanguageModel = () => {
     try {
       // @ts-ignore
       const { ChatGPTClient } = await import('@waylaidwanderer/chatgpt-api')
-      const clientOptions = {
-        modelOptions: {
-          model: 'gpt-3.5-turbo',
-        },
-        promptPrefix: 'You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects',
-        chatGptLabel: 'Lexi',
-        debug: false,
-      };
 
-      const cacheOptions = {
-        // Options for the Keyv cache, see https://www.npmjs.com/package/keyv
-        // This is used for storing conversations, and supports additional drivers (conversations are stored in memory by default)
-        // For example, to use a JSON file (`npm i keyv-file`) as a database:
-        // store: new KeyvFile({ filename: 'cache.json' }),
-      };
-      languageModel = new ChatGPTClient(process.env.OPENAI_API_KEY, clientOptions, cacheOptions);
+      languageModel = new ChatGPTClient(
+        process.env.OPENAI_API_KEY,
+        {
+          modelOptions: {
+            model: 'gpt-3.5-turbo',
+          },
+          promptPrefix: 'You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects',
+          chatGptLabel: 'Lexi',
+          debug: false,
+        }, 
+        {
+          // cache options
+        }
+      );
 
       const { response, conversationId, messageId } = await languageModel.sendMessage('Hello?', {
         onProgress: (token: string) => console.log(token),
@@ -235,7 +228,6 @@ wss.on('connection', function connection(ws: typeof WSS) {
           }))
         },
         ({ data, status }) => {
-          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my partial response to the user: ${data.response}`)
           ws.send(JSON.stringify({
             // server sent partial response to message
             type: 'partial-response',
@@ -247,125 +239,7 @@ wss.on('connection', function connection(ws: typeof WSS) {
         }
       )
     }
-    // if (action.type === 'initialize') {
-    //   (async () => {
-    //     if (!initialized) {
-    //       initialized = true
-
-    //       const scriptInitializationTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-
-    //       const getDirectories = (source: string) =>
-    //         fs.readdirSync(source, { withFileTypes: true })
-    //           .filter((dirent: any) => dirent.isDirectory())
-    //           .map((dirent : any) => dirent.name)
-              
-    //       const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
-    //       const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
-    //       let pageCount = 0
-    //       let wordCount = 0
-    //       let characterCount = 0
-    //       let numberOfSteps = 0
-    //       let step = 1
-
-    //       ws.send(JSON.stringify({
-    //         type: 'initialize-response',
-    //         message: null,
-    //         response: `Hi there. I'm about to begin reading my artificial general intelligence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
-    //         guid: 'Initialize',
-    //         status: 200,
-    //         scriptName: 'Introduction'
-    //       }))
-
-    //       const logResults = async (scripts: string[]) => {
-    //         numberOfSteps = scripts.length
-
-    //         for (const script of scripts) {
-    //           const result = await readMarkdownFile(script)
-    //           const scriptName = extractScriptNameFromPath(script)
-    //           const scriptWordCount = countWords(result)
-    //           const scriptCharacterCount = result.length
-    //           const scriptPageCount = scriptWordCount / 250
-             
-    //           const messageTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-              
-    //           // keep trying if it fails
-    //           let keepTrying
-    //           let failCount = 0
-    //           let messageId = ''
-    //           let response = 'I failed to connect'
-
-    //           console.log(`Making async function call: ${scriptName}`);
-
-    //             try {
-    //               const data = await languageModel.sendMessage(result, {
-    //                 conversationId: currentConversationId,
-    //                 parentMessageId: currentMessageId,
-    //                 timeoutMs: 2 * 60 * 1000
-    //               })
-    //               messageId = data.messageId
-    //               response = data.response
-
-    //               currentMessageId = messageId
-    //               const responseTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-    //               wordCount += scriptWordCount
-    //               characterCount += scriptCharacterCount
-    //               pageCount += scriptPageCount
-    //               const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I have been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
-    //               step += 1
-                  
-    //               console.log('🟣', fullResponse)
-    //               ws.send(JSON.stringify({
-    //                 type: 'message',
-    //                 message: `Read your ${scriptName}`,
-    //                 response: fullResponse,
-    //                 guid: `${scriptName}`,
-    //                 status: 200,
-    //                 messageTime,
-    //                 responseTime,
-    //                 scriptName,
-    //               }))
-    //             } catch (error) {
-    //               console.error(error);
-    //               // add failure message
-    //             }
-    //           }
-    //       }     
-          
-    //       const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-    //       await logResults(scriptPaths)
-    //       const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-
-    //       await new Promise(resolve => setTimeout(resolve, 5000));
-    //       // add failure message
-    //       const response = 
-    //         wordCount === 0
-    //           ? `I wasn't able to read any of my scripts. I likely lost my connection to the language model. I suggest that you log out and log in again.`
-    //           : `I read ${step - 1} scripts, totalling ${characterCount} characters, ${wordCount} words or ${pageCount} pages. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
-    //       console.log('🟣', response)
-    //       ws.send(JSON.stringify({
-    //         type: 'message',
-    //         message: null,
-    //         response: response,
-    //         guid: `${Math.random()})`,
-    //         status: 200,
-    //         messageTime: startTime,
-    //         responseTime: endTime
-    //       }))
-    //     }
-    //     else {
-    //       ws.send(JSON.stringify({
-    //         type: 'message',
-    //         message: null,
-    //         response: `I have already read my scripts.`,
-    //         guid: 'Already Initialize',
-    //         status: 200
-    //       }))
-    //     }
-    //   })()
-    // }
   }
-
-  
 })
 
 async function readMarkdownFile(filePath: string): Promise<string> {
@@ -421,11 +295,7 @@ const countWords = (s: string): number => {
   return s.split(' ').filter(str => str !== "").length;
 }
 
-
-
-// create app
 app.prepare().then(() => {
-  
   const server = express()
 
   server.use(
@@ -453,6 +323,7 @@ app.prepare().then(() => {
 
   initializeLanguageModel()
 
+  // redirect if not logged in
   // server.use((req: any, res: any, next: any) => {
   //   if (
   //     req.originalUrl !== '/login' && 
