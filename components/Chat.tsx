@@ -77,9 +77,8 @@ const Chat = React.memo(() => {
             response: message,
             responseTime
           })
-          scrollToBottom()
+          // scrollToBottom()
 
-          speakStream(wsmessage.message, guid)
         }
       }
     }

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { speakStream } from 'Lexi/System/Language/speech'
 import { ConversationsByGuid, Message, MessagesByGuid, Guid } from './types'
 
 export const slice = createSlice({
@@ -57,11 +58,17 @@ export const slice = createSlice({
     },
     onPartialResponse: (state, action: { payload: Message }) => {
       const { guid, response, responseTime } = action.payload
+
+      const existingPartialResponse = state.messagesByGuid[guid].response || ''
+      const newPartialResponse = existingPartialResponse + response
+
+      speakStream(newPartialResponse, guid)
+
       state.messagesByGuid = {
         ...state.messagesByGuid,
         [guid]: {
           ...state.messagesByGuid[guid],
-          response,
+          response: newPartialResponse,
           responseTime,
           loading: true
         }

@@ -97,6 +97,48 @@ let ready = false
 let currentConversationId = 'NO_CURRENT_CONVERSATION_ID'
 let currentMessageId = 'NO_CURRENT_MESSAGE_ID'
 
+const initializeLanguageModel = () => {
+  (async() => {
+    try {
+      // @ts-ignore
+      const { ChatGPTClient } = await import('@waylaidwanderer/chatgpt-api')
+      const clientOptions = {
+        modelOptions: {
+          model: 'gpt-3.5-turbo',
+        },
+        promptPrefix: 'You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects',
+        chatGptLabel: 'Lexi',
+        debug: false,
+      };
+
+      const cacheOptions = {
+        // Options for the Keyv cache, see https://www.npmjs.com/package/keyv
+        // This is used for storing conversations, and supports additional drivers (conversations are stored in memory by default)
+        // For example, to use a JSON file (`npm i keyv-file`) as a database:
+        // store: new KeyvFile({ filename: 'cache.json' }),
+      };
+      languageModel = new ChatGPTClient(process.env.OPENAI_API_KEY, clientOptions, cacheOptions);
+
+      const { response, conversationId, messageId } = await languageModel.sendMessage('Hello?', {
+        onProgress: (token: string) => console.log(token),
+      });
+
+      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my reponse to the user: ${response}`)
+      currentConversationId = conversationId
+      currentMessageId = messageId
+
+      ready = true
+    }
+    catch(e) {
+      const error = e as any
+      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
+      const status = error.statusCode || error.code || 500
+      const message = error.message || 'internal error'
+      console.log(status, message)
+    }
+  })()
+}
+
 // send message to language model
 const sendMessageToLanguageModel = (
   message: string,
@@ -117,15 +159,14 @@ const sendMessageToLanguageModel = (
 ) => {
   (async () => {
     try {
-      const { response, messageId } = await languageModel.sendMessage(`${message}\n(You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects)`, {
+      const { response, conversationId, messageId } = await languageModel.sendMessage(`${message}`, {
         conversationId: currentConversationId,
         parentMessageId: currentMessageId,
-        timeoutMs: 2 * 60 * 1000,
-        onProgress: (partialResponse: any) => {
-          onProgress({ status: 200, data: { response: partialResponse.response } })
-          currentMessageId = partialResponse.messageId
+        onProgress: (token: string) => {
+          onProgress({ status: 200, data: { response: token } })
         }
-      })
+      });
+
       currentMessageId = messageId
       onComplete({ status: 200, data: { response } })
     }
@@ -410,6 +451,8 @@ app.prepare().then(() => {
     })
   )
 
+  initializeLanguageModel()
+
   // server.use((req: any, res: any, next: any) => {
   //   if (
   //     req.originalUrl !== '/login' && 
@@ -426,52 +469,6 @@ app.prepare().then(() => {
   //   return
   // })
 
-
-  // login
-  server.post('/auth/login', async (req: any, res: any) => {
-    const { email, password } = req.body
-    try {
-      (async() => {
-        try {
-          const { ChatGPTAPIBrowser } = await import('chatgpt')
-
-          languageModel = new ChatGPTAPIBrowser({
-            email,
-            password
-          })
-          await languageModel.initSession()
-
-          const identityScript = await readMarkdownFile('./Lexi/Scripts/1. Identity/Readme.md')
-          const {response, conversationId, messageId } = await languageModel.sendMessage(identityScript, {
-            onProgress: (partialResponse: any) => {
-              currentMessageId = partialResponse.messageId
-            }
-          })
-
-          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my reponse to the user: ${response}`)
-          currentConversationId = conversationId
-          currentMessageId = messageId
-
-          req.session.loggedIn = true
-          ready = true
-          res.send({ status: 200 })
-        }
-        catch(e) {
-          const error = e as any
-          console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
-          const status = error.statusCode || error.code || 500
-          const message = error.message || 'internal error'
-          res.send({ status, message })
-        }
-      })()
-    }
-    catch(e) {
-      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${e}`)
-      res.send({ status: 'failure', msg: 'Code validation failed' })
-    }
-  })
-
-   // chat
   server.post('/tools/parse-article', async (req: any, res: any) => {
     const { contentUrl } = req.body
 

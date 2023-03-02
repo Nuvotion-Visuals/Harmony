@@ -29,6 +29,7 @@
     "@reduxjs/toolkit": "^1.9.2",
     "@types/redux-batched-subscribe": "^0.1.4",
     "@types/redux-logger": "^3.0.9",
+    "@waylaidwanderer/chatgpt-api": "^1.22.5",
     "axios": "^1.2.1",
     "body-parser": "^1.20.1",
     "chatgpt": "3.4.1",

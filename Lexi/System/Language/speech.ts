@@ -144,6 +144,7 @@ let accumulatedSentences: string[] = [];
 export const speakStream = (text: string, guid: string) => {
   // Split the input into sentences and loop over them
   const sentences = text.match(/[^.!?]+[.!?]+/g);
+  console.log(sentences)
   if (sentences) {
     for (const sentence of sentences) {
       // Trim leading and trailing whitespace from the sentence
