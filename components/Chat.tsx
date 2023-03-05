@@ -168,6 +168,7 @@ const Chat = React.memo(() => {
     },
     onInterimTranscript: (result) => {
       set_interimTranscript(result);
+      set_disableTimer(true)
     }
   })
 
@@ -178,6 +179,8 @@ const Chat = React.memo(() => {
 
   const stop = () => {
     stopListening()
+    set_disableTimer(true)
+    set_interimTranscript('')
     clear()
   }
 
@@ -185,14 +188,22 @@ const Chat = React.memo(() => {
     scrollToBottom()
   }, [router.asPath])
 
+  const listeningRef = useRef(listening);
+  useEffect(() => {
+    listeningRef.current = listening;
+    console.log(listening)
+  }, [listening]);
   useEffect(() => {
     listenForWakeWord(() => {
       start()
     })
     setInterval(() => {
-      listenForWakeWord(() => {
-        start()
-      })
+      if (listeningRef.current === false) {
+        console.log('listening for wake word')
+        listenForWakeWord(() => {
+          start()
+        })
+      }
     }, 8000)
   }, [])
 

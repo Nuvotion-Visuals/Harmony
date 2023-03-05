@@ -11,14 +11,10 @@ export function listenForWakeWord(callback: () => void) {
 
   // Check if the browser supports the SpeechRecognition API
   // @ts-ignore
-  const SpeechGrammarList = SpeechGrammarList || window.webkitSpeechGrammarList;
+  const SpeechGrammarList = window.webkitSpeechGrammarList;
   // @ts-ignore
   const SpeechRecognition = window.SpeechRecognition;
-  if (!('SpeechRecognition' in window)) {
-    // Log an error message to the console if the API is not supported
-    console.error('Speech recognition not supported by your browser');
-    return;
-  }
+ 
   
   /*
   * The Speech Recognition API is a technology that provides web developers with the ability to incorporate speech recognition capabilities 
@@ -38,7 +34,7 @@ export function listenForWakeWord(callback: () => void) {
   * of recognition alternatives, which contain the recognized text, confidence scores, and other information.
   */ 
   // Set up the SpeechRecognition object
-  const recognition = new SpeechRecognition();
+  const recognition = new webkitSpeechRecognition()
   // Configure the recognition object to run continuously and return only final results
   recognition.continuous = true;
   recognition.interimResults = false;
