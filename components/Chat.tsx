@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 
 // @ts-ignore
-import { useSpeechRecognition } from 'react-speech-kit'
-// @ts-ignore
 import { convert } from 'html-to-text'
 
 import { v4 as uuidv4 } from 'uuid'
@@ -17,13 +15,13 @@ import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import Message from './Message'
 import React from 'react'
-import { speakStream } from '../Lexi/System/Language/speech'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
 import { playSound } from '../Lexi/System/Language/sounds'
 import { getArticleContent, getYouTubeTranscript } from '../Lexi/System/Fetch/fetch'
 import { useLexi } from 'redux-tk/lexi/hook'
 import { ChatBox } from './ChatBox'
+import { SpeechTranscription } from 'Lexi/System/Language/speechTranscription'
 
 const Chat = React.memo(() => {
   const {
@@ -62,7 +60,7 @@ const Chat = React.memo(() => {
           })
 
           listenForWakeWord(() => {
-            listen()
+            start()
           })
         }
         // got partial response from server
@@ -86,9 +84,6 @@ const Chat = React.memo(() => {
   const scrollToBottom = () => {
     if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
       (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement)?.scrollHeight
-      setTimeout(() => {
-        (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement)?.scrollHeight
-      }, 1)
     }
   }
 
@@ -141,24 +136,50 @@ const Chat = React.memo(() => {
         set_disableTimer(true)
         playSound('send')
         stop()
-      }, 1000)
+      }, 1500)
     }
     return () => {
       clearTimeout(timer)
     }
   }, [readyToSendTranscriptionMessage, query, disableTimer])
 
+  const [finalTranscript, set_finalTranscript] = useState("");
+  const [interimTranscript, set_interimTranscript] = useState("");
+  const [originalValueBeforeInterim, set_originalValueBeforeInterim] = useState('')
+
+  useEffect(() => {
+    if (!readyToSendTranscriptionMessage) {
+      set_query(finalTranscript)
+      set_originalValueBeforeInterim(finalTranscript)
+      set_disableTimer(false)
+    }
+  }, [finalTranscript])
+
+  useEffect(() => {
+    if (interimTranscript) {
+      set_query(originalValueBeforeInterim + interimTranscript)
+    }
+  }, [interimTranscript])
+
   const router = useRouter()
-  const { listen, listening, stop } = useSpeechRecognition({
-    onResult: (result : string) => {
-      (async () => {
-        if (!readyToSendTranscriptionMessage) {
-          set_query(query +  result)
-          set_disableTimer(false)
-        }
-      })()
+  const { listen, listening, stopListening, clear } = SpeechTranscription({
+    onFinalTranscript: (result) => {
+      set_finalTranscript(result);
     },
+    onInterimTranscript: (result) => {
+      set_interimTranscript(result);
+    }
   })
+
+  const start = () => {
+    set_originalValueBeforeInterim(query)
+    listen()
+  }
+
+  const stop = () => {
+    stopListening()
+    clear()
+  }
 
   useEffect(() => {
     scrollToBottom()
@@ -166,11 +187,11 @@ const Chat = React.memo(() => {
 
   useEffect(() => {
     listenForWakeWord(() => {
-      listen()
+      start()
     })
     setInterval(() => {
       listenForWakeWord(() => {
-        listen()
+        start()
       })
     }, 8000)
   }, [])
@@ -274,7 +295,7 @@ const Chat = React.memo(() => {
                       set_disableTimer(true)
                     }
                     else {
-                      listen()
+                      start()
                       set_readyToSendTranscriptionMessage(false)
                     }
                   }}
@@ -349,7 +370,7 @@ const S = {
     align-items: flex-end;
     overflow-y: auto;
     overflow-x: hidden;
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
     background: var(--F_Background);
   `,
   AltPage: styled.div`

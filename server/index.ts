@@ -94,16 +94,20 @@ let currentMessageId = 'NO_CURRENT_MESSAGE_ID'
 const initializeLanguageModel = () => {
   (async() => {
     try {
+
+      const currentDate = new Date();
+      const dateString = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
       // @ts-ignore
       const { ChatGPTClient } = await import('@waylaidwanderer/chatgpt-api')
-
+      const identityScript = await readMarkdownFile('./Lexi/IdentityAndBehavior.md')
       languageModel = new ChatGPTClient(
         process.env.OPENAI_API_KEY,
         {
           modelOptions: {
             model: 'gpt-3.5-turbo',
           },
-          promptPrefix: 'You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects',
+          promptPrefix: `${identityScript}\nCurrent date: ${dateString}`,
           chatGptLabel: 'Lexi',
           debug: false,
         }, 
