@@ -1,4 +1,4 @@
-type SoundName = 'wake' | 'listen' | 'stop listen' | 'ask' | 'error' | 'send'
+type SoundName = 'wake' | 'listen' | 'stop-listening' | 'ask' | 'error' | 'send'
 
 /**
  * Plays an audio file with the specified name from the `/assets/audio/ui` directory.

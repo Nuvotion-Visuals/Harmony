@@ -1,4 +1,4 @@
-import { NavSpaces, NavTabs, Item, Placeholders, Box, DateAndTimePicker, stringInArray, useBreakpoint, Gap, Button, Page, TextInput, Dropdown } from '@avsync.live/formation'
+import { NavSpaces, Box, useBreakpoint } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useLayout } from 'redux-tk/layout/hook'
@@ -17,7 +17,6 @@ interface Props {
 }
 
 const App = ({ children }: Props) => {
-
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
 
   const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
@@ -93,14 +92,21 @@ const App = ({ children }: Props) => {
       thirdPage={renderThirdPage()}
       navsPrimary={[
       {
-        icon: 'list',
-        iconPrefix: router.route.includes(`/spaces`) ? 'fas' : 'fas',
+        icon: 'diagram-project',
+        iconPrefix: router.route.includes(`/spaces`) || router.route === '/' ? 'fas' : 'fas',
         title: 'Spaces',
         href: `/spaces`,
-        active: router.route === `/spaces`
+        active: router.route === `/spaces` || router.route === '/'
       },
       {
-        icon: 'user',
+        icon: 'users',
+        iconPrefix: router.route.includes(`/personas`) ? 'fas' : 'fas',
+        title: 'Personas',
+        href: `/personas`,
+        active: router.route === `/personas`
+      },
+      {
+        icon: 'user-circle',
         iconPrefix: router.route.includes(`/login`) ? 'fas' : 'fas',
         title: 'Profile',
         href: `/login`,

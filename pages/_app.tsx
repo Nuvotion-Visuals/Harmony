@@ -53,7 +53,8 @@ library.add(
   fas.faWrench, fas.faEdit, fas.faTrashAlt, fas.faArrowUp, fas.faSave, fas.faBan, 
   fas.faPencil, fas.faPencilAlt, fas.faImage, fas.faVideo, fas.faMusic, fas.faFile,
   fas.faCode, fas.faEnvelope, fas.faParagraph, fas.faBoltLightning, fas.faChevronLeft,
-  fas.faChevronDown, fas.faChevronRight, fas.faHashtag, fas.faCaretRight, fas.faCaretDown
+  fas.faChevronDown, fas.faChevronRight, fas.faHashtag, fas.faCaretRight, fas.faCaretDown,
+  fas.faDiagramProject, fas.faUserCircle
 )
 
 import { useRouter } from 'next/router'

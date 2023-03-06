@@ -191,7 +191,6 @@ const Chat = React.memo(() => {
   const listeningRef = useRef(listening);
   useEffect(() => {
     listeningRef.current = listening;
-    console.log(listening)
   }, [listening]);
   useEffect(() => {
     listenForWakeWord(() => {
@@ -199,7 +198,6 @@ const Chat = React.memo(() => {
     })
     setInterval(() => {
       if (listeningRef.current === false) {
-        console.log('listening for wake word')
         listenForWakeWord(() => {
           start()
         })
@@ -240,7 +238,6 @@ const Chat = React.memo(() => {
       )
     }
   }
-
   
   return (
     <>
@@ -381,7 +378,6 @@ const S = {
     align-items: flex-end;
     overflow-y: auto;
     overflow-x: hidden;
-    /* scroll-behavior: smooth; */
     background: var(--F_Background);
   `,
   AltPage: styled.div`

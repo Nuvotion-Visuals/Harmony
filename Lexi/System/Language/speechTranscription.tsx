@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import { playSound } from "./sounds";
 
 interface Props {
   onInterimTranscript: (result: string) => void;
@@ -28,9 +29,12 @@ export const SpeechTranscription = ({
       };
       recognitionRef.current.onerror = (e) => {
         console.log("Speech Recognition Error", e);
+        playSound('stop-listening')
       };
       recognitionRef.current.onend = () => {
         console.log("Speech Recognition Ended");
+        playSound('stop-listening')
+
         recognitionRef.current = null;
         set_listening(false);
       };
