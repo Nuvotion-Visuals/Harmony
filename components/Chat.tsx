@@ -1,11 +1,10 @@
 import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import { use100vh } from 'react-div-100vh'
-import { useRouter } from 'next/router'
 
 import styled from 'styled-components'
 
-import { Box, Button, Dropdown, TextInput } from '@avsync.live/formation'
+import { Box, Button, Dropdown, Page, TextInput } from '@avsync.live/formation'
 import { ChatBox } from './ChatBox'
 import Message from './Message'
 
@@ -17,8 +16,11 @@ import { SpeechTranscription } from 'Lexi/System/Language/speechTranscription'
 import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 
 import { v4 as uuidv4 } from 'uuid'
+import { getTimestamp, scrollToBottom } from 'client-utils'
 
 const Chat = React.memo(() => {
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+
   const {
     query,
     set_query,
@@ -27,8 +29,7 @@ const Chat = React.memo(() => {
     messageGuids,
     onResponse,
     onPartialResponse,
-    readyToSendTranscriptionMessage,
-    set_readyToSendTranscriptionMessage
+    readyToSendTranscriptionMessage
   } = useLexi()
 
   // websocket communication with server
@@ -36,53 +37,31 @@ const Chat = React.memo(() => {
   useEffect(() => {
     if (websocketClient) {
       websocketClient.onmessage = (ev) => {
-        const wsmessage = JSON.parse(ev.data.toString())
-        // got complete response from server
-        if (wsmessage.type === 'response') {
-          stop()
-        
-          const { guid, message} = wsmessage as any
+        const { guid, message, type } = JSON.parse(ev.data.toString())
+        stop()
+        scrollToBottom(scrollContainerRef)
 
-          const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-          scrollToBottom()
-
+        if (type === 'response') {
           onResponse({
             guid,
             response: message,
-            responseTime
-          })
-
-          listenForWakeWord(() => {
-            start()
+            responseTime: getTimestamp()
           })
         }
-        // got partial response from server
-        if (wsmessage.type === 'partial-response') {
-          stop()
-          const { guid, message } = wsmessage as any
-
-          const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-
+        if (type === 'partial-response') {
           onPartialResponse({
             guid,
             response: message,
-            responseTime
+            responseTime: getTimestamp()
           })
-          scrollToBottom()
         }
       }
     }
   }, [websocketClient])
 
-  const scrollToBottom = () => {
-    if (!!(scrollContainerRef.current as HTMLElement) && !!(scrollContainerRef.current as HTMLElement)) {
-      (scrollContainerRef.current as HTMLElement).scrollTop = (scrollContainerRef.current as HTMLElement)?.scrollHeight
-    }
-  }
-
   const sendMessageToLexi = (query: string) => {
     const guid = uuidv4()
-    const queryTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    const queryTime = getTimestamp();
  
     sendMessage({
       guid,
@@ -90,9 +69,8 @@ const Chat = React.memo(() => {
       queryTime,
       loading: true,
     })
-    scrollToBottom()
+    scrollToBottom(scrollContainerRef)
     
-    // send to server
     try {
       const action = {
         type: 'message',
@@ -101,24 +79,19 @@ const Chat = React.memo(() => {
       }
       websocketClient.send(JSON.stringify(action))
     }
-    // failed to send to server
     catch(e) {
-      const responseTime = new Date().toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'})
       sendMessage({
         query,
         queryTime,
         guid,
         loading: false,
-        responseTime,
+        responseTime: getTimestamp(),
         error: 'It seems the websocket request went wrong. You should reload the page.'
       })
     }
   }
 
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
-  const scrollToRef = useRef<HTMLDivElement | null>(null)
-
-  // speech
+  // Speech Transcription
   const [disableTimer, set_disableTimer] = useState(true)
   useEffect(() => {
     let timer = {} as any
@@ -135,8 +108,8 @@ const Chat = React.memo(() => {
     }
   }, [readyToSendTranscriptionMessage, query, disableTimer])
 
-  const [finalTranscript, set_finalTranscript] = useState("");
-  const [interimTranscript, set_interimTranscript] = useState("");
+  const [finalTranscript, set_finalTranscript] = useState('')
+  const [interimTranscript, set_interimTranscript] = useState('')
   const [originalValueBeforeInterim, set_originalValueBeforeInterim] = useState('')
 
   useEffect(() => {
@@ -153,13 +126,12 @@ const Chat = React.memo(() => {
     }
   }, [interimTranscript])
 
-  const router = useRouter()
   const { listen, listening, stopListening, clear } = SpeechTranscription({
     onFinalTranscript: (result) => {
-      set_finalTranscript(result);
+      set_finalTranscript(result)
     },
     onInterimTranscript: (result) => {
-      set_interimTranscript(result);
+      set_interimTranscript(result)
       set_disableTimer(true)
     }
   })
@@ -176,159 +148,130 @@ const Chat = React.memo(() => {
     clear()
   }
 
+  const listeningRef = useRef(listening)
   useEffect(() => {
-    scrollToBottom()
-  }, [router.asPath])
+    listeningRef.current = listening
+  }, [listening])
 
-  const listeningRef = useRef(listening);
   useEffect(() => {
-    listeningRef.current = listening;
-  }, [listening]);
-  useEffect(() => {
-    listenForWakeWord(() => {
-      start()
-    })
+    listenForWakeWord(() => start())
     setInterval(() => {
       if (listeningRef.current === false) {
-        listenForWakeWord(() => {
-          start()
-        })
+        listenForWakeWord(() => start())
       }
     }, 8000)
   }, [])
 
   useEffect(() => {
-    if (listening || readyToSendTranscriptionMessage) {
+    if (listening) {
       playSound('listen')
     }
-  }, [listening, readyToSendTranscriptionMessage])
+  }, [listening])
   
   const [urlToScrape, set_urlToScrape] = useState('')
   
   const true100vh = use100vh()
 
   return (
-    <>
-      <S.Container true100vh={true100vh || 0}>
-        <S.Content ref={scrollContainerRef}>
-          <S.VSpacer />
-            <Box width='100%' wrap={true} mt={messageGuids.length > 0 ? .75 : 0}>
-              <S.FlexStart>
-              </S.FlexStart>
-            </Box>
+    <S.Container true100vh={true100vh || 0}>
+      <S.Content ref={scrollContainerRef}>
+        <S.VSpacer />
+          {
+            messageGuids.map((guid : string) => <>
             {
-              messageGuids.map((guid : string, index) => <>
-              {
-                messagesByGuid[guid]?.query &&  
+              messagesByGuid[guid]?.query &&  
                 <Message 
-                    query={messagesByGuid[guid]?.query || ''} 
-                    speaker='User' 
-                    guid={guid} 
-                    queryTime={messagesByGuid[guid]?.queryTime} 
-                    responseTime={messagesByGuid[guid]?.responseTime}
-                    edited={messagesByGuid[guid]?.edited}
-                  />
-                }
-              
-                <Message 
-                  query={messagesByGuid[guid]?.response || ''}
-                  speaker='Lexi' 
+                  query={messagesByGuid[guid]?.query || ''} 
+                  speaker='User' 
                   guid={guid} 
-                  error={messagesByGuid[guid]?.error} 
-                  queryTime={messagesByGuid[guid]?.queryTime}  
-                  responseTime={messagesByGuid[guid]?.responseTime} 
-                  edited={messagesByGuid[guid]?.edited} 
+                  queryTime={messagesByGuid[guid]?.queryTime} 
+                  responseTime={messagesByGuid[guid]?.responseTime}
+                  edited={messagesByGuid[guid]?.edited}
                 />
-              </>
-              )
-            }
+              }
+            
+              <Message 
+                query={messagesByGuid[guid]?.response || ''}
+                speaker='Lexi' 
+                guid={guid} 
+                error={messagesByGuid[guid]?.error} 
+                queryTime={messagesByGuid[guid]?.queryTime}  
+                responseTime={messagesByGuid[guid]?.responseTime} 
+                edited={messagesByGuid[guid]?.edited} 
+              />
+            </>
+            )
+          }
+      </S.Content>
 
-          <div ref={scrollToRef}></div>
-        </S.Content>
-
-        <Box px={.75}>
-          <S.AltPage>
-            <S.Footer>
-              <ChatBox
-                onEnter={() => {
-                  sendMessageToLexi(query)
+      <Box px={.75}>
+        <Page noPadding>
+          <S.Footer>
+            <ChatBox onEnter={() => sendMessageToLexi(query)}>
+              <Button 
+                icon={'paper-plane'}
+                iconPrefix='fas'
+                minimal
+                onClick={() => sendMessageToLexi(query)}
+              />
+              <Button 
+                icon={listening ? 'microphone-slash' : 'microphone'}
+                iconPrefix='fas'
+                circle={true}
+                minimal
+                onClick={() => {
+                  if (listening) {
+                    stop()
+                    set_disableTimer(true)
+                  }
+                  else {
+                    start()
+                  }
                 }}
-              >
-                <Button 
-                  icon={'paper-plane'}
-                  iconPrefix='fas'
-                  minimal
-                  onClick={() => sendMessageToLexi(query)}
-                />
-                <Button 
-                  icon={listening ? 'microphone-slash' : 'microphone'}
-                  iconPrefix='fas'
-                  circle={true}
-                  minimal
-                  onClick={() => {
-                    if (listening) {
-                      stop()
-                      set_disableTimer(true)
-                    }
-                    else {
-                      start()
-                    }
-                  }}
-                  blink={listening}
-                />
-                <Dropdown
-                  icon='plus'
-                  iconPrefix='fas'
-                  minimal
-                  circle
-                  items={[
-                    {
-                      children: <div onClick={e => e.stopPropagation()}>
-                        <Box minWidth={13.5}>
-                          <TextInput
-                            value={urlToScrape}
-                            onChange={newValue => set_urlToScrape(newValue)}
-                            iconPrefix='fas'
-                            compact
-                            placeholder='Insert from URL'
-                            canClear
-                            buttons={[
-                              {
-                                icon: 'arrow-right',
-                                iconPrefix: 'fas',
-                                minimal: true,
-                                onClick: () => {
-                                  insertContentByUrl(urlToScrape)
-                                }
-                              }
-                            ]}
-                          />
-                        </Box>
-                      </div>,
-                      onClick: () => {}
-                    }
-                  ]}
-                />
-                <S.VSpacer />
-              </ChatBox>
-            </S.Footer>
-          </S.AltPage>
-        </Box>
-      </S.Container>
-    </>
+                blink={listening}
+              />
+              <Dropdown
+                icon='plus'
+                iconPrefix='fas'
+                minimal
+                circle
+                items={[
+                  {
+                    children: <div onClick={e => e.stopPropagation()}>
+                      <Box minWidth={13.5}>
+                        <TextInput
+                          value={urlToScrape}
+                          onChange={newValue => set_urlToScrape(newValue)}
+                          iconPrefix='fas'
+                          compact
+                          placeholder='Insert from URL'
+                          canClear={urlToScrape !== ''}
+                          buttons={[
+                            {
+                              icon: 'arrow-right',
+                              iconPrefix: 'fas',
+                              minimal: true,
+                              onClick: () => insertContentByUrl(urlToScrape)
+                            }
+                          ]}
+                        />
+                      </Box>
+                    </div>
+                  }
+                ]}
+              />
+              <S.VSpacer />
+            </ChatBox>
+          </S.Footer>
+        </Page>
+      </Box>
+    </S.Container>
   )
 })
 
 export default Chat
 
 const S = {
-  Iframe: styled.iframe`
-    width: 100%;
-    height: 100%;
-    border-radius: 1rem;
-    overflow: hidden;
-    background: var(--F_Background_Alternating);
-  `,
   Container: styled.div<{
     true100vh: number 
   }>`
@@ -347,10 +290,6 @@ const S = {
     overflow-x: hidden;
     background: var(--F_Background);
   `,
-  AltPage: styled.div`
-    max-width: 700px;
-    width: 100%;
-  `,
   Footer: styled.div`
     position:relative;
     display: flex;
@@ -359,47 +298,6 @@ const S = {
     height: var(--L_Prompt_Height);
     padding: var(--L_Prompt_Padding) 0;
     overflow-y: auto;
-  `,
-  ButtonContainer: styled.div`
-    position: absolute;
-    right: 1px;
-    top: calc(var(--L_Prompt_Padding) + 1px);
-    border-radius: .75rem;
-    z-index: 1;
-    background: var(--F_Background);
-  `,
-  FlexStart: styled.div<{
-    wrap?: boolean
-  }>`
-    width: 100%;
-    max-width: 700px;
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: ${props => props.wrap? 'wrap' : 'noWrap'};
-    
-  `,
-  Center: styled.div<{
-    isMobile?: boolean,
-    isSidebarOpen?: boolean
-  }>`
-    left: ${props => 
-      props.isMobile
-        ? '14rem'
-        : props.isSidebarOpen
-            ? 'var(--F_Sidebar_Width_Expanded)'
-            : '0'
-    };
-    position: absolute;
-    width: ${props => 
-      props.isMobile
-        ? '14rem'
-        : props.isSidebarOpen
-            ? 'calc(100% - var(--F_Sidebar_Width_Expanded))'
-            : '100%'
-    };
-    display: flex;
-    justify-content: center;
-    pointer-events: none;
   `,
   VSpacer: styled.div`
     height: 100%;

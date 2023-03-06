@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import { playSound } from "./sounds";
 
 interface Props {
   onInterimTranscript: (result: string) => void;
@@ -11,7 +10,7 @@ export const SpeechTranscription = ({
   onFinalTranscript
 }: Props) => {
   const [listening, set_listening] = useState(false);
-  const recognitionRef = useRef<webkitSpeechRecognition | null>(null);
+  const recognitionRef = useRef<any | null>(null);
   const finalTranscriptRef = useRef<string>("");
 
   const listen = () => {
@@ -20,6 +19,7 @@ export const SpeechTranscription = ({
       return;
     }
     if (!recognitionRef.current) {
+      // @ts-ignore
       recognitionRef.current = new webkitSpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
@@ -36,7 +36,7 @@ export const SpeechTranscription = ({
         recognitionRef.current = null;
         set_listening(false);
       };
-      recognitionRef.current.onresult = (event) => {
+      recognitionRef.current.onresult = (event: any) => {
         let interim_transcript = "";
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {

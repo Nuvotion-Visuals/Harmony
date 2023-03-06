@@ -87,7 +87,7 @@ export const getArticleContent = (
           })
         },
         () => {
-          alert('Could not get video transcript.')
+          alert('Sorry, I could not get the video transcript.')
         }
       )
     }
@@ -101,7 +101,7 @@ export const getArticleContent = (
           })
         },
         () => {
-          alert('Could not get page content.')
+          alert('Sorry, I could not get the page content.')
         }
       )
     }
