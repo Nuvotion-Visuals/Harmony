@@ -1,27 +1,22 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
-
-// @ts-ignore
-import { convert } from 'html-to-text'
-
-import { v4 as uuidv4 } from 'uuid'
-import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
+import React from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { use100vh } from 'react-div-100vh'
-
-import {
-  Box, Button, Dropdown, TextInput,
-} from '@avsync.live/formation'
+import { useRouter } from 'next/router'
 
 import styled from 'styled-components'
-import { useRouter } from 'next/router'
-import Message from './Message'
-import React from 'react'
-import { listenForWakeWord } from '../Lexi/System/Language/listening'
 
-import { playSound } from '../Lexi/System/Language/sounds'
-import { getArticleContent, getYouTubeTranscript } from '../Lexi/System/Fetch/fetch'
-import { useLexi } from 'redux-tk/lexi/hook'
+import { Box, Button, Dropdown, TextInput } from '@avsync.live/formation'
 import { ChatBox } from './ChatBox'
+import Message from './Message'
+
+import { useLexi } from 'redux-tk/lexi/hook'
+import { listenForWakeWord } from '../Lexi/System/Language/listening'
+import { playSound } from '../Lexi/System/Language/sounds'
+import { insertContentByUrl } from '../Lexi/System/Fetch/fetch'
 import { SpeechTranscription } from 'Lexi/System/Language/speechTranscription'
+import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
+
+import { v4 as uuidv4 } from 'uuid'
 
 const Chat = React.memo(() => {
   const {
@@ -35,8 +30,6 @@ const Chat = React.memo(() => {
     readyToSendTranscriptionMessage,
     set_readyToSendTranscriptionMessage
   } = useLexi()
-
-  const true100vh = use100vh()
 
   // websocket communication with server
   const websocketClient = getWebsocketClient()
@@ -132,7 +125,6 @@ const Chat = React.memo(() => {
     if (query && !readyToSendTranscriptionMessage && query !== '<p><br><p>' && !disableTimer) {
       timer = setTimeout(() => {
         sendMessageToLexi(query)
-        set_readyToSendTranscriptionMessage(false)
         set_disableTimer(true)
         playSound('send')
         stop()
@@ -148,10 +140,10 @@ const Chat = React.memo(() => {
   const [originalValueBeforeInterim, set_originalValueBeforeInterim] = useState('')
 
   useEffect(() => {
-    if (!readyToSendTranscriptionMessage) {
+    if (finalTranscript) {
+      set_disableTimer(false)
       set_query(finalTranscript)
       set_originalValueBeforeInterim(finalTranscript)
-      set_disableTimer(false)
     }
   }, [finalTranscript])
 
@@ -211,34 +203,10 @@ const Chat = React.memo(() => {
     }
   }, [listening, readyToSendTranscriptionMessage])
   
-  const [url, set_url] = useState('')
-
-  const insertContentByUrl = () => {
-    const youtubeDomains = ['www.youtube.com', 'youtube.com', 'youtu.be']
-
-    const { hostname } = new URL(url);
-    if (youtubeDomains.includes(hostname)) {
-      getYouTubeTranscript(url,
-        (transcript) => {
-          set_query(query + '\n' + convert(transcript))
-        },
-        () => {
-          alert('Could not get video transcript.')
-        }
-      )
-    }
-    else {
-      getArticleContent(url, 
-        (content) => {
-          set_query(query + '\n' + convert(content))
-        },
-        () => {
-          alert('Could not get page content.')
-        }
-      )
-    }
-  }
+  const [urlToScrape, set_urlToScrape] = useState('')
   
+  const true100vh = use100vh()
+
   return (
     <>
       <S.Container true100vh={true100vh || 0}>
@@ -304,7 +272,6 @@ const Chat = React.memo(() => {
                     }
                     else {
                       start()
-                      set_readyToSendTranscriptionMessage(false)
                     }
                   }}
                   blink={listening}
@@ -319,8 +286,8 @@ const Chat = React.memo(() => {
                       children: <div onClick={e => e.stopPropagation()}>
                         <Box minWidth={13.5}>
                           <TextInput
-                            value={url}
-                            onChange={newValue => set_url(newValue)}
+                            value={urlToScrape}
+                            onChange={newValue => set_urlToScrape(newValue)}
                             iconPrefix='fas'
                             compact
                             placeholder='Insert from URL'
@@ -331,7 +298,7 @@ const Chat = React.memo(() => {
                                 iconPrefix: 'fas',
                                 minimal: true,
                                 onClick: () => {
-                                  insertContentByUrl()
+                                  insertContentByUrl(urlToScrape)
                                 }
                               }
                             ]}

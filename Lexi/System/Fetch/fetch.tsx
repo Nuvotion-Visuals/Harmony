@@ -1,4 +1,7 @@
-import { markdownToHTML } from '@avsync.live/formation'
+// @ts-ignore
+import { convert } from 'html-to-text'
+
+import { store } from 'redux-tk/store'
 
 /**
  * Calls the /tools/parse-article endpoint to get the transcript of an article
@@ -70,3 +73,36 @@ export const getArticleContent = (
       });
   };
   
+  export const insertContentByUrl = (url: string) => {
+    const youtubeDomains = ['www.youtube.com', 'youtube.com', 'youtu.be']
+    const query = store.getState().lexi.query
+    const { hostname } = new URL(url);
+    if (youtubeDomains.includes(hostname)) {
+      getYouTubeTranscript(url,
+        (transcript) => {
+
+          store.dispatch({
+            type: 'lexi/set_query',
+            payload: query + '\n' + convert(transcript)
+          })
+        },
+        () => {
+          alert('Could not get video transcript.')
+        }
+      )
+    }
+    else {
+      getArticleContent(url, 
+        (content) => {
+
+          store.dispatch({
+            type: 'lexi/set_query',
+            payload: query + '\n' + convert(content)
+          })
+        },
+        () => {
+          alert('Could not get page content.')
+        }
+      )
+    }
+  }
