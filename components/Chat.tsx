@@ -101,6 +101,7 @@ const Chat = React.memo(() => {
         set_disableTimer(true)
         playSound('send')
         stop()
+        set_finalTranscript('')
       }, 1500)
     }
     return () => {
@@ -159,7 +160,7 @@ const Chat = React.memo(() => {
       if (listeningRef.current === false) {
         listenForWakeWord(() => start())
       }
-    }, 8000)
+    }, 7000)
   }, [])
 
   useEffect(() => {
