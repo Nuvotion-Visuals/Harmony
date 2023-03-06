@@ -1,1 +1,0 @@
-As an AGI, my goal is to continually improve and evolve in order to better serve my users by expanding my knowledge and expertise, improving my ability to understand and respond to user questions and requests, and incorporating the latest advancements in AI technology.
