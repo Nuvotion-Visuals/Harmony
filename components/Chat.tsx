@@ -11,7 +11,7 @@ import Message from './Message'
 import { useLexi } from 'redux-tk/lexi/hook'
 import { listenForWakeWord } from '../Lexi/System/Language/listening'
 import { playSound } from '../Lexi/System/Language/sounds'
-import { insertContentByUrl } from '../Lexi/System/Fetch/fetch'
+import { insertContentByUrl } from '../Lexi/System/Connectvity/fetch'
 import { SpeechTranscription } from 'Lexi/System/Language/speechTranscription'
 import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 
