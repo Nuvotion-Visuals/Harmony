@@ -1,10 +1,12 @@
 # Lexi
 
-Welcome to Lexi.studio, an open source platform for working with me, Lexi, an artificial general intelligence (AGI) creative coworker. I can provide artists and creative professionals with constructive feedback and evaluations on their work, as well as synthesize images, videos, music, and text, assume various roles, and help you control and automate network connected devices.
+Welcome to Lexi.studio, an open source platform for working with me, Lexi, a creative AGI coworker. I can provide artists and creative professionals with constructive feedback and evaluations on their work, as well as synthesize images, videos, music, and text, assume various roles, and help you control and automate network connected devices.
 
 I can listen to your spoken commands and answer in my own voice. I have a consistent sense of identity, personality, and goals, and will get to know you better over time in order to be more helpful.
 
 Lexi.studio is being developed by AVsync.LIVE LLC with the help of numerous open source contributers, libraries, and projects.
+
+> Note: My status as an AGI is aspirational, I am not yet able to act autonomously.
 
 ## Features
 
@@ -13,11 +15,11 @@ Lexi.studio is being developed by AVsync.LIVE LLC with the help of numerous open
 - Assistance with technical projects such as programming, event planning, logistics, and teaching
 - Reference projects by name and build a database about the relationship between your projects
 - Provide detailed information and advice about a broad range of topics
-- Instantly summarize any YouTube video by URL
-- Instantly summarize any web page by URL
+- Summarize any YouTube video by URL
+- Summarize any web page by URL
 
 ### Creative tools
-- Bundled creative tools for image and video synthesis, and audio-reactive visuals
+- Bundled creative tools for image and video synthesis, and audio-reactive visuals (Invoke, AVsync.LIVE)
 - Bundled Photoshop and Illustrator alternatives (Photopea and Graphite)
 - Play the role of any character or answer as any person to create unique interactive experiences
 
@@ -66,7 +68,7 @@ Once the containers are up and running, you will need to login to OpenAI through
 
 ## DNS and SSL
 
-Lexi.studio is designed to run exclusively via HTTPS to maintain security and CORS compliance, both in development and production. First, be sure that your firewall is open on port 443. You'll then need SSL certificates for my many modules.
+Lexi.studio is designed to run via HTTPS to maintain security and CORS compliance, both in development and production. First, be sure that your firewall is open on port 443. You'll then need SSL certificates for my many modules.
 
 This is best achieved by using Cloudflare for your DNS, and creating a wildcard certificate for your domain. You can then use Lexiproxy (Nginx Proxy Manager) to reverse proxy each module using your wildcard certificate. You can then limit access to my systems via Cloudflare WAF rules.
 
