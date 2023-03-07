@@ -27,7 +27,7 @@ export const SpeechTranscription = ({
       recognitionRef.current.onstart = () => {
         console.log("Speech Recognition Started");
       };
-      recognitionRef.current.onerror = (e) => {
+      recognitionRef.current.onerror = (e: any) => {
         console.log("Speech Recognition Error", e);
       };
       recognitionRef.current.onend = () => {
