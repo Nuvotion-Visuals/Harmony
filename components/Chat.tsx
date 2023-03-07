@@ -61,7 +61,7 @@ const Chat = React.memo(() => {
 
   const sendMessageToLexi = (query: string) => {
     const guid = uuidv4()
-    const queryTime = getTimestamp();
+    const queryTime = getTimestamp()
  
     sendMessage({
       guid,
@@ -69,7 +69,10 @@ const Chat = React.memo(() => {
       queryTime,
       loading: true,
     })
-    scrollToBottom(scrollContainerRef)
+
+    setTimeout(() => {
+      scrollToBottom(scrollContainerRef)
+    }, 1)
     
     try {
       const action = {

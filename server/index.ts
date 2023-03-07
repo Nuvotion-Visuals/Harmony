@@ -116,9 +116,7 @@ const initializeLanguageModel = () => {
         }
       );
 
-      const { response, conversationId, messageId } = await languageModel.sendMessage('Hello?', {
-        onProgress: (token: string) => console.log(token),
-      });
+      const { response, conversationId, messageId } = await languageModel.sendMessage('Hello?');
 
       console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my reponse to the user: ${response}`)
       currentConversationId = conversationId

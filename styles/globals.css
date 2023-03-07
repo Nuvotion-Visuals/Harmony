@@ -12,6 +12,10 @@ html, body {
   font-family: 'Poppins' !important;
 }
 
+ul li:before {
+  content: '•' !important;
+}
+
 @font-face {
   font-family: 'Poppins';
   src: url('/assets/fonts/Poppins.woff2') format('woff2');
