@@ -25,7 +25,7 @@ export function listenForWakeWord(callback: () => void) {
     const speechRecognitionList = new SpeechGrammarList();
 
     // Define the wake word grammar using JSGF format
-    const g_wakeWord = `#JSGF V1.0; grammar wakeWord; public <wake> = ${wakeWord};;`
+    const g_wakeWord = `#ABNF 1.0 UTF-8; mode voice; root $main; public $main = ${wakeWord};`;
     speechRecognitionList.addFromString(g_wakeWord, 1);
   
     // Add the wake word grammar to the recognition object's grammars list

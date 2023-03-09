@@ -163,7 +163,7 @@ const Chat = React.memo(() => {
       if (listeningRef.current === false) {
         listenForWakeWord(() => start())
       }
-    }, 7000)
+    }, 8000)
   }, [])
 
   useEffect(() => {
