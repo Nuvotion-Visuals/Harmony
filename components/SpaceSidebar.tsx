@@ -64,6 +64,39 @@ export const SpaceSidebar = ({ }: Props) => {
     }
   }
 
+  const renderSpaceName = () => (
+    <Item
+      pageTitle={activeSpace?.name}
+    >
+      <Dropdown
+        icon='ellipsis-vertical'
+        iconPrefix='fas'
+        minimal
+        circle
+        items={[
+          {
+            text: 'Edit',
+            icon: 'edit',
+            iconPrefix: 'fas',
+            href: `/spaces/${activeSpaceGuid}/edit`
+          },
+          {
+            text: 'Remove',
+            icon: 'trash-alt',
+            iconPrefix: 'fas',
+            onClick: () => {
+              if (activeSpaceGuid) {
+                removeSpace(activeSpaceGuid)
+                router.push('/spaces')
+              }
+
+            }
+          }
+        ]}
+      />
+    </Item>
+  )
+
   return (<S.GroupsSidebar>
     <SpacesSidebar 
       activeSpaceIndex={activeSpaceIndex}
@@ -84,47 +117,27 @@ export const SpaceSidebar = ({ }: Props) => {
       ]}
     />
     <Box wrap width='100%'>
+      
       {
         activeSpace?.previewSrc &&
           <AspectRatio
             ratio={2}
             backgroundSrc={activeSpace.previewSrc}
             coverBackground
-          />
+          >
+            <S.OverlayContainer>
+              <S.Overlay>
+                { renderSpaceName() }
+              </S.Overlay>
+            </S.OverlayContainer>
+          </AspectRatio>
       }
         {
           activeSpace?.name
             ? <>
-            <Item
-                pageTitle={activeSpace?.name}
-              >
-                <Dropdown
-                  icon='ellipsis-vertical'
-                  iconPrefix='fas'
-                  minimal
-                  circle
-                  items={[
-                    {
-                      text: 'Edit',
-                      icon: 'edit',
-                      iconPrefix: 'fas',
-                      href: `/spaces/${activeSpaceGuid}/edit`
-                    },
-                    {
-                      text: 'Remove',
-                      icon: 'trash-alt',
-                      iconPrefix: 'fas',
-                      onClick: () => {
-                        if (activeSpaceGuid) {
-                          removeSpace(activeSpaceGuid)
-                          router.push('/spaces')
-                        }
-      
-                      }
-                    }
-                  ]}
-                />
-              </Item>
+                {
+                  !activeSpace?.previewSrc && renderSpaceName()
+                }
               </>
             : <Box py={.75}>
                 <Gap gap={.75}>
@@ -177,5 +190,14 @@ const S = {
     display: flex;
     height: calc(100% - var(--F_Header_Height));
     align-items: flex-start;
+  `,
+  OverlayContainer: styled.div`
+    height: 100%;
+    width: 100%;
+  `,
+  Overlay: styled.div`
+    width: 100%;
+    height: 3rem;
+    background: linear-gradient(to top, hsla(0, 0%, 7%, 0) 0%, hsla(0, 0%, 7%,.4) 40%, hsla(0, 0%, 7%,.5) 100%);
   `
 }

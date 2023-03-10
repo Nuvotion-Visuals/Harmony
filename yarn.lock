@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.123":
-  version "0.9.123"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.123.tgz#11df770611a9da39995f5b52a0d5c5d5a75b4a82"
-  integrity sha512-hiz9lCXv/jMzkpKqBfcAvp4hA5xquYUQOcLBw26JFSb/EB0TzdyDAg/1l7ryGEjELtqWVUDc8YBNMb8KxsaAig==
+"@avsync.live/formation@^0.9.125":
+  version "0.9.125"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.125.tgz#77237dcea33708de2b197db603d094440f484e8a"
+  integrity sha512-9JsGZqqJM3dQkfizcXI22FHeOAfyFB9sC/Md8eAKgcvMjaZ2T3AQZjFFyomczEf7Z78hjMSn+gnrdQzXZ+VjxQ==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -4493,9 +4493,9 @@ javascript-time-ago@^2.5.9:
     relative-time-format "^1.1.6"
 
 jquery@^3.5.0:
-  version "3.6.3"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.3.tgz#23ed2ffed8a19e048814f13391a19afcdba160e6"
-  integrity sha512-bZ5Sy3YzKo9Fyc8wH2iIQK4JImJ6R0GWI9kL1/k7Z91ZBNgkRXE6U0JfHIizZbort8ZunhSI3jw9I6253ahKfg==
+  version "3.6.4"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.4.tgz#ba065c188142100be4833699852bf7c24dc0252f"
+  integrity sha512-v28EW9DWDFpzcD9O5iyJXg3R3+q+mET5JhnjJzQUZMHOv67bpSIHq81GEYpPNZHG+XXHsfSme3nxp/hndKEcsQ==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"

@@ -164,9 +164,12 @@ export const Groups = ({ }: Props) => {
               ({
                 ...listItem,
                 children: listItem.subtitle && 
-                  <div onClick={e => e.stopPropagation()}>
+                  <div onClick={e => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                  }}>
                     <Dropdown 
-                      icon='ellipsis-vertical'
+                      icon={listItem.active ? 'ellipsis-vertical' : undefined}
                       iconPrefix='fas'
                       minimal
                       items={[

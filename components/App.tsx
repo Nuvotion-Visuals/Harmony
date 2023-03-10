@@ -107,7 +107,7 @@ const App = ({ children }: Props) => {
         iconPrefix: router.route.includes(`/spaces`) || router.route === '/' ? 'fas' : 'fas',
         title: 'Spaces',
         href: `/spaces`,
-        active: router.route === `/spaces` || router.route === '/'
+        active: router.route.includes(`/spaces`) || router.route === '/'
       },
       {
         icon: 'users',
