@@ -12,11 +12,22 @@ import { AddSpace } from './AddSpace'
 import { EditSpace } from './EditSpace'
 import { EditGroup } from './EditGroup'
 import { useSpaces } from 'redux-tk/spaces/hook'
+import { useDispatch } from 'react-redux'
+import { fetchInitialData } from 'redux-tk/spaces/slice'
+import type { Dispatch } from '@reduxjs/toolkit'
+
 interface Props {
   children: React.ReactNode
 }
 
 const App = ({ children }: Props) => {
+  const dispatch: Dispatch = useDispatch();
+
+  useEffect(() => {
+    // @ts-ignore
+    dispatch(fetchInitialData());
+  }, [dispatch]);
+
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
 
   const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()

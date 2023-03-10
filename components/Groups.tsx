@@ -163,32 +163,33 @@ export const Groups = ({ }: Props) => {
             .map((listItem, listItemIndex1) =>
               ({
                 ...listItem,
-                onClick: () => {},
-                children: listItem.subtitle  && <div onClick={e => e.stopPropagation()}><Dropdown 
-                  icon='ellipsis-vertical'
-                  iconPrefix='fas'
-                  minimal
-                  items={[
-                    {
-                      text: 'Edit',
-                      icon: 'edit',
-                      iconPrefix: 'fas',
-                      onClick: () => {}
-                    },
-                    {
-                      text: 'Remove',
-                      icon: 'trash-alt',
-                      iconPrefix: 'fas',
-                      onClick: () => {
-                        if (spaceGroupGuids?.length && spaceChannelGuids?.length) {
-                          removeChannelFromGroup({ groupGuid: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
-                          removeChannel(spaceChannelGuids[i][listItemIndex1])
+                children: listItem.subtitle && 
+                  <div onClick={e => e.stopPropagation()}>
+                    <Dropdown 
+                      icon='ellipsis-vertical'
+                      iconPrefix='fas'
+                      minimal
+                      items={[
+                        {
+                          text: 'Edit',
+                          icon: 'edit',
+                          iconPrefix: 'fas',
+                          onClick: () => {}
+                        },
+                        {
+                          text: 'Remove',
+                          icon: 'trash-alt',
+                          iconPrefix: 'fas',
+                          onClick: () => {
+                            if (spaceGroupGuids?.length && spaceChannelGuids?.length) {
+                              removeChannelFromGroup({ groupGuid: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
+                              removeChannel(spaceChannelGuids[i][listItemIndex1])
+                            }
+                          }
                         }
-                      }
-                    }
-                  ]}
-                />
-                </div>
+                      ]}
+                    />
+                  </div>
               })  
             )
           }

@@ -25,7 +25,7 @@ async function connectToServer() {
     ws.onmessage = (ev) => {
       const wsmessage = JSON.parse(ev.data.toString())
       if (wsmessage.type === 'pong') {
-        console.log(wsmessage)
+        // console.log(wsmessage)
       }
     }
 
