@@ -16,7 +16,7 @@ let db: MyDatabase;
 if (typeof window !== 'undefined') {
   const ydoc = new Y.Doc();
   const persistence = new IndexeddbPersistence('lexi', ydoc);
-  const provider = new WebsocketProvider('ws://localhost:1234', 'lexi', ydoc)
+  const provider = new WebsocketProvider(process.env.NEXT_PUBLIC_LEXISYNC_URL || 'ws://localhost:1234', 'lexi', ydoc)
   provider.connect()
 
   persistence.whenSynced.then(() => {
@@ -33,6 +33,7 @@ if (typeof window !== 'undefined') {
 
   Object.entries(db).forEach(([name, map]) => {
     map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group>) => {
+      // console.log(event)
       // console.log(`Data changed in ${name}: ${JSON.stringify(map.toJSON(), null, 2)}`);
       setTimeout(() => {
         const payload = map.toJSON()
@@ -57,9 +58,8 @@ if (typeof window !== 'undefined') {
      
     });
   });
-
-  //store.dispatch(fetchInitialData());
-} else {
+} 
+else {
   db = {
     spaces: new Y.Map(),
     channels: new Y.Map(),
