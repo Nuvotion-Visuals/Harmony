@@ -25,6 +25,10 @@ export const select_spaceGuids = (state: RootState): Guid[] => {
   return state.spaces.spaceGuids;
 };
 
+export const select_spacesByGuid = (state: RootState): { [key: string]: Space } => {
+  return state.spaces.spacesByGuid;
+};
+
 export const select_activeSpaceGuid = (state: RootState): Guid | null => {
   return state.spaces.activeSpaceGuid;
 };

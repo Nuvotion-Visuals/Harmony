@@ -12,6 +12,7 @@ export const useSpaces = () => {
   return {
     // selectors
     activeSpace: useSelector(selectors.select_activeSpace, isEqual),
+    spacesByGuid: useSelector(selectors.select_spacesByGuid, isEqual),
     activeGroup: useSelector(selectors.select_activeGroup, isEqual),
     activeChannel: useSelector(selectors.select_activeChannel, isEqual),
     activeAsset: useSelector(selectors.select_activeAsset, isEqual),

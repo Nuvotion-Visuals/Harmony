@@ -24,7 +24,7 @@ export const EditSpace = ({ }: Props) => {
     <Button
       icon='chevron-left'
       iconPrefix='fas'
-      href={'/spaces'}
+      href={`/spaces/${activeSpace!.guid}`}
       minimal
     />
      <Item

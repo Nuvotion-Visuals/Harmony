@@ -21,12 +21,21 @@ interface Props {
 }
 
 const App = ({ children }: Props) => {
+  const router = useRouter()
+
   const dispatch: Dispatch = useDispatch();
 
   useEffect(() => {
     // @ts-ignore
     dispatch(fetchInitialData());
   }, [dispatch]);
+
+  const { spaceGuids } = useSpaces()
+  useEffect(() => {
+    if (spaceGuids.length && router.route === '/') {
+      router.push(`/spaces/${spaceGuids[0]}`)
+    }
+  }, [spaceGuids, router.route])
 
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
 
@@ -71,7 +80,6 @@ const App = ({ children }: Props) => {
     </S.ThirdPage>
   }
 
-  const router = useRouter()
   const { spaceGuid } = router.query
 
   useEffect(() => {
