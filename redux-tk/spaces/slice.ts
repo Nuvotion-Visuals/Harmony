@@ -121,6 +121,22 @@ export const slice = createSlice({
       })
   },
   reducers: {
+    setSpaces: (state, action: PayloadAction<Types.SpacesByGuid>) => {
+      state.spaceGuids = Object.keys(action.payload);
+      state.spacesByGuid = action.payload;
+    },
+    setGroups: (state, action: PayloadAction<Types.GroupsByGuid>) => {
+      state.groupGuids = Object.keys(action.payload);
+      state.groupsByGuid = action.payload;
+    },
+    setChannels: (state, action: PayloadAction<Types.ChannelsByGuid>) => {
+      state.channelGuids = Object.keys(action.payload);
+      state.channelsByGuid = action.payload;
+    },
+    setAssets: (state, action: PayloadAction<Types.AssetsByGuid>) => {
+      state.assetGuids = Object.keys(action.payload);
+      state.assetsByGuid = action.payload;
+    },
     addSpace: (state, action: PayloadAction<{ guid: Types.Guid; space: Types.Space }>) => {
       const { guid, space } = action.payload;
       state.spaceGuids.push(guid);
