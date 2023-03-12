@@ -34,8 +34,9 @@ if (typeof window !== 'undefined') {
   Object.entries(db).forEach(([name, map]) => {
     map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group>) => {
       // console.log(`Data changed in ${name}: ${JSON.stringify(map.toJSON(), null, 2)}`);
-      const payload = map.toJSON()
       setTimeout(() => {
+        const payload = map.toJSON()
+
         switch (name) {
           case 'spaces':
             store.dispatch({ type: 'spaces/setSpaces', payload });
@@ -52,7 +53,7 @@ if (typeof window !== 'undefined') {
           default:
             break;
         }
-      }, 1)
+      }, Math.random())
      
     });
   });
