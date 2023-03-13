@@ -93,17 +93,22 @@ export const SpaceSidebar = ({ }: Props) => {
       
       {
         activeSpace?.previewSrc &&
-          <AspectRatio
+        <>
+          <S.OverlayContainer>
+            <S.Overlay>
+              <SpaceName />
+            </S.Overlay>
+          </S.OverlayContainer>
+         <AspectRatio
             ratio={2}
             backgroundSrc={activeSpace.previewSrc}
             coverBackground
           >
-            <S.OverlayContainer>
-              <S.Overlay>
-                <SpaceName />
-              </S.Overlay>
-            </S.OverlayContainer>
+            
           </AspectRatio>
+      
+        </>
+         
       }
         {
           activeSpace?.name
@@ -139,12 +144,16 @@ const S = {
     align-items: flex-start;
   `,
   OverlayContainer: styled.div`
-    height: 100%;
+    height: 0;
     width: 100%;
+    position: relative;
+    top: 0;
+    z-index: 2;
   `,
   Overlay: styled.div`
     width: 100%;
     height: 3rem;
     background: linear-gradient(to top, hsla(0, 0%, 7%, 0) 0%, hsla(0, 0%, 7%,.4) 40%, hsla(0, 0%, 7%,.5) 100%);
+ 
   `
 }

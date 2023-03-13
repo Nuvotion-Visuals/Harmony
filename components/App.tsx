@@ -32,7 +32,7 @@ const App = ({ children }: Props) => {
 
   const { spaceGuids } = useSpaces()
   useEffect(() => {
-    if (spaceGuids.length && router.route === '/') {
+    if (spaceGuids.length && (router.route === '/' || router.route === '/spaces') ) {
       router.push(`/spaces/${spaceGuids[0]}`)
     }
   }, [spaceGuids, router.route])

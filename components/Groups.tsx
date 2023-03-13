@@ -107,8 +107,7 @@ export const Groups = ({ locked }: Props) => {
             expanded: value[i]?.expanded || true,
             value: {
               item: {
-                icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
-                iconPrefix: 'fas',
+                
                 labelColor: 'none',
                 subtitle: groupsByGuid[groupGuid]?.name,
               },
@@ -119,7 +118,6 @@ export const Groups = ({ locked }: Props) => {
                     value={newChannelName}
                     onChange={newValue => set_newChannelName(newValue)}
                     iconPrefix='fas'
-                    autoFocus
                     compact
                     hideOutline
                     placeholder='Add channel'
@@ -153,6 +151,8 @@ export const Groups = ({ locked }: Props) => {
           value: {
             item: {
               ...expandableList.value.item,
+              icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
+                iconPrefix: 'fas',
               children: <div onClick={e => e.stopPropagation()}>
                 <Spacer />
                 <Dropdown
@@ -223,7 +223,7 @@ export const Groups = ({ locked }: Props) => {
       />
 
       {
-        !locked &&
+        !locked && activeSpace?.name &&
           <Item
             content={<Box mr={-.5}>  
             <TextInput
