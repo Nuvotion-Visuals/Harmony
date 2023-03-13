@@ -6,7 +6,8 @@ import {
   Dropdown, 
   ItemProps, 
   generateUUID, 
-  LabelColor 
+  LabelColor, 
+  Item
 } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -39,7 +40,9 @@ export const Groups = ({ }: Props) => {
       addChannelToGroup, 
       removeChannel, 
       removeChannelFromGroup, 
-      removeGroupFromSpace 
+      removeGroupFromSpace,
+      addGroup,
+      addGroupToSpace
     } = useSpaces()
 
     const [newChannelName, set_newChannelName] = useState('')
@@ -49,7 +52,7 @@ export const Groups = ({ }: Props) => {
     const spaceGroupGuids = activeSpace?.groupGuids
     const spaceChannelGuids = activeSpace?.groupGuids.map(groupGuid => groupsByGuid[groupGuid]?.channelGuids)
 
-    const add = (i : number) => {
+    const onAddChannel = (i : number) => {
       if (activeSpace?.guid && newChannelName) {
         const guid = generateUUID()
         addChannel({
@@ -67,6 +70,26 @@ export const Groups = ({ }: Props) => {
         })
       }
       set_newChannelName('')
+    }
+
+    const [newGroupName, set_newGroupName] = useState('')
+    const onAddGroup = () => {
+      set_newGroupName('')
+      if (activeSpace?.guid) {
+        const guid = generateUUID()
+        addGroup({
+          guid,
+          group: {
+            guid,
+            name: newGroupName,
+            channelGuids: []
+          }
+        })
+        addGroupToSpace({
+          spaceGuid: activeSpace.guid,
+          groupGuid: guid
+        })
+      }
     }
 
     useEffect(() => {
@@ -100,13 +123,13 @@ export const Groups = ({ }: Props) => {
                     compact
                     hideOutline
                     placeholder='Add channel'
-                    onEnter={() => add(i)}
+                    onEnter={() => onAddChannel(i)}
                     buttons={[
                       {
                         icon: 'plus',
                         iconPrefix: 'fas',
                         minimal: true,
-                        onClick: () => add(i),
+                        onClick: () => onAddChannel(i),
                         disabled: !newChannelName
                       }
                     ]}
@@ -159,46 +182,70 @@ export const Groups = ({ }: Props) => {
               </div>
             },
             list: expandableList.value.list
-            // .filter(listItem => listItem.text.toLowerCase().includes(search.toLowerCase()))
-            .map((listItem, listItemIndex1) =>
-              ({
-                ...listItem,
-                children: listItem.subtitle && 
-                  <div onClick={e => {
-                    e.stopPropagation()
-                    e.preventDefault()
-                  }}>
-                    <Dropdown 
-                      icon={listItem.active ? 'ellipsis-vertical' : undefined}
-                      iconPrefix='fas'
-                      minimal
-                      items={[
-                        {
-                          text: 'Edit',
-                          icon: 'edit',
-                          iconPrefix: 'fas',
-                          onClick: () => {}
-                        },
-                        {
-                          text: 'Remove',
-                          icon: 'trash-alt',
-                          iconPrefix: 'fas',
-                          onClick: () => {
-                            if (spaceGroupGuids?.length && spaceChannelGuids?.length) {
-                              removeChannelFromGroup({ groupGuid: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
-                              removeChannel(spaceChannelGuids[i][listItemIndex1])
+              .map((listItem, listItemIndex1) =>
+                ({
+                  ...listItem,
+                  children: listItem.subtitle && 
+                    <div onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                    }}>
+                      <Dropdown 
+                        icon={listItem.active ? 'ellipsis-vertical' : undefined}
+                        iconPrefix='fas'
+                        minimal
+                        items={[
+                          {
+                            text: 'Edit',
+                            icon: 'edit',
+                            iconPrefix: 'fas',
+                            onClick: () => {}
+                          },
+                          {
+                            text: 'Remove',
+                            icon: 'trash-alt',
+                            iconPrefix: 'fas',
+                            onClick: () => {
+                              if (spaceGroupGuids?.length && spaceChannelGuids?.length) {
+                                removeChannelFromGroup({ groupGuid: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
+                                removeChannel(spaceChannelGuids[i][listItemIndex1])
+                              }
                             }
                           }
-                        }
-                      ]}
-                    />
-                  </div>
-              })  
-            )
-          }
+                        ]}
+                      />
+                    </div>
+                })  
+              )
+            }
         }))}
         onExpand={index => set_value(value.map((item, i) => i === index ? ({...item, expanded: !item.expanded}) : item))}
       />
+
+      {
+        activeSpace?.name &&
+          <Item
+            content={<Box mr={-.5}>  
+            <TextInput
+              value={newGroupName}
+              onChange={newValue => set_newGroupName(newValue)}
+              iconPrefix='fas'
+              compact
+              placeholder='Add group'
+              hideOutline
+              onEnter={onAddGroup}
+              buttons={[
+                {
+                  icon: 'plus',
+                  iconPrefix: 'fas',
+                  minimal: true,
+                  onClick: onAddGroup
+                }
+              ]}
+            />
+            </Box>}
+          />
+      }
     </>
     )
 }

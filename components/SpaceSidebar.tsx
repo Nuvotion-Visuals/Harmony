@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { Groups } from 'components/Groups'
-import { AspectRatio, Box, SpacesSidebar, generateUUID, Item, LineBreak, Dropdown, TextInput, Icon, Button, Gap } from '@avsync.live/formation'
+import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap } from '@avsync.live/formation'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
 
@@ -15,56 +15,15 @@ export const SpaceSidebar = ({ }: Props) => {
 
   const { spaceGuid } = router.query
 
-  const { spacesInfo, addSpace, setActiveSpaceGuid, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, addGroup, addGroupToSpace } = useSpaces()
+  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid } = useSpaces()
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(spaceGuids.indexOf(spaceGuid as string))
-
-  const [newSpaceName, set_newSpaceName] = useState(activeSpace?.name || '')
 
   useEffect(() => {
     set_activeSpaceIndex(spaceGuids.indexOf(spaceGuid as string))
   }, [spaceGuid])
 
-
-  // useEffect(() => {
-  //   if (spacesInfo.length > 0) {
-  //     setActiveSpaceGuid(spaceGuids[activeSpaceIndex])
-  //   }
-  // }, [activeSpaceIndex])
-  
-
-  const [newDescription, set_newDescription] = useState('')
-  const [newGroupName, set_newGroupName] = useState('')
-
-  useEffect(() => {
-    if (activeSpace?.name) {
-      set_newSpaceName(activeSpace.name)
-    }
-    if (activeSpace?.description) {
-      set_newDescription(activeSpace.description)
-    }
-  }, [activeSpace?.name]) 
-
-  const add = () => {
-    set_newGroupName('')
-    if (activeSpace?.guid) {
-      const guid = generateUUID()
-      addGroup({
-        guid,
-        group: {
-          guid,
-          name: newGroupName,
-          channelGuids: []
-        }
-      })
-      addGroupToSpace({
-        spaceGuid: activeSpace.guid,
-        groupGuid: guid
-      })
-    }
-  }
-
-  const renderSpaceName = () => (
+  const SpaceName = () => (
     <Item
       pageTitle={activeSpace?.name}
     >
@@ -127,7 +86,7 @@ export const SpaceSidebar = ({ }: Props) => {
           >
             <S.OverlayContainer>
               <S.Overlay>
-                { renderSpaceName() }
+                <SpaceName />
               </S.Overlay>
             </S.OverlayContainer>
           </AspectRatio>
@@ -136,7 +95,7 @@ export const SpaceSidebar = ({ }: Props) => {
           activeSpace?.name
             ? <>
                 {
-                  !activeSpace?.previewSrc && renderSpaceName()
+                  !activeSpace?.previewSrc && <SpaceName />
                 }
               </>
             : <Box py={.75}>
@@ -155,32 +114,6 @@ export const SpaceSidebar = ({ }: Props) => {
         }
  
       <Groups />
-
-      {
-        activeSpace?.name &&
-          <Item
-            content={<Box mr={-.5}>  
-            <TextInput
-              value={newGroupName}
-              onChange={newValue => set_newGroupName(newValue)}
-              iconPrefix='fas'
-              compact
-              placeholder='Add group'
-              autoFocus
-              hideOutline
-              onEnter={add}
-              buttons={[
-                {
-                  icon: 'plus',
-                  iconPrefix: 'fas',
-                  minimal: true,
-                  onClick: add
-                }
-              ]}
-            />
-            </Box>}
-          />
-      }
     </Box>
   </S.GroupsSidebar>)
 }

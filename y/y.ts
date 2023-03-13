@@ -19,6 +19,11 @@ if (typeof window !== 'undefined') {
   const provider = new WebsocketProvider(process.env.NEXT_PUBLIC_LEXISYNC_URL || 'ws://localhost:1234', 'lexi', ydoc)
   provider.connect()
 
+  provider.awareness.getStates().forEach(state => {
+    const metadata = state.metadata
+   console.log(metadata)
+  })
+
   persistence.whenSynced.then(() => {
     // The data is now synchronized with IndexedDB
     // Update the UI with the latest data
@@ -33,7 +38,7 @@ if (typeof window !== 'undefined') {
 
   Object.entries(db).forEach(([name, map]) => {
     map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group>) => {
-      // console.log(event)
+      console.log(event)
       // console.log(`Data changed in ${name}: ${JSON.stringify(map.toJSON(), null, 2)}`);
       setTimeout(() => {
         const payload = map.toJSON()
