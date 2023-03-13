@@ -48,6 +48,7 @@ export interface Space {
   groupGuids: Guid[];
   description?: string;
   previewSrc?: string;
+  locked?: boolean
 }
 
 export interface SpaceByGuid {

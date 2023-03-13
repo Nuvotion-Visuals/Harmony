@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { Groups } from 'components/Groups'
-import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap } from '@avsync.live/formation'
+import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap, Button } from '@avsync.live/formation'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
 
@@ -15,18 +15,18 @@ export const SpaceSidebar = ({ }: Props) => {
 
   const { spaceGuid } = router.query
 
-  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid } = useSpaces()
+  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, updateSpace } = useSpaces()
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(spaceGuids.indexOf(spaceGuid as string))
+
+  const locked = activeSpace?.locked
 
   useEffect(() => {
     set_activeSpaceIndex(spaceGuids.indexOf(spaceGuid as string))
   }, [spaceGuid])
 
   const SpaceName = () => (
-    <Item
-      pageTitle={activeSpace?.name}
-    >
+    <Item pageTitle={activeSpace?.name}>
       <Dropdown
         icon='ellipsis-vertical'
         iconPrefix='fas'
@@ -38,6 +38,20 @@ export const SpaceSidebar = ({ }: Props) => {
             icon: 'edit',
             iconPrefix: 'fas',
             href: `/spaces/${activeSpaceGuid}/edit`
+          },
+          {
+            text: locked ? 'Unlock' : 'Lock',
+            icon: locked ? 'lock' : 'lock-open',
+            iconPrefix: 'fas',
+            onClick: () => {
+              updateSpace({
+                guid: spaceGuid as string,
+                space: {
+                  ...activeSpace!,
+                  locked: !locked
+                }
+              })
+            }
           },
           {
             text: 'Remove',
@@ -113,7 +127,7 @@ export const SpaceSidebar = ({ }: Props) => {
               </Box>
         }
  
-      <Groups />
+      <Groups locked={locked!} />
     </Box>
   </S.GroupsSidebar>)
 }

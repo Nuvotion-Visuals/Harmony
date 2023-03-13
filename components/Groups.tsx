@@ -25,10 +25,10 @@ type List = {
 type Lists = List[]
 
 interface Props {
-  
+  locked: boolean
 }
 
-export const Groups = ({ }: Props) => {
+export const Groups = ({ locked }: Props) => {
     const router = useRouter()
 
     const { 
@@ -115,7 +115,7 @@ export const Groups = ({ }: Props) => {
               list: [
                 ...groupsList,
                 {
-                  content: <Box mr={-.5}><TextInput
+                  content: !locked && <Box mr={-.5}><TextInput
                     value={newChannelName}
                     onChange={newValue => set_newChannelName(newValue)}
                     iconPrefix='fas'
@@ -143,7 +143,7 @@ export const Groups = ({ }: Props) => {
         ))
       }
      
-    }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, newChannelName, router.asPath, activeSpaceGuid])
+    }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, newChannelName, router.asPath, activeSpaceGuid, locked])
   
     return (<>
       <ExpandableLists 
@@ -223,7 +223,7 @@ export const Groups = ({ }: Props) => {
       />
 
       {
-        activeSpace?.name &&
+        !locked &&
           <Item
             content={<Box mr={-.5}>  
             <TextInput
