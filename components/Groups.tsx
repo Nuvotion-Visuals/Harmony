@@ -107,7 +107,6 @@ export const Groups = ({ locked }: Props) => {
             expanded: value[i]?.expanded || true,
             value: {
               item: {
-                
                 labelColor: 'none',
                 subtitle: groupsByGuid[groupGuid]?.name,
               },
@@ -152,11 +151,12 @@ export const Groups = ({ locked }: Props) => {
             item: {
               ...expandableList.value.item,
               icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
-                iconPrefix: 'fas',
+              iconPrefix: 'fas',
+              minimalIcon: true,
               children: <div onClick={e => e.stopPropagation()}>
                 <Spacer />
                 <Dropdown
-                  icon='ellipsis-vertical'
+                  icon='ellipsis-h'
                   iconPrefix='fas'
                   minimal
                   circle
@@ -185,13 +185,14 @@ export const Groups = ({ locked }: Props) => {
               .map((listItem, listItemIndex1) =>
                 ({
                   ...listItem,
+                  
                   children: listItem.subtitle && 
                     <div onClick={e => {
                       e.stopPropagation()
                       e.preventDefault()
                     }}>
                       <Dropdown 
-                        icon={listItem.active ? 'ellipsis-vertical' : undefined}
+                        icon={listItem.active ? 'ellipsis-h' : undefined}
                         iconPrefix='fas'
                         minimal
                         items={[
@@ -225,7 +226,7 @@ export const Groups = ({ locked }: Props) => {
       {
         !locked && activeSpace?.name &&
           <Item
-            content={<Box mr={-.5}>  
+            content={<Box>  
             <TextInput
               value={newGroupName}
               onChange={newValue => set_newGroupName(newValue)}

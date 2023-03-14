@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { Groups } from 'components/Groups'
-import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap, Button } from '@avsync.live/formation'
+import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap, Button, LineBreak } from '@avsync.live/formation'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
 
@@ -25,49 +25,50 @@ export const SpaceSidebar = ({ }: Props) => {
     set_activeSpaceIndex(spaceGuids.indexOf(spaceGuid as string))
   }, [spaceGuid])
 
-  const SpaceName = () => (
+  const SpaceName = () => (<S.SpaceName>
     <Item pageTitle={activeSpace?.name}>
-      <Dropdown
-        icon='ellipsis-vertical'
-        iconPrefix='fas'
-        minimal
-        circle
-        items={[
-          {
-            text: 'Edit',
-            icon: 'edit',
-            iconPrefix: 'fas',
-            href: `/spaces/${activeSpaceGuid}/edit`
-          },
-          {
-            text: locked ? 'Unlock' : 'Lock',
-            icon: locked ? 'lock' : 'lock-open',
-            iconPrefix: 'fas',
-            onClick: () => {
-              updateSpace({
-                guid: spaceGuid as string,
-                space: {
-                  ...activeSpace!,
-                  locked: !locked
-                }
-              })
-            }
-          },
-          {
-            text: 'Remove',
-            icon: 'trash-alt',
-            iconPrefix: 'fas',
-            onClick: () => {
-              if (activeSpaceGuid) {
-                removeSpace(activeSpaceGuid)
-                router.push('/spaces')
+    <Dropdown
+      icon='ellipsis-h'
+      iconPrefix='fas'
+      circle
+      items={[
+        {
+          text: 'Edit',
+          icon: 'edit',
+          iconPrefix: 'fas',
+          href: `/spaces/${activeSpaceGuid}/edit`
+        },
+        {
+          text: locked ? 'Unlock' : 'Lock',
+          icon: locked ? 'lock' : 'lock-open',
+          iconPrefix: 'fas',
+          onClick: () => {
+            updateSpace({
+              guid: spaceGuid as string,
+              space: {
+                ...activeSpace!,
+                locked: !locked
               }
-
-            }
+            })
           }
-        ]}
-      />
+        },
+        {
+          text: 'Remove',
+          icon: 'trash-alt',
+          iconPrefix: 'fas',
+          onClick: () => {
+            if (activeSpaceGuid) {
+              removeSpace(activeSpaceGuid)
+              router.push('/spaces')
+            }
+
+          }
+        }
+      ]}
+    />
+
     </Item>
+    </S.SpaceName>
   )
 
   return (<S.GroupsSidebar>
@@ -97,6 +98,7 @@ export const SpaceSidebar = ({ }: Props) => {
           <S.OverlayContainer>
             <S.Overlay>
               <SpaceName />
+             
             </S.Overlay>
           </S.OverlayContainer>
          <AspectRatio
@@ -116,6 +118,7 @@ export const SpaceSidebar = ({ }: Props) => {
                 {
                   !activeSpace?.previewSrc && <SpaceName />
                 }
+                <LineBreak />
               </>
             : <Box py={.75}>
                 <Gap gap={.75}>
@@ -155,5 +158,8 @@ const S = {
     height: 3rem;
     background: linear-gradient(to top, hsla(0, 0%, 7%, 0) 0%, hsla(0, 0%, 7%,.4) 40%, hsla(0, 0%, 7%,.5) 100%);
  
+  `,
+  SpaceName: styled.div`
+    width: 100%;
   `
 }

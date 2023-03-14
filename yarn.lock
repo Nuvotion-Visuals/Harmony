@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.125":
-  version "0.9.125"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.125.tgz#77237dcea33708de2b197db603d094440f484e8a"
-  integrity sha512-9JsGZqqJM3dQkfizcXI22FHeOAfyFB9sC/Md8eAKgcvMjaZ2T3AQZjFFyomczEf7Z78hjMSn+gnrdQzXZ+VjxQ==
+"@avsync.live/formation@^0.9.130":
+  version "0.9.130"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.130.tgz#83764aadcb83efc63278690ead89cffbc2e82fbd"
+  integrity sha512-YUa5EIN0wnqU59wUJJeIP3xuh+QNo6Cbzr/cE+bVPgIFuh34pjFVlA3N6vvcXiKiDFbdIi03/YOYVfHWp17/Lg==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -2107,9 +2107,9 @@ core-js@^2.4.0:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.6.4:
-  version "3.29.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.29.0.tgz#0273e142b67761058bcde5615c503c7406b572d6"
-  integrity sha512-VG23vuEisJNkGl6XQmFJd3rEG/so/CNatqeE+7uZAwTSwFeB/qaO0be8xZYUNWprJ/GIwL8aMt9cj1kvbpTZhg==
+  version "3.29.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.29.1.tgz#40ff3b41588b091aaed19ca1aa5cb111803fa9a6"
+  integrity sha512-+jwgnhg6cQxKYIIjGtAHq2nwUOolo9eoFZ4sHfUH09BLXBgxnH4gA0zEd+t+BO2cNB8idaBtZFcFTRjQJRJmAw==
 
 core-util-is@~1.0.0:
   version "1.0.3"
