@@ -344,6 +344,7 @@ export const slice = createSlice({
         db.channels.set(channelGuid, channel);
       }
     },
+    // TODO: add removeAssetFromChannel
 
     // threads
     setThreads: (state, action: PayloadAction<Types.ThreadsByGuid>) => {

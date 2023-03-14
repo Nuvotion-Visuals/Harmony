@@ -65,6 +65,7 @@ export const useSpaces = () => {
     removeChannel: useCallback((payload: Guid) => {
     dispatch(slice.actions.removeChannel(payload));
     }, [dispatch]),
+    // TODO: add updateChannel
     addChannelToGroup: useCallback((payload: { groupGuid: Guid; channelGuid: Guid }) => {
     dispatch(slice.actions.addChannelToGroup(payload));
     }, [dispatch]),
@@ -84,9 +85,11 @@ export const useSpaces = () => {
     removeAsset: useCallback((payload: Guid) => {
     dispatch(slice.actions.removeAsset(payload));
     }, [dispatch]),
+    // TODO: add updateAsset
     addAssetToChannel: useCallback((payload: { channelGuid: Guid; assetGuid: Guid }) => {
     dispatch(slice.actions.addAssetToChannel(payload));
     }, [dispatch]),
+    // TODO: add removeAssetFromChannel
     
     // threads
     activeThreadGuid: useSelector(selectors.select_activeThreadGuid, isEqual),
