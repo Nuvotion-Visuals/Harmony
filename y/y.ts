@@ -1,4 +1,4 @@
-import { Space, Guid, Channel, Asset, Group } from 'redux-tk/spaces/types';
+import { Space, Guid, Channel, Group, Asset, Thread, Message } from 'redux-tk/spaces/types';
 import * as Y from 'yjs';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { WebsocketProvider } from 'y-websocket';
@@ -9,6 +9,8 @@ interface MyDatabase {
   channels: Y.Map<Channel>;
   assets: Y.Map<Asset>;
   groups: Y.Map<Group>;
+  threads: Y.Map<Thread>;
+  messages: Y.Map<Message>;
 }
 
 let db: MyDatabase;
@@ -34,12 +36,13 @@ if (typeof window !== 'undefined') {
     channels: ydoc.getMap('channels'),
     assets: ydoc.getMap('assets'),
     groups: ydoc.getMap('groups'),
+    threads: ydoc.getMap('threads'),
+    messages: ydoc.getMap('messages'),
   };
 
   Object.entries(db).forEach(([name, map]) => {
-    map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group>) => {
+    map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group | Thread | Message>) => {
       console.log(event)
-      // console.log(`Data changed in ${name}: ${JSON.stringify(map.toJSON(), null, 2)}`);
       setTimeout(() => {
         const payload = map.toJSON()
 
@@ -56,6 +59,12 @@ if (typeof window !== 'undefined') {
           case 'assets':
             store.dispatch({ type: 'spaces/setAssets', payload });
             break;
+          case 'threads':
+            store.dispatch({ type: 'spaces/setThreads', payload });
+            break;
+          case 'messages':
+            store.dispatch({ type: 'spaces/setMessages', payload });
+            break;
           default:
             break;
         }
@@ -70,6 +79,8 @@ else {
     channels: new Y.Map(),
     assets: new Y.Map(),
     groups: new Y.Map(),
+    threads: new Y.Map(),
+    messages: new Y.Map(),
   };
 }
 

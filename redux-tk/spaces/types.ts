@@ -1,5 +1,59 @@
 export type Guid = string;
 
+// spaces
+export interface Space {
+  guid: Guid;
+  name: string;
+  groupGuids: Guid[];
+  description?: string;
+  previewSrc?: string;
+  locked?: boolean;
+}
+export interface SpacesByGuid {
+  [guid: string]: Space;
+}
+export interface SpaceByGuid {
+  [guid: string]: Space;
+}
+export interface SpaceAssets {
+  [spaceGuid: string]: {
+    [channelGuid: string]: Asset[];
+  };
+}
+export interface SpaceChannels {
+  [spaceGuid: string]: Channel[];
+}
+export interface SpaceGroups {
+  [spaceGuid: string]: Group[];
+}
+
+// groups
+export interface Group {
+  guid: Guid;
+  name: string;
+  channelGuids: Guid[];
+  description?: string;
+  previewSrc?: string;
+}
+export interface GroupsByGuid {
+  [guid: string]: Group;
+}
+
+// channels
+export interface Channel {
+  guid: Guid;
+  name: string;
+  groupGuid: Guid;
+  assetGuids: Guid[];
+  description?: string;
+  previewSrc?: string;
+  threadGuids: Guid[];
+}
+export interface ChannelsByGuid {
+  [guid: string]: Channel;
+}
+
+// assets
 export interface Asset {
   guid: Guid;
   name: string;
@@ -8,66 +62,37 @@ export interface Asset {
   description?: string;
   previewSrc?: string;
 }
-
-export interface Channel {
-  guid: Guid;
-  name: string;
-  groupGuid: Guid;
-  assetGuids: Guid[];
-  description?: string;
-  previewSrc?: string;
-}
-
-export interface Group {
-  guid: Guid;
-  name: string;
-  channelGuids: Guid[];
-  description?: string;
-  previewSrc?: string;
-}
-
-export interface SpacesByGuid {
-  [guid: string]: Space;
-}
-
-export interface ChannelsByGuid {
-  [guid: string]: Channel;
-}
-
 export interface AssetsByGuid {
   [guid: string]: Asset;
 }
 
-export interface GroupsByGuid {
-  [guid: string]: Group;
-}
-
-export interface Space {
+// threads
+export interface Thread {
   guid: Guid;
   name: string;
-  groupGuids: Guid[];
+  channelGuid: Guid;
+  messageGuids: Guid[];
   description?: string;
-  previewSrc?: string;
-  locked?: boolean
+}
+export interface ThreadsByGuid {
+  [guid: string]: Thread;
 }
 
-export interface SpaceByGuid {
-  [guid: string]: Space;
+// messages
+export interface Message {
+  guid: Guid;
+  conversationId: string;
+  parentMessageId: string;
+  chatGptLabel: string;
+  promptPrefix: string;
+  userLabel: string;
+  message: string;
+  threadGuid?: string;
+  response?: string;
 }
-
-export interface SpaceAssets {
-  [spaceGuid: string]: {
-    [channelGuid: string]: Asset[];
-  };
+export interface MessagesByGuid {
+  [guid: string]: Message;
 }
-
-export interface SpaceChannels {
-  [spaceGuid: string]: Channel[];
+export interface MessageGuids {
+  [threadGuid: string]: Guid[];
 }
-
-export interface SpaceGroups {
-  [spaceGuid: string]: Group[];
-}
-
-// spaces -> groups -> channels -> assets
-// spaces -> channels -> channels -> groups -> assets

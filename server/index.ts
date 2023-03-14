@@ -89,9 +89,6 @@ const handle = app.getRequestHandler()
 let languageModel = {} as any
 let ready = false
 
-let currentConversationId = 'NO_CURRENT_CONVERSATION_ID'
-let currentMessageId = 'NO_CURRENT_MESSAGE_ID'
-
 interface SendMessageProps {
   conversationId: string;
   parentMessageId: string;
@@ -131,7 +128,6 @@ interface StoredMessage {
   userLabel: string;
   message: string;
   response: string;
-  newConversationId: string;
 }
 
 interface MessagesByGuid {
@@ -255,12 +251,22 @@ const sendMessage = async ({
       userLabel,
       message,
       response,
-      newConversationId,
     });
     
     return guid;
   };
 
+  interface Message {
+    type: string,
+    message: string,
+    guid: string,
+    parentMessageId: string,
+    messageTime: string,
+    chatGptLabel: string,
+    promptPrefix: string,
+    conversationId: string,
+    userLabel: string
+  }
 
  // initalize websocket server
   const WSS = require('ws').WebSocketServer;
@@ -272,13 +278,7 @@ const sendMessage = async ({
   wss.on('connection', function connection(ws: typeof WSS) {
     // receive message from client
     ws.onmessage = (message: { data: string }) => {
-      
-      const action = JSON.parse(message.data) as {
-        type: string,
-        message: string,
-        guid: string,
-        messageTime: string,
-      }
+      const action = JSON.parse(message.data) as Message
       // client sent ping
       if (action.type === 'ping') {
         ws.send(JSON.stringify({
@@ -296,40 +296,43 @@ const sendMessage = async ({
       // client sent message
       if (action.type === 'message') {
         sendMessage({
-          conversationId: currentConversationId,
-          parentMessageId: currentMessageId,
-          chatGptLabel: 'Lexi',
-          promptPrefix: 'You are Lexi',
-          userLabel: '',
+          conversationId: action.conversationId,
+          parentMessageId: action.parentMessageId,
+          chatGptLabel: action.chatGptLabel,
+          promptPrefix: action.promptPrefix,
+          userLabel: action.userLabel,
           message: action.message,
           onComplete: ({ response, parentMessageId, conversationId }) => {
-            console.log(response, parentMessageId, conversationId)
-            currentMessageId = parentMessageId
-            currentConversationId = conversationId
             ws.send(JSON.stringify({
               // server send complete response to message
               type: 'response',
               message: response || '',
               guid: action.guid,
+              conversationId: conversationId,
+              parentMessageId: parentMessageId,
+              chatGptLabel: action.chatGptLabel,
+              promptPrefix: action.promptPrefix,
+              userLabel: action.userLabel,
               status: 200,
               messageTime: action.messageTime
             }))
           },
           onProgress: ({ response, parentMessageId, conversationId }) => {
-            currentMessageId = parentMessageId
-            currentConversationId = conversationId
             ws.send(JSON.stringify({
               // server send complete response to message
               type: 'partial-response',
               message: response || '',
               guid: action.guid,
+              conversationId: conversationId,
+              parentMessageId: parentMessageId,
+              chatGptLabel: action.chatGptLabel,
+              promptPrefix: action.promptPrefix,
+              userLabel: action.userLabel,
               status: 200,
               messageTime: action.messageTime
             }))
           },
         });
-
-  
       }
     }
   })
@@ -341,50 +344,6 @@ async function readMarkdownFile(filePath: string): Promise<string> {
   } catch (error: any) {
     throw new Error(`Failed to read markdown file at ${filePath}: ${error.message}`);
   }
-}
-
-function sortByNumber(strings: string[]): string[] {
-  function extractNumber(string: string): number {
-    // Use a regular expression to extract the numeric portion of the string
-    const matchResult = match(string, /\d+/);
-    if (!matchResult) {
-      throw new Error(`Unable to extract number from string: ${string}`);
-    }
-    // Return the extracted number as an integer
-    return parseInt(matchResult[0], 10);
-  }
-  // Sort the strings using the extractNumber key function
-  return sorted(strings, (a, b) => extractNumber(a) - extractNumber(b));
-}
-
-function sorted<T>(array: T[], compareFn?: (a: T, b: T) => number): T[] {
-  // Create a copy of the array
-  const copy = array.slice();
-  // Sort the copy using the compare function if provided, or the default comparison function if not
-  copy.sort(compareFn || ((a, b) => a < b ? -1 : 1));
-  // Return the sorted copy
-  return copy;
-}
-
-const match = (string: string, regex: RegExp): RegExpMatchArray | null => {
-  // Use the regex.exec() method to search for a match in the string
-  const result = regex.exec(string);
-  // If a match was found, return the match array
-  if (result) {
-    return result;
-  }
-  // If no match was found, return null
-  return null;
-}
-
-const extractScriptNameFromPath = (input: string): string => 
-  input.split(' ')[1].split('/')[0]
-
-const countWords = (s: string): number => {
-  s = s.replace(/(^\s)|(\s$)/gi,""); // exclude start and end white-space
-  s = s.replace(/[ ]{2,}/gi," "); // 2 or more spaces to 1
-  s = s.replace(/\n /,"\n"); // exclude newline with a start spacing
-  return s.split(' ').filter(str => str !== "").length;
 }
 
 app.prepare().then(() => {
@@ -414,21 +373,16 @@ app.prepare().then(() => {
   )
 
   sendMessage({
-    conversationId: currentConversationId,
-    parentMessageId: currentMessageId,
+    conversationId: '',
+    parentMessageId: '',
     chatGptLabel: 'Lexi',
-    promptPrefix: 'You are Lexi',
+    promptPrefix: 'You are Lexi.',
     userLabel: '',
-    message: 'What is your name?',
+    message: 'State if you are functioning properly.',
     onComplete: ({ response, parentMessageId, conversationId }) => {
-      currentMessageId = parentMessageId
-      currentConversationId = conversationId
       console.log(response)
     },
     onProgress: ({ response, parentMessageId, conversationId }) => {
-      currentMessageId = parentMessageId
-      currentConversationId = conversationId
-      console.log(response)
     },
   });
 
@@ -464,7 +418,7 @@ app.prepare().then(() => {
       // @ts-ignore
       .catch(e => {
         const error = e as any
-        console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
+        console.log('🟣', `[I experienced the following error: ${error}`)
         const status = error.statusCode || error.code || 500
         const message = error.message || 'internal error'
         res.send({ status, message })
@@ -472,7 +426,7 @@ app.prepare().then(() => {
     }
     catch(e) {
       const error = e as any
-      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
+      console.log('🟣', `[I experienced the following error: ${error}`)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
       res.send({ status, message })
@@ -505,7 +459,7 @@ app.prepare().then(() => {
     }
     catch(e) {
       const error = e as any
-      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
+      console.log('🟣', `I experienced the following error: ${error}`)
       const status = error.statusCode || error.code || 500
       const message = error.message || 'internal error'
       res.send({ status, message })
