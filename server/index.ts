@@ -6,6 +6,7 @@ const fs = require('fs')
 const express = require('express')
 const { join } = require('path')
 const { fetchTranscript } = require('youtube-transcript').default
+const { v4: uuidv4 } = require('uuid');
 
 const cookieParser = require('cookie-parser')
 const cookieSession = require('cookie-session')
@@ -91,158 +92,247 @@ let ready = false
 let currentConversationId = 'NO_CURRENT_CONVERSATION_ID'
 let currentMessageId = 'NO_CURRENT_MESSAGE_ID'
 
-const initializeLanguageModel = () => {
-  (async() => {
-    try {
-
-      const currentDate = new Date();
-      const dateString = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-      // @ts-ignore
-      const { ChatGPTClient } = await import('@waylaidwanderer/chatgpt-api')
-      const identityScript = await readMarkdownFile('./Lexi/IdentityAndBehavior.md')
-      languageModel = new ChatGPTClient(
-        process.env.OPENAI_API_KEY,
-        {
-          modelOptions: {
-            model: 'gpt-3.5-turbo',
-          },
-          promptPrefix: `${identityScript}\nCurrent date: ${dateString}`,
-          chatGptLabel: 'Lexi',
-          debug: false,
-        }, 
-        {
-          // cache options
-        }
-      );
-
-      const { response, conversationId, messageId } = await languageModel.sendMessage('Hello?');
-
-      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] Sending my reponse to the user: ${response}`)
-      currentConversationId = conversationId
-      currentMessageId = messageId
-
-      ready = true
-    }
-    catch(e) {
-      const error = e as any
-      console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
-      const status = error.statusCode || error.code || 500
-      const message = error.message || 'internal error'
-      console.log(status, message)
-    }
-  })()
+interface SendMessageProps {
+  conversationId: string;
+  parentMessageId: string;
+  chatGptLabel: string;
+  promptPrefix: string;
+  userLabel: string;
+  message: string;
+  threadId?: string;
+  onComplete: (data: {
+    conversationId: string;
+    parentMessageId: string;
+    chatGptLabel: string;
+    promptPrefix: string;
+    userLabel: string;
+    message: string;
+    response: string;
+  }) => void;
+  onProgress?: (data: {
+    conversationId: string;
+    parentMessageId: string;
+    chatGptLabel: string;
+    promptPrefix: string;
+    userLabel: string;
+    message: string;
+    response: string;
+    progress: number;
+  }) => void;
 }
 
-// send message to language model
-const sendMessageToLanguageModel = (
-  message: string,
-  onComplete: (arg0: {
-    status: number,
-    message?: string,
-    data: {
-      response: string
+let languageModels: { [key: string]: any } = {};
+
+interface StoredMessage {
+  conversationId: string;
+  parentMessageId: string;
+  chatGptLabel: string;
+  promptPrefix: string;
+  userLabel: string;
+  message: string;
+  response: string;
+  newConversationId: string;
+}
+
+interface MessagesByGuid {
+  [guid: string]: StoredMessage[];
+}
+
+interface StoredClient {
+  client: any; // Replace any with the actual type of ChatGPTClient if possible
+  chatGptLabel: string;
+  promptPrefix: string;
+  userLabel: string;
+}
+
+interface Clients {
+  [key: string]: StoredClient[];
+}
+
+interface MessageGuids {
+  [guid: string]: boolean;
+}
+
+interface ThreadsByThreadId {
+  [threadId: string]: string[]; // Array of GUIDs
+}
+
+const messagesByGuid: MessagesByGuid = {};
+const clients: Clients = {};
+const messageGuids: MessageGuids = {};
+const threadsByThreadId: ThreadsByThreadId = {};
+
+const sendMessage = async ({
+  conversationId,
+  parentMessageId,
+  chatGptLabel,
+  promptPrefix,
+  userLabel,
+  message,
+  threadId,
+  onComplete,
+  onProgress,
+}: SendMessageProps) => {
+  const guid = uuidv4();
+  messageGuids[guid] = true;
+
+  let storedClients = clients[`${promptPrefix}-${chatGptLabel}-${userLabel}`];
+  if (!storedClients) {
+    storedClients = [];
+    clients[`${promptPrefix}-${chatGptLabel}-${userLabel}`] = storedClients;
+  }
+
+  let storedClient = storedClients.find(
+    (client) =>
+      client.chatGptLabel === chatGptLabel &&
+      client.promptPrefix === promptPrefix &&
+      client.userLabel === userLabel
+  );
+  if (!storedClient) {
+    // Construct the prompt by combining prefix and suffix
+    // @ts-ignore <- do not remove
+    const { ChatGPTClient } = await import('@waylaidwanderer/chatgpt-api');
+    const client = new ChatGPTClient(process.env.OPENAI_API_KEY, {
+      modelOptions: {
+        model: 'gpt-3.5-turbo',
+      },
+      promptPrefix,
+      userLabel,
+      chatGptLabel,
+      debug: false,
+    });
+    storedClient = {
+      client,
+      chatGptLabel,
+      promptPrefix,
+      userLabel,
+    };
+    storedClients.push(storedClient);
+  }
+
+  const onCompleteWrapper = (data: StoredMessage) => {
+    if (!messagesByGuid[guid]) {
+      messagesByGuid[guid] = [];
     }
-  }) => void,
-  onProgress: (arg0: {
-    status: number,
-    message?: string,
-    data: {
-      response: string
+    messagesByGuid[guid].push(data);
+
+    if (threadId) {
+      if (!threadsByThreadId[threadId]) {
+        threadsByThreadId[threadId] = [];
+      }
+      threadsByThreadId[threadId].push(guid);
     }
-  }) => void
-) => {
-  (async () => {
-    try {
-      const { response, conversationId, messageId } = await languageModel.sendMessage(`${message}`, {
-        conversationId: currentConversationId,
-        parentMessageId: currentMessageId,
-        onProgress: (token: string) => {
-          onProgress({ status: 200, data: { response: token } })
-        }
+
+    onComplete(data);
+  };
+
+  const onProgressWrapper = (token: string, progress: number) => {
+    if (onProgress) {
+      onProgress({
+        conversationId,
+        parentMessageId,
+        chatGptLabel,
+        promptPrefix,
+        userLabel,
+        message,
+        response: token,
+        progress,
       });
-
-      currentMessageId = messageId
-      onComplete({ status: 200, data: { response } })
     }
-    catch(error) {
-      if (error instanceof Error) {
-        console.log('🟣', `[${currentConversationId} - ${currentMessageId}] I experienced the following error: ${error}`)
+  };
 
-        const errorCodeRegex = /error (\d+)/;
-        // @ts-ignore
-        const errorCode = Number((error.message || 'error 500').match(errorCodeRegex)?.[1])
+  const { response, newConversationId, messageId } = await storedClient.client.sendMessage(`${message}`, {
+      conversationId,
+      parentMessageId,
+      onProgress: onProgressWrapper,
+    });
+      
+    onCompleteWrapper({
+      conversationId,
+      parentMessageId: messageId,
+      chatGptLabel,
+      promptPrefix,
+      userLabel,
+      message,
+      response,
+      newConversationId,
+    });
+    
+    return guid;
+  };
 
-        onComplete({ 
-          status: 500, 
-          data: { 
-            response: `I experienced the following error when trying to access my language model.<br />${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning ? `<p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.meaning}</p><p>${(errorMessagesLanguageModelServer as any)?.[errorCode]?.recommendation}</p>` : ''}<br><pre>${error.message}</pre><pre>${error.stack}</pre>`
-          }})
+
+ // initalize websocket server
+  const WSS = require('ws').WebSocketServer;
+  const wss = new WSS({ port: LEXIWEBSOCKETSERVER_PORT });
+  let websock = {} as typeof WSS
+  const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'});
+
+  let initialized = false
+  wss.on('connection', function connection(ws: typeof WSS) {
+    // receive message from client
+    ws.onmessage = (message: { data: string }) => {
+      
+      const action = JSON.parse(message.data) as {
+        type: string,
+        message: string,
+        guid: string,
+        messageTime: string,
+      }
+      // client sent ping
+      if (action.type === 'ping') {
+        ws.send(JSON.stringify({
+          type: 'pong',
+          message: {
+
+          },
+          time: new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}),
+          guid: action.guid,
+          status: 200,
+          messageTime: action.messageTime
+        }))
+      }
+
+      // client sent message
+      if (action.type === 'message') {
+        sendMessage({
+          conversationId: currentConversationId,
+          parentMessageId: currentMessageId,
+          chatGptLabel: 'Lexi',
+          promptPrefix: 'You are Lexi',
+          userLabel: '',
+          message: action.message,
+          onComplete: ({ response, parentMessageId, conversationId }) => {
+            console.log(response, parentMessageId, conversationId)
+            currentMessageId = parentMessageId
+            currentConversationId = conversationId
+            ws.send(JSON.stringify({
+              // server send complete response to message
+              type: 'response',
+              message: response || '',
+              guid: action.guid,
+              status: 200,
+              messageTime: action.messageTime
+            }))
+          },
+          onProgress: ({ response, parentMessageId, conversationId }) => {
+            currentMessageId = parentMessageId
+            currentConversationId = conversationId
+            ws.send(JSON.stringify({
+              // server send complete response to message
+              type: 'partial-response',
+              message: response || '',
+              guid: action.guid,
+              status: 200,
+              messageTime: action.messageTime
+            }))
+          },
+        });
+
+  
       }
     }
-  })()
-}
-
-// initalize websocket server
-const WSS = require('ws').WebSocketServer;
-const wss = new WSS({ port: LEXIWEBSOCKETSERVER_PORT });
-let websock = {} as typeof WSS
-const serverStartTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'});
-
-let initialized = false
-wss.on('connection', function connection(ws: typeof WSS) {
-  console.log('🟣', `[${currentConversationId} - ${currentMessageId}] My web socket server is ready for connections`)
-  // receive message from client
-  ws.onmessage = (message: { data: string }) => {
-    
-    const action = JSON.parse(message.data) as {
-      type: string,
-      message: string,
-      guid: string,
-      messageTime: string,
-    }
-    // client sent ping
-    if (action.type === 'ping') {
-      ws.send(JSON.stringify({
-        type: 'pong',
-        message: {
-
-        },
-        time: new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}),
-        guid: action.guid,
-        status: 200,
-        messageTime: action.messageTime
-      }))
-    }
-
-    // client sent message
-    if (action.type === 'message') {
-      sendMessageToLanguageModel(
-        action.message,
-        ({ data, status }) => {
-          ws.send(JSON.stringify({
-            // server send complete response to message
-            type: 'response',
-            message: data.response || '',
-            guid: action.guid,
-            status,
-            messageTime: action.messageTime
-          }))
-        },
-        ({ data, status }) => {
-          ws.send(JSON.stringify({
-            // server sent partial response to message
-            type: 'partial-response',
-            message: data.response || '',
-            guid: action.guid,
-            status,
-            messageTime: action.messageTime
-          }))
-        }
-      )
-    }
-  }
-})
+  })
 
 async function readMarkdownFile(filePath: string): Promise<string> {
   try {
@@ -323,7 +413,24 @@ app.prepare().then(() => {
     })
   )
 
-  initializeLanguageModel()
+  sendMessage({
+    conversationId: currentConversationId,
+    parentMessageId: currentMessageId,
+    chatGptLabel: 'Lexi',
+    promptPrefix: 'You are Lexi',
+    userLabel: '',
+    message: 'What is your name?',
+    onComplete: ({ response, parentMessageId, conversationId }) => {
+      currentMessageId = parentMessageId
+      currentConversationId = conversationId
+      console.log(response)
+    },
+    onProgress: ({ response, parentMessageId, conversationId }) => {
+      currentMessageId = parentMessageId
+      currentConversationId = conversationId
+      console.log(response)
+    },
+  });
 
   // redirect if not logged in
   // server.use((req: any, res: any, next: any) => {
