@@ -222,7 +222,10 @@ const sendMessage = async ({
     onComplete(data);
   };
 
+  let partialResponse = ''
+
   const onProgressWrapper = (token: string, progress: number) => {
+    partialResponse += token
     if (onProgress) {
       onProgress({
         conversationId,
@@ -231,7 +234,7 @@ const sendMessage = async ({
         promptPrefix,
         userLabel,
         message,
-        response: token,
+        response: partialResponse,
         progress,
       });
     }

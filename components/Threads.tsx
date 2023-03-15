@@ -8,6 +8,7 @@ import { NewMessage } from './NewMessage'
 import { Thread } from './Thread'
 import { scrollToBottom } from 'client-utils'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
+import { store } from 'redux-tk/store'
 
 interface Props {
   
@@ -60,9 +61,10 @@ export const Threads = ({ }: Props) => {
           promptPrefix,
           userLabel,
         } = JSON.parse(ev.data.toString())
+        console.log(type, message)
 
         if (type === 'response') {
-          const targetThreadMessageGuids = threadsByGuid[conversationId].messageGuids
+          const targetThreadMessageGuids = store.getState().spaces.threadsByGuid[conversationId].messageGuids
           const targetMessageGuid = targetThreadMessageGuids.slice(-1)[0]
 
           const newMessage ={
@@ -76,13 +78,14 @@ export const Threads = ({ }: Props) => {
           updateMessage({ guid: targetMessageGuid, message: newMessage })
         }
         if (type === 'partial-response') {
-          const targetThreadMessageGuids = threadsByGuid[conversationId].messageGuids
+          const targetThreadMessageGuids = store.getState().spaces.threadsByGuid[conversationId].messageGuids
           const targetMessageGuid = targetThreadMessageGuids.slice(-1)[0]
           const targetMessageContent = messagesByGuid[targetMessageGuid].message
 
+
           const newMessage ={
             guid: targetMessageGuid,
-            message: targetMessageContent + message,
+            message,
             conversationId,
             parentMessageId,
             userLabel: 'Lexi'
@@ -149,6 +152,17 @@ export const Threads = ({ }: Props) => {
           addMessage({ guid: messageGuid, message: newMessage})
           addMessageToThread({ threadGuid: guid, messageGuid })
 
+          const responseGuid = generateUUID()
+          const newResponse ={
+            guid: responseGuid,
+            message: '',
+            conversationId: guid,
+            parentMessageId: messageGuid,
+            userLabel: 'Lexi'
+          } as MessageProps
+          addMessage({ guid: responseGuid, message: newResponse })
+          addMessageToThread({ threadGuid: guid, messageGuid: responseGuid })
+
           const action = {
             type: 'message',
             guid,
@@ -160,17 +174,6 @@ export const Threads = ({ }: Props) => {
             userLabel: 'User',
           }
           websocketClient.send(JSON.stringify(action))
-
-          const responseGuid = generateUUID()
-          const newResponse ={
-            guid: responseGuid,
-            message: '',
-            conversationId: guid,
-            parentMessageId: messageGuid,
-            userLabel: 'Lexi'
-          } as MessageProps
-          addMessage({ guid: responseGuid, message: newResponse })
-          addMessageToThread({ threadGuid: guid, messageGuid: responseGuid })
         }}
       />
     </Box>
