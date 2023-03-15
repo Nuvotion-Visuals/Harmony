@@ -60,6 +60,8 @@ export const ItemMessage = React.memo(({
     }, [message])
 
 
+  const { removeMessage, removeMessageFromThread } = useSpaces()
+
   const Message = ({ text } : { text: string }) => (
     <S.ItemMessage>
       <Box width={3} height='100%'>
@@ -88,6 +90,9 @@ export const ItemMessage = React.memo(({
               iconPrefix='fas'
               minimal
               minimalIcon
+              onClick={e => {
+              
+              }}
               items={[
                 {
                   icon: 'copy',
@@ -95,11 +100,18 @@ export const ItemMessage = React.memo(({
                 },
                 {
                   icon: 'edit',
-                  name: 'Edit'
+                  name: 'Edit',
+                  
                 },
                 {
                   icon: 'trash-alt',
-                  name: 'Delete'
+                  name: 'Delete',
+                  onClick: (e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    // removeMessageFromThread({ threadGuid, messageGuid: guid})
+                    // removeMessage(guid)
+                  }
                 }
               ]}
             />

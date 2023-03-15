@@ -40,7 +40,7 @@ export const EditChannel = ({ }: Props) => {
         <Gap gap={.75}>
         {
         url &&
-          <AspectRatio
+          <AspectRatioest
             ratio={2}
             backgroundSrc={url}
             coverBackground
@@ -90,6 +90,7 @@ export const EditChannel = ({ }: Props) => {
               channel: {
                   guid: activeChannel.guid,
                   assetGuids: [],
+                  threadGuids: activeChannel.threadGuids,
                   groupGuid: activeChannel.groupGuid,
                   name,
                   previewSrc: url,

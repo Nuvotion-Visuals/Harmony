@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux'
 import { fetchInitialData } from 'redux-tk/spaces/slice'
 import type { Dispatch } from '@reduxjs/toolkit'
 import { Threads } from './Threads'
+import { EditChannel } from './EditChannel'
 
 interface Props {
   children: React.ReactNode
@@ -52,6 +53,8 @@ const App = ({ children }: Props) => {
         return <EditSpace />
       case '/spaces/[spaceGuid]/groups/[groupGuid]/edit':
         return <EditGroup />
+      case '/spaces/[spaceGuid]/groups/[groupGuid]/channels/[channelGuid]/edit':
+        return <EditChannel />
       default:
         return <SpaceSidebar />
     }

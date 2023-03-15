@@ -7,7 +7,8 @@ import {
   ItemProps, 
   generateUUID, 
   LabelColor, 
-  Item
+  Item,
+  Label
 } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -42,7 +43,8 @@ export const Groups = ({ locked }: Props) => {
       removeChannelFromGroup, 
       removeGroupFromSpace,
       addGroup,
-      addGroupToSpace
+      addGroupToSpace,
+      activeChannel
     } = useSpaces()
 
     const [newChannelName, set_newChannelName] = useState('')
@@ -192,6 +194,7 @@ export const Groups = ({ locked }: Props) => {
                       e.stopPropagation()
                       e.preventDefault()
                     }}>
+                      
                       <Dropdown 
                         icon={listItem.active ? 'ellipsis-h' : undefined}
                         iconPrefix='fas'
@@ -201,7 +204,7 @@ export const Groups = ({ locked }: Props) => {
                             text: 'Edit',
                             icon: 'edit',
                             iconPrefix: 'fas',
-                            onClick: () => {}
+                            href: `/spaces/${activeSpaceGuid}/groups/${activeSpace?.groupGuids[i]}/channels/${activeChannel?.guid}/edit`
                           },
                           {
                             text: 'Remove',
