@@ -295,6 +295,7 @@ const sendMessage = async ({
 
       // client sent message
       if (action.type === 'message') {
+        console.log(action)
         sendMessage({
           conversationId: action.conversationId,
           parentMessageId: action.parentMessageId,
@@ -303,6 +304,7 @@ const sendMessage = async ({
           userLabel: action.userLabel,
           message: action.message,
           onComplete: ({ response, parentMessageId, conversationId }) => {
+            console.log('Sending response to client')
             ws.send(JSON.stringify({
               // server send complete response to message
               type: 'response',

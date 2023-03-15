@@ -79,6 +79,10 @@ export const select_activeMessage = (state: RootState): Types.Message | null => 
   const { activeMessageGuid, messagesByGuid } = state.spaces;
   return activeMessageGuid ? messagesByGuid[activeMessageGuid] || null : null;
 };
+export const select_messageGuids = (state: RootState) : Types.Guid[] => {
+  const { messageGuids } = state.spaces
+  return messageGuids
+}
 export const select_activeMessageGuid = (state: RootState): Types.Guid | null => {
   return state.spaces.activeMessageGuid;
 };

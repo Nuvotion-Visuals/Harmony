@@ -15,6 +15,7 @@ import { useSpaces } from 'redux-tk/spaces/hook'
 import { useDispatch } from 'react-redux'
 import { fetchInitialData } from 'redux-tk/spaces/slice'
 import type { Dispatch } from '@reduxjs/toolkit'
+import { Threads } from './Threads'
 
 interface Props {
   children: React.ReactNode
@@ -70,7 +71,7 @@ const App = ({ children }: Props) => {
       {
         !isMobile && !isTablet && <S.HeaderSpacer />
       }
-      <Chat />
+      <Threads />
     </>
   }
 

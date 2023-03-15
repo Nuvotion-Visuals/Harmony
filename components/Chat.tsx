@@ -17,9 +17,17 @@ import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 
 import { v4 as uuidv4 } from 'uuid'
 import { getTimestamp, scrollToBottom } from 'client-utils'
+import { useSpaces } from 'redux-tk/spaces/hook'
 
 const Chat = React.memo(() => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+
+  const {
+    activeThreadGuid,
+    setActiveThreadGuid,
+    activeMessageGuid,
+    setActiveMessageGuid
+  } = useSpaces()
 
   const {
     query,
@@ -37,7 +45,17 @@ const Chat = React.memo(() => {
   useEffect(() => {
     if (websocketClient) {
       websocketClient.onmessage = (ev) => {
-        const { guid, message, type } = JSON.parse(ev.data.toString())
+        const { 
+          guid, 
+          message, 
+          type,
+          conversationId,
+          parentMessageId,
+          chatGptLabel,
+          promptPrefix,
+          userLabel,
+        } = JSON.parse(ev.data.toString())
+
         stop()
         scrollToBottom(scrollContainerRef)
 
@@ -45,14 +63,25 @@ const Chat = React.memo(() => {
           onResponse({
             guid,
             response: message,
-            responseTime: getTimestamp()
+            responseTime: getTimestamp(),
+            conversationId,
+            parentMessageId,
+            chatGptLabel,
+            promptPrefix,
+            userLabel,
           })
+          
         }
         if (type === 'partial-response') {
           onPartialResponse({
             guid,
             response: message,
-            responseTime: getTimestamp()
+            responseTime: getTimestamp(),
+            conversationId,
+            parentMessageId,
+            chatGptLabel,
+            promptPrefix,
+            userLabel,
           })
         }
       }
@@ -78,7 +107,12 @@ const Chat = React.memo(() => {
       const action = {
         type: 'message',
         guid,
-        message: query
+        message: query,
+        conversationId: 'test-conv',
+        parentMessageId: activeMessageGuid,
+        chatGptLabel: 'Lexi',
+        promptPrefix: 'You are Lexi',
+        userLabel: 'User',
       }
       websocketClient.send(JSON.stringify(action))
     }

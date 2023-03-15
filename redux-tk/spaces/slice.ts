@@ -344,7 +344,17 @@ export const slice = createSlice({
         db.channels.set(channelGuid, channel);
       }
     },
-    // TODO: add removeAssetFromChannel
+    removeAssetFromChannel: (state, action: PayloadAction<{ channelGuid: Types.Guid; assetGuid: Types.Guid }>) => {
+      const { channelGuid, assetGuid } = action.payload;
+    
+      const channel = state.channelsByGuid[channelGuid];
+      if (channel) {
+        const newAssetGuids = channel.assetGuids.filter((guid) => guid !== assetGuid);
+        channel.assetGuids = newAssetGuids;
+    
+        db.channels.set(channelGuid, channel);
+      }
+    },
 
     // threads
     setThreads: (state, action: PayloadAction<Types.ThreadsByGuid>) => {

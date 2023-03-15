@@ -85,11 +85,15 @@ export const useSpaces = () => {
     removeAsset: useCallback((payload: Guid) => {
     dispatch(slice.actions.removeAsset(payload));
     }, [dispatch]),
-    // TODO: add updateAsset
+    updateAsset: useCallback((payload: { guid: Guid; asset: Asset }) => {
+      dispatch(slice.actions.updateAsset(payload));
+    }, [dispatch]),
     addAssetToChannel: useCallback((payload: { channelGuid: Guid; assetGuid: Guid }) => {
     dispatch(slice.actions.addAssetToChannel(payload));
     }, [dispatch]),
-    // TODO: add removeAssetFromChannel
+    removeAssetFromChannel: useCallback((payload: { channelGuid: Guid; assetGuid: Guid }) => {
+      dispatch(slice.actions.removeAssetFromChannel(payload));
+    }, [dispatch]),
     
     // threads
     activeThreadGuid: useSelector(selectors.select_activeThreadGuid, isEqual),
@@ -119,9 +123,13 @@ export const useSpaces = () => {
     // messages
     activeMessageGuid: useSelector(selectors.select_activeMessageGuid, isEqual),
     messagesByGuid: useSelector(selectors.select_messagesByGuid, isEqual),
+    messageGuids: useSelector(selectors.select_messageGuids, isEqual),
     setMessages: useCallback((payload: MessagesByGuid) => {
     dispatch(slice.actions.setMessages(payload));
     }, [dispatch]),
+    addMessage: useCallback((payload: { guid: Guid; message: Message }) => {
+      dispatch(slice.actions.addMessage(payload));
+      }, [dispatch]),
     setActiveMessageGuid: useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveMessageGuid(payload));
     }, [dispatch]),

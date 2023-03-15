@@ -281,7 +281,7 @@ const S = {
   }>`
     width: 100%;
     background: ${props => props.isLexi ? 'var(--F_Background_Alternating)': 'var(--F_Background)'};
-    padding: .75rem 0;
+
     border-top: 1px solid var(--F_Surface_0);
   `,
   FlexStart: styled.div<{
@@ -308,7 +308,8 @@ const S = {
     align-items: flex-start;
     height: 100%;
     width: 700px;
-    max-width: calc(100vw - 1.5rem);
+    max-width: calc(100vw - 1.25rem);
+
     gap: 1rem;
   `,
   Content: styled.div`

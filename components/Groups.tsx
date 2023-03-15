@@ -61,7 +61,8 @@ export const Groups = ({ locked }: Props) => {
             guid,
             name: newChannelName,
             groupGuid: activeSpace?.groupGuids[i],
-            assetGuids: []
+            assetGuids: [],
+            threadGuids: []
           }
         })
         addChannelToGroup({
