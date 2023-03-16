@@ -97,6 +97,7 @@ export const useSpaces = () => {
     
     // threads
     activeThreadGuid: useSelector(selectors.select_activeThreadGuid, isEqual),
+    activeThread: useSelector(selectors.select_activeThread, isEqual),
     threadsByGuid: useSelector(selectors.select_threadsByGuid, isEqual),
     setActiveThreadGuid: useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveThreadGuid(payload));

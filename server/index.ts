@@ -135,14 +135,14 @@ interface MessagesByGuid {
 }
 
 interface StoredClient {
-  client: any; // Replace any with the actual type of ChatGPTClient if possible
+  api: any;
   chatGptLabel: string;
   promptPrefix: string;
   userLabel: string;
 }
 
 interface Clients {
-  [key: string]: StoredClient[];
+  [key: string]: StoredClient;
 }
 
 interface MessageGuids {
@@ -172,38 +172,20 @@ const sendMessage = async ({
   const guid = uuidv4();
   messageGuids[guid] = true;
 
-  let storedClients = clients[`${promptPrefix}-${chatGptLabel}-${userLabel}`];
-  if (!storedClients) {
-    storedClients = [];
-    clients[`${promptPrefix}-${chatGptLabel}-${userLabel}`] = storedClients;
-  }
+  let storedClient = clients[`${promptPrefix}-${chatGptLabel}-${userLabel}`];
 
-  let storedClient = storedClients.find(
-    (client) =>
-      client.chatGptLabel === chatGptLabel &&
-      client.promptPrefix === promptPrefix &&
-      client.userLabel === userLabel
-  );
   if (!storedClient) {
-    // Construct the prompt by combining prefix and suffix
-    // @ts-ignore <- do not remove
-    const { ChatGPTClient } = await import('@waylaidwanderer/chatgpt-api');
-    const client = new ChatGPTClient(process.env.OPENAI_API_KEY, {
-      modelOptions: {
-        model: 'gpt-3.5-turbo',
-      },
-      promptPrefix,
-      userLabel,
-      chatGptLabel,
-      debug: false,
-    });
+    // Dynamically import the ChatGPTAPI
+    const { ChatGPTAPI } = await import('chatgpt');
+    const api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY || '' });
+
     storedClient = {
-      client,
+      api,
       chatGptLabel,
       promptPrefix,
       userLabel,
     };
-    storedClients.push(storedClient);
+    clients[`${promptPrefix}-${chatGptLabel}-${userLabel}`] = storedClient;
   }
 
   const onCompleteWrapper = (data: StoredMessage) => {
@@ -222,10 +204,7 @@ const sendMessage = async ({
     onComplete(data);
   };
 
-  let partialResponse = ''
-
-  const onProgressWrapper = (token: string, progress: number) => {
-    partialResponse += token
+  const onProgressWrapper = (partialResponse: any) => {
     if (onProgress) {
       onProgress({
         conversationId,
@@ -234,30 +213,30 @@ const sendMessage = async ({
         promptPrefix,
         userLabel,
         message,
-        response: partialResponse,
-        progress,
+        response: partialResponse.text,
+        progress: partialResponse.progress,
       });
     }
   };
 
-  const { response, newConversationId, messageId } = await storedClient.client.sendMessage(`${message}`, {
-      conversationId,
-      parentMessageId,
-      onProgress: onProgressWrapper,
-    });
-      
-    onCompleteWrapper({
-      conversationId,
-      parentMessageId: messageId,
-      chatGptLabel,
-      promptPrefix,
-      userLabel,
-      message,
-      response,
-    });
-    
-    return guid;
-  };
+  const res = await storedClient.api.sendMessage(`${message}`, {
+    parentMessageId,
+    onProgress: onProgressWrapper,
+  });
+
+  onCompleteWrapper({
+    conversationId,
+    parentMessageId: res.id,
+    chatGptLabel,
+    promptPrefix,
+    userLabel,
+    message,
+    response: res.text,
+  });
+
+  return guid;
+};
+
 
   interface Message {
     type: string,

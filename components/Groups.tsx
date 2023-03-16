@@ -208,6 +208,7 @@ export const Groups = ({ locked }: Props) => {
                       <Dropdown 
                         icon={listItem.active ? 'ellipsis-h' : undefined}
                         iconPrefix='fas'
+                        key={`dropdown_${listItemIndex1}`}
                         minimal
                         items={[
                           {

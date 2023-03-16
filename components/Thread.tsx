@@ -3,14 +3,11 @@ import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
-import styled from 'styled-components'
 import { ItemMessage } from './ItemMessage'
-import Message from './Message'
 import { NewMessage } from './NewMessage'
 
 interface Props extends ThreadProps {
-  threadGuid: string,
-  channelName: string
+  threadGuid: string
 }
 
 export const Thread = ({
@@ -20,32 +17,19 @@ export const Thread = ({
     messageGuids,
     description,
     threadGuid,
-    channelName
  }: Props) => {
 
   const [newThreadName, set_newThreadName] = useState(name)
   const [newThreadDescription, set_newThreadDescription] = useState(description)
 
-
-
   const { 
-    addThread,
     addMessage,
-    threadsByGuid,
     messagesByGuid,
-    addThreadToChannel,
     addMessageToThread,
-    setActiveThreadGuid,
-    setActiveMessageGuid,
     updateThread,
-    setActiveChannelGuid,
-    setActiveGroupGuid,
-    activeChannel,
     removeThreadFromChannel,
     removeThread,
   } = useSpaces() 
-
-  const websocketClient = getWebsocketClient()
 
   const [edit, set_edit] = useState(false)
   useEffect(() => {
@@ -61,8 +45,45 @@ export const Thread = ({
     expandedRef.current = !expanded;
   };
 
+  const sendMessageToWebsocket = (message: string) => {
+  const websocketClient = getWebsocketClient()
+
+    const messageGuid = generateUUID()
+    const newMessage ={
+      guid: messageGuid,
+      message,
+      conversationId: guid,
+      parentMessageId: messageGuid,
+      userLabel: 'User'
+    } as MessageProps
+    addMessage({ guid: messageGuid, message: newMessage})
+    addMessageToThread({ threadGuid, messageGuid })
+    const action = {
+      type: 'message',
+      guid,
+      message,
+      conversationId: threadGuid,
+      parentMessageId: messageGuid,
+      chatGptLabel: 'Lexi',
+      promptPrefix: 'You are Lexi',
+      userLabel: 'User',
+    }
+    websocketClient.send(JSON.stringify(action))
+
+    // insert new message in anticipation of response
+    const responseGuid = generateUUID()
+    const newResponse ={
+      guid: responseGuid,
+      message: '',
+      conversationId: guid,
+      parentMessageId: messageGuid,
+      userLabel: 'Lexi'
+    } as MessageProps
+    addMessage({ guid: responseGuid, message: newResponse })
+    addMessageToThread({ threadGuid, messageGuid: responseGuid })
+  }
+
   return (<Box wrap width={'100%'} pb={.5}>
-    <LineBreak />
     <Box width='100%' pt={.5} >
     {
       edit
@@ -157,19 +178,17 @@ export const Thread = ({
     </Box>
     
     {
-       messageGuids?.map((messageGuid, index) => {
+      messageGuids?.map((messageGuid, index) => {
         const message = messagesByGuid[messageGuid]
 
         return (
           expanded
-           && <ItemMessage 
+          && <ItemMessage 
+              key={messageGuid}
               {
                 ...message
               }
             />
-         
-
-          
         )
       }
       )
@@ -177,68 +196,21 @@ export const Thread = ({
     
     {
       expanded &&
-      <Box width={'100%'} pt={.5} wrap>
-        {
-          
-        }
-        <Box pb={.5} width='100%'>
-          <Item subtitle={`${name}`} />
-        </Box>
-        <Box pb={.5} width='100%'>
-          <NewMessage
-            channelGuid={guid}
-            thread={false}
-            threadName={name}
-            onSend={(message) => {
-              const messageGuid = generateUUID()
-              const newMessage ={
-                guid: messageGuid,
-                message,
-                conversationId: guid,
-                parentMessageId: messageGuid,
-                userLabel: 'User'
-              } as MessageProps
-              addMessage({ guid: messageGuid, message: newMessage})
-              addMessageToThread({ threadGuid, messageGuid })
-              const action = {
-                type: 'message',
-                guid,
-                message,
-                conversationId: threadGuid,
-                parentMessageId: messageGuid,
-                chatGptLabel: 'Lexi',
-                promptPrefix: 'You are Lexi',
-                userLabel: 'User',
-              }
-              websocketClient.send(JSON.stringify(action))
-
-              const responseGuid = generateUUID()
-              const newResponse ={
-                guid: responseGuid,
-                message: '',
-                conversationId: guid,
-                parentMessageId: messageGuid,
-                userLabel: 'Lexi'
-              } as MessageProps
-              addMessage({ guid: responseGuid, message: newResponse })
-              addMessageToThread({ threadGuid, messageGuid: responseGuid })
-            }
-          }
-        />
+        <Box width={'100%'} pt={.5} wrap>
+          <Box pb={.5} width='100%'>
+            <Item subtitle={`${name}`} />
+          </Box>
+          <Box pb={.5} width='100%'>
+            <NewMessage
+              channelGuid={guid}
+              thread={false}
+              threadName={name}
+              onSend={(message) => sendMessageToWebsocket(message)}
+          />
         </Box>
      
     </Box>
     }
    
   </Box>)
-}
-
-
-const S = {
-  VSpacer: styled.div`
-    height: 100%;
-    width: 3px;
-    display: flex;
-    background-color: red;
-  `
 }
