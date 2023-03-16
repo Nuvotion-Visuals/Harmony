@@ -96,7 +96,7 @@ export const Thread = ({
                   placeholder='Name'
                 />
                 <RichTextEditor
-                  value={newThreadDescription}
+                  value={newThreadDescription || ''}
                   onChange={val => set_newThreadDescription(val)}
                   placeholder={'Description'}
                 />
@@ -179,19 +179,17 @@ export const Thread = ({
     
     {
       messageGuids?.map((messageGuid, index) => {
-        const message = messagesByGuid[messageGuid]
-
+        const message = messagesByGuid?.[messageGuid]
         return (
-          expanded
-          && <ItemMessage 
+          expanded && message && 
+            <ItemMessage 
               key={messageGuid}
               {
                 ...message
               }
             />
         )
-      }
-      )
+      })
     }
     
     {

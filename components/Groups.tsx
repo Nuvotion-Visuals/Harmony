@@ -8,7 +8,6 @@ import {
   generateUUID, 
   LabelColor, 
   Item,
-  Label,
   useBreakpoint
 } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
@@ -34,8 +33,8 @@ interface Props {
 export const Groups = ({ locked }: Props) => {
     const router = useRouter()
 
-    const { activeSwipeIndex, setActiveSwipeIndex, incrementActiveSwipeIndex } = useLayout()
-    const { isMobile, isDesktop } = useBreakpoint()
+    const { incrementActiveSwipeIndex } = useLayout()
+    const { isDesktop } = useBreakpoint()
 
     const { 
       activeSpace, 
@@ -126,7 +125,7 @@ export const Groups = ({ locked }: Props) => {
               list: [
                 ...groupsList,
                 {
-                  content: !locked && <Box mr={-.5}><TextInput
+                  content: !locked && <Box><TextInput
                     value={newChannelName}
                     onChange={newValue => set_newChannelName(newValue)}
                     iconPrefix='fas'

@@ -12,7 +12,7 @@ export const EditChannel = ({ }: Props) => {
   const router = useRouter()
   const { channelGuid } = router.query
 
-  const { activeSpaceGuid, updateChannel, channelsByGuid } = useSpaces()
+  const { activeSpaceGuid, updateChannel, channelsByGuid, activeThreadGuid } = useSpaces()
 
   const activeChannel = channelsByGuid[channelGuid as string]
 
@@ -40,7 +40,7 @@ export const EditChannel = ({ }: Props) => {
         <Gap gap={.75}>
         {
         url &&
-          <AspectRatioest
+          <AspectRatio
             ratio={2}
             backgroundSrc={url}
             coverBackground
@@ -98,7 +98,7 @@ export const EditChannel = ({ }: Props) => {
               }
               })
               setTimeout(() => {
-                router.push(`/spaces/${activeSpaceGuid}`)
+                router.push(`/spaces/${activeSpaceGuid}/groups/${activeChannel.groupGuid}/`)
               }, 1)
             }
           }}

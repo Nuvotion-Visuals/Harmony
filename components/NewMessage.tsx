@@ -84,7 +84,9 @@ export const NewMessage = ({ channelGuid, thread, onSend, newThreadName, set_new
                             onClick={() => set_newThread(false)}
                           />
                     }
-                     
+                    <Box
+                      height='100%'
+                    />
                   </RichTextEditor>
                   
                   </Gap>

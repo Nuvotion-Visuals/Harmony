@@ -8,7 +8,6 @@ import { NewMessage } from './NewMessage'
 import { Thread } from './Thread'
 import { scrollToBottom } from 'client-utils'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
-import { store } from 'redux-tk/store'
 import { use100vh } from 'react-div-100vh'
 import { useLayout } from 'redux-tk/layout/hook'
 
@@ -19,7 +18,7 @@ interface Props {
 export const Threads = ({ }: Props) => {
   const router = useRouter()
   const { query } = router
-  const { spaceGuid, groupGuid, channelGuid } = query
+  const { groupGuid, channelGuid } = query
 
   useEffect(() => {
     setActiveGroupGuid(groupGuid as string)
@@ -36,13 +35,8 @@ export const Threads = ({ }: Props) => {
     addThread,
     addMessage,
     threadsByGuid,
-    messagesByGuid,
-    messageGuids,
-    updateMessage,
     addThreadToChannel,
     addMessageToThread,
-    setActiveThreadGuid,
-    setActiveMessageGuid,
     setActiveChannelGuid,
     setActiveGroupGuid,
     activeChannel,
@@ -113,81 +107,80 @@ export const Threads = ({ }: Props) => {
     {
       selected
         ? <>
-        <Box height='var(--F_Header_Height)' width={'100%'}>
-          <Item
+            <Box height='var(--F_Header_Height)' width={'100%'}>
+              <Item
+                
+                icon='hashtag'
+                minimalIcon
+                
+              >
+                <Item
+                  title={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
+                  onClick={() => {
+                    if (!isDesktop) {
+                      decrementActiveSwipeIndex()
+                    }
+                  }}
+                />
+              
+                <Label
+                  label={`${activeChannel?.threadGuids?.length}`}
+                  labelColor='purple'
+                />
+                <Dropdown
+                  icon='ellipsis-h'
+                  iconPrefix='fas'
+                  minimal
+                  items={[
+                    {
+                      icon: 'edit',
+                      iconPrefix: 'fas',
+                      name: 'Edit',
+                      href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`
+                    },
+                    {
+                      icon: 'trash-alt',
+                      iconPrefix: 'fas',
+                      name: 'Delete',
+                    }
+                  ]}
+                />
+              </Item>
+            </Box>
+            <LineBreak />
             
-            icon='hashtag'
-            minimalIcon
-            
-          >
-            <Item
-              title={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
-              onClick={() => {
-                if (!isDesktop) {
-                  decrementActiveSwipeIndex()
-                }
-              }}
-            />
-           
-            <Label
-              label={activeChannel?.threadGuids?.length}
-              labelColor='purple'
-            />
-            <Dropdown
-              icon='ellipsis-h'
-              iconPrefix='fas'
-              minimal
-              items={[
+            <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
+              <Page noPadding>
+                <LineBreak />
                 {
-                  icon: 'edit',
-                  iconPrefix: 'fas',
-                  name: 'Edit',
-                },
-                {
-                  icon: 'trash-alt',
-                  iconPrefix: 'fas',
-                  name: 'Delete',
+                  activeChannel?.threadGuids?.map((threadGuid, index) => (
+                    <React.Fragment key={threadGuid}>
+                      <Thread
+                        {
+                          ...threadsByGuid[threadGuid]
+                        }
+                        threadGuid={threadGuid}
+                      />
+                      <LineBreak />
+                    </React.Fragment>
+                  ))
                 }
-              ]}
-            />
-          </Item>
-        </Box>
-        <LineBreak />
-        
-      <S.Threads ref={scrollContainerRef} true100vh={true100vh}>
-      
-        <Page noPadding>
-
-        <LineBreak />
-        {
-          activeChannel?.threadGuids?.map((threadGuid, index) => (
-            <React.Fragment key={threadGuid}>
-              <Thread
-                {
-                  ...threadsByGuid[threadGuid]
-                }
-                threadGuid={threadGuid}
-              />
-              <LineBreak />
-            </React.Fragment>
-          ))
-        }
-        
-        <Box width={'100%'} py={1}>
-          <NewMessage 
-            newThreadName={newThreadName}
-            set_newThreadName={set_newThreadName}
-            newThreadDescription={newThreadDescription}
-            set_newThreadDescription={set_newThreadDescription}
-            channelGuid={channelGuid as string} 
-            thread={true} 
-            onSend={message => sendThread(message)}
-          />
-        </Box>
-        </Page>
-      </S.Threads>
+                
+                <Box width={'100%'} py={1}>
+                  <NewMessage 
+                    newThreadName={newThreadName}
+                    set_newThreadName={set_newThreadName}
+                    newThreadDescription={newThreadDescription}
+                    set_newThreadDescription={set_newThreadDescription}
+                    channelGuid={channelGuid as string} 
+                    thread={true} 
+                    onSend={message => sendThread(message)}
+                  />
+                </Box>
+              </Page>
+            </S.Threads>
           </>
-        : <Box py={.75}>
+        : <Box py={.25}>
             
           </Box>
     }

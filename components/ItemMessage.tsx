@@ -1,4 +1,4 @@
-import { Avatar, Box, Dropdown, Item, LoadingSpinner, markdownToHTML, RichTextEditor, Spacer } from '@avsync.live/formation'
+import { Avatar, Box, Button, Dropdown, Item, LoadingSpinner, markdownToHTML, RichTextEditor, Spacer } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
@@ -39,17 +39,15 @@ interface Props extends MessageProps {
   
 }
 
-export const ItemMessage = React.memo(({ 
-  guid,
-  conversationId,
-  parentMessageId,
-  chatGptLabel,
-  promptPrefix,
-  userLabel,
-  message,
-  threadGuid,
-  response,
-}: Props) => {
+export const ItemMessage = React.memo((props: Props) => {
+
+  const { 
+    guid,
+    userLabel,
+    message,
+    threadGuid,
+  } = props
+  const [edit, set_edit] = useState(false)
 
   const isLexi = userLabel === 'Lexi'
 
@@ -60,7 +58,19 @@ export const ItemMessage = React.memo(({
     }, [message])
 
 
-  const { removeMessage, removeMessageFromThread } = useSpaces()
+  const { removeMessage, removeMessageFromThread, updateMessage } = useSpaces()
+
+  const copy = (str: string) => {
+    const tempElement = document.createElement("textarea");
+    tempElement.style.position = "fixed";
+    tempElement.style.top = "-9999px";
+    tempElement.style.left = "-9999px";
+    tempElement.value = str;
+    document.body.appendChild(tempElement);
+    tempElement.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempElement);
+  }
 
   const Message = ({ text } : { text: string }) => (
     <S.ItemMessage>
@@ -96,12 +106,13 @@ export const ItemMessage = React.memo(({
               items={[
                 {
                   icon: 'copy',
-                  name: 'Copy'
+                  name: 'Copy',
+                  onClick: () => copy(message)
                 },
                 {
                   icon: 'edit',
                   name: 'Edit',
-                  
+                  onClick: () => set_edit(true)
                 },
                 {
                   icon: 'trash-alt',
@@ -109,8 +120,10 @@ export const ItemMessage = React.memo(({
                   onClick: (e) => {
                     e.stopPropagation()
                     e.preventDefault()
-                    // removeMessageFromThread({ threadGuid, messageGuid: guid})
-                    // removeMessage(guid)
+                    if (threadGuid) {
+                      removeMessageFromThread({ threadGuid, messageGuid: guid})
+                    }
+                    removeMessage(guid)
                   }
                 }
               ]}
@@ -121,8 +134,38 @@ export const ItemMessage = React.memo(({
           text
             ?  <RichTextEditor
                 value={text}
-                readOnly
-              />
+                readOnly={!edit}
+                onChange={(newValue : string) => set_localValue(newValue)}
+              >
+                {
+                  edit &&
+                    <>
+                      <Button
+                        icon='save'
+                        iconPrefix='fas'
+                        onClick={() => {
+                          const newMessage = {
+                            ...props,
+                            message: localValue,
+                          } as MessageProps
+                          updateMessage({ guid, message: newMessage })
+                          set_edit(false)
+                        }}
+                        minimal
+                      />
+                      <Button
+                        icon='times'
+                        iconPrefix='fas'
+                        onClick={() => {
+                          set_localValue(highlightText(markdownToHTML(message), ('')))
+                          set_edit(false)
+                        }}
+                        minimal
+                      />
+                      <Box height='100%' />
+                    </>
+                }
+              </RichTextEditor>
             : <Box pt={.5}>
                 <LoadingSpinner chat />
               </Box>
@@ -138,11 +181,7 @@ export const ItemMessage = React.memo(({
   return (<>
     <Message 
       text={localValue}
-
     />
-    {/* <Message 
-      text={response}
-    /> */}
   </>)
 })
 
@@ -151,6 +190,7 @@ const S = {
     width: 100%;
     display: flex;
     padding: .75rem 0;
+    transition: height 0.3s ease-out;
   `,
   VerticalSpacer: styled.div`
     height: 100%;
