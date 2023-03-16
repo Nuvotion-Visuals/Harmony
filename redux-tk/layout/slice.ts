@@ -13,6 +13,9 @@ export const slice = createSlice({
     },
     incrementActiveSwipeIndex: (state) => {
       state.activeSwipeIndex = state.activeSwipeIndex + 1
+    },
+    deccrementActiveSwipeIndex: (state) => {
+      state.activeSwipeIndex = state.activeSwipeIndex - 1
     }
   }
 })

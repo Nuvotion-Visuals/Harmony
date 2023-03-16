@@ -1,4 +1,4 @@
-import { Button, Gap, LineBreak, generateUUID, Item, TextInput, RichTextEditor, Box, Page, Tabs, Label, Dropdown } from '@avsync.live/formation'
+import { Button, Gap, LineBreak, generateUUID, Item, TextInput, RichTextEditor, Box, Page, Tabs, Label, Dropdown, useBreakpoint } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -10,6 +10,7 @@ import { scrollToBottom } from 'client-utils'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { store } from 'redux-tk/store'
 import { use100vh } from 'react-div-100vh'
+import { useLayout } from 'redux-tk/layout/hook'
 
 interface Props {
   
@@ -107,6 +108,9 @@ export const Threads = ({ }: Props) => {
 
   const [activeTab, set_activeTab] = useState('Messages')
 
+  const { decrementActiveSwipeIndex } = useLayout()
+  const { isDesktop } = useBreakpoint()
+
   const selected = activeGroup?.name && activeGroup?.name
   
   return (<Box wrap width={'100%'}>
@@ -115,10 +119,20 @@ export const Threads = ({ }: Props) => {
         ? <>
         <Box height='var(--F_Header_Height)' width={'100%'}>
           <Item
-            title={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
+            
             icon='hashtag'
             minimalIcon
+            
           >
+            <Item
+              title={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
+              onClick={() => {
+                if (!isDesktop) {
+                  decrementActiveSwipeIndex()
+                }
+              }}
+            />
+           
             <Label
               label={activeChannel?.threadGuids?.length}
               labelColor='purple'

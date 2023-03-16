@@ -8,12 +8,14 @@ import {
   generateUUID, 
   LabelColor, 
   Item,
-  Label
+  Label,
+  useBreakpoint
 } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
 import { useRouter } from 'next/router'
+import { useLayout } from 'redux-tk/layout/hook'
 
 type List = {
   expanded: boolean,
@@ -31,6 +33,9 @@ interface Props {
 
 export const Groups = ({ locked }: Props) => {
     const router = useRouter()
+
+    const { activeSwipeIndex, setActiveSwipeIndex, incrementActiveSwipeIndex } = useLayout()
+    const { isMobile, isDesktop } = useBreakpoint()
 
     const { 
       activeSpace, 
@@ -104,7 +109,12 @@ export const Groups = ({ locked }: Props) => {
             labelColor: ('none' as LabelColor),
             subtitle: channelsByGuid[channelGuid]?.name,
             href: `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`,
-            active: router.asPath === `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`
+            active: router.asPath === `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`,
+            onClick: () => {
+              if (!isDesktop) {
+                incrementActiveSwipeIndex()
+              }
+            }
           }))
           return ({
             expanded: value[i]?.expanded || true,
