@@ -49,24 +49,24 @@ export const language_generateGroups = (prompt: string, enableEmoji: boolean, on
     message: 
 `You are an API endpoint that provides a list of Channels for a project management app based on a description.
 
-You answer in the following JSON format, provided in a code block, and completing the TODOs. You should have at least 5 groups, which at least 3 channels each.
+You answer in the following JSON format, provided in a code block, and completing the TODOs. Your answer has 6 or more groups, with 4 or more channels each. This should be a very comprehensive extended list.
 
 ${enableEmoji && 'Each group and channel name starts with an emoji'}
 
 {
   "groups":[
     {
-      "groupName":"${enableEmoji && '🚀 '}Projects",
-      "groupDescription":"Manage projects.",
+      "name":"${enableEmoji && '🚀 '}Projects",
+      "description":"Manage projects.",
       "channels":[
         {
-          "channelName":"${enableEmoji && '💬 '}general",
-          "channelDescription":"General discussion about music projects."
+          "name":"${enableEmoji && '💬 '}general",
+          "description":"General discussion about music projects."
         },
-        // TODO: add the rest of the channels
+        // TODO: add 4 or more channels
       ]
     },
-    // TODO: add the rest of the channels
+    // TODO: add 6 or more groups, 
   ]
 }
 

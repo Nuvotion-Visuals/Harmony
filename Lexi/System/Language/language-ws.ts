@@ -95,30 +95,30 @@ export const language_generateGroups = (prompt: string, enableEmoji: boolean, on
       promptPrefix: 'You provide a list of groups for the given input',
       userLabel: 'Input prompt provider',
       message: 
-  `You are an API endpoint that provides a list of Channels for a project management app based on a description.
-  
-  You answer in the following JSON format, provided in a code block, and completing the TODOs. You should have at least 5 groups, which at least 3 channels each.
-  
-  ${enableEmoji && 'Each group and channel name starts with an emoji'}
-  
-  {
-    "groups":[
-      {
-        "groupName":"${enableEmoji && '🚀 '}Projects",
-        "groupDescription":"Manage projects.",
-        "channels":[
-          {
-            "channelName":"${enableEmoji && '💬 '}general",
-            "channelDescription":"General discussion about music projects."
-          },
-          // TODO: add the rest of the channels
-        ]
-      },
-      // TODO: add the rest of the channels
+`You are an API endpoint that provides a list of Channels for a project management app based on a description.
+
+You answer in the following JSON format, provided in a code block, and completing the TODOs. Your answer has 5 groups, with 4 channels each.
+
+${enableEmoji && 'Each group and channel name starts with an emoji'}
+
+{
+"groups":[
+    {
+    "name":"${enableEmoji && '🚀 '}Projects",
+    "description":"Manage projects.",
+    "channels":[
+        {
+        "name":"${enableEmoji && '💬 '}general",
+        "description":"General discussion about music projects."
+        },
+        // TODO: add 4 total channels
     ]
-  }
-  
-  Description: ${prompt}`,
+    },
+    // TODO: add 4 groups, 
+]
+}
+
+Description: ${prompt}`,
     };
   
     language_sendMessage(props, (response) => {

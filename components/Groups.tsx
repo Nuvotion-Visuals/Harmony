@@ -103,8 +103,7 @@ export const Groups = ({ locked }: Props) => {
       if (activeSpace?.groupGuids) {
         set_value(activeSpace?.groupGuids.map((groupGuid, i) => {
           const groupsList = groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
-            icon: ('hashtag' as IconName),
-            iconPrefix: ('fas' as IconPrefix),
+      
             labelColor: ('none' as LabelColor),
             subtitle: channelsByGuid[channelGuid]?.name,
             href: `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`,

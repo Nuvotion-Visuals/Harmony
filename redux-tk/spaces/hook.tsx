@@ -5,6 +5,21 @@ import * as selectors from './selectors';
 import { slice } from './slice';
 import type { Guid, Space, Group, Channel, Asset, Thread, Message, MessagesByGuid, ThreadsByGuid } from './types';
 
+interface Channelz {
+  name: string;
+  description: string;
+}
+
+interface Groupz {
+  name: string;
+  description: string;
+  channels: Channelz[];
+}
+
+interface Suggested {
+  groups: Groupz[];
+}
+
 export const useSpaces = () => {
   const dispatch = useDispatch();
 
@@ -15,6 +30,9 @@ export const useSpaces = () => {
     activeSpaceGuid: useSelector(selectors.select_activeSpaceGuid, isEqual),
     spacesInfo: useSelector(selectors.select_spacesInfo, isEqual),
     spaceGuids: useSelector(selectors.select_spaceGuids, isEqual),
+    addSpaceIncludingGroups: useCallback((payload: { space: Space; guid: Guid; suggested: Suggested }) => {
+      dispatch(slice.actions.addSpaceIncludingGroups(payload));
+    }, [dispatch]),
     setActiveSpaceGuid: useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveSpaceGuid(payload));
     }, [dispatch]),

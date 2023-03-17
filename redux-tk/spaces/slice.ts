@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as Types from './types';
 
 import db from 'y/y'
+import { generateUUID } from '@avsync.live/formation';
 
 interface SpaceState {
   spaceGuids: Types.Guid[];
@@ -24,6 +25,21 @@ interface SpaceState {
   messagesByGuid: Types.MessagesByGuid;
   status: string;
   error?: string;
+}
+
+interface Channelz {
+  name: string;
+  description: string;
+}
+
+interface Groupz {
+  name: string;
+  description: string;
+  channels: Channelz[];
+}
+
+interface Suggested {
+  groups: Groupz[];
 }
 
 
@@ -152,6 +168,39 @@ export const slice = createSlice({
   },
 
   reducers: {
+    addSpaceIncludingGroups: (state, action: PayloadAction<{ space: Types.Space; guid: Types.Guid; suggested: Suggested }>) => {
+      const { space, suggested, guid } = action.payload;
+      const spaceGuid = guid;
+      const groups = suggested.groups.map(group => ({
+        ...group,
+        guid: generateUUID(),
+        channels: group.channels.map(channel => ({
+          ...channel,
+          threadGuids: [],
+          guid: generateUUID()
+        }))
+      }));
+    
+      state.spaceGuids.push(spaceGuid);
+      state.spacesByGuid[spaceGuid] = { ...space, guid: spaceGuid, groupGuids: groups.map(group => group.guid) };
+      groups.forEach(group => {
+        state.groupGuids.push(group.guid);
+        state.groupsByGuid[group.guid] = { ...group, channelGuids: group.channels.map(channel => channel.guid) };
+        group.channels.forEach(channel => {
+          state.channelGuids.push(channel.guid);
+          state.channelsByGuid[channel.guid] = channel;
+        });
+      });
+    
+      db.spaces.set(spaceGuid, { ...space, guid: spaceGuid, groupGuids: groups.map(group => group.guid) });
+      groups.forEach(group => {
+        db.groups.set(group.guid, { ...group, channelGuids: group.channels.map(channel => channel.guid) });
+        group.channels.forEach(channel => {
+          db.channels.set(channel.guid, channel);
+        });
+      });
+    },
+
     // spaces
     setSpaces: (state, action: PayloadAction<Types.SpacesByGuid>) => {
       state.spaceGuids = Object.keys(action.payload);

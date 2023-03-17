@@ -96,3 +96,5 @@ export interface MessagesByGuid {
 export interface MessageGuids {
   [threadGuid: string]: Guid[];
 }
+
+
