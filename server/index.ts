@@ -289,7 +289,7 @@ const sendMessage = async ({
             console.log('Sending response to client')
             ws.send(JSON.stringify({
               // server send complete response to message
-              type: 'response',
+              type: action.chatGptLabel === 'GENERATE' ? 'GENERATE_response' : 'response',
               message: response || '',
               guid: action.guid,
               conversationId: conversationId,
@@ -304,7 +304,7 @@ const sendMessage = async ({
           onProgress: ({ response, parentMessageId, conversationId }) => {
             ws.send(JSON.stringify({
               // server send complete response to message
-              type: 'partial-response',
+              type: action.chatGptLabel === 'GENERATE' ? 'GENERATE_partial-response' : 'partial-response',
               message: response || '',
               guid: action.guid,
               conversationId: conversationId,

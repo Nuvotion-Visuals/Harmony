@@ -1,8 +1,10 @@
 import { Button, Modal, Page, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor } from '@avsync.live/formation'
+import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
+import { Message as MessageProps } from 'redux-tk/spaces/types'
 
 interface Props {
   
@@ -18,6 +20,54 @@ export const AddSpace = ({ }: Props) => {
   const { addSpace } = useSpaces()
 
   const [url, set_url] = useState('')
+
+  const ws = getWebsocketClient()
+  
+  useEffect(() => {
+    
+    ws.onmessage = (ev) => {
+      const wsmessage = JSON.parse(ev.data.toString())
+      if (wsmessage.type === 'pong') {
+        // console.log(wsmessage)
+      }
+  
+      const { 
+        guid, 
+        message, 
+        type,
+        conversationId,
+        parentMessageId,
+        chatGptLabel,
+        promptPrefix,
+        userLabel,
+      } = JSON.parse(ev.data.toString())
+      console.log(type, message)
+  
+      if (type === 'GENERATED_response') {
+        const newMessage ={
+          message,
+          conversationId,
+          parentMessageId,
+          userLabel: 'Lexi'
+        } as MessageProps
+  
+        console.log(newMessage)
+      }
+
+      
+      if (type === 'GENERATED_partial-response') {
+        const newMessage ={
+          message,
+          conversationId,
+          parentMessageId,
+          userLabel: 'Lexi'
+        } as MessageProps
+  
+        console.log(newMessage)
+      }
+      
+    }
+  }, [])
 
   return (<S.new>
     <Box  my={.25} >
