@@ -132,7 +132,7 @@ export const Threads = ({ }: Props) => {
                
                 <Dropdown
                   icon='ellipsis-h'
-                  iconPrefix='fas'ussion about music projects.
+                  iconPrefix='fas'
                   minimal
                   items={[
                     {
