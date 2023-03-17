@@ -1,5 +1,6 @@
 import { Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, ParseHTML, RichTextEditor, TextInput } from '@avsync.live/formation'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
+import { useGenerateTitle } from 'Lexi/System/Language/hooks'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
@@ -21,6 +22,38 @@ export const Thread = ({
 
   const [newThreadName, set_newThreadName] = useState(name)
   const [newThreadDescription, set_newThreadDescription] = useState(description)
+
+ 
+  const [messageContent, set_messageContent] = useState('')
+
+  useEffect(() => {
+    const newMessageContent = messageGuids?.map((messageGuid, index) => {
+      const message = messagesByGuid?.[messageGuid]
+      return message?.message
+    }).join('\n')
+    set_messageContent(newMessageContent)
+  }, [messageGuids])
+
+  const [generateTitle, completed, response, loading, error] = useGenerateTitle(messageContent);
+
+  useEffect(() => {
+    if (response && completed) {
+      try {
+        let obj = JSON.parse(response);
+        updateThread({
+          guid,
+          thread: {
+            guid,
+            channelGuid,
+            messageGuids,
+            name: obj.name,
+            description: obj.description,
+          }
+        })
+        console.log(response)
+      } catch (e) {}
+    }
+  }, [response, completed]);
 
   const { 
     addMessage,
@@ -85,6 +118,7 @@ export const Thread = ({
 
   return (<Box wrap width={'100%'} pb={.5}>
     <Box width='100%' pt={.5} >
+    
     {
       edit
         ? <Box width={'100%'} px={.75} wrap>
@@ -144,7 +178,7 @@ export const Thread = ({
             subtitle={description ? <ParseHTML html={description} /> : undefined}
             onClick={() => handleClick()}
           >
-            <Label label={`${messageGuids.length}`} labelColor='purple' />
+            <Label label={`${messageGuids?.length}`} labelColor='purple' />
             <div onClick={e => {
               e.preventDefault()
               e.stopPropagation()
@@ -154,6 +188,14 @@ export const Thread = ({
               iconPrefix='fas'
               minimal
               items={[
+                {
+                  icon: 'bolt-lightning',
+                  iconPrefix: 'fas',
+                  name: 'Generate title',
+                  onClick: () => {
+                    generateTitle()
+                  }
+                },
                 {
                   icon: 'edit',
                   iconPrefix: 'fas',

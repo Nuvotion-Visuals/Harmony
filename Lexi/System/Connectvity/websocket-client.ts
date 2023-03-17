@@ -30,6 +30,8 @@ async function connectToServer() {
       // console.log(wsmessage)
     }
 
+
+
     const { 
       guid, 
       message, 

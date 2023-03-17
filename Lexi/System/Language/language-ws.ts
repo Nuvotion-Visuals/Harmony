@@ -129,3 +129,34 @@ Description: ${prompt}`,
     });
   };
   
+export const language_test = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): void => {
+    const props: SendMessageProps = {
+      conversationId: '12345',
+      chatGptLabel: 'GENERATE',
+      promptPrefix: 'You provide a list of titles for the given input',
+      userLabel: 'Input prompt provider',
+      message: 
+`You are an API endpoint that provides a name and description for message thread based on a propmt, which is a series of messages.
+
+The description should be a very short sentence, no more than just a few words.
+
+You answer in the following JSON format, provided in a code block.
+
+${enableEmoji && 'The name starts with an emoji'}
+
+{
+  "name": "Social media strategies",
+  "description": "Craft a successful social media strategy to build your brand's online presence and drive engagement."
+}
+
+Prompt: ${prompt}`,
+    };
+  
+    language_sendMessage(props, (response) => {
+      const json = JSON.parse(JSON.stringify(getCodeBlock(response.message) || response.message));
+      onComplete(json);
+    }, onError, (progress) => {
+        onProgress(progress.message)
+    });
+  };
+  
