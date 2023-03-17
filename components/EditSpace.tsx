@@ -1,5 +1,5 @@
 import { Button, Modal, Page, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor } from '@avsync.live/formation'
-import { language_generateGroups } from 'Lexi/System/Language/language'
+import { language_generateGroups } from 'Lexi/System/Language/language-ws'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -24,12 +24,14 @@ export const EditSpace = ({ }: Props) => {
 
   const generateGroups = () => {
     language_generateGroups(description, true, (message) => {
-      console.log(`Groups generated: ${message}`);
-      // Do something with the generated groups...
-    }, (error) => {
-      console.error(`Failed to generate groups: ${error}`);
-      // Handle the error...
-    });
+      console.log(message);
+    },
+    (partialResponse) => {
+      console.log(partialResponse);
+    },
+    (error) => {
+      console.error(error);
+    }, );
   };
 
   return (<S.new>

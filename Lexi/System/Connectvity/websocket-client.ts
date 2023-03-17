@@ -40,7 +40,7 @@ async function connectToServer() {
       promptPrefix,
       userLabel,
     } = JSON.parse(ev.data.toString())
-    console.log(type, message)
+    // console.log(type, message)
 
     if (type === 'response') {
       const targetThreadMessageGuids = store.getState().spaces.threadsByGuid[conversationId].messageGuids
