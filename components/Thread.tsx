@@ -144,7 +144,7 @@ export const Thread = ({
             subtitle={description ? <ParseHTML html={description} /> : undefined}
             onClick={() => handleClick()}
           >
-            <Label label={`${messageGuids.length / 2}`} labelColor='purple' />
+            <Label label={`${messageGuids.length}`} labelColor='purple' />
             <div onClick={e => {
               e.preventDefault()
               e.stopPropagation()

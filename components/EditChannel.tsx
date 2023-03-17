@@ -10,7 +10,7 @@ interface Props {
 
 export const EditChannel = ({ }: Props) => {
   const router = useRouter()
-  const { channelGuid } = router.query
+  const { channelGuid, groupGuid } = router.query
 
   const { activeSpaceGuid, updateChannel, channelsByGuid, activeThreadGuid } = useSpaces()
 
@@ -97,9 +97,7 @@ export const EditChannel = ({ }: Props) => {
                   description
               }
               })
-              setTimeout(() => {
-                router.push(`/spaces/${activeSpaceGuid}/groups/${activeChannel.groupGuid}/`)
-              }, 1)
+              router.push(`/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`)
             }
           }}
           text='Save'

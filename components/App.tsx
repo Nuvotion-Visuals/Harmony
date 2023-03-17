@@ -110,7 +110,7 @@ const App = ({ children }: Props) => {
       activeSpaceIndex={activeSpaceIndex}
       onSetActiveSpacesIndex={index => set_activeSpaceIndex(index)}
       channels={[]}
-      sidebarWidth='360px'
+      sidebarWidth='380px'
       firstPage={renderFirstPage()}
       secondPage={renderSecondPage()}
       thirdPage={renderThirdPage()}

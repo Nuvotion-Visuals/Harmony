@@ -8,7 +8,8 @@ import {
   generateUUID, 
   LabelColor, 
   Item,
-  useBreakpoint
+  useBreakpoint,
+  Label
 } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -166,6 +167,11 @@ export const Groups = ({ locked }: Props) => {
               minimalIcon: true,
               children: <div onClick={e => e.stopPropagation()}>
                 <Spacer />
+                <Box>
+                <Label
+                  label={`${spaceGroupGuids?.length}`}
+                  labelColor='gray'
+                />  
                 <Dropdown
                   icon='ellipsis-h'
                   iconPrefix='fas'
@@ -190,6 +196,7 @@ export const Groups = ({ locked }: Props) => {
                     }
                   ]}
                 />
+                </Box>
               </div>
             },
             list: expandableList.value.list
@@ -202,32 +209,37 @@ export const Groups = ({ locked }: Props) => {
                       e.stopPropagation()
                       e.preventDefault()
                     }}>
-                      
-                      <Dropdown 
-                        icon={listItem.active ? 'ellipsis-h' : undefined}
-                        iconPrefix='fas'
-                        key={`dropdown_${listItemIndex1}`}
-                        minimal
-                        items={[
-                          {
-                            text: 'Edit',
-                            icon: 'edit',
-                            iconPrefix: 'fas',
-                            href: `/spaces/${activeSpaceGuid}/groups/${activeSpace?.groupGuids[i]}/channels/${activeChannel?.guid}/edit`
-                          },
-                          {
-                            text: 'Remove',
-                            icon: 'trash-alt',
-                            iconPrefix: 'fas',
-                            onClick: () => {
-                              if (spaceGroupGuids?.length && spaceChannelGuids?.length) {
-                                removeChannelFromGroup({ groupGuid: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
-                                removeChannel(spaceChannelGuids[i][listItemIndex1])
+                      <Box>
+                        <Label
+                          label={`${channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length}`}
+                          labelColor={channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length > 0 ? 'purple' : 'gray'}
+                        />  
+                        <Dropdown 
+                          icon={listItem.active ? 'ellipsis-h' : undefined}
+                          iconPrefix='fas'
+                          key={`dropdown_${listItemIndex1}`}
+                          minimal
+                          items={[
+                            {
+                              text: 'Edit',
+                              icon: 'edit',
+                              iconPrefix: 'fas',
+                              href: `/spaces/${activeSpaceGuid}/groups/${activeSpace?.groupGuids[i]}/channels/${activeChannel?.guid}/edit`
+                            },
+                            {
+                              text: 'Remove',
+                              icon: 'trash-alt',
+                              iconPrefix: 'fas',
+                              onClick: () => {
+                                if (spaceGroupGuids?.length && spaceChannelGuids?.length) {
+                                  removeChannelFromGroup({ groupGuid: spaceGroupGuids[i], channelGuid: spaceChannelGuids[i][listItemIndex1]})
+                                  removeChannel(spaceChannelGuids[i][listItemIndex1])
+                                }
                               }
                             }
-                          }
-                        ]}
-                      />
+                          ]}
+                        />
+                      </Box>
                     </div>
                 })  
               )

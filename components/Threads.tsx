@@ -1,4 +1,4 @@
-import { Button, Gap, LineBreak, generateUUID, Item, TextInput, RichTextEditor, Box, Page, Tabs, Label, Dropdown, useBreakpoint, HTMLtoMarkdown } from '@avsync.live/formation'
+import { Button, Gap, LineBreak, generateUUID, Item, TextInput, RichTextEditor, Box, Page, Tabs, Label, Dropdown, useBreakpoint, HTMLtoMarkdown, AspectRatio } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -122,14 +122,17 @@ export const Threads = ({ }: Props) => {
                     }
                   }}
                 />
-              
-                <Label
-                  label={`${activeChannel?.threadGuids?.length}`}
-                  labelColor='purple'
-                />
+                {
+                  activeChannel?.threadGuids?.length &&
+                    <Label
+                      label={`${activeChannel?.threadGuids?.length}`}
+                      labelColor='purple'
+                    />
+                }
+               
                 <Dropdown
                   icon='ellipsis-h'
-                  iconPrefix='fas'
+                  iconPrefix='fas'ussion about music projects.
                   minimal
                   items={[
                     {
@@ -151,7 +154,59 @@ export const Threads = ({ }: Props) => {
             
             <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
               <Page noPadding>
-                <LineBreak />
+                <Gap>
+                  {
+                    activeChannel?.previewSrc &&
+                      <AspectRatio
+                        backgroundSrc={activeChannel?.previewSrc}
+                        ratio={2}
+                        coverBackground
+                      />
+                  }
+                  {
+                    activeChannel?.description &&
+                      <>
+                        <Box mt={.25} width='100%'>
+                          <Item title={activeChannel?.name} 
+                            // @ts-ignore
+                            subtitle={<RichTextEditor
+                              value={activeChannel?.description || ''}
+                              readOnly={true}
+                            >
+                            </RichTextEditor>}
+                          >
+                             {
+                              activeChannel?.threadGuids?.length &&
+                                <Label
+                                  label={`${activeChannel?.threadGuids?.length}`}
+                                  labelColor='purple'
+                                />
+                            }
+                            <Dropdown
+                              icon='ellipsis-h'
+                              iconPrefix='fas'
+                              minimal
+                              items={[
+                                {
+                                  icon: 'edit',
+                                  iconPrefix: 'fas',
+                                  name: 'Edit',
+                                  href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`
+                                },
+                                {
+                                  icon: 'trash-alt',
+                                  iconPrefix: 'fas',
+                                  name: 'Delete',
+                                }
+                              ]}
+                            />
+                          </Item>
+                        </Box>
+                      </>
+                  }
+                  <LineBreak />
+                </Gap>
+                
                 {
                   activeChannel?.threadGuids?.map((threadGuid, index) => (
                     <React.Fragment key={threadGuid}>
