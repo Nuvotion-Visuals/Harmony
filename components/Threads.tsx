@@ -166,15 +166,13 @@ export const Threads = ({ }: Props) => {
                   {
                     activeChannel?.description &&
                       <>
-                        <Box mt={.25} width='100%'>
-                          <Item title={activeChannel?.name} 
-                            // @ts-ignore
-                            subtitle={<RichTextEditor
-                              value={activeChannel?.description || ''}
-                              readOnly={true}
-                            >
-                            </RichTextEditor>}
-                          >
+                      <LineBreak />
+                        <Box mt={.25} width='100%' wrap>
+                          
+                          <Item 
+                            subtitle={'Welcome to...'}>
+                          </Item>
+                          <Item icon='hashtag' pageTitle={activeChannel?.name}>
                              {
                               activeChannel?.threadGuids?.length &&
                                 <Label
@@ -200,6 +198,16 @@ export const Threads = ({ }: Props) => {
                                 }
                               ]}
                             />
+                          </Item>
+                          <Item 
+                            // @ts-ignore
+                            subtitle={<RichTextEditor
+                              value={activeChannel?.description || ''}
+                              readOnly={true}
+                            >
+                            </RichTextEditor>}
+                          >
+                           
                           </Item>
                         </Box>
                       </>
@@ -230,6 +238,7 @@ export const Threads = ({ }: Props) => {
                     channelGuid={channelGuid as string} 
                     thread={true} 
                     onSend={message => sendThread(message)}
+                    primary={activeChannel?.threadGuids?.length === 0}
                   />
                 </Box>
               </Page>

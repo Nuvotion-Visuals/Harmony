@@ -109,12 +109,14 @@ export const AddSpace = ({}: Props) => {
         />
         <Item pageTitle="Add Space" />
       </Box>
-
-      <AspectRatio
-        ratio={2}
-        backgroundSrc={url}
-        coverBackground
-      ></AspectRatio>
+      {
+        url &&
+        <AspectRatio
+          ratio={2}
+          backgroundSrc={url}
+          coverBackground
+        ></AspectRatio>
+      }
       <Box p={0.5}>
         <Gap disableWrap>
           <TextInput

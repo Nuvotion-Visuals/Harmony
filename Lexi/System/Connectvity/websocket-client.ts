@@ -30,8 +30,6 @@ async function connectToServer() {
       // console.log(wsmessage)
     }
 
-
-
     const { 
       guid, 
       message, 
@@ -61,7 +59,6 @@ async function connectToServer() {
         payload: { guid: targetMessageGuid, message: newMessage }
       })
     }
-    
   }
 
   return new Promise<WebSocket>((resolve, reject) => {
@@ -81,3 +78,11 @@ export const getWebsocketClient = () => websocketClient;
 (async () => {
 websocketClient = await connectToServer()
 })()
+
+setInterval(() => {
+  if (!getWebsocketClient()) {
+    (async () => {
+      websocketClient = await connectToServer()
+      })()
+  }
+}, 5000)

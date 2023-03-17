@@ -13,10 +13,11 @@ interface Props {
   set_newThreadName?: (newName: string) => void,
   newThreadDescription?: string,
   set_newThreadDescription?: (newDescription: string) => void,
-  threadName?: string
+  threadName?: string,
+  primary?: boolean
 }
 
-export const NewMessage = ({ channelGuid, thread, onSend, newThreadName, set_newThreadName, newThreadDescription, set_newThreadDescription, threadName }: Props) => {
+export const NewMessage = ({ channelGuid, thread, onSend, newThreadName, set_newThreadName, newThreadDescription, set_newThreadDescription, threadName, primary }: Props) => {
   const [message, set_message] = useState('')
 
   const [edit, set_edit] = useState(false)
@@ -96,6 +97,7 @@ export const NewMessage = ({ channelGuid, thread, onSend, newThreadName, set_new
                   secondary={!thread}
                   text={thread ? 'New thread' : `Reply`}
                   expand
+                  primary={primary}
                   onClick={() => set_newThread(true)}
                 />
           }

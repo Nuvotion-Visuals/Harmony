@@ -104,7 +104,7 @@ export const Groups = ({ locked }: Props) => {
       if (activeSpace?.groupGuids) {
         set_value(activeSpace?.groupGuids.map((groupGuid, i) => {
           const groupsList = groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
-      
+            icon: 'hashtag' as IconName,
             labelColor: ('none' as LabelColor),
             subtitle: channelsByGuid[channelGuid]?.name,
             href: `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`,
@@ -203,17 +203,21 @@ export const Groups = ({ locked }: Props) => {
               .map((listItem, listItemIndex1) =>
                 ({
                   ...listItem,
-                  
+                  emphasize: !channelsByGuid?.[spaceChannelGuids[i][listItemIndex1]]?.threadGuids?.length && listItem.subtitle,
                   children: listItem.subtitle && 
                     <div onClick={e => {
                       e.stopPropagation()
                       e.preventDefault()
                     }}>
                       <Box>
-                        <Label
-                          label={`${channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length}`}
-                          labelColor={channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length > 0 ? 'purple' : 'gray'}
-                        />  
+                        {
+                          channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length !== 0 &&
+                            <Label
+                              label={`${channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length}`}
+                              labelColor={'purple'}
+                            />  
+                        }
+                       
                         <Dropdown 
                           icon={listItem.active ? 'ellipsis-h' : undefined}
                           iconPrefix='fas'
