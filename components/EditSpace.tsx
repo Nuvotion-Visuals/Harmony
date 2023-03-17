@@ -1,8 +1,11 @@
 import { Button, Modal, Page, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor } from '@avsync.live/formation'
+import { language_generateGroups } from 'Lexi/System/Language/language'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
+
+
 
 interface Props {
   
@@ -18,6 +21,16 @@ export const EditSpace = ({ }: Props) => {
   const [prompt, set_prompt] = useState(activeSpace?.description || '')
 
   const [url, set_url] = useState(activeSpace?.previewSrc)
+
+  const generateGroups = () => {
+    language_generateGroups(description, true, (message) => {
+      console.log(`Groups generated: ${message}`);
+      // Do something with the generated groups...
+    }, (error) => {
+      console.error(`Failed to generate groups: ${error}`);
+      // Handle the error...
+    });
+  };
 
   return (<S.new>
     <Box  my={.25} >
@@ -53,6 +66,17 @@ export const EditSpace = ({ }: Props) => {
           placeholder='Description'
           value={description}
           onChange={newValue => set_description(newValue)}
+        />
+         <Button
+          icon='bolt-lightning'
+          iconPrefix='fas'
+          secondary
+          circle
+          hero
+          blink={!!prompt && !!!url}
+          onClick={() => {
+            generateGroups()
+          }}
         />
         <Gap disableWrap>
 

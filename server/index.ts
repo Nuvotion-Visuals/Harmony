@@ -387,6 +387,41 @@ app.prepare().then(() => {
   //   return
   // })
 
+  server.get('/send-message', async (req: any, res: any) => {
+    try {
+      // Extract the relevant data from the request query parameters
+      const {
+        conversationId,
+        parentMessageId,
+        chatGptLabel,
+        promptPrefix,
+        userLabel,
+        message,
+        threadId,
+      } = req.query;
+
+      console.log(res.query)
+
+    // Call the sendMessage function with the extracted data
+    await sendMessage({
+      conversationId,
+      parentMessageId,
+      chatGptLabel,
+      promptPrefix,
+      userLabel,
+      message,
+      threadId,
+      onComplete: (data) => {
+        res.status(200).json({ ...data });
+      },
+    });
+    } 
+    catch (error) {
+      console.error(error);
+      res.status(500).send('An error occurred while sending the message');
+    }
+  });
+
   server.post('/tools/parse-article', async (req: any, res: any) => {
     const { contentUrl } = req.body
 

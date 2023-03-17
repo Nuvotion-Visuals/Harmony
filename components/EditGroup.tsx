@@ -27,7 +27,7 @@ export const EditGroup = ({ }: Props) => {
     <Button
       icon='chevron-left'
       iconPrefix='fas'
-      href={'/spaces'}
+      href={`/spaces/${activeSpaceGuid}/groups/${activeGroup.guid}`}
       minimal
     />
      <Item
@@ -96,7 +96,7 @@ export const EditGroup = ({ }: Props) => {
               }
               })
               setTimeout(() => {
-                router.push(`/spaces/${activeSpaceGuid}`)
+                router.push(`/spaces/${activeSpaceGuid}/groups/${activeGroup.guid}`)
               }, 1)
             }
           }}
