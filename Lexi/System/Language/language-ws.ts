@@ -213,3 +213,35 @@ Prompt: ${prompt}`,
         onProgress(progress.message)
     });
   };
+
+  export const language_generateFollowUpMessages = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
+    const props: SendMessageProps = {
+      conversationId: '12345',
+      chatGptLabel: 'GENERATE',
+      promptPrefix: 'You provide a list of threads for the given input',
+      userLabel: 'Input prompt provider',
+      message: 
+  `You are an API endpoint that provides three distinct suggestions for good follow-up message prompts within a thread of a project management app. 
+  
+  They should stay on subject of the thread and be a natural continuation and progression of the thread's conversation.
+  
+  You answer in the following JSON format, provided in a code block.
+  
+  {
+    "suggestions": [
+      "How can we further experiment with combining analog and digital tools to achieve even more unique AVsync results?",
+      "Which analog visual techniques do you think have the most potential in terms of impact, and how can we incorporate them into our current project?",
+      "Have you considered any potential challenges or limitations that might arise from incorporating analog visual techniques with AVsync, and how can we overcome them?"
+    ]
+  }
+  
+  Prompt: ${prompt}`,
+    };
+
+    return language_sendMessage(props, (response) => {
+      const json = JSON.parse(JSON.stringify(getCodeBlock(response.message) || response.message));
+      onComplete(json);
+    }, onError, (progress) => {
+      onProgress(progress.message)
+  });
+};

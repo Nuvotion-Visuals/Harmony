@@ -1,5 +1,10 @@
 import { useReducer } from 'react';
-import { language_generateGroups, language_generateTitleAndDescription, language_generateThreadPrompts } from './language-ws';
+import { 
+  language_generateGroups, 
+  language_generateTitleAndDescription, 
+  language_generateThreadPrompts,
+  language_generateFollowUpMessages
+} from './language-ws';
 
 type PartialResponse = string;
 type ErrorType = string;
@@ -82,6 +87,9 @@ export const useLanguageAPI = (initialValue: string) => {
     },
     generateThreadPrompts: (guid: string) => {
       generate(guid, true, language_generateThreadPrompts);
+    },
+    generateFollowUpMessages: (guid: string) => {
+      generate(guid, true, language_generateFollowUpMessages)
     }
   };
 

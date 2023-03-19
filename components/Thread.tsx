@@ -8,6 +8,7 @@ import { Indicator } from './Indicator'
 import { ItemMessage } from './ItemMessage'
 import { MatrixLoading } from './MatrixLoading'
 import { NewMessage } from './NewMessage'
+import { ThreadSuggestions } from './ThreadSuggestions'
 
 interface Props extends ThreadProps {
   threadGuid: string
@@ -249,10 +250,13 @@ export const Thread = ({
         )
       })
     }
+
+    
     
     {
       expanded &&
         <Box width={'100%'} pt={.5} wrap>
+          <ThreadSuggestions guid={guid} onSend={(message) => sendMessageToWebsocket(message)} />
           <Box pb={.5} width='100%'>
             <Item subtitle={`${name}`} />
           </Box>
