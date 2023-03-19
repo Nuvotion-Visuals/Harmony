@@ -1,5 +1,5 @@
 import { Button, Modal, Page, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor, ExpandableLists, ItemProps, LabelColor } from '@avsync.live/formation';
-import { useGenerateGroups } from "Lexi/System/Language/hooks";
+import { useLanguageAPI } from "Lexi/System/Language/hooks";
 import { language_generateGroups } from "Lexi/System/Language/language-ws";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -48,9 +48,11 @@ export const AddSpace = ({}: Props) => {
 
   const [url, set_url] = useState<string | undefined>('');
 
-  const [generateGroups, completed, response, loading, error] = useGenerateGroups(description);
+  const { language, response, loading, error, completed } = useLanguageAPI('');
 
   const [suggested, set_suggested] = useState<Suggested>({ groups: [] });
+
+  const { generateGroups } = language;
 
   useEffect(() => {
     if (response && completed) {
@@ -60,6 +62,7 @@ export const AddSpace = ({}: Props) => {
       } catch (e) {}
     }
   }, [response, completed]);
+  
 
   const [value, set_value] = useState<ExpandableListProps[] | null>(null);
 
@@ -101,51 +104,45 @@ export const AddSpace = ({}: Props) => {
   return (
     <S.new>
       <Box my={0.25}>
-        <Button
-          icon="chevron-left"
-          iconPrefix="fas"
-          href={`/spaces`}
-          minimal
-        />
-        <Item pageTitle="Add Space" />
+        <Item icon="chevron-left" pageTitle="Add Space"  href={`/spaces`} />
       </Box>
-      {
-        url &&
-        <AspectRatio
-          ratio={2}
-          backgroundSrc={url}
-          coverBackground
-        ></AspectRatio>
-      }
-      <Box p={0.5}>
-        <Gap disableWrap>
-          <TextInput
-            placeholder="Image prompt"
-            compact
-            value={prompt}
-            onChange={(newValue) => set_prompt(newValue)}
-            hideOutline
-            />
-            <Button
-              icon="bolt-lightning"
-              iconPrefix="fas"
-              secondary
-              circle
-              minimal
-              disabled={prompt === ""}
-              primary={prompt !== ""}
-              blink={!!prompt && !url}
-              onClick={() => {
-                set_url(
-                  `https://lexi.studio/image/prompt/${encodeURIComponent(prompt)}`
-                );
-              }}
-            />
-          </Gap>
-        </Box>
-      
+     
+    
+
         <Box px={0.75} wrap>
           <Gap gap={0.75}>
+            {
+              url &&
+              <AspectRatio
+                ratio={2}
+                backgroundSrc={url}
+                coverBackground
+              ></AspectRatio>
+            }
+            <TextInput
+              icon='image'
+              placeholder="Image prompt"
+              compact
+              hideOutline
+              value={prompt}
+              onChange={(newValue) => set_prompt(newValue)}
+              buttons={[
+                {
+                  icon: "bolt-lightning",
+                  iconPrefix: "fas",
+                  secondary: true,
+                  circle: true,
+                  minimal: true,
+                  disabled: prompt === "",
+                  blink: !!prompt && !url,
+                  onClick: () => {
+                    set_url(
+                      `https://lexi.studio/image/prompt/${encodeURIComponent(prompt)}`
+                    );
+                  }
+                }
+              ]}
+            />
             <TextInput
               label="Name"
               value={name}
@@ -162,11 +159,10 @@ export const AddSpace = ({}: Props) => {
               iconPrefix="fas"
               text={`${completed ? "Reg" : "G"}enerate Channels`}
               expand
-              secondary
               disabled={!loading && !description}
               blink={!!prompt && !url}
               onClick={() => {
-                generateGroups();
+                generateGroups(description);
                 set_value(null);
               }}
             />

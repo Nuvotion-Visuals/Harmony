@@ -13,20 +13,25 @@ export interface SendMessageProps {
 export type SendMessageCallback = (response: SendMessageProps) => void;
 export type SendErrorCallback = (error: any) => void;
 
-export function language_sendMessage(props: SendMessageProps, onComplete: SendMessageCallback, onError?: SendErrorCallback, onPartialResponse?: SendMessageCallback): void {
+export function language_sendMessage(
+  props: SendMessageProps,
+  onComplete: SendMessageCallback,
+  onError?: SendErrorCallback,
+  onPartialResponse?: SendMessageCallback
+): { removeListeners: () => void } {
   const websocketClient = getWebsocketClient();
 
   const action = {
-    type: 'message',
+    type: "message",
     guid: uuidv4(),
-    ...props
+    ...props,
   };
   websocketClient.send(JSON.stringify(action));
 
   // listen for data
   const messageHandler = (ev: MessageEvent) => {
     const wsmessage = JSON.parse(ev.data.toString());
-    if (wsmessage.type === 'pong') {
+    if (wsmessage.type === "pong") {
       // console.log(wsmessage)
     }
 
@@ -41,7 +46,7 @@ export function language_sendMessage(props: SendMessageProps, onComplete: SendMe
       userLabel,
     } = JSON.parse(ev.data.toString());
 
-    if (type === 'GENERATE_response') {
+    if (type === "GENERATE_response") {
       const newMessage = {
         message,
         conversationId,
@@ -52,7 +57,8 @@ export function language_sendMessage(props: SendMessageProps, onComplete: SendMe
       } as SendMessageProps;
 
       onComplete(newMessage);
-    } else if (type === 'GENERATE_partial-response' && onPartialResponse) {
+      removeListeners();
+    } else if (type === "GENERATE_partial-response" && onPartialResponse) {
       const newMessage = {
         message,
         conversationId,
@@ -66,7 +72,7 @@ export function language_sendMessage(props: SendMessageProps, onComplete: SendMe
     }
   };
 
-  websocketClient.addEventListener('message', messageHandler);
+  websocketClient.addEventListener("message", messageHandler);
 
   // listen for errors
   const errorHandler = (ev: Event) => {
@@ -74,9 +80,17 @@ export function language_sendMessage(props: SendMessageProps, onComplete: SendMe
     if (onError) {
       onError(ev);
     }
+    removeListeners();
   };
 
-  websocketClient.addEventListener('error', errorHandler);
+  websocketClient.addEventListener("error", errorHandler);
+
+  const removeListeners = () => {
+    websocketClient.removeEventListener("message", messageHandler);
+    websocketClient.removeEventListener("error", errorHandler);
+  };
+
+  return { removeListeners };
 }
 
 function getCodeBlock(markdown: string): string | null {
@@ -92,7 +106,7 @@ function getCodeBlock(markdown: string): string | null {
     return null;
   }
 
-export const language_generateGroups = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): void => {
+export const language_generateGroups = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
     const props: SendMessageProps = {
       conversationId: '12345',
       chatGptLabel: 'GENERATE',
@@ -125,7 +139,7 @@ ${enableEmoji && 'Each group and channel name starts with an emoji'}
 Description: ${prompt}`,
     };
   
-    language_sendMessage(props, (response) => {
+    return language_sendMessage(props, (response) => {
       const json = JSON.parse(JSON.stringify(getCodeBlock(response.message) || response.message));
       onComplete(json);
     }, onError, (progress) => {
@@ -133,7 +147,7 @@ Description: ${prompt}`,
     });
   };
   
-export const language_test = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): void => {
+export const language_generateTitleAndDescription = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
     const props: SendMessageProps = {
       conversationId: '12345',
       chatGptLabel: 'GENERATE',
@@ -156,11 +170,10 @@ ${enableEmoji && 'The name starts with an emoji'}
 Prompt: ${prompt}`,
     };
   
-    language_sendMessage(props, (response) => {
+    return language_sendMessage(props, (response) => {
       const json = JSON.parse(JSON.stringify(getCodeBlock(response.message) || response.message));
       onComplete(json);
     }, onError, (progress) => {
         onProgress(progress.message)
     });
   };
-  

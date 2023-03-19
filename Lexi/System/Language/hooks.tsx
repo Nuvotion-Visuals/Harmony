@@ -1,61 +1,95 @@
-import { useState } from 'react';
-import { language_generateGroups,  language_test } from './language-ws';
+import { useReducer } from 'react';
+import { language_generateGroups,  language_generateTitleAndDescription } from './language-ws';
 
-type PartialResponse = string; // Update with the correct type of the partial response
-type ErrorType = string; // Update with the correct type of the error message
+type PartialResponse = string;
+type ErrorType = string;
 
-type GenerateGroupsFunction = () => void;
-type UseGenerateGroups = (description: string) => [GenerateGroupsFunction, boolean, PartialResponse | null, boolean, ErrorType | null];
+type GenerateFunction = (guid: string) => void;
 
-export const useGenerateGroups: UseGenerateGroups = (description) => {
-  const [response, setResponse] = useState<PartialResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<ErrorType | null>(null);
-  const [completed, setCompleted] = useState<boolean>(false);
-
-  const generateGroups: GenerateGroupsFunction = () => {
-    setLoading(true);
-    language_generateGroups(description, true,
-      (message: string) => {
-        setResponse(message);
-        setCompleted(true);
-      },
-      (partialResponse: PartialResponse) => {
-        setResponse(partialResponse);
-      },
-      (error: ErrorType) => {
-        setError(error);
-      }
-    );
-  };
-
-  return [generateGroups, completed, response, loading, error];
+type State = {
+  response: PartialResponse | null;
+  loading: boolean;
+  error: ErrorType | null;
+  completed: boolean;
 };
 
-type UseGenerateTitle = (description: string) => [GenerateGroupsFunction, boolean, PartialResponse | null, boolean, ErrorType | null];
-export const useGenerateTitle: UseGenerateTitle = (description) => {
-    const [response, setResponse] = useState<PartialResponse | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<ErrorType | null>(null);
-    const [completed, setCompleted] = useState<boolean>(false);
-  
-    const generateTitle: GenerateGroupsFunction = () => {
-      setLoading(true);
-      language_test(description, true,
-        (message: string) => {
-          setResponse(message);
-          setCompleted(true);
-        },
-        (partialResponse: PartialResponse) => {
-          setResponse(partialResponse);
-        },
-        (error: ErrorType) => {
-          setError(error);
-        }
-      );
+type Action =
+  | { type: "SET_RESPONSE"; payload: PartialResponse }
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "SET_ERROR"; payload: ErrorType | null }
+  | { type: "SET_COMPLETED"; payload: boolean };
+
+const initialState: State = {
+  response: null,
+  loading: false,
+  error: null,
+  completed: false,
+};
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case "SET_RESPONSE":
+      return { ...state, response: action.payload };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+    case "SET_ERROR":
+      return { ...state, error: action.payload };
+    case "SET_COMPLETED":
+      return { ...state, completed: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const useLanguageAPI = (initialValue: string) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const generateGroups: GenerateFunction = (guid) => {
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const onComplete = (message: string) => {
+      dispatch({ type: "SET_RESPONSE", payload: message });
+      dispatch({ type: "SET_COMPLETED", payload: true });
+      removeListeners();
     };
-  
-    return [generateTitle, completed, response, loading, error];
+
+    const onPartialResponse = (partialResponse: PartialResponse) => {
+      dispatch({ type: "SET_RESPONSE", payload: partialResponse });
+    };
+
+    const onError = (error: ErrorType) => {
+      dispatch({ type: "SET_ERROR", payload: error });
+      removeListeners();
+    };
+
+    const { removeListeners } = language_generateGroups(guid, true, onComplete, onPartialResponse, onError);
   };
-  
-  
+
+  const generateTitle: GenerateFunction = (guid) => {
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const onComplete = (message: string) => {
+      dispatch({ type: "SET_RESPONSE", payload: message });
+      dispatch({ type: "SET_COMPLETED", payload: true });
+      removeListeners();
+    };
+
+    const onPartialResponse = (partialResponse: PartialResponse) => {
+      dispatch({ type: "SET_RESPONSE", payload: partialResponse });
+    };
+
+    const onError = (error: ErrorType) => {
+      dispatch({ type: "SET_ERROR", payload: error });
+      removeListeners();
+    };
+
+    const { removeListeners } = language_generateTitleAndDescription(guid, true, onComplete, onPartialResponse, onError);
+  };
+
+  const language = {
+    generateGroups,
+    generateTitle,
+  };
+
+  return { language, ...state };
+};

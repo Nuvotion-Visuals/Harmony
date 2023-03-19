@@ -429,9 +429,21 @@ app.prepare().then(() => {
     }
   });
 
+  // Set cache duration to 1 hour
+  const CACHE_DURATION = 60 * 60 * 1000;
+  const cache = require('memory-cache');
   server.get('/image/prompt/:prompt', async (req: any, res: any) => {
     const prompt = req.params.prompt;
     const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`;
+    
+    const cachedImage = cache.get(imageUrl);
+    if (cachedImage) {
+      // If image is already in cache, return it
+      console.log(`Image ${imageUrl} found in cache`);
+      res.setHeader('Content-Type', cachedImage.contentType);
+      res.send(cachedImage.data);
+      return;
+    }
 
     try {
       const imageRes = await fetch(imageUrl, {
@@ -447,14 +459,14 @@ app.prepare().then(() => {
         throw new Error(`Invalid content type for image: ${contentType}`);
       }
 
-      const imageStream = imageRes.body;
+      // @ts-ignore
+      const imageBuffer = await imageRes.buffer();
       res.setHeader('Content-Type', contentType);
-      await stream.pipeline(imageStream, res, (err: any) => { // Pass a callback function as the last argument to `pipeline`
-        if (err) {
-          console.error(`Error streaming image to client: ${err.message}`);
-          res.status(500).send(`Error streaming image to client`);
-        }
-      });
+      res.send(imageBuffer);
+
+      // Store image in cache
+      console.log(`Caching image ${imageUrl}`);
+      cache.put(imageUrl, { contentType, data: imageBuffer }, CACHE_DURATION);
     } catch (err: any) {
       console.error(`Error fetching image from ${imageUrl}: ${err.message}`);
       res.status(500).send(`Error fetching image from ${imageUrl}`);

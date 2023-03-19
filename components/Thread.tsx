@@ -1,6 +1,6 @@
 import { Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, LoadingSpinner, ParseHTML, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
-import { useGenerateTitle } from 'Lexi/System/Language/hooks'
+import { useLanguageAPI } from 'Lexi/System/Language/hooks'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
@@ -36,8 +36,8 @@ export const Thread = ({
     set_messageContent(newMessageContent)
   }, [messageGuids])
 
-  const [generateTitle, completed, response, loading, error] = useGenerateTitle(messageContent);
-
+  const { language, response, loading, error, completed } = useLanguageAPI(messageContent);
+  
   useEffect(() => {
     if (response && completed) {
       try {
@@ -56,6 +56,8 @@ export const Thread = ({
       } catch (e) {}
     }
   }, [response, completed]);
+  
+  const { generateTitle } = language;
 
   const { 
     addMessage,
@@ -208,7 +210,7 @@ export const Thread = ({
                   iconPrefix: 'fas',
                   name: 'Generate title',
                   onClick: () => {
-                    generateTitle()
+                    generateTitle(messageContent)
                   }
                 },
                 {
