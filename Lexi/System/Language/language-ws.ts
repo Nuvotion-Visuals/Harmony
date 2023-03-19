@@ -14,9 +14,9 @@ export type SendMessageCallback = (response: SendMessageProps) => void;
 export type SendErrorCallback = (error: any) => void;
 
 export function language_sendMessage(props: SendMessageProps, onComplete: SendMessageCallback, onError?: SendErrorCallback, onPartialResponse?: SendMessageCallback): void {
-  const websocketClient = getWebsocketClient()
-  
-    const action = {
+  const websocketClient = getWebsocketClient();
+
+  const action = {
     type: 'message',
     guid: uuidv4(),
     ...props
@@ -24,7 +24,7 @@ export function language_sendMessage(props: SendMessageProps, onComplete: SendMe
   websocketClient.send(JSON.stringify(action));
 
   // listen for data
-  websocketClient.onmessage = (ev) => {
+  const messageHandler = (ev: MessageEvent) => {
     const wsmessage = JSON.parse(ev.data.toString());
     if (wsmessage.type === 'pong') {
       // console.log(wsmessage)
@@ -66,13 +66,17 @@ export function language_sendMessage(props: SendMessageProps, onComplete: SendMe
     }
   };
 
+  websocketClient.addEventListener('message', messageHandler);
+
   // listen for errors
-  websocketClient.onerror = (ev) => {
+  const errorHandler = (ev: Event) => {
     console.error(`Failed to send message: ${ev}`);
     if (onError) {
       onError(ev);
     }
   };
+
+  websocketClient.addEventListener('error', errorHandler);
 }
 
 function getCodeBlock(markdown: string): string | null {

@@ -137,7 +137,7 @@ export const AddSpace = ({}: Props) => {
               blink={!!prompt && !url}
               onClick={() => {
                 set_url(
-                  `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`
+                  `https://lexi.studio/image/prompt/${encodeURIComponent(prompt)}`
                 );
               }}
             />

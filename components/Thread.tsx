@@ -1,10 +1,12 @@
-import { Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, ParseHTML, RichTextEditor, TextInput } from '@avsync.live/formation'
+import { Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, LoadingSpinner, ParseHTML, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { useGenerateTitle } from 'Lexi/System/Language/hooks'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
+import { Indicator } from './Indicator'
 import { ItemMessage } from './ItemMessage'
+import { MatrixLoading } from './MatrixLoading'
 import { NewMessage } from './NewMessage'
 
 interface Props extends ThreadProps {
@@ -116,6 +118,8 @@ export const Thread = ({
     addMessageToThread({ threadGuid, messageGuid: responseGuid })
   }
 
+  const showSpinner = response && loading && !completed
+
   return (<Box wrap width={'100%'} pb={.5}>
     <Box width='100%' pt={.5} >
     
@@ -173,12 +177,23 @@ export const Thread = ({
             icon={expanded ? 'caret-down' : 'caret-right'}
             iconPrefix='fas'
             minimalIcon
-            title={name ? name : 'Untitled'}
             // @ts-ignore
-            subtitle={description ? <ParseHTML html={description} /> : undefined}
+
+            title={
+              showSpinner 
+                ? <LoadingSpinner chat />
+                : name
+                  ? name : 'Untitled'}
+            // @ts-ignore
+            subtitle={
+              showSpinner
+                ? undefined 
+                : description ? <ParseHTML html={description} /> : undefined
+              }
             onClick={() => handleClick()}
           >
-            <Label label={`${messageGuids?.length}`} labelColor='purple' />
+         
+            <Indicator count={messageGuids?.length} />
             <div onClick={e => {
               e.preventDefault()
               e.stopPropagation()

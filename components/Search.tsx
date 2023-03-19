@@ -23,16 +23,16 @@ export const Search = React.memo(({ }: Props) => {
           placeholder='Search'
           value={searchQuery}
           onChange={newValue => set_searchQuery(newValue)}
-          canClear
+          canClear={!!searchQuery}
           onEnter={() => setActiveSwipeIndex(2)}
-          buttons={[
+          buttons={searchQuery ? [
             {
               minimal: true,
               icon: 'search',
               iconPrefix: 'fas',
               onClick: () => setActiveSwipeIndex(2)
             },
-          ]}
+          ] : undefined}
         />
       </Box>
     </Page>

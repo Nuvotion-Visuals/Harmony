@@ -10,6 +10,7 @@ import { scrollToBottom } from 'client-utils'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { use100vh } from 'react-div-100vh'
 import { useLayout } from 'redux-tk/layout/hook'
+import { Indicator } from './Indicator'
 
 interface Props {
   
@@ -115,21 +116,17 @@ export const Threads = ({ }: Props) => {
                 
               >
                 <Item
-                  title={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
+                  subtitle={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
                   onClick={() => {
                     if (!isDesktop) {
                       decrementActiveSwipeIndex()
                     }
                   }}
                 />
-                {
-                  activeChannel?.threadGuids?.length &&
-                    <Label
-                      label={`${activeChannel?.threadGuids?.length}`}
-                      labelColor='purple'
-                    />
-                }
-               
+                <Indicator
+                  count={activeChannel?.threadGuids?.length}
+                />
+              
                 <Dropdown
                   icon='ellipsis-h'
                   iconPrefix='fas'
@@ -157,29 +154,28 @@ export const Threads = ({ }: Props) => {
                 <Gap>
                   {
                     activeChannel?.previewSrc &&
-                      <AspectRatio
-                        backgroundSrc={activeChannel?.previewSrc}
-                        ratio={2}
-                        coverBackground
-                      />
+                    <Box px={.75} width='100%'>
+                      <S.ThreadPoster>
+                        
+                        <AspectRatio
+                          backgroundSrc={activeChannel?.previewSrc}
+                          ratio={2}
+                          coverBackground
+                        />
+                      </S.ThreadPoster>
+                    </Box>
                   }
                   {
                     activeChannel?.description &&
                       <>
-                      <LineBreak />
-                        <Box mt={.25} width='100%' wrap>
+                      { !activeChannel?.previewSrc && <LineBreak />}
+                        <Box mt={-.25} width='100%' wrap>
                           
-                          <Item 
-                            subtitle={'Welcome to...'}>
-                          </Item>
-                          <Item icon='hashtag' pageTitle={activeChannel?.name}>
-                             {
-                              activeChannel?.threadGuids?.length &&
-                                <Label
-                                  label={`${activeChannel?.threadGuids?.length}`}
-                                  labelColor='purple'
-                                />
-                            }
+                         
+                          <Item icon='hashtag' minimalIcon pageTitle={activeChannel?.name}>
+                            <Indicator
+                              count={activeChannel?.threadGuids?.length}
+                            />
                             <Dropdown
                               icon='ellipsis-h'
                               iconPrefix='fas'
@@ -199,6 +195,7 @@ export const Threads = ({ }: Props) => {
                               ]}
                             />
                           </Item>
+                          <Box mt={-.75} pb={.25} width='100%'>
                           <Item 
                             // @ts-ignore
                             subtitle={<RichTextEditor
@@ -209,6 +206,8 @@ export const Threads = ({ }: Props) => {
                           >
                            
                           </Item>
+                          </Box>
+                          
                         </Box>
                       </>
                   }
@@ -265,5 +264,11 @@ const S = {
     overflow-y: auto;
     overflow-x: hidden;
     background: var(--F_Background_Alternating);
+  `,
+  ThreadPoster: styled.div`
+    border-radius: 1rem;
+    width: 100%;
+    overflow: hidden;
+    margin-top: .75rem;
   `
 }

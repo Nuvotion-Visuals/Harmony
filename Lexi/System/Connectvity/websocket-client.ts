@@ -30,6 +30,7 @@ async function connectToServer() {
       // console.log(wsmessage)
     }
 
+
     const { 
       guid, 
       message, 
@@ -43,6 +44,7 @@ async function connectToServer() {
     // console.log(type, message)
 
     if (type === 'response') {
+      console.log('response')
       const targetThreadMessageGuids = store.getState().spaces.threadsByGuid[conversationId].messageGuids
       const targetMessageGuid = targetThreadMessageGuids.slice(-1)[0]
 
@@ -86,3 +88,4 @@ setInterval(() => {
       })()
   }
 }, 5000)
+

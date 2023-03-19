@@ -19,7 +19,7 @@
     "unused-ts": "ts-unused-exports ./tsconfig.json > unused-ts-exports-report.txt"
   },
   "dependencies": {
-    "@avsync.live/formation": "^0.9.130",
+    "@avsync.live/formation": "^0.9.131",
     "@extractus/article-extractor": "^7.2.8-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
@@ -55,6 +55,7 @@
     "redux": "^4.2.1",
     "redux-batched-subscribe": "^0.1.6",
     "redux-logger": "^3.0.6",
+    "sharp": "^0.31.3",
     "socket.io-client": "^4.5.4",
     "spark-md5": "^3.0.2",
     "styled-components": "^5.3.5",

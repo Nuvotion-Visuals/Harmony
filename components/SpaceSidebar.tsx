@@ -90,53 +90,54 @@ export const SpaceSidebar = ({ }: Props) => {
         }
       ]}
     />
-    <Box wrap width='100%'>
-      
-      {
-        activeSpace?.previewSrc &&
-        <>
-          <S.OverlayContainer>
-            <S.Overlay>
-              <SpaceName />
-             
-            </S.Overlay>
-          </S.OverlayContainer>
-         <AspectRatio
-            ratio={2}
-            backgroundSrc={activeSpace.previewSrc}
-            coverBackground
-          >
-            
-          </AspectRatio>
-      
-        </>
-         
-      }
+    <S.SidebarContainer>
+      <Box wrap width='100%'>
         {
-          activeSpace?.name
-            ? <>
-                {
-                  !activeSpace?.previewSrc && <SpaceName />
-                }
-                <LineBreak />
-              </>
-            : <Box py={.75}>
-                <Gap gap={.75}>
-               
-                <Item
-                  title='Create a Space'
-                  subtitle='Spaces organize your work into groups of channels.'
-                />
-                 <Item
-                  text="Let's Work Together"
-                  subtitle='Hi, my name is Lexi. I can help you with any project. Think of me as your virtual coworker.'
-                />
-                </Gap>
-              </Box>
+          activeSpace?.previewSrc &&
+          <>
+            <S.OverlayContainer>
+              <S.Overlay>
+                <SpaceName />
+              
+              </S.Overlay>
+            </S.OverlayContainer>
+          <AspectRatio
+              ratio={2}
+              backgroundSrc={activeSpace.previewSrc}
+              coverBackground
+            >
+              
+            </AspectRatio>
+        
+          </>
+          
         }
- 
-      <Groups locked={locked!} />
-    </Box>
+          {
+            activeSpace?.name
+              ? <>
+                  {
+                    !activeSpace?.previewSrc && <SpaceName />
+                  }
+                  <LineBreak />
+                </>
+              : <Box py={.75}>
+                  <Gap gap={.75}>
+                
+                  <Item
+                    title='Create a Space'
+                    subtitle='Spaces organize your work into groups of channels.'
+                  />
+                  <Item
+                    text="Let's Work Together"
+                    subtitle='Hi, my name is Lexi. I can help you with any project. Think of me as your virtual coworker.'
+                  />
+                  </Gap>
+                </Box>
+          }
+  
+        <Groups locked={locked!} />
+      </Box>
+    </S.SidebarContainer>
   </S.GroupsSidebar>)
 }
 
@@ -145,6 +146,11 @@ const S = {
     display: flex;
     height: calc(100% - var(--F_Header_Height));
     align-items: flex-start;
+  `,
+  SidebarContainer: styled.div`
+    height: calc(100vh - calc(2 * var(--F_Header_Height)));
+    width: 100%;
+    overflow-y: auto;
   `,
   OverlayContainer: styled.div`
     height: 0;

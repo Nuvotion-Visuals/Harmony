@@ -16,6 +16,7 @@ import { useSpaces } from 'redux-tk/spaces/hook'
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
 import { useRouter } from 'next/router'
 import { useLayout } from 'redux-tk/layout/hook'
+import { Indicator } from './Indicator'
 
 type List = {
   expanded: boolean,
@@ -120,7 +121,7 @@ export const Groups = ({ locked }: Props) => {
             value: {
               item: {
                 labelColor: 'none',
-                subtitle: groupsByGuid[groupGuid]?.name,
+                label: groupsByGuid[groupGuid]?.name,
               },
               list: [
                 ...groupsList,
@@ -168,9 +169,8 @@ export const Groups = ({ locked }: Props) => {
               children: <div onClick={e => e.stopPropagation()}>
                 <Spacer />
                 <Box>
-                <Label
-                  label={`${spaceGroupGuids?.length}`}
-                  labelColor='gray'
+                <Indicator
+                  count={spaceGroupGuids?.length}
                 />  
                 <Dropdown
                   icon='ellipsis-h'
@@ -203,20 +203,15 @@ export const Groups = ({ locked }: Props) => {
               .map((listItem, listItemIndex1) =>
                 ({
                   ...listItem,
-                  emphasize: !channelsByGuid?.[spaceChannelGuids[i][listItemIndex1]]?.threadGuids?.length && listItem.subtitle,
                   children: listItem.subtitle && 
                     <div onClick={e => {
                       e.stopPropagation()
                       e.preventDefault()
                     }}>
                       <Box>
-                        {
-                          channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length !== 0 &&
-                            <Label
-                              label={`${channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length}`}
-                              labelColor={'purple'}
-                            />  
-                        }
+                        <Indicator
+                          count={channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length}
+                        />
                        
                         <Dropdown 
                           icon={listItem.active ? 'ellipsis-h' : undefined}

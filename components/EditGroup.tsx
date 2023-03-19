@@ -73,7 +73,7 @@ export const EditGroup = ({ }: Props) => {
           disabled={prompt === ''}
           blink={!!prompt && !!!url}
           onClick={() => {
-          set_url(`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`)
+          set_url(`https://lexi.studio/image/prompt/${encodeURIComponent(prompt)}`)
           }}
         />
         </Gap>

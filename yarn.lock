@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.130":
-  version "0.9.130"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.130.tgz#83764aadcb83efc63278690ead89cffbc2e82fbd"
-  integrity sha512-YUa5EIN0wnqU59wUJJeIP3xuh+QNo6Cbzr/cE+bVPgIFuh34pjFVlA3N6vvcXiKiDFbdIi03/YOYVfHWp17/Lg==
+"@avsync.live/formation@^0.9.131":
+  version "0.9.131"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.131.tgz#5229ab85d83b34bab2433e204840c34b426af60a"
+  integrity sha512-CY+opeqHD/6rCJU5+ZlRWXGSQ9F7A8b10oq+8QwQceGF6CHuXZ2lFeHjFOYB52frqqO2Ynbpw/53E1pmux+q1Q==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -6256,9 +6256,9 @@ rc-slider@^10.0.1:
     rc-util "^5.27.0"
 
 rc-util@^5.27.0:
-  version "5.28.0"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.28.0.tgz#9e5e441d5875b8bf0ba56c2f295042a28dcff580"
-  integrity sha512-KYDjhGodswVj29v0TRciKTqRPgumIFvFDndbCD227pitQ+0Cei196rxk+OXb/blu6V8zdTRK5RjCJn+WmHLvBA==
+  version "5.29.2"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.29.2.tgz#a3741fca57b3dce78f315574ed099945f367b222"
+  integrity sha512-xHT9Dr3RD6tyvCibnH10l3mudC6TJjWNr9UDy3CrOGZqTY354OfdwP87ahKNe0b3A1dsysDldvx0SBuswhlOeA==
   dependencies:
     "@babel/runtime" "^7.18.3"
     react-is "^16.12.0"
@@ -6913,6 +6913,20 @@ sharp@^0.30.7:
     node-addon-api "^5.0.0"
     prebuild-install "^7.1.1"
     semver "^7.3.7"
+    simple-get "^4.0.1"
+    tar-fs "^2.1.1"
+    tunnel-agent "^0.6.0"
+
+sharp@^0.31.3:
+  version "0.31.3"
+  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.31.3.tgz#60227edc5c2be90e7378a210466c99aefcf32688"
+  integrity sha512-XcR4+FCLBFKw1bdB+GEhnUNXNXvnt0tDo4WsBsraKymuo/IAuPuCBVAL2wIkUw2r/dwFW5Q5+g66Kwl2dgDFVg==
+  dependencies:
+    color "^4.2.3"
+    detect-libc "^2.0.1"
+    node-addon-api "^5.0.0"
+    prebuild-install "^7.1.1"
+    semver "^7.3.8"
     simple-get "^4.0.1"
     tar-fs "^2.1.1"
     tunnel-agent "^0.6.0"

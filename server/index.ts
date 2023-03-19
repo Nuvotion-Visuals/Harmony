@@ -330,6 +330,13 @@ async function readMarkdownFile(filePath: string): Promise<string> {
   }
 }
 
+const https = require('https');
+const stream = require('stream');
+
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false, // Ignore SSL/TLS certificate errors
+});
+
 app.prepare().then(() => {
   const server = express()
 
@@ -419,6 +426,38 @@ app.prepare().then(() => {
     catch (error) {
       console.error(error);
       res.status(500).send('An error occurred while sending the message');
+    }
+  });
+
+  server.get('/image/prompt/:prompt', async (req: any, res: any) => {
+    const prompt = req.params.prompt;
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`;
+
+    try {
+      const imageRes = await fetch(imageUrl, {
+        agent: httpsAgent,
+      } as RequestInit);
+
+      if (!imageRes.ok) {
+        throw new Error(`Error fetching image from ${imageUrl}: ${imageRes.status} ${imageRes.statusText}`);
+      }
+
+      const contentType = imageRes.headers.get('content-type');
+      if (!contentType || !contentType.startsWith('image/')) {
+        throw new Error(`Invalid content type for image: ${contentType}`);
+      }
+
+      const imageStream = imageRes.body;
+      res.setHeader('Content-Type', contentType);
+      await stream.pipeline(imageStream, res, (err: any) => { // Pass a callback function as the last argument to `pipeline`
+        if (err) {
+          console.error(`Error streaming image to client: ${err.message}`);
+          res.status(500).send(`Error streaming image to client`);
+        }
+      });
+    } catch (err: any) {
+      console.error(`Error fetching image from ${imageUrl}: ${err.message}`);
+      res.status(500).send(`Error fetching image from ${imageUrl}`);
     }
   });
 

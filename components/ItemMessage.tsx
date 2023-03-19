@@ -74,7 +74,7 @@ export const ItemMessage = React.memo((props: Props) => {
 
   const Message = ({ text } : { text: string }) => (
     <S.ItemMessage>
-      <Box width={3} height='100%'>
+      <Box width={2.75} height='100%'>
         <Avatar
           labelColor={'gray'}
           src={isLexi ? '/assets/lexi-circle.png' : undefined}
@@ -83,7 +83,7 @@ export const ItemMessage = React.memo((props: Props) => {
         <S.VerticalSpacer />
       </Box>
 
-      <Box width='100%' maxWidth='calc(100% - 3.75rem)' wrap>
+      <Box width='100%' maxWidth='calc(100% - 3.25rem)' wrap>
         <S.MessageInfo>
           <S.DisplayName>
             {
@@ -98,8 +98,8 @@ export const ItemMessage = React.memo((props: Props) => {
             <Dropdown
               icon='ellipsis-h'
               iconPrefix='fas'
-              minimal
               minimalIcon
+              minimal
               onClick={e => {
               
               }}
@@ -189,7 +189,7 @@ const S = {
   ItemMessage: styled.div`
     width: 100%;
     display: flex;
-    padding: .75rem 0;
+    padding: .5rem 0;
     transition: height 0.3s ease-out;
   `,
   VerticalSpacer: styled.div`

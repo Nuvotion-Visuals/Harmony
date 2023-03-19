@@ -1,4 +1,4 @@
-import { NavSpaces, Box, useBreakpoint } from '@avsync.live/formation'
+import { NavSpaces, Box, useBreakpoint, LoadingSpinner } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useLayout } from 'redux-tk/layout/hook'
@@ -17,6 +17,7 @@ import { fetchInitialData } from 'redux-tk/spaces/slice'
 import type { Dispatch } from '@reduxjs/toolkit'
 import { Threads } from './Threads'
 import { EditChannel } from './EditChannel'
+import MyLink from './Link'
 
 interface Props {
   children: React.ReactNode
@@ -92,10 +93,15 @@ const App = ({ children }: Props) => {
 
   return (<S.App>
     <S.NavHeader>
-      <S.Logo 
-        src='/assets/lexi-circle.png'
-        onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}
-      />
+      <S.LogoContainer onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}>
+        <S.Logo 
+          src='/assets/lexi-circle.png'
+        />
+        <S.Connection>
+          <LoadingSpinner chat />
+        </S.Connection>
+      </S.LogoContainer>
+      
       <S.Centered isDesktop={isDesktop}>
       <Search />
 
@@ -172,7 +178,7 @@ const S = {
     left: 50%;
     transform: translate(-50%, 0);
     width: calc(100% - 94px);
-    width: ${props => props.isDesktop ? '100%' : 'calc(100% - 45px)'};
+    width: ${props => props.isDesktop ? '100%' : 'calc(100% - 80px)'};
 
     margin-left: ${props => props.isDesktop ? '-141px' : '22px'};
   `,
@@ -180,11 +186,25 @@ const S = {
     width: 100%;
     height: var(--F_Header_Height);
   `,
+  LogoContainer: styled.div`
+    width: 74px;
+    height: var(--F_Header_Height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    position: relative;;
+  `,
   Logo: styled.img`
     height: var(--F_Input_Height);
     width: var(--F_Input_Height);
-    position: relative;
-    left: .75rem;
+  `,
+  Connection: styled.div`
+    position: absolute;
+    z-index:1;
+    transform: scale(.7);
+    transform-origin: center;
+    opacity: .4;
   `,
   Sidebar: styled.div`
     border-right: 1px solid var(--F_Surface);
