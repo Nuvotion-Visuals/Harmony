@@ -88,7 +88,7 @@ export const AddSpace = ({}: Props) => {
       <Box px={0.75} wrap>
         <Gap gap={0.75}>
           {url && (
-            <AspectRatio ratio={2} backgroundSrc={url} coverBackground />
+            <AspectRatio ratio={2} backgroundSrc={url} coverBackground borderRadius={.75}/>
           )}
          
           <TextInput

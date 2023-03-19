@@ -26,7 +26,8 @@ export const SpaceSidebar = ({ }: Props) => {
   }, [spaceGuid])
 
   const SpaceName = () => (<S.SpaceName>
-    <Item pageTitle={activeSpace?.name}>
+    <Box ml={.25} p={.5}>
+      <Item pageTitle={activeSpace?.name}>
     <Dropdown
       icon='ellipsis-h'
       iconPrefix='fas'
@@ -68,6 +69,8 @@ export const SpaceSidebar = ({ }: Props) => {
     />
 
     </Item>
+    </Box>
+
     </S.SpaceName>
   )
 
@@ -94,47 +97,44 @@ export const SpaceSidebar = ({ }: Props) => {
       <Box wrap width='100%'>
         {
           activeSpace?.previewSrc &&
-          <>
-            <S.OverlayContainer>
-              <S.Overlay>
-                <SpaceName />
-              
-              </S.Overlay>
-            </S.OverlayContainer>
-          <AspectRatio
-              ratio={2}
-              backgroundSrc={activeSpace.previewSrc}
-              coverBackground
-            >
-              
-            </AspectRatio>
-        
-          </>
-          
+            <>
+              <S.OverlayContainer>
+                <S.Overlay>
+                  <SpaceName />
+                </S.Overlay>
+              </S.OverlayContainer>
+              <Box p={.75} mb={-.5} width='100%'>
+                <AspectRatio
+                  ratio={2}
+                  backgroundSrc={activeSpace.previewSrc}
+                  coverBackground
+                  borderRadius={.75}
+                />
+              </Box>
+            </>
         }
-          {
-            activeSpace?.name
-              ? <>
-                  {
-                    !activeSpace?.previewSrc && <SpaceName />
-                  }
-                  <LineBreak />
-                </>
-              : <Box py={.75}>
-                  <Gap gap={.75}>
-                
-                  <Item
-                    title='Create a Space'
-                    subtitle='Spaces organize your work into groups of channels.'
-                  />
-                  <Item
-                    text="Let's Work Together"
-                    subtitle='Hi, my name is Lexi. I can help you with any project. Think of me as your virtual coworker.'
-                  />
-                  </Gap>
-                </Box>
-          }
-  
+        {
+          activeSpace?.name
+            ? <>
+                {
+                  !activeSpace?.previewSrc && <SpaceName />
+                }
+              </>
+            : <Box py={.75}>
+                <Gap gap={.75}>
+              
+                <Item
+                  title='Create a Space'
+                  subtitle='Spaces organize your work into groups of channels.'
+                />
+                <Item
+                  text="Let's Work Together"
+                  subtitle='Hi, my name is Lexi. I can help you with any project. Think of me as your virtual coworker.'
+                />
+                </Gap>
+              </Box>
+        }
+
         <Groups locked={locked!} />
       </Box>
     </S.SidebarContainer>
@@ -166,6 +166,11 @@ const S = {
  
   `,
   SpaceName: styled.div`
+    width: 100%;
+  `,
+  PosterContainer: styled.div`
+    border-radius: .75rem;
+    overflow: hidden;
     width: 100%;
   `
 }

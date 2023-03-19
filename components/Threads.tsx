@@ -136,7 +136,12 @@ export const Threads = ({ }: Props) => {
                       icon: 'edit',
                       iconPrefix: 'fas',
                       name: 'Edit',
-                      href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`
+                      href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`,
+                      onClick: () => {
+                        if (!isDesktop) {
+                          decrementActiveSwipeIndex()
+                        }
+                      }
                     },
                     {
                       icon: 'trash-alt',
@@ -185,7 +190,12 @@ export const Threads = ({ }: Props) => {
                                   icon: 'edit',
                                   iconPrefix: 'fas',
                                   name: 'Edit',
-                                  href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`
+                                  href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`,
+                                  onClick: () => {
+                                    if (!isDesktop) {
+                                      decrementActiveSwipeIndex()
+                                    }
+                                  }
                                 },
                                 {
                                   icon: 'trash-alt',

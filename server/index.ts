@@ -430,7 +430,7 @@ app.prepare().then(() => {
   });
 
   // Set cache duration to 1 hour
-  const CACHE_DURATION = 60 * 60 * 1000;
+  const CACHE_DURATION = 24 * 60 * 60 * 1000;
   const cache = require('memory-cache');
   server.get('/image/prompt/:prompt', async (req: any, res: any) => {
     const prompt = req.params.prompt;
@@ -438,8 +438,6 @@ app.prepare().then(() => {
     
     const cachedImage = cache.get(imageUrl);
     if (cachedImage) {
-      // If image is already in cache, return it
-      console.log(`Image ${imageUrl} found in cache`);
       res.setHeader('Content-Type', cachedImage.contentType);
       res.send(cachedImage.data);
       return;

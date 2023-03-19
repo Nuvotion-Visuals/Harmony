@@ -1,117 +1,116 @@
-import { Button, Modal, Page, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor } from '@avsync.live/formation'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook'
-import styled from 'styled-components'
+import { Button, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor, ItemProps } from '@avsync.live/formation';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { useSpaces } from 'redux-tk/spaces/hook';
 
-interface Props {
+interface Channel {
+  name: string;
+  description: string;
+}
+
+interface Group {
+  name: string;
+  description: string;
+  channels: Channel[];
+}
+
+interface Suggested {
+  groups: Group[];
+}
+
+export interface ExpandableListProps {
+  value: {
+    item: ItemProps;
+    list: ItemProps[];
+  };
+  expanded?: boolean;
+  onExpand?: (newExpanded: boolean) => void;
+  onReorder?: (newList: ItemProps[]) => void;
+  reorderId: string;
+}
+
+interface Props {}
+
+export const EditChannel = ({}: Props) => {
+  const router = useRouter();
+  const channelGuid = router.query.channelGuid as string
+  const { updateChannel, activeGroup, activeSpace, activeChannel, channelsByGuid } = useSpaces();
+  const [name, set_name] = useState(activeChannel?.name || '');
+  const [description, set_description] = useState(activeChannel?.description || '');
+  const [prompt, set_prompt] = useState(decodeURI(activeChannel?.previewSrc?.match(/[^/]*$/)?.[0] ?? ""));
+  const [url, set_url] = useState<string | undefined>(activeChannel?.previewSrc);
   
-}
-
-export const EditChannel = ({ }: Props) => {
-  const router = useRouter()
-  const { channelGuid, groupGuid } = router.query
-
-  const { activeSpaceGuid, updateChannel, channelsByGuid, activeThreadGuid } = useSpaces()
-
-  const activeChannel = channelsByGuid[channelGuid as string]
-
-  const [name, set_name] = useState(activeChannel?.name || '')
-  const [description, set_description] = useState(activeChannel?.description || '')
-  const [prompt, set_prompt] = useState(activeChannel?.description || '')
-
-  const [url, set_url] = useState(activeChannel?.previewSrc)
-
-  return (<S.new>
-    <Box  my={.25} >
-    <Button
-      icon='chevron-left'
-      iconPrefix='fas'
-      href={'/spaces'}
-      minimal
-    />
-     <Item
-      pageTitle='Edit Channel'
-    />
-    </Box>
-   
-    <Box px={.75}>
-       
-        <Gap gap={.75}>
-        {
-        url &&
-          <AspectRatio
-            ratio={2}
-            backgroundSrc={url}
-            coverBackground
+  return (
+    <Box wrap>
+      <Box my={0.25} width='100%'>
+        <Item icon='chevron-left' pageTitle='Edit channel' href={`/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${channelGuid}`} />
+      </Box>
+      <Box px={0.75} wrap>
+        <Gap gap={0.75}>
+          {url && (
+            <AspectRatio ratio={2} backgroundSrc={url} coverBackground borderRadius={.75} />
+          )}
+         
+          <TextInput
+            label='Name'
+            value={name}
+            onChange={(newValue) => set_name(newValue)}
+            autoFocus
           />
-        }
-        <TextInput 
-          label='Name'
-          value={name}
-          onChange={newValue => set_name(newValue)}
-          autoFocus
-        />
-        <RichTextEditor
-          placeholder='Description'
-          value={description}
-          onChange={newValue => set_description(newValue)}
-        />
-        <Gap disableWrap>
-
-        <TextInput 
-          label='Prompt'
-          value={prompt}
-          onChange={newValue => set_prompt(newValue)}
-        />
-        <Button
-          icon='bolt-lightning'
-          iconPrefix='fas'
-          secondary
-          circle
-          hero
-          disabled={prompt === ''}
-          blink={!!prompt && !!!url}
-          onClick={() => {
-          set_url(`https://lexi.studio/image/prompt/${encodeURIComponent(prompt)}`)
-          }}
-        />
-        </Gap>
-        
-        <Button
-          hero
-          expand
-          primary={name !== ''}
-          disabled={name === ''}
-          onClick={() => {
-            if (name && activeChannel?.guid) {
-              updateChannel({
-              guid: activeChannel.guid,
-              channel: {
-                  guid: activeChannel.guid,
-                  assetGuids: [],
-                  threadGuids: activeChannel.threadGuids,
-                  groupGuid: activeChannel.groupGuid,
-                  name,
-                  previewSrc: url,
-                  description
+          <TextInput
+            label='Poster prompt'
+            value={prompt}
+            canClear={!!prompt}
+            onChange={(newValue) => set_prompt(newValue)}
+            buttons={[
+              {
+                icon: 'bolt-lightning',
+                iconPrefix: 'fas',
+                secondary: true,
+                circle: true,
+                minimal: true,
+                disabled: prompt === '',
+                blink: !!prompt && !url,
+                onClick: () => set_url(`https://lexi.studio/image/prompt/${encodeURIComponent(prompt)}`),
+              },
+            ]}
+          />
+          <RichTextEditor
+            placeholder='Description'
+            value={description}
+            onChange={(newValue) => set_description(newValue)}
+          >
+           
+          </RichTextEditor>
+         
+          <Button
+            hero
+            expand
+            primary={name !== ''}
+            disabled={name === ''}
+            onClick={() => {
+              if (name && activeSpace?.guid) {
+                updateChannel({
+                  guid: channelGuid,
+                  channel: {
+                    ...channelsByGuid[channelGuid],
+                    name,
+                    previewSrc: url,
+                    description,
+                  },
+                });
+                setTimeout(() => {
+                  router.push(`/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${channelGuid}`);
+                }, 1);
               }
-              })
-              router.push(`/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`)
-            }
-          }}
-          text='Save'
-          icon='save'
-          iconPrefix='fas'
-        />
+            }}
+            text='Save'
+            icon='save'
+            iconPrefix='fas'
+          />
+          <Box height={4} width='100%' />
         </Gap>
+      </Box>
     </Box>
-  </S.new>)
-}
-
-
-const S = {
-  new: styled.div`
-    
-  `
-}
+  );
+};
