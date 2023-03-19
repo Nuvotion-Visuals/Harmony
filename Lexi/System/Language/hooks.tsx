@@ -1,10 +1,8 @@
 import { useReducer } from 'react';
-import { language_generateGroups,  language_generateTitleAndDescription } from './language-ws';
+import { language_generateGroups, language_generateTitleAndDescription } from './language-ws';
 
 type PartialResponse = string;
 type ErrorType = string;
-
-type GenerateFunction = (guid: string) => void;
 
 type State = {
   response: PartialResponse | null;
@@ -44,7 +42,17 @@ const reducer = (state: State, action: Action): State => {
 export const useLanguageAPI = (initialValue: string) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const generateGroups: GenerateFunction = (guid) => {
+  const generate = (
+    guid: string,
+    enableEmoji: boolean,
+    generateFunction: (
+      guid: string,
+      enableEmoji: boolean,
+      onComplete: (message: string) => void,
+      onPartialResponse: (partialResponse: PartialResponse) => void,
+      onError: (error: ErrorType) => void
+    ) => { removeListeners: () => void }
+  ) => {
     dispatch({ type: "SET_LOADING", payload: true });
 
     const onComplete = (message: string) => {
@@ -62,33 +70,16 @@ export const useLanguageAPI = (initialValue: string) => {
       removeListeners();
     };
 
-    const { removeListeners } = language_generateGroups(guid, true, onComplete, onPartialResponse, onError);
-  };
-
-  const generateTitle: GenerateFunction = (guid) => {
-    dispatch({ type: "SET_LOADING", payload: true });
-
-    const onComplete = (message: string) => {
-      dispatch({ type: "SET_RESPONSE", payload: message });
-      dispatch({ type: "SET_COMPLETED", payload: true });
-      removeListeners();
-    };
-
-    const onPartialResponse = (partialResponse: PartialResponse) => {
-      dispatch({ type: "SET_RESPONSE", payload: partialResponse });
-    };
-
-    const onError = (error: ErrorType) => {
-      dispatch({ type: "SET_ERROR", payload: error });
-      removeListeners();
-    };
-
-    const { removeListeners } = language_generateTitleAndDescription(guid, true, onComplete, onPartialResponse, onError);
+    const { removeListeners } = generateFunction(guid, enableEmoji, onComplete, onPartialResponse, onError);
   };
 
   const language = {
-    generateGroups,
-    generateTitle,
+    generateGroups: (guid: string) => {
+      generate(guid, true, language_generateGroups);
+    },
+    generateTitle: (guid: string) => {
+      generate(guid, true, language_generateTitleAndDescription);
+    }
   };
 
   return { language, ...state };
