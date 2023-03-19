@@ -1,11 +1,7 @@
-import { Button, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor, ExpandableLists, ItemProps, LabelColor } from '@avsync.live/formation';
-import { useLanguageAPI } from 'Lexi/System/Language/hooks';
+import { Button, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor, ItemProps } from '@avsync.live/formation';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSpaces } from 'redux-tk/spaces/hook';
-import { MatrixLoading } from './MatrixLoading';
-
-import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 interface Channel {
   name: string;
@@ -38,52 +34,15 @@ interface Props {}
 export const EditSpace = ({}: Props) => {
   const router = useRouter();
   const { updateSpace, activeSpace, activeSpaceGuid } = useSpaces();
-  const [name, set_name] = useState(activeSpace?.name);
-  const [description, set_description] = useState(activeSpace?.description);
-  const [prompt, set_prompt] = useState('');
+  const [name, set_name] = useState(activeSpace?.name || '');
+  const [description, set_description] = useState(activeSpace?.description || '');
+  const [prompt, set_prompt] = useState(decodeURI(activeSpace?.previewSrc?.match(/[^/]*$/)?.[0] ?? ""));
   const [url, set_url] = useState<string | undefined>(activeSpace?.previewSrc);
-  const { language, response, loading, error, completed } = useLanguageAPI('');
-  const [suggested, set_suggested] = useState<Suggested>({ groups: [] });
-  const { generateGroups } = language;
-  const [value, set_value] = useState<ExpandableListProps[] | null>(null);
-
-  useEffect(() => {
-    if (response && completed) {
-      try {
-        let obj = JSON.parse(response);
-        set_suggested(obj);
-      } catch (e) {}
-    }
-  }, [response, completed]);
-
-  useEffect(() => {
-    if (suggested?.groups) {
-      set_value(
-        suggested.groups.map((group: Group, i: number) => ({
-          reorderId: `list_${i}`,
-          expanded: false,
-          value: {
-            item: {
-              labelColor: 'none',
-              subtitle: group.name,
-              icon: 'caret-down' as IconName,
-              iconPrefix: 'fas',
-              minimalIcon: true,
-            },
-            list: group.channels.map((channel: Channel) => ({
-              subtitle: channel.name,
-              icon: 'hashtag' as IconName,
-            })),
-          },
-        }))
-      );
-    }
-  }, [suggested]);
   
   return (
     <Box wrap>
       <Box my={0.25} width='100%'>
-        <Item icon='chevron-left' pageTitle='Add Space' href={`/spaces`} />
+        <Item icon='chevron-left' pageTitle='Edit space' href={`/spaces`} />
       </Box>
       <Box px={0.75} wrap>
         <Gap gap={0.75}>
@@ -100,6 +59,7 @@ export const EditSpace = ({}: Props) => {
           <TextInput
             label='Poster prompt'
             value={prompt}
+            canClear={!!prompt}
             onChange={(newValue) => set_prompt(newValue)}
             buttons={[
               {
