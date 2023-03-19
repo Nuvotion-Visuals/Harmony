@@ -1,4 +1,4 @@
-import { Button, Gap, LineBreak, generateUUID, Item, TextInput, RichTextEditor, Box, Page, Tabs, Label, Dropdown, useBreakpoint, HTMLtoMarkdown, AspectRatio } from '@avsync.live/formation'
+import { Button, Gap, LineBreak, generateUUID, Item, TextInput, RichTextEditor, Box, Page, Tabs, Label, Dropdown, useBreakpoint, HTMLtoMarkdown, AspectRatio, Icon, LoadingSpinner } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -11,6 +11,8 @@ import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { use100vh } from 'react-div-100vh'
 import { useLayout } from 'redux-tk/layout/hook'
 import { Indicator } from './Indicator'
+import { useLanguageAPI } from 'Lexi/System/Language/hooks'
+import { MatrixLoading } from './MatrixLoading'
 
 interface Props {
   
@@ -42,7 +44,7 @@ export const Threads = ({ }: Props) => {
     setActiveGroupGuid,
     activeChannel,
     activeSpace,
-    activeGroup
+    activeGroup,
   } = useSpaces() 
 
   // websocket communication with server
@@ -104,6 +106,45 @@ export const Threads = ({ }: Props) => {
     websocketClient.send(JSON.stringify(action))
   }
   
+  const { language, response, loading, error, completed } = useLanguageAPI('');
+  const { generateThreadPrompts } = language;
+  
+  const [suggestedPrompts, set_suggestedPrompts] = useState([])
+
+  useEffect(() => {
+    if (response && completed) {
+      try {
+        let obj = JSON.parse(response);
+        set_suggestedPrompts(obj.suggestions)
+      } catch (e) {}
+    }
+  }, [response, completed]);
+
+  const [ existingThreads, set_existingThreads ] = useState('')
+  useEffect(() => {
+    if (activeChannel?.threadGuids) {
+      set_existingThreads(activeChannel?.threadGuids?.map((threadGuid, index) => (
+        `Existing thread: ${threadsByGuid[threadGuid]?.name} - ${threadsByGuid[threadGuid]?.description}`
+      )).join('\n'))
+    }
+  }, [activeChannel?.threadGuids])
+
+  const websocketClient = getWebsocketClient()
+
+  useEffect(() => {
+    set_suggestedPrompts([])
+    if (activeChannel?.description && getWebsocketClient?.send) {
+        generateThreadPrompts(`
+Space name: ${activeSpace?.name}
+Space description: ${activeSpace?.description}
+
+Channel name: ${activeChannel?.name}
+Channel description: ${activeChannel?.description} 
+
+Existing threads: \n${existingThreads}`)
+    }
+  }, [activeChannel?.threadGuids, websocketClient, activeChannel?.guid])
+
   return (<Box wrap width={'100%'}>
     {
       selected
@@ -132,6 +173,13 @@ export const Threads = ({ }: Props) => {
                   iconPrefix='fas'
                   minimal
                   items={[
+                    {
+                      icon: 'bolt-lightning',
+                      name: 'Suggest threads',
+                      onClick: () => {
+                        generateThreadPrompts(`Channel name: ${activeChannel?.name} - Channel description: ${activeChannel?.description} Existing threads: \n${existingThreads}`)
+                      }
+                    },
                     {
                       icon: 'edit',
                       iconPrefix: 'fas',
@@ -187,6 +235,13 @@ export const Threads = ({ }: Props) => {
                               minimal
                               items={[
                                 {
+                                  icon: 'bolt-lightning',
+                                  name: 'Suggest threads',
+                                  onClick: () => {
+                                    generateThreadPrompts(`Channel name: ${activeChannel?.name} - Channel description: ${activeChannel?.description} Existing threads: \n${existingThreads}`)
+                                  }
+                                },
+                                {
                                   icon: 'edit',
                                   iconPrefix: 'fas',
                                   name: 'Edit',
@@ -205,6 +260,7 @@ export const Threads = ({ }: Props) => {
                               ]}
                             />
                           </Item>
+                          
                           <Box mt={-.75} pb={.25} width='100%'>
                           <Item 
                             // @ts-ignore
@@ -217,6 +273,32 @@ export const Threads = ({ }: Props) => {
                            
                           </Item>
                           </Box>
+
+                          {
+                            suggestedPrompts?.length
+                              ? <Box width='100%' px={.5} mb={.25}>
+                                  <Gap>
+                                    {
+                                      suggestedPrompts?.map(prompt =>
+                                        <Item
+                                          subtitle={prompt}
+                                          icon='bolt-lightning'
+                                          onClick={() => {
+                                            sendThread(prompt)
+                                          }}
+                                        >
+                                        
+                                        </Item>
+                                      )
+                                    }
+                                  </Gap>
+                                </Box>
+                              : loading
+                                ? <MatrixLoading
+                                    text={response || ''}
+                                  />
+                                : null
+                          }
                           
                         </Box>
                       </>

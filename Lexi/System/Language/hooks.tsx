@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { language_generateGroups, language_generateTitleAndDescription } from './language-ws';
+import { language_generateGroups, language_generateTitleAndDescription, language_generateThreadPrompts } from './language-ws';
 
 type PartialResponse = string;
 type ErrorType = string;
@@ -79,6 +79,9 @@ export const useLanguageAPI = (initialValue: string) => {
     },
     generateTitle: (guid: string) => {
       generate(guid, true, language_generateTitleAndDescription);
+    },
+    generateThreadPrompts: (guid: string) => {
+      generate(guid, true, language_generateThreadPrompts);
     }
   };
 

@@ -177,3 +177,39 @@ Prompt: ${prompt}`,
         onProgress(progress.message)
     });
   };
+
+export const language_generateThreadPrompts = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
+  const props: SendMessageProps = {
+    conversationId: '12345',
+    chatGptLabel: 'GENERATE',
+    promptPrefix: 'You provide a list of threads for the given input',
+    userLabel: 'Input prompt provider',
+    message: 
+`You are an API endpoint that provides three suggestions for good starting prompts for threads of a channel in a project management app. 
+
+The three prompts should be distinct, thought-provoking, and sure to lead to productive brainstorming. 
+
+They should all focus on the specified channel, if provided one. 
+
+If there is only one provided existing thread, at least one of your suggestions should be of a distinct topic within the channel.
+
+You answer in the following JSON format, provided in a code block.
+
+{
+  "suggestions": [
+    "Brainstorm ideas for minimizing data usage and optimizing performance when using the app offline.",
+    "Share examples of successful offline-first features in other apps and discuss how we could apply those to our project management app.",
+    "What challenges do users typically encounter when using the app offline? How can we address these issues and improve their experience?"
+  ]
+}
+
+Prompt: ${prompt}`,
+    };
+  
+    return language_sendMessage(props, (response) => {
+      const json = JSON.parse(JSON.stringify(getCodeBlock(response.message) || response.message));
+      onComplete(json);
+    }, onError, (progress) => {
+        onProgress(progress.message)
+    });
+  };

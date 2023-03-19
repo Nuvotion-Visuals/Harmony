@@ -37,6 +37,7 @@ export const Thread = ({
   }, [messageGuids])
 
   const { language, response, loading, error, completed } = useLanguageAPI(messageContent);
+  const { generateTitle } = language;
   
   useEffect(() => {
     if (response && completed) {
@@ -57,8 +58,6 @@ export const Thread = ({
     }
   }, [response, completed]);
   
-  const { generateTitle } = language;
-
   const { 
     addMessage,
     messagesByGuid,
