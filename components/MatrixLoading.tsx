@@ -6,10 +6,11 @@ import styled, { css, keyframes } from 'styled-components';
 interface Props {
   children?: ReactNode;
   text?: string;
-  binary?: boolean
+  binary?: boolean,
+  logo?: boolean
 }
 
-export const MatrixLoading = ({ children, text, binary }: Props) => {
+export const MatrixLoading = ({ children, text, binary, logo }: Props) => {
   const scrollContainerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -19,17 +20,11 @@ export const MatrixLoading = ({ children, text, binary }: Props) => {
   const encoder = new TextEncoder();
 
   return (
-    <S.Container>
-        <S.MatrixLoading ref={scrollContainerRef}>
-        <Box width='100%' height='8rem' />
-       {children || binary ? encoder.encode(text) : text}
-     </S.MatrixLoading>
-       <S.Center>
-          <LoadingSpinner chat />
-        </S.Center>
-    
-    </S.Container>
-   
+    <S.Container logo={logo}>
+      {children 
+        ? children
+        : binary ? encoder.encode(text) : text}
+     </S.Container>
   );
 };
 
@@ -53,7 +48,7 @@ const flicker = keyframes`
     opacity: 0.8;
   }
   30% {
-    opacity: 0.5;
+    opacity: 0.8;
   }
   35% {
     opacity: 0.8;
@@ -89,7 +84,7 @@ const flicker = keyframes`
     opacity: 0.8;
   }
   90% {
-    opacity: 0.5;
+    opacity: 0.8;
   }
   95% {
     opacity: 0.8;
@@ -100,46 +95,34 @@ const flicker = keyframes`
 `
 
 const S = {
-  Container: styled.div`
-    width: 100%;
-    height: 5rem;
+  Container: styled.pre<Props>`
+    width: ${props => props.logo ? '100%' : 'calc(100% - 1.5rem)'};
+    height: 100%;
     position: relative;
     overflow: hidden;
-    border-radius: .5rem;
-  `,
-  MatrixLoading: styled.div`
-    top: 0;
-    position: relative;
-    width: calc(100% - 1rem);
-    max-height: 4rem;
-    font-family: monospace;
-    padding: .5rem;
-    font-size: 10px;
-    color: var(--F_Primary_Variant);
-    overflow: scroll;
-    border-radius: .5rem;
-    overflow-wrap: break-word;
-    /* text-shadow:
-      0 0 5px var(--F_Primary_Variant),
-      0 0 15px var(--F_Primary),
-      0 0 30px var(--F_Primary); */
-    /* animation: ${css`${flicker} 10s ease-in-out infinite alternate`}; */
-    ::-webkit-scrollbar {
-      display: none;
-    }
-  `,
-  Center: styled.div`
-  
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    display: flex;
-    position: absolute;
+    border-radius: ${props => props.logo ? '100%' : '.5rem'};
+    font-size: ${props => props.logo ? '20px' : '12px'};
+    color: ${props => props.logo ? 'white' : 'var(--F_Primary_Variant)'};
+    display: ${props => props.logo ? 'flex' : 'block'};
     align-items: center;
     justify-content: center;
-    pointer-events: none;
-    background: linear-gradient(to top, hsla(0, 0%, 0%, .3) 0%, hsla(0, 0%, 0%,.8) 70%, hsla(0, 0%, 0%, .85) 100%);
-    border-radius: .5rem;
+    line-height: 1.33;
+    white-space: pre-wrap;
+    background-image: linear-gradient(180deg,
+  	#330033 25%, #003333 25%, #003333 50%,
+  	#330033 50%, #330033 75%, #003333 75%, #003333);
+    background-size:4px 4px;
+
+    box-shadow:
+      inset 0 0 5px #fff,
+      inset 2px 0 8px #f0f,
+      inset -2px 0 8px #0ff,
+      inset 2px 0 30px #f0f,
+      inset -2px 0 30px #0ff,
+      0 0 5px #fff,
+      -1.0px 0 8px #f0f,
+      1px 0 8px #0ff;
+    animation: ${css`${flicker} 10s ease-in-out infinite alternate`};
+       
   `
 };

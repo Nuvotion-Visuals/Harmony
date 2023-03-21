@@ -120,7 +120,7 @@ export const Thread = ({
     addMessageToThread({ threadGuid, messageGuid: responseGuid })
   }
 
-  const showSpinner = response && loading && !completed
+  const showSpinner = loading
 
   return (<Box wrap width={'100%'} pb={.5}>
     <Box width='100%' pt={.5} >
@@ -183,7 +183,9 @@ export const Thread = ({
 
             title={
               showSpinner 
-                ? <LoadingSpinner chat />
+                ? <MatrixLoading
+                    text={response}
+                  />
                 : name
                   ? name : 'Untitled'}
             // @ts-ignore
@@ -255,19 +257,20 @@ export const Thread = ({
     
     {
       expanded &&
-        <Box width={'100%'} pt={.5} wrap>
+        <Box width={'100%'} p={.75}  wrap>
+          <Gap>
+
           <ThreadSuggestions guid={guid} onSend={(message) => sendMessageToWebsocket(message)} />
-          <Box pb={.5} width='100%'>
+          {/* <Box pb={.5} width='100%'>
             <Item subtitle={`${name}`} />
-          </Box>
-          <Box pb={.5} width='100%'>
+          </Box> */}
             <NewMessage
               channelGuid={guid}
               thread={false}
               threadName={name}
               onSend={(message) => sendMessageToWebsocket(message)}
           />
-        </Box>
+        </Gap>
      
     </Box>
     }

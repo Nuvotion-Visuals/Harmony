@@ -151,23 +151,25 @@ export const language_generateTitleAndDescription = (prompt: string, enableEmoji
     const props: SendMessageProps = {
       conversationId: '12345',
       chatGptLabel: 'GENERATE',
-      promptPrefix: 'You provide a list of titles for the given input',
+      promptPrefix: 'You are an API that suggests a title for the given input. You do not add any commentary.',
       userLabel: 'Input prompt provider',
       message: 
 `You are an API endpoint that provides a name and description for message thread based on a propmt, which is a series of messages.
 
 The description should be a very short sentence, no more than just a few words.
 
-You answer in the following JSON format, provided in a code block.
+
 
 ${enableEmoji && 'The name starts with an emoji'}
+
+You answer in the following JSON format, provided in a code block.
 
 {
   "name": "Social media strategies",
   "description": "Craft a successful social media strategy to build your brand's online presence and drive engagement."
 }
 
-Prompt: ${prompt}`,
+Prompt: ${prompt} Reply in JSON`,
     };
   
     return language_sendMessage(props, (response) => {
@@ -182,28 +184,34 @@ export const language_generateThreadPrompts = (prompt: string, enableEmoji: bool
   const props: SendMessageProps = {
     conversationId: '12345',
     chatGptLabel: 'GENERATE',
-    promptPrefix: 'You provide a list of threads for the given input',
+    promptPrefix: 'You are an API that provides a list of suggested threads for the given input. You do not add any commentary.',
     userLabel: 'Input prompt provider',
     message: 
-`You are an API endpoint that provides three suggestions for good starting prompts for threads of a channel in a project management app. 
+`You are an API in a project management app
 
-The three prompts should be distinct, thought-provoking, and sure to lead to productive brainstorming. 
+You are an API endpoint that provides four suggestions for good starting prompts for threads of a channel in a project management app. 
 
-They should all focus on the specified channel, if provided one. 
+The four prompts should be distinct, thought-provoking, and sure to lead to productive, rewarding progress. 
+
+They should all focus on purpose the specified channel, if provided one. 
 
 If there is only one provided existing thread, at least one of your suggestions should be of a distinct topic within the channel.
+
+The titles should always be action-oriented present tense.
 
 You answer in the following JSON format, provided in a code block.
 
 {
   "suggestions": [
-    "Brainstorm ideas for minimizing data usage and optimizing performance when using the app offline.",
-    "Share examples of successful offline-first features in other apps and discuss how we could apply those to our project management app.",
-    "What challenges do users typically encounter when using the app offline? How can we address these issues and improve their experience?"
+    "🎛️ Innovate: Brainstorm new and creative ways to combine analog and digital tools to create innovative audio reactive visuals.",
+    "🤖 Automate: Research and explore ways to streamline and automate the integration process between analog and digital tools to create more efficient and effective audio reactive visuals.",
+    "📈 Analyze: Use data from audio and visual sources to improve the accuracy and responsiveness of our audio reactive visuals. How can we use this information to optimize our work?",
+    "🌐 Interact: Explore the use of digital tools to create interactive experiences that respond to audio inputs and user interactions. How can we make our audio reactive visuals more engaging?",
+    "🎨 Optimize: Discuss how we can balance the aesthetics of analog and digital tools to optimize the visual quality of our audio reactive experiences. What techniques can we use to improve the overall visual impact?",
+    "🎓 Learn: Attend conferences, seminars, and workshops to expand our knowledge and gain new perspectives on audio reactive visuals. How can we apply what we learn to our work?"
   ]
 }
-
-Prompt: ${prompt}`,
+Prompt: ${prompt} Reply in JSON`,
     };
   
     return language_sendMessage(props, (response) => {
@@ -218,25 +226,32 @@ Prompt: ${prompt}`,
     const props: SendMessageProps = {
       conversationId: '12345',
       chatGptLabel: 'GENERATE',
-      promptPrefix: 'You provide a list of threads for the given input',
+      promptPrefix: 'You are an API that provides a list of follow up messages for the given input. You do not add any commentary. You always answer in a code block.',
       userLabel: 'Input prompt provider',
       message: 
-  `You are an API endpoint that provides three distinct suggestions for good follow-up message prompts within a thread of a project management app. 
-  
-  They should stay on subject of the thread and be a natural continuation and progression of the thread's conversation.
-  
-  You answer in the following JSON format, provided in a code block.
+  `You are an API endpoint that provides a list of four distinct suggestions for follow-up message prompts within a thread of a project management app.
+
+  The four prompts should be distinct, thought-provoking, and sure to lead to productive, rewarding progress. 
+    
+  They should stay on subject of the thread and be a natural continuation and progression of the thread's conversation. They should consider the context, goals, and progress of the existing messages.
+    
+  The titles should always be action-oriented present tense.
+
+  You answer in the following JSON format, provided in a markdown code block.
   
   {
     "suggestions": [
-      "How can we further experiment with combining analog and digital tools to achieve even more unique AVsync results?",
-      "Which analog visual techniques do you think have the most potential in terms of impact, and how can we incorporate them into our current project?",
-      "Have you considered any potential challenges or limitations that might arise from incorporating analog visual techniques with AVsync, and how can we overcome them?"
+      "🤔 Critique: Critically evaluate the current project plan. What are the strengths and weaknesses? How can we improve it to achieve better results?",
+      "🗣️ Discuss: Engage in conversation about the project goals and expectations. How can we ensure that everyone is aligned and working towards the same objectives?",
+      "🔍 Explore: Investigate different approaches to completing the project. How can we incorporate new ideas and techniques to make the project more innovative and effective?",
+      "🎓 Teach: Share knowledge and expertise with each other to improve our collective skill set. What can we teach each other to enhance our performance?",
+      "📚 Research: Conduct research on the best practices in our industry and see how we can apply them to our project. What are the trends and emerging technologies that we should be aware of?",
+      "🎨 Create: Brainstorm creative solutions to the challenges we are facing in the project. How can we think outside the box to come up with original ideas and concepts?"
     ]
   }
   
-  Prompt: ${prompt}`,
-    };
+  Prompt: ${prompt} Reply in JSON`,
+  };
 
     return language_sendMessage(props, (response) => {
       const json = JSON.parse(JSON.stringify(getCodeBlock(response.message) || response.message));

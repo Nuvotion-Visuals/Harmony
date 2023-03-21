@@ -7,6 +7,7 @@ import { Provider } from 'react-redux'
 import { store } from 'redux-tk/store'
 
 import '@avsync.live/formation/dist/index.dark.css'
+import 'react-bubble-ui/dist/index.css';
 
 import '../styles/globals.css'
 

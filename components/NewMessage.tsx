@@ -24,7 +24,7 @@ export const NewMessage = ({ channelGuid, thread, onSend, newThreadName, set_new
   const [newThread, set_newThread] = useState(false)
 
   return (
-    <Box px={.75} wrap width={'100%'}> 
+    <Box wrap width={'100%'}> 
       <Gap gap={.75}>
         <Box wrap width={'100%'}>
           {

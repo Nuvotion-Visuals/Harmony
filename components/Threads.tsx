@@ -131,6 +131,8 @@ export const Threads = ({ }: Props) => {
 
   const websocketClient = getWebsocketClient()
 
+  const [feedback, set_feedback] = useState('')
+
   useEffect(() => {
     set_suggestedPrompts([])
     if (activeChannel?.description && getWebsocketClient?.send) {
@@ -141,7 +143,12 @@ Space description: ${activeSpace?.description}
 Channel name: ${activeChannel?.name}
 Channel description: ${activeChannel?.description} 
 
-Existing threads: \n${existingThreads}`)
+Existing threads: \n${existingThreads}
+
+Your previous suggestions (optional): ${suggestedPrompts}
+                
+User feedback (optional): ${feedback}
+`)
     }
   }, [activeChannel?.threadGuids, websocketClient, activeChannel?.guid])
 
@@ -177,7 +184,19 @@ Existing threads: \n${existingThreads}`)
                       icon: 'bolt-lightning',
                       name: 'Suggest threads',
                       onClick: () => {
-                        generateThreadPrompts(`Channel name: ${activeChannel?.name} - Channel description: ${activeChannel?.description} Existing threads: \n${existingThreads}`)
+                        generateThreadPrompts(`
+                        Space name: ${activeSpace?.name}
+                        Space description: ${activeSpace?.description}
+                        
+                        Channel name: ${activeChannel?.name}
+                        Channel description: ${activeChannel?.description} 
+                        
+                        Existing threads: \n${existingThreads}
+                        
+                        Your previous suggestions (optional): ${suggestedPrompts}
+                                        
+                        User feedback (optional): ${feedback}
+                        `)
                       }
                     },
                     {
@@ -238,7 +257,19 @@ Existing threads: \n${existingThreads}`)
                                   icon: 'bolt-lightning',
                                   name: 'Suggest threads',
                                   onClick: () => {
-                                    generateThreadPrompts(`Channel name: ${activeChannel?.name} - Channel description: ${activeChannel?.description} Existing threads: \n${existingThreads}`)
+                                    generateThreadPrompts(`
+                                    Space name: ${activeSpace?.name}
+                                    Space description: ${activeSpace?.description}
+                                    
+                                    Channel name: ${activeChannel?.name}
+                                    Channel description: ${activeChannel?.description} 
+                                    
+                                    Existing threads: \n${existingThreads}
+                                    
+                                    Your previous suggestions (optional): ${suggestedPrompts}
+                                                    
+                                    User feedback (optional): ${feedback}
+                                    `)
                                   }
                                 },
                                 {
@@ -274,33 +305,8 @@ Existing threads: \n${existingThreads}`)
                           </Item>
                           </Box>
 
-                          {
-                            suggestedPrompts?.length
-                              ? <Box width='100%' px={.5} mb={.25}>
-                                  <Gap>
-                                    {
-                                      suggestedPrompts?.map(prompt =>
-                                        <Item
-                                          subtitle={prompt}
-                                          icon='bolt-lightning'
-                                          onClick={() => {
-                                            sendThread(prompt)
-                                          }}
-                                        >
-                                        
-                                        </Item>
-                                      )
-                                    }
-                                  </Gap>
-                                </Box>
-                              : loading
-                                ? <MatrixLoading
-                                    text={response || ''}
-                                  />
-                                : null
-                          }
+                          </Box>
                           
-                        </Box>
                       </>
                   }
                   <LineBreak />
@@ -320,7 +326,76 @@ Existing threads: \n${existingThreads}`)
                   ))
                 }
                 
-                <Box width={'100%'} py={1}>
+                <Box width={'calc(100% - 1.5rem)'} p={.75} wrap>
+                  
+                {
+                            suggestedPrompts?.length && !loading
+                              ? <Box width='100%' mb={.75}>
+                                  <Gap>
+                                    {
+                                      suggestedPrompts?.map(prompt =>
+                                        <Item
+                                          subtitle={prompt}
+                                          icon='paper-plane'
+                                          onClick={() => {
+                                            sendThread(prompt)
+                                          }}
+                                        >
+                                        
+                                        </Item>
+                                      )
+                                    }
+                                  </Gap>
+                                </Box>
+                              : loading
+                                ? <MatrixLoading
+                                    text={response || ''}
+                                  />
+                                : null
+                          }
+
+                          
+                              <Box pb={.75} width='100%'>
+                              {
+                            !loading &&
+                            <Box width='100%'>
+                              <Gap disableWrap>
+                                <TextInput
+                                  value={feedback}
+                                  canClear={feedback !== ''}
+                                  compact
+                                  onChange={val => set_feedback(val)}
+                                  placeholder='Suggest'
+                                  hideOutline
+                                />
+                                <Box>
+                                  <MatrixLoading logo>
+                                    <Button
+                                      icon='bolt-lightning'
+                                      iconPrefix='fas'
+                                      minimal
+                                      circle
+                                      onClick={() => generateThreadPrompts(`
+                                      Space name: ${activeSpace?.name}
+                                      Space description: ${activeSpace?.description}
+                                      
+                                      Channel name: ${activeChannel?.name}
+                                      Channel description: ${activeChannel?.description} 
+                                      
+                                      Existing threads: \n${existingThreads}
+                                      
+                                      Your previous suggestions (optional): ${suggestedPrompts}
+                                                      
+                                      User feedback (optional): ${feedback}
+                                      `)}
+                                    />
+                                  </MatrixLoading>
+                                </Box>
+                              </Gap>
+                            </Box>
+                          }
+
+                        </Box>
                   <NewMessage 
                     newThreadName={newThreadName}
                     set_newThreadName={set_newThreadName}
@@ -329,7 +404,6 @@ Existing threads: \n${existingThreads}`)
                     channelGuid={channelGuid as string} 
                     thread={true} 
                     onSend={message => sendThread(message)}
-                    primary={activeChannel?.threadGuids?.length === 0}
                   />
                 </Box>
               </Page>

@@ -49,6 +49,7 @@
     "puppeteer": "^19.4.0",
     "puppeteer-core": "^19.4.0",
     "react": "18.2.0",
+    "react-bubble-ui": "^1.1.2",
     "react-div-100vh": "^0.7.0",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",

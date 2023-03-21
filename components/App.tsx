@@ -18,6 +18,7 @@ import type { Dispatch } from '@reduxjs/toolkit'
 import { Threads } from './Threads'
 import { EditChannel } from './EditChannel'
 import MyLink from './Link'
+import { MatrixLoading } from './MatrixLoading'
 
 interface Props {
   children: React.ReactNode
@@ -94,11 +95,10 @@ const App = ({ children }: Props) => {
   return (<S.App>
     <S.NavHeader>
       <S.LogoContainer onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}>
-        <S.Logo 
-          src='/assets/lexi-circle.png'
-        />
+        <MatrixLoading logo={true}> 
+        </MatrixLoading>
         <S.Connection>
-          <LoadingSpinner chat />
+        <LoadingSpinner chat />
         </S.Connection>
       </S.LogoContainer>
       
@@ -167,6 +167,7 @@ const S = {
     z-index: 9;
     background: var(--F_Background);
     display: flex;
+    align-items: center;
     gap: .75rem;
     align-items: center;
     border-bottom: 1px solid var(--F_Surface);
@@ -187,13 +188,19 @@ const S = {
     height: var(--F_Header_Height);
   `,
   LogoContainer: styled.div`
-    width: 74px;
+    width: 38px;
+    min-width: 38px;
+    margin-left: 19px;
+    max-width: 38px;
     height: var(--F_Header_Height);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 38px;
     position: relative;;
+    * {
+      border-radius: 100%;
+    }
   `,
   Logo: styled.img`
     height: var(--F_Input_Height);
@@ -202,7 +209,7 @@ const S = {
   Connection: styled.div`
     position: absolute;
     z-index:1;
-    transform: scale(.7);
+    transform: scale(.5);
     transform-origin: center;
     opacity: .4;
   `,

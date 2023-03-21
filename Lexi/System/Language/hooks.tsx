@@ -63,6 +63,7 @@ export const useLanguageAPI = (initialValue: string) => {
     const onComplete = (message: string) => {
       dispatch({ type: "SET_RESPONSE", payload: message });
       dispatch({ type: "SET_COMPLETED", payload: true });
+      dispatch({ type: "SET_LOADING", payload: false }); // Add this line
       removeListeners();
     };
 
@@ -72,6 +73,7 @@ export const useLanguageAPI = (initialValue: string) => {
 
     const onError = (error: ErrorType) => {
       dispatch({ type: "SET_ERROR", payload: error });
+      dispatch({ type: "SET_LOADING", payload: false }); // Add this line
       removeListeners();
     };
 

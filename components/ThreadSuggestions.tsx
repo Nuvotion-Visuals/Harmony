@@ -1,4 +1,4 @@
-import { Box, Button, Gap, Item, Spacer } from '@avsync.live/formation';
+import { Box, Button, Gap, Item, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation';
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client';
 import { useLanguageAPI } from 'Lexi/System/Language/hooks';
 import React, { useEffect, useState } from 'react'
@@ -50,6 +50,8 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
     }, [threadsByGuid?.[guid]?.messageGuids])
   
     const websocketClient = getWebsocketClient()
+
+    const [feedback, set_feedback] = useState('')
   
     useEffect(() => {
       set_suggestedPrompts([])
@@ -64,53 +66,97 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
   Thread name ${threadsByGuid?.[guid]?.name}
   Thread description ${threadsByGuid?.[guid]?.description}
   
-  Existing messages in thread: \n${existingMessages}`)
+  Existing messages in thread: \n${existingMessages}
+  
+  Your previous suggestions (optional): ${suggestedPrompts}
+
+  User feedback (optional): ${feedback}
+  `)
       }
     }, [guid])
 
   return (<S.ThreadSuggestions>
-    {
-      suggestedPrompts?.length
-        ? <Box width='100%' px={.5} mb={.25}>
-            <Gap>
-            {
-                suggestedPrompts?.map(prompt =>
+    <Box width='100%'>
+      <Gap>
+        {
+          suggestedPrompts.length > 0 
+            ? suggestedPrompts?.map(prompt =>
                 <Item
                   subtitle={prompt}
-                  icon='bolt-lightning'
+                  icon='paper-plane'
                   onClick={() => {
                     onSend(prompt)
+                    set_suggestedPrompts([])
+                    set_feedback('')
                   }}
                 >
-                
                 </Item>
-                )
-            }
-            </Gap>
-        </Box>
-        : loading && !completed
-        ? <MatrixLoading
-            text={response || ''}
-          />
-        : <Box width='100%'>
-          <Button expand  minimal secondary icon='bolt-lightning' iconPrefix='fas' onClick={() => generateFollowUpMessages(`
-  Space name: ${activeSpace?.name}
-  Space description: ${activeSpace?.description}
-  
-  Channel name: ${activeChannel?.name}
-  Channel description: ${activeChannel?.description} 
+              )
+            : null
+        }
 
-  Thread name ${threadsByGuid?.[guid]?.name}
-  Thread description ${threadsByGuid?.[guid]?.description}
-  
-  Existing messages in thread: \n${existingMessages}`)} />
-          </Box>
-    }
+        {
+          loading 
+          ? <MatrixLoading
+              text={response || ''}
+            />
+          : 
+            <Box width={'100%'}>
+              <Gap disableWrap>
+           
+
+              <TextInput
+                value={feedback}
+                onChange={val => set_feedback(val)}
+                placeholder='Suggest'
+                canClear={feedback !== ''}
+                compact
+                hideOutline
+              />
+
+              <Box>
+              <MatrixLoading logo={true}>
+              <Button 
+                minimal 
+                icon='bolt-lightning' 
+                iconPrefix='fas' 
+                onClick={() => {
+                  set_suggestedPrompts([])
+                  generateFollowUpMessages(`
+                  Space name: ${activeSpace?.name}
+                  Space description: ${activeSpace?.description}
+                  
+                  Channel name: ${activeChannel?.name}
+                  Channel description: ${activeChannel?.description} 
+                
+                  Thread name ${threadsByGuid?.[guid]?.name}
+                  Thread description ${threadsByGuid?.[guid]?.description}
+                  
+                  Existing messages in thread: \n${existingMessages}
+                  
+                  Your previous suggestions (optional): ${suggestedPrompts}
+                
+                  User feedback (optional): ${feedback}
+                  `)
+                }} 
+              />
+            </MatrixLoading>
+            
+              </Box>
+             
+              </Gap>
+           
+            </Box>
+         
+        }
+      </Gap>
+    </Box>
   </S.ThreadSuggestions>)
 }
 
 const S = {
   ThreadSuggestions: styled.div`
     width: 100%;
+    margin-bottom: .25rem;
   `
 }
