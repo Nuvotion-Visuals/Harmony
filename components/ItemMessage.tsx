@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { useSpaces } from 'redux-tk/spaces/hook'
+import { speak } from 'Lexi/System/Language/speech'
+import { useLexi } from 'redux-tk/lexi/hook'
 
 const highlightText = (html: string, currentlySpeaking: string | null): string => {
   const openingTag = `<span style="color: var(--F_Primary_Variant)">`;
@@ -55,9 +57,9 @@ export const ItemMessage = React.memo((props: Props) => {
 
   const [localValue, set_localValue] = useState(markdownToHTML(message))
 
-    useEffect(() => {
-      set_localValue(highlightText(markdownToHTML(message), ('')))
-    }, [message])
+    // useEffect(() => {
+    //   set_localValue(highlightText(markdownToHTML(message), ('')))
+    // }, [message])
 
 
   const { removeMessage, removeMessageFromThread, updateMessage } = useSpaces()
@@ -73,6 +75,14 @@ export const ItemMessage = React.memo((props: Props) => {
     document.execCommand("copy");
     document.body.removeChild(tempElement);
   }
+
+  const [isSpeaking, set_isSpeaking] = useState(false)
+
+  const { currentlySpeaking } = useLexi()
+
+  useEffect(() => {
+    set_localValue(highlightText(markdownToHTML(message), (currentlySpeaking || '')))
+  }, [message, currentlySpeaking])
 
   const Message = ({ text } : { text: string }) => (
     <S.ItemMessage>
@@ -102,6 +112,16 @@ export const ItemMessage = React.memo((props: Props) => {
           </S.Date>
           <Spacer />
           <Box>
+            <Button
+              icon='play'
+              iconPrefix='fas'
+              minimal
+              minimalIcon
+              onClick={() => {
+                speak(message, () => {})
+                set_isSpeaking(true)
+              }}
+            />
             <Dropdown
               icon='ellipsis-h'
               iconPrefix='fas'

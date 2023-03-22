@@ -17,11 +17,15 @@ export const Badge = React.memo(({ }: Props) => {
 })
 
 const S = {
-Badge: styled.div`
+  Badge: styled.div`
     background: var(--F_Surface_0);
-    padding: .5rem 1rem;
+    padding: .5rem .75rem;
     border-radius: 1rem;
-    font-family: monospace;
     color: var(--F_Font_Color_Disabled);
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    height: .75rem;
+    line-height: 0;
   `
 }

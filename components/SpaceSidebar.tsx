@@ -189,9 +189,9 @@ const S = {
     width: 100%;
   `,
   SpaceStats: styled.div`
-    width: calc(100% - 1rem);
+    width: calc(100% - .75rem);
     height: 2rem;
-    padding: .5rem;
+    padding: .25rem;
     display: flex;
   `,
   PosterContainer: styled.div`
