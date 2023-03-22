@@ -55,6 +55,7 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
   
     useEffect(() => {
       set_suggestedPrompts([])
+      // @ts-ignore
       if (activeChannel?.description && getWebsocketClient?.send) {
         generateFollowUpMessages(`
   Space name: ${activeSpace?.name}

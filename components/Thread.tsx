@@ -8,7 +8,6 @@ import styled from 'styled-components'
 import { Indicator } from './Indicator'
 import { ItemMessage } from './ItemMessage'
 import { MatrixLoading } from './MatrixLoading'
-import { NewMessage } from './NewMessage'
 import { ThreadSuggestions } from './ThreadSuggestions'
 
 interface Props extends ThreadProps {
@@ -195,7 +194,7 @@ export const Thread = ({
             text={
               showSpinner 
                 ? <MatrixLoading
-                    text={response}
+                    text={response || ''}
                   />
                 : name
                   ? name : 'Untitled'}

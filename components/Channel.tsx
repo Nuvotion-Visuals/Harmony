@@ -27,8 +27,8 @@ export const Channel = ({ }: Props) => {
 
   
 
-  const [height, setHeight] = useState();
-  const componentRef = useRef(null);
+  const [height, setHeight] = useState(0);
+  const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -91,7 +91,7 @@ export const Channel = ({ }: Props) => {
         userLabel: 'User'
       } as MessageProps
       addMessage({ guid: messageGuid, message: newMessage})
-      addMessageToThread({ threadGuid: activeThreadGuid, messageGuid })
+      addMessageToThread({ threadGuid: activeThreadGuid || '', messageGuid })
 
       const action = {
         type: 'message',
@@ -115,7 +115,7 @@ export const Channel = ({ }: Props) => {
         userLabel: 'Lexi'
       } as MessageProps
       addMessage({ guid: responseGuid, message: newResponse })
-      addMessageToThread({ threadGuid: activeThreadGuid, messageGuid: responseGuid })
+      addMessageToThread({ threadGuid: activeThreadGuid || '', messageGuid: responseGuid })
       set_query('')
       if (componentRef.current) {
         setHeight(componentRef.current.clientHeight);
@@ -437,7 +437,7 @@ export const Channel = ({ }: Props) => {
                               icon: 'arrow-right',
                               iconPrefix: 'fas',
                               minimal: true,
-                              onClick: () => insertContentByUrl(urlToScrape)
+                              onClick: () => insertContentByUrl(urlToScrape, content => set_query(oldQuery => `${oldQuery}\n${content}`))
                             }
                           ]}
                         />
@@ -482,7 +482,7 @@ const S = {
 
   `,
   Content: styled.div<{
-    height: string
+    height: number
   }>`
     height: ${props => `calc(100% - ${props.height}px)`};
     width: 100%;

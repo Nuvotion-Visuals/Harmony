@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { useLayout } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
-import Chat from './Chat'
 import { SpaceSidebar } from './SpaceSidebar'
 import { Search } from './Search'
 import { SearchResults } from './SearchResults'

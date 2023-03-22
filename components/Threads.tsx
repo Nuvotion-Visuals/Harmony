@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
 import styled from 'styled-components'
-import { NewMessage } from './NewMessage'
 import { Thread } from './Thread'
 import { scrollToBottom } from 'client-utils'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
@@ -88,6 +87,7 @@ export const Threads = ({ }: Props) => {
 
   useEffect(() => {
     set_suggestedPrompts([])
+    // @ts-ignore
     if (activeChannel?.description && getWebsocketClient?.send) {
         generateThreadPrompts(`
 Space name: ${activeSpace?.name}

@@ -73,18 +73,14 @@ export const getArticleContent = (
       });
   };
   
-  export const insertContentByUrl = (url: string) => {
+  export const insertContentByUrl = (url: string, callback: (data: string) => void) => {
     const youtubeDomains = ['www.youtube.com', 'youtube.com', 'youtu.be']
     const query = store.getState().lexi.query
     const { hostname } = new URL(url);
     if (youtubeDomains.includes(hostname)) {
       getYouTubeTranscript(url,
         (transcript) => {
-
-          store.dispatch({
-            type: 'lexi/set_query',
-            payload: query + '\n' + convert(transcript)
-          })
+          callback(convert(transcript))
         },
         () => {
           alert('Sorry, I could not get the video transcript.')
@@ -94,11 +90,7 @@ export const getArticleContent = (
     else {
       getArticleContent(url, 
         (content) => {
-
-          store.dispatch({
-            type: 'lexi/set_query',
-            payload: query + '\n' + convert(content)
-          })
+          callback(convert(content))
         },
         () => {
           alert('Sorry, I could not get the page content.')

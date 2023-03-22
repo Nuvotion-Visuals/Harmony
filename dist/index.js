@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -41,16 +52,14 @@ var fs = require('fs');
 var express = require('express');
 var join = require('path').join;
 var fetchTranscript = require('youtube-transcript').default.fetchTranscript;
+var uuidv4 = require('uuid').v4;
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
-var extract = require('@extractus/article-extractor').extract;
-var getSubtitles = require('youtube-captions-scraper').getSubtitles;
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var upload = multer({ dest: 'uploads/' });
-var getTimeDifference = function (startTime, endTime) {
-    return Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000);
-};
+var extract = require('@extractus/article-extractor').extract;
+var getSubtitles = require('youtube-captions-scraper').getSubtitles;
 var numberWithCommas = function (x) {
     return (typeof x === 'string' ? x : x.toString()).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
@@ -119,49 +128,81 @@ var app = next({ dev: DEV });
 var handle = app.getRequestHandler();
 var languageModel = {};
 var ready = false;
-var currentConversationId = 'NO_CURRENT_CONVERSATION_ID';
-var currentMessageId = 'NO_CURRENT_MESSAGE_ID';
-// send message to language model
-var sendMessageToLanguageModel = function (message, onComplete, onProgress) {
-    (function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, response, messageId, error_1, errorCodeRegex, errorCode;
-        var _b, _c, _d, _e;
-        return __generator(this, function (_f) {
-            switch (_f.label) {
+var languageModels = {};
+var messagesByGuid = {};
+var clients = {};
+var messageGuids = {};
+var threadsByThreadId = {};
+var sendMessage = function (_a) {
+    var conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, chatGptLabel = _a.chatGptLabel, promptPrefix = _a.promptPrefix, userLabel = _a.userLabel, message = _a.message, threadId = _a.threadId, onComplete = _a.onComplete, onProgress = _a.onProgress;
+    return __awaiter(void 0, void 0, void 0, function () {
+        var guid, storedClient, ChatGPTAPI, api, onCompleteWrapper, onProgressWrapper, res;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    _f.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, languageModel.sendMessage("".concat(message, "\n(You are a creative AGI named Lexi developed by AVsync.LIVE who assists creative professionals with their projects)"), {
-                            conversationId: currentConversationId,
-                            parentMessageId: currentMessageId,
-                            timeoutMs: 2 * 60 * 1000,
-                            onProgress: function (partialResponse) {
-                                onProgress({ status: 200, data: { response: partialResponse.response } });
-                                currentMessageId = partialResponse.messageId;
-                            }
-                        })];
+                    guid = uuidv4();
+                    messageGuids[guid] = true;
+                    storedClient = clients["".concat(promptPrefix, "-").concat(chatGptLabel, "-").concat(userLabel)];
+                    if (!!storedClient) return [3 /*break*/, 2];
+                    return [4 /*yield*/, import('chatgpt')];
                 case 1:
-                    _a = _f.sent(), response = _a.response, messageId = _a.messageId;
-                    currentMessageId = messageId;
-                    onComplete({ status: 200, data: { response: response } });
-                    return [3 /*break*/, 3];
+                    ChatGPTAPI = (_b.sent()).ChatGPTAPI;
+                    api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY || '' });
+                    storedClient = {
+                        api: api,
+                        chatGptLabel: chatGptLabel,
+                        promptPrefix: promptPrefix,
+                        userLabel: userLabel,
+                    };
+                    clients["".concat(promptPrefix, "-").concat(chatGptLabel, "-").concat(userLabel)] = storedClient;
+                    _b.label = 2;
                 case 2:
-                    error_1 = _f.sent();
-                    if (error_1 instanceof Error) {
-                        console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] I experienced the following error: ").concat(error_1));
-                        errorCodeRegex = /error (\d+)/;
-                        errorCode = Number((_b = (error_1.message || 'error 500').match(errorCodeRegex)) === null || _b === void 0 ? void 0 : _b[1]);
-                        onComplete({
-                            status: 500,
-                            data: {
-                                response: "I experienced the following error when trying to access my language model.<br />".concat(((_c = errorMessagesLanguageModelServer === null || errorMessagesLanguageModelServer === void 0 ? void 0 : errorMessagesLanguageModelServer[errorCode]) === null || _c === void 0 ? void 0 : _c.meaning) ? "<p>".concat((_d = errorMessagesLanguageModelServer === null || errorMessagesLanguageModelServer === void 0 ? void 0 : errorMessagesLanguageModelServer[errorCode]) === null || _d === void 0 ? void 0 : _d.meaning, "</p><p>").concat((_e = errorMessagesLanguageModelServer === null || errorMessagesLanguageModelServer === void 0 ? void 0 : errorMessagesLanguageModelServer[errorCode]) === null || _e === void 0 ? void 0 : _e.recommendation, "</p>") : '', "<br><pre>").concat(error_1.message, "</pre><pre>").concat(error_1.stack, "</pre>")
+                    onCompleteWrapper = function (data) {
+                        if (!messagesByGuid[guid]) {
+                            messagesByGuid[guid] = [];
+                        }
+                        messagesByGuid[guid].push(data);
+                        if (threadId) {
+                            if (!threadsByThreadId[threadId]) {
+                                threadsByThreadId[threadId] = [];
                             }
-                        });
-                    }
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                            threadsByThreadId[threadId].push(guid);
+                        }
+                        onComplete(data);
+                    };
+                    onProgressWrapper = function (partialResponse) {
+                        if (onProgress) {
+                            onProgress({
+                                conversationId: conversationId,
+                                parentMessageId: parentMessageId,
+                                chatGptLabel: chatGptLabel,
+                                promptPrefix: promptPrefix,
+                                userLabel: userLabel,
+                                message: message,
+                                response: partialResponse.text,
+                                progress: partialResponse.progress,
+                            });
+                        }
+                    };
+                    return [4 /*yield*/, storedClient.api.sendMessage("".concat(message), {
+                            parentMessageId: parentMessageId,
+                            onProgress: onProgressWrapper,
+                        })];
+                case 3:
+                    res = _b.sent();
+                    onCompleteWrapper({
+                        conversationId: conversationId,
+                        parentMessageId: res.id,
+                        chatGptLabel: chatGptLabel,
+                        promptPrefix: promptPrefix,
+                        userLabel: userLabel,
+                        message: message,
+                        response: res.text,
+                    });
+                    return [2 /*return*/, guid];
             }
         });
-    }); })();
+    });
 };
 // initalize websocket server
 var WSS = require('ws').WebSocketServer;
@@ -170,7 +211,6 @@ var websock = {};
 var serverStartTime = new Date().toLocaleTimeString([], { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
 var initialized = false;
 wss.on('connection', function connection(ws) {
-    console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] My web socket server is ready for connections"));
     // receive message from client
     ws.onmessage = function (message) {
         var action = JSON.parse(message.data);
@@ -187,136 +227,54 @@ wss.on('connection', function connection(ws) {
         }
         // client sent message
         if (action.type === 'message') {
-            sendMessageToLanguageModel(action.message, function (_a) {
-                var data = _a.data, status = _a.status;
-                ws.send(JSON.stringify({
-                    // server send complete response to message
-                    type: 'response',
-                    message: data.response || '',
-                    guid: action.guid,
-                    status: status,
-                    messageTime: action.messageTime
-                }));
-            }, function (_a) {
-                var data = _a.data, status = _a.status;
-                console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] Sending my partial response to the user: ").concat(data.response));
-                ws.send(JSON.stringify({
-                    // server sent partial response to message
-                    type: 'partial-response',
-                    message: data.response || '',
-                    guid: action.guid,
-                    status: status,
-                    messageTime: action.messageTime
-                }));
+            console.log(action);
+            sendMessage({
+                conversationId: action.conversationId,
+                parentMessageId: action.parentMessageId,
+                chatGptLabel: action.chatGptLabel,
+                promptPrefix: action.promptPrefix,
+                userLabel: action.userLabel,
+                message: action.message,
+                onComplete: function (_a) {
+                    var response = _a.response, parentMessageId = _a.parentMessageId, conversationId = _a.conversationId;
+                    console.log('Sending response to client');
+                    ws.send(JSON.stringify({
+                        // server send complete response to message
+                        type: action.chatGptLabel === 'GENERATE' ? 'GENERATE_response' : 'response',
+                        message: response || '',
+                        guid: action.guid,
+                        conversationId: conversationId,
+                        parentMessageId: parentMessageId,
+                        chatGptLabel: action.chatGptLabel,
+                        promptPrefix: action.promptPrefix,
+                        userLabel: action.userLabel,
+                        status: 200,
+                        messageTime: action.messageTime
+                    }));
+                },
+                onProgress: function (_a) {
+                    var response = _a.response, parentMessageId = _a.parentMessageId, conversationId = _a.conversationId;
+                    ws.send(JSON.stringify({
+                        // server send complete response to message
+                        type: action.chatGptLabel === 'GENERATE' ? 'GENERATE_partial-response' : 'partial-response',
+                        message: response || '',
+                        guid: action.guid,
+                        conversationId: conversationId,
+                        parentMessageId: parentMessageId,
+                        chatGptLabel: action.chatGptLabel,
+                        promptPrefix: action.promptPrefix,
+                        userLabel: action.userLabel,
+                        status: 200,
+                        messageTime: action.messageTime
+                    }));
+                },
             });
         }
-        // if (action.type === 'initialize') {
-        //   (async () => {
-        //     if (!initialized) {
-        //       initialized = true
-        //       const scriptInitializationTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-        //       const getDirectories = (source: string) =>
-        //         fs.readdirSync(source, { withFileTypes: true })
-        //           .filter((dirent: any) => dirent.isDirectory())
-        //           .map((dirent : any) => dirent.name)
-        //       const scriptNames = sortByNumber(getDirectories('./Lexi/Scripts/'))
-        //       const scriptPaths = scriptNames.map(scriptName => `./Lexi/Scripts/${scriptName}/Readme.md`)
-        //       let pageCount = 0
-        //       let wordCount = 0
-        //       let characterCount = 0
-        //       let numberOfSteps = 0
-        //       let step = 1
-        //       ws.send(JSON.stringify({
-        //         type: 'initialize-response',
-        //         message: null,
-        //         response: `Hi there. I'm about to begin reading my artificial general intelligence (AGI) scripts. I have ${scriptNames.length} to read. The time this will take will largely depend on the current responsiveness of the language model. I'll update you with my progress as I read them.`,
-        //         guid: 'Initialize',
-        //         status: 200,
-        //         scriptName: 'Introduction'
-        //       }))
-        //       const logResults = async (scripts: string[]) => {
-        //         numberOfSteps = scripts.length
-        //         for (const script of scripts) {
-        //           const result = await readMarkdownFile(script)
-        //           const scriptName = extractScriptNameFromPath(script)
-        //           const scriptWordCount = countWords(result)
-        //           const scriptCharacterCount = result.length
-        //           const scriptPageCount = scriptWordCount / 250
-        //           const messageTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-        //           // keep trying if it fails
-        //           let keepTrying
-        //           let failCount = 0
-        //           let messageId = ''
-        //           let response = 'I failed to connect'
-        //           console.log(`Making async function call: ${scriptName}`);
-        //             try {
-        //               const data = await languageModel.sendMessage(result, {
-        //                 conversationId: currentConversationId,
-        //                 parentMessageId: currentMessageId,
-        //                 timeoutMs: 2 * 60 * 1000
-        //               })
-        //               messageId = data.messageId
-        //               response = data.response
-        //               currentMessageId = messageId
-        //               const responseTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-        //               wordCount += scriptWordCount
-        //               characterCount += scriptCharacterCount
-        //               pageCount += scriptPageCount
-        //               const fullResponse = `${response} That was ${step} of ${numberOfSteps} scripts I'm currently in the process of reading. It was ${numberWithCommas(scriptCharacterCount)} characters, which is ${numberWithCommas(scriptWordCount)} words or ${numberWithCommas(scriptPageCount.toFixed(1))} pages, and would take a human ${numberWithCommas((scriptWordCount / 300).toFixed(1))} minutes to read. It took me ${(getTimeDifference(messageTime, responseTime) / 60).toFixed(0) === '0' ? `${(getTimeDifference(messageTime, responseTime))} seconds` : `${(getTimeDifference(messageTime, responseTime) /60).toFixed(1)} minutes`}. I have been reading scripts for ${(getTimeDifference(scriptInitializationTime, responseTime) / 60).toFixed(1)} minutes and have read ${numberWithCommas(pageCount.toFixed(1))} pages.`
-        //               step += 1
-        //               console.log('🟣', fullResponse)
-        //               ws.send(JSON.stringify({
-        //                 type: 'message',
-        //                 message: `Read your ${scriptName}`,
-        //                 response: fullResponse,
-        //                 guid: `${scriptName}`,
-        //                 status: 200,
-        //                 messageTime,
-        //                 responseTime,
-        //                 scriptName,
-        //               }))
-        //             } catch (error) {
-        //               console.error(error);
-        //               // add failure message
-        //             }
-        //           }
-        //       }     
-        //       const startTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-        //       await logResults(scriptPaths)
-        //       const endTime = new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})
-        //       await new Promise(resolve => setTimeout(resolve, 5000));
-        //       // add failure message
-        //       const response = 
-        //         wordCount === 0
-        //           ? `I wasn't able to read any of my scripts. I likely lost my connection to the language model. I suggest that you log out and log in again.`
-        //           : `I read ${step - 1} scripts, totalling ${characterCount} characters, ${wordCount} words or ${pageCount} pages. It would take a human aproximately ${(wordCount / 300).toFixed(0)} minutes to read that many words. It took me ${(getTimeDifference(startTime, endTime) / 60).toFixed(0)} minutes.`
-        //       console.log('🟣', response)
-        //       ws.send(JSON.stringify({
-        //         type: 'message',
-        //         message: null,
-        //         response: response,
-        //         guid: `${Math.random()})`,
-        //         status: 200,
-        //         messageTime: startTime,
-        //         responseTime: endTime
-        //       }))
-        //     }
-        //     else {
-        //       ws.send(JSON.stringify({
-        //         type: 'message',
-        //         message: null,
-        //         response: `I have already read my scripts.`,
-        //         guid: 'Already Initialize',
-        //         status: 200
-        //       }))
-        //     }
-        //   })()
-        // }
     };
 });
 function readMarkdownFile(filePath) {
     return __awaiter(this, void 0, void 0, function () {
-        var data, error_2;
+        var data, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -326,54 +284,18 @@ function readMarkdownFile(filePath) {
                     data = _a.sent();
                     return [2 /*return*/, data.toString()];
                 case 2:
-                    error_2 = _a.sent();
-                    throw new Error("Failed to read markdown file at ".concat(filePath, ": ").concat(error_2.message));
+                    error_1 = _a.sent();
+                    throw new Error("Failed to read markdown file at ".concat(filePath, ": ").concat(error_1.message));
                 case 3: return [2 /*return*/];
             }
         });
     });
 }
-function sortByNumber(strings) {
-    function extractNumber(string) {
-        // Use a regular expression to extract the numeric portion of the string
-        var matchResult = match(string, /\d+/);
-        if (!matchResult) {
-            throw new Error("Unable to extract number from string: ".concat(string));
-        }
-        // Return the extracted number as an integer
-        return parseInt(matchResult[0], 10);
-    }
-    // Sort the strings using the extractNumber key function
-    return sorted(strings, function (a, b) { return extractNumber(a) - extractNumber(b); });
-}
-function sorted(array, compareFn) {
-    // Create a copy of the array
-    var copy = array.slice();
-    // Sort the copy using the compare function if provided, or the default comparison function if not
-    copy.sort(compareFn || (function (a, b) { return a < b ? -1 : 1; }));
-    // Return the sorted copy
-    return copy;
-}
-var match = function (string, regex) {
-    // Use the regex.exec() method to search for a match in the string
-    var result = regex.exec(string);
-    // If a match was found, return the match array
-    if (result) {
-        return result;
-    }
-    // If no match was found, return null
-    return null;
-};
-var extractScriptNameFromPath = function (input) {
-    return input.split(' ')[1].split('/')[0];
-};
-var countWords = function (s) {
-    s = s.replace(/(^\s)|(\s$)/gi, ""); // exclude start and end white-space
-    s = s.replace(/[ ]{2,}/gi, " "); // 2 or more spaces to 1
-    s = s.replace(/\n /, "\n"); // exclude newline with a start spacing
-    return s.split(' ').filter(function (str) { return str !== ""; }).length;
-};
-// create app
+var https = require('https');
+var stream = require('stream');
+var httpsAgent = new https.Agent({
+    rejectUnauthorized: false, // Ignore SSL/TLS certificate errors
+});
 app.prepare().then(function () {
     var server = express();
     server.use(bodyParser.json({ limit: '10mb' }));
@@ -385,6 +307,22 @@ app.prepare().then(function () {
         keys: ['eThElIMpLYMOSeAMaNKlEroashIrOw'],
         maxAge: 1.75 * 60 * 60 * 1000 // 1 hour 45 minutes 
     }));
+    sendMessage({
+        conversationId: '',
+        parentMessageId: '',
+        chatGptLabel: 'Lexi',
+        promptPrefix: 'You are Lexi.',
+        userLabel: '',
+        message: 'State if you are functioning properly.',
+        onComplete: function (_a) {
+            var response = _a.response, parentMessageId = _a.parentMessageId, conversationId = _a.conversationId;
+            console.log(response);
+        },
+        onProgress: function (_a) {
+            var response = _a.response, parentMessageId = _a.parentMessageId, conversationId = _a.conversationId;
+        },
+    });
+    // redirect if not logged in
     // server.use((req: any, res: any, next: any) => {
     //   if (
     //     req.originalUrl !== '/login' && 
@@ -399,68 +337,114 @@ app.prepare().then(function () {
     //   next()
     //   return
     // })
-    // login
-    server.post('/auth/login', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, email, password;
+    server.get('/send-message', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, conversationId, parentMessageId, chatGptLabel, promptPrefix, userLabel, message, threadId, error_2;
         return __generator(this, function (_b) {
-            _a = req.body, email = _a.email, password = _a.password;
-            try {
-                (function () { return __awaiter(void 0, void 0, void 0, function () {
-                    var ChatGPTAPIBrowser, identityScript, _a, response, conversationId, messageId, e_1, error, status_1, message;
-                    return __generator(this, function (_b) {
-                        switch (_b.label) {
-                            case 0:
-                                _b.trys.push([0, 5, , 6]);
-                                return [4 /*yield*/, import('chatgpt')];
-                            case 1:
-                                ChatGPTAPIBrowser = (_b.sent()).ChatGPTAPIBrowser;
-                                languageModel = new ChatGPTAPIBrowser({
-                                    email: email,
-                                    password: password
-                                });
-                                return [4 /*yield*/, languageModel.initSession()];
-                            case 2:
-                                _b.sent();
-                                return [4 /*yield*/, readMarkdownFile('./Lexi/Scripts/1. Identity/Readme.md')];
-                            case 3:
-                                identityScript = _b.sent();
-                                return [4 /*yield*/, languageModel.sendMessage(identityScript, {
-                                        onProgress: function (partialResponse) {
-                                            currentMessageId = partialResponse.messageId;
-                                        }
-                                    })];
-                            case 4:
-                                _a = _b.sent(), response = _a.response, conversationId = _a.conversationId, messageId = _a.messageId;
-                                console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] Sending my reponse to the user: ").concat(response));
-                                currentConversationId = conversationId;
-                                currentMessageId = messageId;
-                                req.session.loggedIn = true;
-                                ready = true;
-                                res.send({ status: 200 });
-                                return [3 /*break*/, 6];
-                            case 5:
-                                e_1 = _b.sent();
-                                error = e_1;
-                                console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] I experienced the following error: ").concat(error));
-                                status_1 = error.statusCode || error.code || 500;
-                                message = error.message || 'internal error';
-                                res.send({ status: status_1, message: message });
-                                return [3 /*break*/, 6];
-                            case 6: return [2 /*return*/];
-                        }
-                    });
-                }); })();
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    _a = req.query, conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, chatGptLabel = _a.chatGptLabel, promptPrefix = _a.promptPrefix, userLabel = _a.userLabel, message = _a.message, threadId = _a.threadId;
+                    console.log(res.query);
+                    // Call the sendMessage function with the extracted data
+                    return [4 /*yield*/, sendMessage({
+                            conversationId: conversationId,
+                            parentMessageId: parentMessageId,
+                            chatGptLabel: chatGptLabel,
+                            promptPrefix: promptPrefix,
+                            userLabel: userLabel,
+                            message: message,
+                            threadId: threadId,
+                            onComplete: function (data) {
+                                res.status(200).json(__assign({}, data));
+                            },
+                        })];
+                case 1:
+                    // Call the sendMessage function with the extracted data
+                    _b.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _b.sent();
+                    console.error(error_2);
+                    res.status(500).send('An error occurred while sending the message');
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
-            catch (e) {
-                console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] I experienced the following error: ").concat(e));
-                res.send({ status: 'failure', msg: 'Code validation failed' });
-            }
-            return [2 /*return*/];
         });
     }); });
-    // chat
+    // Set cache duration to 1 hour
+    var CACHE_DURATION = 24 * 60 * 60 * 1000;
+    var cache = require('memory-cache');
+    server.get('/image/prompt/:prompt', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+        var prompt, imageUrl, cachedImage, imageRes, contentType, imageBuffer, err_1, placeholderUrl, placeholderRes, contentType, placeholderBuffer, placeholderErr_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    prompt = req.params.prompt;
+                    imageUrl = "https://image.pollinations.ai/prompt/".concat(encodeURIComponent(prompt));
+                    cachedImage = cache.get(imageUrl);
+                    if (cachedImage) {
+                        res.setHeader('Content-Type', cachedImage.contentType);
+                        res.send(cachedImage.data);
+                        return [2 /*return*/];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 10]);
+                    return [4 /*yield*/, fetch(imageUrl, {
+                            agent: httpsAgent,
+                        })];
+                case 2:
+                    imageRes = _a.sent();
+                    if (!imageRes.ok) {
+                        throw new Error("Error fetching image from ".concat(imageUrl, ": ").concat(imageRes.status, " ").concat(imageRes.statusText));
+                    }
+                    contentType = imageRes.headers.get('content-type');
+                    if (!contentType || !contentType.startsWith('image/')) {
+                        throw new Error("Invalid content type for image: ".concat(contentType));
+                    }
+                    return [4 /*yield*/, imageRes.buffer()];
+                case 3:
+                    imageBuffer = _a.sent();
+                    res.setHeader('Content-Type', contentType);
+                    res.send(imageBuffer);
+                    // Store image in cache
+                    console.log("Caching image ".concat(imageUrl));
+                    cache.put(imageUrl, { contentType: contentType, data: imageBuffer }, CACHE_DURATION);
+                    return [3 /*break*/, 10];
+                case 4:
+                    err_1 = _a.sent();
+                    console.error("Error fetching image from ".concat(imageUrl, ": ").concat(err_1.message));
+                    placeholderUrl = 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png';
+                    _a.label = 5;
+                case 5:
+                    _a.trys.push([5, 8, , 9]);
+                    return [4 /*yield*/, fetch(placeholderUrl, {
+                            agent: httpsAgent,
+                        })];
+                case 6:
+                    placeholderRes = _a.sent();
+                    if (!placeholderRes.ok) {
+                        throw new Error("Error fetching placeholder image from ".concat(placeholderUrl, ": ").concat(placeholderRes.status, " ").concat(placeholderRes.statusText));
+                    }
+                    contentType = placeholderRes.headers.get('content-type');
+                    return [4 /*yield*/, placeholderRes.arrayBuffer()];
+                case 7:
+                    placeholderBuffer = _a.sent();
+                    res.setHeader('Content-Type', contentType);
+                    res.send(Buffer.from(placeholderBuffer));
+                    return [3 /*break*/, 9];
+                case 8:
+                    placeholderErr_1 = _a.sent();
+                    console.error("Error fetching placeholder image from ".concat(placeholderUrl, ": ").concat(placeholderErr_1.message));
+                    res.status(500).send("Error fetching image from ".concat(imageUrl));
+                    return [3 /*break*/, 9];
+                case 9: return [3 /*break*/, 10];
+                case 10: return [2 /*return*/];
+            }
+        });
+    }); });
     server.post('/tools/parse-article', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var contentUrl, input, error, status_2, message;
+        var contentUrl, input, error, status_1, message;
         return __generator(this, function (_a) {
             contentUrl = req.body.contentUrl;
             try {
@@ -475,7 +459,7 @@ app.prepare().then(function () {
                     // @ts-ignore
                     .catch(function (e) {
                     var error = e;
-                    console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] I experienced the following error: ").concat(error));
+                    console.log('🟣', "[I experienced the following error: ".concat(error));
                     var status = error.statusCode || error.code || 500;
                     var message = error.message || 'internal error';
                     res.send({ status: status, message: message });
@@ -483,10 +467,10 @@ app.prepare().then(function () {
             }
             catch (e) {
                 error = e;
-                console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] I experienced the following error: ").concat(error));
-                status_2 = error.statusCode || error.code || 500;
+                console.log('🟣', "[I experienced the following error: ".concat(error));
+                status_1 = error.statusCode || error.code || 500;
                 message = error.message || 'internal error';
-                res.send({ status: status_2, message: message });
+                res.send({ status: status_1, message: message });
             }
             return [2 /*return*/];
         });
@@ -497,7 +481,7 @@ app.prepare().then(function () {
             var match = url.match(regExp);
             return (match && match[7].length == 11) ? match[7] : '';
         }
-        var videoUrl, error, status_3, message;
+        var videoUrl, error, status_2, message;
         return __generator(this, function (_a) {
             videoUrl = req.body.videoUrl;
             try {
@@ -513,10 +497,10 @@ app.prepare().then(function () {
             }
             catch (e) {
                 error = e;
-                console.log('🟣', "[".concat(currentConversationId, " - ").concat(currentMessageId, "] I experienced the following error: ").concat(error));
-                status_3 = error.statusCode || error.code || 500;
+                console.log('🟣', "I experienced the following error: ".concat(error));
+                status_2 = error.statusCode || error.code || 500;
                 message = error.message || 'internal error';
-                res.send({ status: status_3, message: message });
+                res.send({ status: status_2, message: message });
             }
             return [2 /*return*/];
         });

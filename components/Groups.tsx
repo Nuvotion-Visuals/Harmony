@@ -209,10 +209,13 @@ export const Groups = ({ locked }: Props) => {
                       e.preventDefault()
                     }}>
                       <Box>
-                        <Indicator
-                          count={channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length}
-                        />
-                       
+                        {
+                          spaceChannelGuids &&
+                            <Indicator
+                              count={channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length}
+                            />
+                        }
+                        
                         <Dropdown 
                           icon={listItem.active ? 'ellipsis-h' : undefined}
                           iconPrefix='fas'

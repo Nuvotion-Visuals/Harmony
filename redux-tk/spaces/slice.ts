@@ -188,6 +188,7 @@ export const slice = createSlice({
         state.groupsByGuid[group.guid] = { ...group, channelGuids: group.channels.map(channel => channel.guid) };
         group.channels.forEach(channel => {
           state.channelGuids.push(channel.guid);
+          // @ts-ignore
           state.channelsByGuid[channel.guid] = channel;
         });
       });
@@ -196,6 +197,7 @@ export const slice = createSlice({
       groups.forEach(group => {
         db.groups.set(group.guid, { ...group, channelGuids: group.channels.map(channel => channel.guid) });
         group.channels.forEach(channel => {
+          // @ts-ignore
           db.channels.set(channel.guid, channel);
         });
       });

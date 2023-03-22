@@ -74,7 +74,7 @@ Description: ${prompt}`,
     threadId: '67890',
   };
 
-  language_sendMessage(props, (response) => {
+  language_sendMessage(props, (response: any) => {
     const json = JSON.parse(JSON.stringify(getCodeBlock(response.response) || response.response))
     console.log(json)
     // @ts-ignore

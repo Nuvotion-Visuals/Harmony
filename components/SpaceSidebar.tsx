@@ -5,6 +5,7 @@ import { Groups } from 'components/Groups'
 import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap, Button, LineBreak, Label, Spacer } from '@avsync.live/formation'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
+import { Badge } from './Badge'
 
 interface Props {
 
@@ -15,7 +16,7 @@ export const SpaceSidebar = ({ }: Props) => {
 
   const { spaceGuid } = router.query
 
-  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, updateSpace, activeSpaceStats } = useSpaces()
+  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, updateSpace } = useSpaces()
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(spaceGuids.indexOf(spaceGuid as string))
 
@@ -74,7 +75,6 @@ export const SpaceSidebar = ({ }: Props) => {
     </S.SpaceName>
   )
 
-  const { groupsCount, channelsCount, threadsCount, messageCount } = activeSpaceStats
 
   return (<S.GroupsSidebar>
     <SpacesSidebar 
@@ -109,9 +109,7 @@ export const SpaceSidebar = ({ }: Props) => {
                   <S.OverlayBottom>
                     <S.SpaceStats>
                       <Spacer />
-                      <S.Badge title={`${groupsCount} groups · ${channelsCount} channels · ${threadsCount} threads· ${messageCount} messages`}>
-                        {`${groupsCount}·${channelsCount}·${threadsCount}·${messageCount}`}
-                      </S.Badge>
+                      <Badge />
                     </S.SpaceStats>
                   
                   </S.OverlayBottom>
@@ -201,11 +199,5 @@ const S = {
     overflow: hidden;
     width: 100%;
   `,
-  Badge: styled.div`
-    background: var(--F_Surface_0);
-    padding: .5rem 1rem;
-    border-radius: 1rem;
-    font-family: monospace;
-    color: var(--F_Font_Color_Disabled);
-  `
+ 
 }

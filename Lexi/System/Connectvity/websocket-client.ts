@@ -3,7 +3,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 
 async function connectToServer() {
-  const ws = new WebSocket(process.env.NEXT_PUBLIC_LEXIWEBSOCKETSERVER_URL || 'ws://localhost:1619');
+  let ws = {} as any
+  if (typeof window !== 'undefined') {
+    ws = new WebSocket(process.env.NEXT_PUBLIC_LEXIWEBSOCKETSERVER_URL || 'ws://localhost:1619');
+  }
 
   let latestPing = null
   let latestPong = null
@@ -24,7 +27,7 @@ async function connectToServer() {
     ping()
   }, 30 * 1000)
 
-  ws.onmessage = (ev) => {
+  ws.onmessage = (ev: any) => {
     const wsmessage = JSON.parse(ev.data.toString())
     if (wsmessage.type === 'pong') {
       // console.log(wsmessage)

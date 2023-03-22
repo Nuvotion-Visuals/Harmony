@@ -9,7 +9,7 @@ interface Props {
 
 export const Logo = ({ large }: Props) => {
   return (
-    <S.LogoContainer large={large}>
+    <S.LogoContainer large={large || false}>
     <MatrixLoading logo={true}> 
     </MatrixLoading>
     <S.Connection>
