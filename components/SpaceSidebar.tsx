@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { Groups } from 'components/Groups'
-import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap, Button, LineBreak } from '@avsync.live/formation'
+import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap, Button, LineBreak, Label, Spacer } from '@avsync.live/formation'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
 
@@ -15,7 +15,7 @@ export const SpaceSidebar = ({ }: Props) => {
 
   const { spaceGuid } = router.query
 
-  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, updateSpace } = useSpaces()
+  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, updateSpace, activeSpaceStats } = useSpaces()
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(spaceGuids.indexOf(spaceGuid as string))
 
@@ -26,7 +26,7 @@ export const SpaceSidebar = ({ }: Props) => {
   }, [spaceGuid])
 
   const SpaceName = () => (<S.SpaceName>
-    <Box ml={.25} p={.5}>
+    <Box>
       <Item pageTitle={activeSpace?.name}>
     <Dropdown
       icon='ellipsis-h'
@@ -74,6 +74,8 @@ export const SpaceSidebar = ({ }: Props) => {
     </S.SpaceName>
   )
 
+  const { groupsCount, channelsCount, threadsCount, messageCount } = activeSpaceStats
+
   return (<S.GroupsSidebar>
     <SpacesSidebar 
       activeSpaceIndex={activeSpaceIndex}
@@ -98,19 +100,31 @@ export const SpaceSidebar = ({ }: Props) => {
         {
           activeSpace?.previewSrc &&
             <>
-              <S.OverlayContainer>
-                <S.Overlay>
-                  <SpaceName />
-                </S.Overlay>
-              </S.OverlayContainer>
+             
               <Box p={.75} mb={-.5} width='100%'>
-                <AspectRatio
-                  ratio={2}
-                  backgroundSrc={activeSpace.previewSrc}
-                  coverBackground
-                  borderRadius={.75}
-                />
+                <S.OverlayContainer>
+                  <S.Overlay>
+                    <SpaceName />
+                  </S.Overlay>
+                  <S.OverlayBottom>
+                    <S.SpaceStats>
+                      <Spacer />
+                      <S.Badge title={`${groupsCount} groups · ${channelsCount} channels · ${threadsCount} threads· ${messageCount} messages`}>
+                        {`${groupsCount}·${channelsCount}·${threadsCount}·${messageCount}`}
+                      </S.Badge>
+                    </S.SpaceStats>
+                  
+                  </S.OverlayBottom>
+                  <AspectRatio
+                    ratio={2}
+                    backgroundSrc={activeSpace.previewSrc}
+                    coverBackground
+                    borderRadius={.75}
+                  />
+                </S.OverlayContainer>
+               
               </Box>
+            
             </>
         }
         {
@@ -153,24 +167,45 @@ const S = {
     overflow-y: auto;
   `,
   OverlayContainer: styled.div`
-    height: 0;
+    height: 100%;
     width: 100%;
     position: relative;
     top: 0;
     z-index: 2;
   `,
   Overlay: styled.div`
+    position: absolute;
+    top: 0;
     width: 100%;
-    height: 3rem;
+    z-index: 3;
     background: linear-gradient(to top, hsla(0, 0%, 7%, 0) 0%, hsla(0, 0%, 7%,.4) 40%, hsla(0, 0%, 7%,.5) 100%);
- 
+  `,
+   OverlayBottom: styled.div`
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    width: 100%;
+    background: linear-gradient(to bottom, hsla(0, 0%, 7%, 0) 0%, hsla(0, 0%, 7%,.4) 40%, hsla(0, 0%, 7%,.5) 100%);
   `,
   SpaceName: styled.div`
     width: 100%;
+  `,
+  SpaceStats: styled.div`
+    width: calc(100% - 1rem);
+    height: 2rem;
+    padding: .5rem;
+    display: flex;
   `,
   PosterContainer: styled.div`
     border-radius: .75rem;
     overflow: hidden;
     width: 100%;
+  `,
+  Badge: styled.div`
+    background: var(--F_Surface_0);
+    padding: .5rem 1rem;
+    border-radius: 1rem;
+    font-family: monospace;
+    color: var(--F_Font_Color_Disabled);
   `
 }

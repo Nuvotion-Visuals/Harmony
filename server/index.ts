@@ -467,7 +467,22 @@ app.prepare().then(() => {
       cache.put(imageUrl, { contentType, data: imageBuffer }, CACHE_DURATION);
     } catch (err: any) {
       console.error(`Error fetching image from ${imageUrl}: ${err.message}`);
-      res.status(500).send(`Error fetching image from ${imageUrl}`);
+      const placeholderUrl = 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png';
+      try {
+        const placeholderRes = await fetch(placeholderUrl, {
+          agent: httpsAgent,
+        } as RequestInit);
+        if (!placeholderRes.ok) {
+          throw new Error(`Error fetching placeholder image from ${placeholderUrl}: ${placeholderRes.status} ${placeholderRes.statusText}`);
+        }
+        const contentType = placeholderRes.headers.get('content-type');
+        const placeholderBuffer = await placeholderRes.arrayBuffer();
+        res.setHeader('Content-Type', contentType);
+        res.send(Buffer.from(placeholderBuffer));
+      } catch (placeholderErr: any) {
+        console.error(`Error fetching placeholder image from ${placeholderUrl}: ${placeholderErr.message}`);
+        res.status(500).send(`Error fetching image from ${imageUrl}`);
+      }
     }
   });
 

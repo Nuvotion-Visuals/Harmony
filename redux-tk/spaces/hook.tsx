@@ -24,6 +24,8 @@ export const useSpaces = () => {
   const dispatch = useDispatch();
 
   return {
+    activeSpaceStats: useSelector(selectors.select_activeSpaceStats, isEqual),
+
     // spaces
     activeSpace: useSelector(selectors.select_activeSpace, isEqual),
     spacesByGuid: useSelector(selectors.select_spacesByGuid, isEqual),
