@@ -20,6 +20,7 @@ import { EditChannel } from './EditChannel'
 import MyLink from './Link'
 import { MatrixLoading } from './MatrixLoading'
 import { Channel } from './Channel'
+import { Logo } from './Logo'
 
 interface Props {
   children: React.ReactNode
@@ -95,14 +96,7 @@ const App = ({ children }: Props) => {
 
   return (<S.App>
     <S.NavHeader>
-      <S.LogoContainer onClick={() => setActiveSwipeIndex(activeSwipeIndex > 1 ? activeSwipeIndex - 1 : 0)}>
-        <MatrixLoading logo={true}> 
-        </MatrixLoading>
-        <S.Connection>
-        <LoadingSpinner chat />
-        </S.Connection>
-      </S.LogoContainer>
-      
+      <Logo />
       <S.Centered isDesktop={isDesktop}>
       <Search />
 

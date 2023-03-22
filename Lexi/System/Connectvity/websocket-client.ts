@@ -60,6 +60,18 @@ async function connectToServer() {
         type: 'spaces/updateMessage',
         payload: { guid: targetMessageGuid, message: newMessage }
       })
+
+      setTimeout(() => {
+        const target = document.getElementById(`bottom_${conversationId}`)
+        if (target) {
+          target.scrollIntoView({
+            behavior: "smooth", // "auto" or "smooth"
+            block: "end", // "start", "center", "end", or "nearest"
+            inline: "nearest" // "start", "center", "end", or "nearest"
+          });
+        }
+      }, 100)
+     
     }
   }
 

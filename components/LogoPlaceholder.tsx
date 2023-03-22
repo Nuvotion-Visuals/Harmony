@@ -1,10 +1,11 @@
 import styled from 'styled-components'
+import { Logo } from './Logo'
 
 const Placeholders = () => {
   return (
     <S.Placeholders>
       <S.Gradient />
-      <S.Logo src='/assets/lexi-circle.png' />
+      <Logo large />
     </S.Placeholders>
   )
 }
@@ -18,7 +19,7 @@ const S = {
     position: relative;
     justify-content: center;
     width: calc(100% - 4rem);
-    padding: 2rem;
+    padding: 6rem 2rem;
     gap: 1rem;
     overflow: hidden;
   `,

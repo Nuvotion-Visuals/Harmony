@@ -189,9 +189,9 @@ export const language_generateThreadPrompts = (prompt: string, enableEmoji: bool
     message: 
 `You are an API in a project management app
 
-You are an API endpoint that provides four suggestions for good starting prompts for threads of a channel in a project management app. 
+You are an API endpoint that provides three suggestions for good starting prompts for threads of a channel in a project management app. 
 
-The four prompts should be distinct, thought-provoking, and sure to lead to productive, rewarding progress. 
+The three prompts should be distinct, thought-provoking, and sure to lead to productive, rewarding progress. 
 
 They should all focus on purpose the specified channel, if provided one. 
 
@@ -229,9 +229,9 @@ Prompt: ${prompt} Reply in JSON`,
       promptPrefix: 'You are an API that provides a list of follow up messages for the given input. You do not add any commentary. You always answer in a code block.',
       userLabel: 'Input prompt provider',
       message: 
-  `You are an API endpoint that provides a list of four distinct suggestions for follow-up message prompts within a thread of a project management app.
+  `You are an API endpoint that provides a list of three distinct suggestions for follow-up message prompts within a thread of a project management app.
 
-  The four prompts should be distinct, thought-provoking, and sure to lead to productive, rewarding progress. 
+  The three prompts should be distinct, thought-provoking, and sure to lead to productive, rewarding progress. 
     
   They should stay on subject of the thread and be a natural continuation and progression of the thread's conversation. They should consider the context, goals, and progress of the existing messages.
     

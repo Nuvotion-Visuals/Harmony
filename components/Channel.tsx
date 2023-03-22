@@ -6,15 +6,8 @@ import { useLayout } from 'redux-tk/layout/hook'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Indicator } from './Indicator'
-import { NewMessage } from './NewMessage'
 import { Threads } from './Threads'
 
-
-
-import { ChatBox } from './ChatBox'
-import Message from './Message'
-
-import { useLexi } from 'redux-tk/lexi/hook'
 import { listenForWakeWord } from '../Lexi/System/Language/wakeWord'
 import { playSound } from '../Lexi/System/Language/soundEffects'
 import { insertContentByUrl } from '../Lexi/System/Connectvity/fetch'
@@ -22,9 +15,6 @@ import { SpeechTranscription } from 'Lexi/System/Language/speechTranscription'
 import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
 
 import { Message as MessageProps, Thread as ThreadProps } from 'redux-tk/spaces/types'
-
-import { v4 as uuidv4 } from 'uuid'
-import { getTimestamp, scrollToBottom } from 'client-utils'
 
 interface Props {
   
@@ -34,6 +24,8 @@ export const Channel = ({ }: Props) => {
   const router = useRouter()
   const { spaceGuid, groupGuid, channelGuid } = router.query
   const true100vh = use100vh()
+
+  
 
   const [height, setHeight] = useState();
   const componentRef = useRef(null);
@@ -128,6 +120,15 @@ export const Channel = ({ }: Props) => {
       if (componentRef.current) {
         setHeight(componentRef.current.clientHeight);
       }
+
+      const target = document.getElementById(`bottom_${activeThreadGuid}`)
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth", // "auto" or "smooth"
+          block: "end", // "start", "center", "end", or "nearest"
+          inline: "nearest" // "start", "center", "end", or "nearest"
+        });
+      }
     }
 
   const sendThread = (message: string) => {
@@ -183,6 +184,17 @@ export const Channel = ({ }: Props) => {
     if (componentRef.current) {
       setHeight(componentRef.current.clientHeight);
     }
+    setTimeout(() => {
+      const target = document.getElementById(`bottom_${guid}`)
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth", // "auto" or "smooth"
+          block: "end", // "start", "center", "end", or "nearest"
+          inline: "nearest" // "start", "center", "end", or "nearest"
+        });
+      }
+    }, 100)
+   
   }
 
   const send = (message: string) => {
@@ -200,7 +212,7 @@ export const Channel = ({ }: Props) => {
     let timer = {} as any
     if (query !== '<p><br><p>' && !disableTimer) {
       timer = setTimeout(() => {
-        sendMessageToLexi(query)
+        send(query)
         set_disableTimer(true)
         playSound('send')
         stop()
@@ -271,24 +283,47 @@ export const Channel = ({ }: Props) => {
       playSound('listen')
     }
   }, [listening])
-  
+
+  const handleClickBottom = () => {
+    const target = document.getElementById(`bottom_channel`)
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth", // "auto" or "smooth"
+        block: "end", // "start", "center", "end", or "nearest"
+        inline: "nearest" // "start", "center", "end", or "nearest"
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (componentRef.current) {
+      setHeight(componentRef.current.clientHeight);
+    }
+  }, [activeThreadGuid])
 
   return (<S.Channel true100vh={true100vh || 0}>
-   
-
     <Box height='var(--F_Header_Height)' width={'100%'}>
+
       <Item
-        
         icon='hashtag'
         minimalIcon
-        
       >
+
         <Item
           subtitle={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
           onClick={() => {
             if (!isDesktop) {
               decrementActiveSwipeIndex()
             }
+          }}
+        />
+        
+        <Button
+          icon='chevron-down'
+          iconPrefix='fas'
+          minimal
+          onClick={() => {
+            handleClickBottom()
           }}
         />
         <Indicator
@@ -322,103 +357,113 @@ export const Channel = ({ }: Props) => {
 
     <S.Content height={height}>
       <Threads />
+      <div id='bottom_channel' />
     </S.Content>
 
     <S.Bottom ref={componentRef}>
       <Page noPadding>
-      {
-            activeThreadGuid &&
-              <S.Reply>
-                  <Item
-                    icon='reply'
-                    minimalIcon
-                    subtitle={` ${threadsByGuid?.[activeThreadGuid || '']?.name}`}
-                  >
-                    <Spacer />
-                    <Button
-                      icon='times'
-                      iconPrefix='fas'
-                      minimal
-                      onClick={() => setActiveThreadGuid(null)}
-                    />
-                  </Item>
-                </S.Reply>
+        {
+          activeThreadGuid &&
+            <S.Reply>
+              <Item
+                icon='reply'
+                minimalIcon
+                subtitle={` ${threadsByGuid?.[activeThreadGuid || '']?.name}`}
+                onClick={() => {
+                  setTimeout(() => {
+                    const target = document.getElementById(`top_${activeThreadGuid}`)
+                    if (target) {
+                      target.scrollIntoView({
+                        behavior: "smooth", // "auto" or "smooth"
+                        block: "start", // "start", "center", "end", or "nearest"
+                        inline: "nearest" // "start", "center", "end", or "nearest"
+                      });
+                    }
+                  }, 100)
+                }}
+              >
+                <Spacer />
+                <Button
+                  icon='times'
+                  iconPrefix='fas'
+                  minimal
+                  onClick={() => setActiveThreadGuid(null)}
+                />
+              </Item>
+            </S.Reply>
           }
       </Page>
       <Box p={.5}>
         <Page noPadding>
-        
-         
-        <RichTextEditor
-        
-      key='testley'
-      value={query} 
-      onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
-      // onEnter={newQuery => {
-      //   if (!isMobile) {
-      //     onEnter()
-      //   }
-      // }}
-      placeholder='Chat'
-      outset
-    >
-       <Button 
-          icon={'paper-plane'}
-          iconPrefix='fas'
-          minimal
-          onClick={() => {
-            send(query)
-          }}
-        />
-         <Dropdown
-          icon='plus'
-          iconPrefix='fas'
-          minimal
-          circle
-          items={[
-            {
-              children: <div onClick={e => e.stopPropagation()}>
-                <Box minWidth={13.5}>
-                  <TextInput
-                    value={urlToScrape}
-                    onChange={newValue => set_urlToScrape(newValue)}
-                    iconPrefix='fas'
-                    compact
-                    placeholder='Insert from URL'
-                    canClear={urlToScrape !== ''}
-                    buttons={[
-                      {
-                        icon: 'arrow-right',
-                        iconPrefix: 'fas',
-                        minimal: true,
-                        onClick: () => insertContentByUrl(urlToScrape)
-                      }
-                    ]}
-                  />
-                </Box>
-              </div>
-            }
-          ]}
-        />
-        <Button 
-          icon={listening ? 'microphone-slash' : 'microphone'}
-          iconPrefix='fas'
-          circle={true}
-          minimal
-          onClick={() => {
-            if (listening) {
-              stop()
-              set_disableTimer(true)
-            }
-            else {
-              start()
-            }
-          }}
-          blink={listening}
-        />
-       
-    </RichTextEditor>
-      
+          <RichTextEditor
+            key='testley'
+            value={query} 
+            onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
+            onEnter={() => send(query)}
+            // onEnter={newQuery => {
+            //   if (!isMobile) {
+            //     onEnter()
+            //   }
+            // }}
+            placeholder='Chat'
+            outset
+          >
+            <Button 
+                icon={'paper-plane'}
+                iconPrefix='fas'
+                minimal
+                onClick={() => {
+                  send(query)
+                }}
+              />
+              <Dropdown
+                icon='plus'
+                iconPrefix='fas'
+                minimal
+                circle
+                items={[
+                  {
+                    children: <div onClick={e => e.stopPropagation()}>
+                      <Box minWidth={13.5}>
+                        <TextInput
+                          value={urlToScrape}
+                          onChange={newValue => set_urlToScrape(newValue)}
+                          iconPrefix='fas'
+                          compact
+                          placeholder='Insert from URL'
+                          canClear={urlToScrape !== ''}
+                          buttons={[
+                            {
+                              icon: 'arrow-right',
+                              iconPrefix: 'fas',
+                              minimal: true,
+                              onClick: () => insertContentByUrl(urlToScrape)
+                            }
+                          ]}
+                        />
+                      </Box>
+                    </div>
+                  }
+                ]}
+              />
+              <Button 
+                icon={listening ? 'microphone-slash' : 'microphone'}
+                iconPrefix='fas'
+                circle={true}
+                minimal
+                onClick={() => {
+                  if (listening) {
+                    stop()
+                    set_disableTimer(true)
+                  }
+                  else {
+                    start()
+                  }
+                }}
+                blink={listening}
+              />
+            
+          </RichTextEditor>
         </Page>
       </Box>
     </S.Bottom>

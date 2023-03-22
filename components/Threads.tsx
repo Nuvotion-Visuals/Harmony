@@ -126,12 +126,14 @@ User feedback (optional): ${feedback}
 
   useEffect(() => {
     if (activeThreadGuid) {
-     const targetIndex = activeChannel!.threadGuids.findIndex(item => item === activeThreadGuid)
-     setExpandedThreads(prevExpandedThreads => {
-      const newExpandedThreads = [...prevExpandedThreads];
-      newExpandedThreads[targetIndex] = true;
-      return newExpandedThreads;
-    });
+     const targetIndex = activeChannel?.threadGuids.findIndex(item => item === activeThreadGuid)
+     if (targetIndex !== undefined) {
+      setExpandedThreads(prevExpandedThreads => {
+        const newExpandedThreads = [...prevExpandedThreads];
+        newExpandedThreads[targetIndex] = true;
+        return newExpandedThreads;
+      });
+     }
     }
   }, [activeThreadGuid])
 
@@ -273,7 +275,7 @@ User feedback (optional): ${feedback}
                           </Box>
                           <Box width={'100%'}  wrap>
                   
-                  {
+                            {
                               suggestedPrompts?.length && !loading
                                 ? <Box width='100%' >
                                     <Gap>
@@ -351,21 +353,22 @@ User feedback (optional): ${feedback}
                   }
                 </Gap>
                 
-                {
-                  activeChannel?.threadGuids?.map((threadGuid, index) => (
-                    <React.Fragment key={threadGuid}>
-                      <Thread
-                        {
-                          ...threadsByGuid[threadGuid]
-                        }
-                        expanded={expandedThreads?.[index]}
-                        onExpand={() => handleExpandClick(index)}
-                        threadGuid={threadGuid}
-                      />
-                    </React.Fragment>
-                  ))
-                }
                 
+                  {
+                    activeChannel?.threadGuids?.map((threadGuid, index) => (
+                      <S.ThreadsContainer key={threadGuid}>
+                        <Thread
+                          {
+                            ...threadsByGuid[threadGuid]
+                          }
+                          expanded={expandedThreads?.[index]}
+                          onExpand={() => handleExpandClick(index)}
+                          threadGuid={threadGuid}
+                        />
+                      </S.ThreadsContainer>
+                    ))
+                  }
+
               
               </Page>
             </S.Threads>
@@ -396,6 +399,11 @@ const S = {
     border-radius: 1rem;
     width: 100%;
     overflow: hidden;
-    margin-top: .75rem;
+  `,
+  ThreadsContainer: styled.div`
+    :nth-child(odd) {
+      background: var(--F_Background);
+      // CSS Property
+  }
   `
 }

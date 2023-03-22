@@ -126,7 +126,13 @@ export const Thread = ({
 
   const showSpinner = loading
 
-
+  useEffect(() => {
+    if (messageGuids?.length === 2 && !name && !description) {
+      if (messagesByGuid[messageGuids[1]].message) {
+        generateTitle(messageContent)
+      }
+    }
+  }, [messagesByGuid?.[messageGuids?.[1]]?.message])
 
   return (<S.Thread active={guid === activeThreadGuid}>
     <Box width='100%'>
@@ -218,6 +224,16 @@ export const Thread = ({
                   name: 'Reply',
                   onClick: () => {
                     setActiveThreadGuid(guid)
+                    setTimeout(() => {
+                      const target = document.getElementById(`bottom_${guid}`)
+                      if (target) {
+                        target.scrollIntoView({
+                          behavior: "smooth", // "auto" or "smooth"
+                          block: "end", // "start", "center", "end", or "nearest"
+                          inline: "nearest" // "start", "center", "end", or "nearest"
+                        });
+                      }
+                    }, 100)
                   }
                 },
                 {
@@ -250,7 +266,7 @@ export const Thread = ({
     }
     
     </Box>
-    
+    <div id={`top_${guid}`}></div>
     {
       messageGuids?.map((messageGuid, index) => {
         const message = messagesByGuid?.[messageGuid]
@@ -270,30 +286,34 @@ export const Thread = ({
     
     {
       expanded &&
-        <Box width={'100%'} px={.75}  wrap>
+        <Box width={'100%'} px={.75}  mt={.25} wrap>
           <Gap>
 
           <ThreadSuggestions guid={guid} onSend={(message) => sendMessageToWebsocket(message)} />
           {/* <Box pb={.5} width='100%'>
             <Item subtitle={`${name}`} />
           </Box> */}
-          <Button
-            expand
-            icon='reply'
-            iconPrefix='fas'
-            text={activeThreadGuid === guid ? 'Replying' : 'Reply'}
-            secondary
-            disabled={activeThreadGuid === guid}
-            onClick={() => {
-              setActiveThreadGuid(guid)
-            }}  
-          />
+          {
+            activeThreadGuid !== guid &&
+              <Button
+                expand
+                icon='reply'
+                iconPrefix='fas'
+                text={activeThreadGuid === guid ? 'Replying' : 'Reply'}
+                secondary
+                disabled={activeThreadGuid === guid}
+                onClick={() => {
+                  setActiveThreadGuid(guid)
+                }}  
+              />
+          }
+        
            
         </Gap>
      
     </Box>
     }
-   
+   <div id={`bottom_${guid}`}></div>
   </S.Thread>)
 }
 
@@ -306,5 +326,6 @@ const S = {
     flex-wrap: wrap;
     border-left: ${props => props.active ? '4px solid var(--F_Primary)' : '4px solid var(--F_Surface_0)'};
     padding: .5rem 0;
+    border-bottom: 1px solid var(--F_Surface_0);
   `
 }

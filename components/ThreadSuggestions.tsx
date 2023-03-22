@@ -75,6 +75,21 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
       }
     }, [guid])
 
+  useEffect(() => {
+    if (response) {
+      setTimeout(() => {
+        const target = document.getElementById(`bottom_${guid}`)
+        if (target) {
+          target.scrollIntoView({
+            behavior: "smooth", // "auto" or "smooth"
+            block: "end", // "start", "center", "end", or "nearest"
+            inline: "nearest" // "start", "center", "end", or "nearest"
+          });
+        }
+      }, 100)
+    }
+  }, [response])
+
   return (<S.ThreadSuggestions>
     <Box width='100%'>
       <Gap>

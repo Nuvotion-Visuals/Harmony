@@ -46,6 +46,8 @@ export const ItemMessage = React.memo((props: Props) => {
     userLabel,
     message,
     threadGuid,
+    parentMessageId,
+
   } = props
   const [edit, set_edit] = useState(false)
 
@@ -74,16 +76,18 @@ export const ItemMessage = React.memo((props: Props) => {
 
   const Message = ({ text } : { text: string }) => (
     <S.ItemMessage>
-      <Box width={2.75} height='100%'>
-        <Avatar
-          labelColor={'gray'}
-          src={isLexi ? '/assets/lexi-circle.png' : undefined}
-          icon={isLexi ? undefined : 'user'}
-        />
+      <Box width={2} height='100%' wrap>
+        <S.Avatar>
+          <Avatar
+            labelColor={'gray'}
+            src={isLexi ? '/assets/lexi-circle.png' : undefined}
+            icon={isLexi ? undefined : 'user'}
+          />
+        </S.Avatar>
         <S.VerticalSpacer />
       </Box>
 
-      <Box width='100%' maxWidth='calc(100% - 3.25rem)' wrap>
+      <Box width='100%' maxWidth='calc(100% - 2.5rem)' wrap>
         <S.MessageInfo>
           <S.DisplayName>
             {
@@ -91,6 +95,9 @@ export const ItemMessage = React.memo((props: Props) => {
             }
           </S.DisplayName>
           <S.Date>
+            {
+              
+            }
             { new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'numeric', day: '2-digit', hour: '2-digit', minute: '2-digit'})}
           </S.Date>
           <Spacer />
@@ -194,18 +201,24 @@ const S = {
   `,
   VerticalSpacer: styled.div`
     height: 100%;
+    width: 100%;
+  `,
+  Avatar: styled.div`
+    transform: scale(.75);
   `,
   MessageInfo: styled.div`
     display: flex;
     align-items: center;
     padding-bottom: .25rem;
     width: 100%;
+    padding-top: .3rem;
   `,
   DisplayName: styled.div`
-    font-weight: 600;
+    font-size: 14px;
+    color: var(--F_Font_Color);
   `,
   Date: styled.div`
-    padding-left: 1rem;
+    padding-left: .75rem;
     font-size: 11px;
     color: var(--F_Font_Color_Disabled);
   `

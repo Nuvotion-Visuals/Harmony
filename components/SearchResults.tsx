@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useLexi } from 'redux-tk/lexi/hook'
 import styled from 'styled-components'
 import LogoPlaceholder from './LogoPlaceholder'
+import { MatrixLoading } from './MatrixLoading'
 
 interface Props {
   
@@ -23,9 +24,7 @@ export const SearchResults = React.memo(({ }: Props) => {
     <>
     {
       searchQuery && loading &&
-        <Box width='100%' py={1.25}>
-          <LoadingSpinner />
-        </Box>
+        <MatrixLoading></MatrixLoading>
     }
      {
         searchQuery
