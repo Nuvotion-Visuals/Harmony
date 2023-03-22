@@ -19,6 +19,7 @@ import { Threads } from './Threads'
 import { EditChannel } from './EditChannel'
 import MyLink from './Link'
 import { MatrixLoading } from './MatrixLoading'
+import { Channel } from './Channel'
 
 interface Props {
   children: React.ReactNode
@@ -76,7 +77,7 @@ const App = ({ children }: Props) => {
       {
         !isMobile && !isTablet && <S.HeaderSpacer />
       }
-      <Threads />
+      <Channel />
     </>
   }
 

@@ -335,6 +335,8 @@ const S = {
     width: 100%;
     height: var(--L_Prompt_Height);
     padding: var(--L_Prompt_Padding) 0;
+    background: var(--F_Background);
+
     overflow-y: auto;
   `,
   VSpacer: styled.div`

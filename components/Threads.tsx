@@ -18,6 +18,7 @@ interface Props {
   
 }
 
+
 export const Threads = ({ }: Props) => {
   const router = useRouter()
   const { query } = router
@@ -27,12 +28,6 @@ export const Threads = ({ }: Props) => {
     setActiveGroupGuid(groupGuid as string)
     setActiveChannelGuid(channelGuid as string)
   }, [groupGuid, channelGuid])
-
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    scrollToBottom(scrollContainerRef)
-  }, [])
 
   const { 
     addThread,
@@ -45,6 +40,8 @@ export const Threads = ({ }: Props) => {
     activeChannel,
     activeSpace,
     activeGroup,
+    activeThread,
+    activeThreadGuid
   } = useSpaces() 
 
   // websocket communication with server
@@ -57,6 +54,86 @@ export const Threads = ({ }: Props) => {
   const { isDesktop } = useBreakpoint()
 
   const selected = useMemo(() => activeGroup?.name && activeGroup?.name, [activeGroup]);
+
+
+  
+  const { language, response, loading, error, completed } = useLanguageAPI('');
+  const { generateThreadPrompts } = language;
+  
+  const [suggestedPrompts, set_suggestedPrompts] = useState([])
+
+  useEffect(() => {
+    if (response && completed) {
+      try {
+        let obj = JSON.parse(response);
+        set_suggestedPrompts(obj.suggestions)
+      } catch (e) {}
+    }
+  }, [response, completed]);
+
+  const [ existingThreads, set_existingThreads ] = useState('')
+  useEffect(() => {
+    if (activeChannel?.threadGuids) {
+      set_existingThreads(activeChannel?.threadGuids?.map((threadGuid, index) => (
+        `Existing thread: ${threadsByGuid[threadGuid]?.name} - ${threadsByGuid[threadGuid]?.description}`
+      )).join('\n'))
+    }
+  }, [activeChannel?.threadGuids])
+
+  
+
+  const websocketClient = getWebsocketClient()
+
+  const [feedback, set_feedback] = useState('')
+
+  useEffect(() => {
+    set_suggestedPrompts([])
+    if (activeChannel?.description && getWebsocketClient?.send) {
+        generateThreadPrompts(`
+Space name: ${activeSpace?.name}
+Space description: ${activeSpace?.description}
+
+Channel name: ${activeChannel?.name}
+Channel description: ${activeChannel?.description} 
+
+Existing threads: \n${existingThreads}
+
+Your previous suggestions (optional): ${suggestedPrompts}
+                
+User feedback (optional): ${feedback}
+`)
+    }
+  }, [activeChannel?.threadGuids, websocketClient, activeChannel?.guid])
+
+  const [expandedThreads, setExpandedThreads] = useState<boolean[]>([]);
+  const handleExpandClick = (index: number) => {
+    setExpandedThreads(prevExpandedThreads => {
+      const newExpandedThreads = [...prevExpandedThreads];
+      newExpandedThreads[index] = !newExpandedThreads[index];
+      return newExpandedThreads;
+    });
+  };
+
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    scrollToBottom(scrollContainerRef)
+  }, [])
+
+  useEffect(() => {
+    scrollToBottom(scrollContainerRef)
+  }, [response, suggestedPrompts?.length])
+
+  useEffect(() => {
+    if (activeThreadGuid) {
+     const targetIndex = activeChannel!.threadGuids.findIndex(item => item === activeThreadGuid)
+     setExpandedThreads(prevExpandedThreads => {
+      const newExpandedThreads = [...prevExpandedThreads];
+      newExpandedThreads[targetIndex] = true;
+      return newExpandedThreads;
+    });
+    }
+  }, [activeThreadGuid])
 
   const sendThread = (message: string) => {
     const websocketClient = getWebsocketClient()
@@ -105,122 +182,11 @@ export const Threads = ({ }: Props) => {
     }
     websocketClient.send(JSON.stringify(action))
   }
-  
-  const { language, response, loading, error, completed } = useLanguageAPI('');
-  const { generateThreadPrompts } = language;
-  
-  const [suggestedPrompts, set_suggestedPrompts] = useState([])
-
-  useEffect(() => {
-    if (response && completed) {
-      try {
-        let obj = JSON.parse(response);
-        set_suggestedPrompts(obj.suggestions)
-      } catch (e) {}
-    }
-  }, [response, completed]);
-
-  const [ existingThreads, set_existingThreads ] = useState('')
-  useEffect(() => {
-    if (activeChannel?.threadGuids) {
-      set_existingThreads(activeChannel?.threadGuids?.map((threadGuid, index) => (
-        `Existing thread: ${threadsByGuid[threadGuid]?.name} - ${threadsByGuid[threadGuid]?.description}`
-      )).join('\n'))
-    }
-  }, [activeChannel?.threadGuids])
-
-  const websocketClient = getWebsocketClient()
-
-  const [feedback, set_feedback] = useState('')
-
-  useEffect(() => {
-    set_suggestedPrompts([])
-    if (activeChannel?.description && getWebsocketClient?.send) {
-        generateThreadPrompts(`
-Space name: ${activeSpace?.name}
-Space description: ${activeSpace?.description}
-
-Channel name: ${activeChannel?.name}
-Channel description: ${activeChannel?.description} 
-
-Existing threads: \n${existingThreads}
-
-Your previous suggestions (optional): ${suggestedPrompts}
-                
-User feedback (optional): ${feedback}
-`)
-    }
-  }, [activeChannel?.threadGuids, websocketClient, activeChannel?.guid])
 
   return (<Box wrap width={'100%'}>
     {
       selected
         ? <>
-            <Box height='var(--F_Header_Height)' width={'100%'}>
-              <Item
-                
-                icon='hashtag'
-                minimalIcon
-                
-              >
-                <Item
-                  subtitle={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
-                  onClick={() => {
-                    if (!isDesktop) {
-                      decrementActiveSwipeIndex()
-                    }
-                  }}
-                />
-                <Indicator
-                  count={activeChannel?.threadGuids?.length}
-                />
-              
-                <Dropdown
-                  icon='ellipsis-h'
-                  iconPrefix='fas'
-                  minimal
-                  items={[
-                    {
-                      icon: 'bolt-lightning',
-                      name: 'Suggest threads',
-                      onClick: () => {
-                        generateThreadPrompts(`
-                        Space name: ${activeSpace?.name}
-                        Space description: ${activeSpace?.description}
-                        
-                        Channel name: ${activeChannel?.name}
-                        Channel description: ${activeChannel?.description} 
-                        
-                        Existing threads: \n${existingThreads}
-                        
-                        Your previous suggestions (optional): ${suggestedPrompts}
-                                        
-                        User feedback (optional): ${feedback}
-                        `)
-                      }
-                    },
-                    {
-                      icon: 'edit',
-                      iconPrefix: 'fas',
-                      name: 'Edit',
-                      href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`,
-                      onClick: () => {
-                        if (!isDesktop) {
-                          decrementActiveSwipeIndex()
-                        }
-                      }
-                    },
-                    {
-                      icon: 'trash-alt',
-                      iconPrefix: 'fas',
-                      name: 'Delete',
-                    }
-                  ]}
-                />
-              </Item>
-            </Box>
-            <LineBreak />
-            
             <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
               <Page noPadding>
                 <Gap>
@@ -240,7 +206,6 @@ User feedback (optional): ${feedback}
                   {
                     activeChannel?.description &&
                       <>
-                      { !activeChannel?.previewSrc && <LineBreak />}
                         <Box mt={-.25} width='100%' wrap>
                           
                          
@@ -292,7 +257,7 @@ User feedback (optional): ${feedback}
                             />
                           </Item>
                           
-                          <Box mt={-.75} pb={.25} width='100%'>
+                          <Box mt={-.75}  width='100%'>
                           <Item 
                             // @ts-ignore
                             subtitle={<RichTextEditor
@@ -306,10 +271,84 @@ User feedback (optional): ${feedback}
                           </Box>
 
                           </Box>
-                          
+                          <Box width={'100%'}  wrap>
+                  
+                  {
+                              suggestedPrompts?.length && !loading
+                                ? <Box width='100%' >
+                                    <Gap>
+                                      {
+                                        suggestedPrompts?.map(prompt =>
+                                          <Item
+                                            subtitle={prompt}
+                                            icon='paper-plane'
+                                            onClick={() => {
+                                              sendThread(prompt)
+                                            }}
+                                          >
+                                          
+                                          </Item>
+                                        )
+                                      }
+                                    </Gap>
+                                  </Box>
+                                : loading
+                                  ? <MatrixLoading
+                                      text={response || ''}
+                                    />
+                                  : null
+                            }
+  
+                            
+                                <Box pb={.25} width='100%'>
+                                {
+                              !loading &&
+                              <Box width='100%'>
+                                <Gap disableWrap>
+                                  <TextInput
+                                    value={feedback}
+                                    canClear={feedback !== ''}
+                                    compact
+                                    onChange={val => set_feedback(val)}
+                                    placeholder='Suggest new threads'
+                                    hideOutline
+                                  />
+                                  <Box minWidth={7}>
+                                    <MatrixLoading >
+                                    
+                                      <Button
+                                        icon='bolt-lightning'
+                                        expand
+                                        iconPrefix='fas'
+                                        minimal
+                                        text='Auto'
+                                        onClick={() => generateThreadPrompts(`
+                                        Space name: ${activeSpace?.name}
+                                        Space description: ${activeSpace?.description}
+                                        
+                                        Channel name: ${activeChannel?.name}
+                                        Channel description: ${activeChannel?.description} 
+                                        
+                                        Existing threads: \n${existingThreads}
+                                        
+                                        Your previous suggestions (optional): ${suggestedPrompts}
+                                                        
+                                        User feedback (optional): ${feedback}
+                                        `)}
+                                      />
+  
+                                    </MatrixLoading>
+                                  </Box>
+  
+                                </Gap>
+                              </Box>
+                            }
+  
+                          </Box>
+                         
+                  </Box>
                       </>
                   }
-                  <LineBreak />
                 </Gap>
                 
                 {
@@ -319,93 +358,15 @@ User feedback (optional): ${feedback}
                         {
                           ...threadsByGuid[threadGuid]
                         }
+                        expanded={expandedThreads?.[index]}
+                        onExpand={() => handleExpandClick(index)}
                         threadGuid={threadGuid}
                       />
-                      <LineBreak />
                     </React.Fragment>
                   ))
                 }
                 
-                <Box width={'calc(100% - 1.5rem)'} p={.75} wrap>
-                  
-                {
-                            suggestedPrompts?.length && !loading
-                              ? <Box width='100%' mb={.75}>
-                                  <Gap>
-                                    {
-                                      suggestedPrompts?.map(prompt =>
-                                        <Item
-                                          subtitle={prompt}
-                                          icon='paper-plane'
-                                          onClick={() => {
-                                            sendThread(prompt)
-                                          }}
-                                        >
-                                        
-                                        </Item>
-                                      )
-                                    }
-                                  </Gap>
-                                </Box>
-                              : loading
-                                ? <MatrixLoading
-                                    text={response || ''}
-                                  />
-                                : null
-                          }
-
-                          
-                              <Box pb={.75} width='100%'>
-                              {
-                            !loading &&
-                            <Box width='100%'>
-                              <Gap disableWrap>
-                                <TextInput
-                                  value={feedback}
-                                  canClear={feedback !== ''}
-                                  compact
-                                  onChange={val => set_feedback(val)}
-                                  placeholder='Suggest'
-                                  hideOutline
-                                />
-                                <Box>
-                                  <MatrixLoading logo>
-                                    <Button
-                                      icon='bolt-lightning'
-                                      iconPrefix='fas'
-                                      minimal
-                                      circle
-                                      onClick={() => generateThreadPrompts(`
-                                      Space name: ${activeSpace?.name}
-                                      Space description: ${activeSpace?.description}
-                                      
-                                      Channel name: ${activeChannel?.name}
-                                      Channel description: ${activeChannel?.description} 
-                                      
-                                      Existing threads: \n${existingThreads}
-                                      
-                                      Your previous suggestions (optional): ${suggestedPrompts}
-                                                      
-                                      User feedback (optional): ${feedback}
-                                      `)}
-                                    />
-                                  </MatrixLoading>
-                                </Box>
-                              </Gap>
-                            </Box>
-                          }
-
-                        </Box>
-                  <NewMessage 
-                    newThreadName={newThreadName}
-                    set_newThreadName={set_newThreadName}
-                    newThreadDescription={newThreadDescription}
-                    set_newThreadDescription={set_newThreadDescription}
-                    channelGuid={channelGuid as string} 
-                    thread={true} 
-                    onSend={message => sendThread(message)}
-                  />
-                </Box>
+              
               </Page>
             </S.Threads>
           </>
@@ -423,13 +384,13 @@ const S = {
     true100vh: number
   }>`
     width: 100%;
-    height: ${props => `calc(calc(${props.true100vh}px - calc(var(--F_Header_Height) * 2)) - 1px)`};
+    height: 100%;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
     overflow-y: auto;
     overflow-x: hidden;
-    background: var(--F_Background_Alternating);
+    scroll-behavior: smooth;
   `,
   ThreadPoster: styled.div`
     border-radius: 1rem;

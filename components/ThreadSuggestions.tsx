@@ -108,39 +108,43 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
               <TextInput
                 value={feedback}
                 onChange={val => set_feedback(val)}
-                placeholder='Suggest'
+                placeholder='Suggest new messages'
                 canClear={feedback !== ''}
                 compact
                 hideOutline
               />
 
               <Box>
-              <MatrixLoading logo={true}>
-              <Button 
-                minimal 
-                icon='bolt-lightning' 
-                iconPrefix='fas' 
-                onClick={() => {
-                  set_suggestedPrompts([])
-                  generateFollowUpMessages(`
-                  Space name: ${activeSpace?.name}
-                  Space description: ${activeSpace?.description}
-                  
-                  Channel name: ${activeChannel?.name}
-                  Channel description: ${activeChannel?.description} 
-                
-                  Thread name ${threadsByGuid?.[guid]?.name}
-                  Thread description ${threadsByGuid?.[guid]?.description}
-                  
-                  Existing messages in thread: \n${existingMessages}
-                  
-                  Your previous suggestions (optional): ${suggestedPrompts}
-                
-                  User feedback (optional): ${feedback}
-                  `)
-                }} 
-              />
-            </MatrixLoading>
+                <Box width={7}>
+                <MatrixLoading >
+                  <Button 
+                    minimal 
+                    icon='bolt-lightning' 
+                    text='Auto'
+                    iconPrefix='fas' 
+                    onClick={() => {
+                      set_suggestedPrompts([])
+                      generateFollowUpMessages(`
+                      Space name: ${activeSpace?.name}
+                      Space description: ${activeSpace?.description}
+                      
+                      Channel name: ${activeChannel?.name}
+                      Channel description: ${activeChannel?.description} 
+                    
+                      Thread name ${threadsByGuid?.[guid]?.name}
+                      Thread description ${threadsByGuid?.[guid]?.description}
+                      
+                      Existing messages in thread: \n${existingMessages}
+                      
+                      Your previous suggestions (optional): ${suggestedPrompts}
+                    
+                      User feedback (optional): ${feedback}
+                      `)
+                    }} 
+                  />
+                </MatrixLoading>
+                </Box>
+            
             
               </Box>
              
@@ -157,6 +161,5 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
 const S = {
   ThreadSuggestions: styled.div`
     width: 100%;
-    margin-bottom: .25rem;
   `
 }

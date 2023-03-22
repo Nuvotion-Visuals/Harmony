@@ -98,6 +98,7 @@ const S = {
   Container: styled.pre<Props>`
     width: ${props => props.logo ? '100%' : 'calc(100% - 1.5rem)'};
     height: 100%;
+    min-height: var(--F_Input_Height);
     position: relative;
     overflow: hidden;
     border-radius: ${props => props.logo ? '100%' : '.5rem'};

@@ -21,15 +21,13 @@ export const NewMessage = ({ channelGuid, thread, onSend, newThreadName, set_new
   const [message, set_message] = useState('')
 
   const [edit, set_edit] = useState(false)
-  const [newThread, set_newThread] = useState(false)
+  const [newThread, set_newThread] = useState(true)
 
   return (
-    <Box wrap width={'100%'}> 
+    <Box wrap width={'100%'} maxWidth='700px'> 
       <Gap gap={.75}>
         <Box wrap width={'100%'}>
-          {
-            newThread
-              ?   <Gap>
+            <Gap>
                     {
                       edit && 
                         <>
@@ -70,37 +68,14 @@ export const NewMessage = ({ channelGuid, thread, onSend, newThreadName, set_new
                       iconPrefix='fas'
                       minimal
                     />
-                    <Button
-                      icon={edit ? 'minimize' : 'edit'}
-                      iconPrefix='fas'
-                      minimal
-                      onClick={() => set_edit(!edit)}
-                    />
-                    {
-                      newThread !== undefined
-                        && <Button
-                            icon={'times'}
-                            iconPrefix='fas'
-                            minimal
-                            onClick={() => set_newThread(false)}
-                          />
-                    }
+                
                     <Box
                       height='100%'
                     />
                   </RichTextEditor>
                   
                   </Gap>
-              : <Button 
-                  icon={thread ? 'edit' : 'reply'}
-                  iconPrefix='fas'
-                  secondary={!thread}
-                  text={thread ? 'New thread' : `Reply`}
-                  expand
-                  primary={primary}
-                  onClick={() => set_newThread(true)}
-                />
-          }
+              
         </Box>
       </Gap>
     </Box>

@@ -9,10 +9,7 @@ interface Props {
 }
 
 export const ChatBox = ({ onEnter, children }: Props) => {
-  const {
-    query,
-    set_query,
-  } = useLexi()
+ 
 
   const { isMobile } = useBreakpoint()
 
@@ -21,7 +18,7 @@ export const ChatBox = ({ onEnter, children }: Props) => {
       key='testley'
       value={query} 
       onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
-      height={'160px'}
+      height='160px'
       // onEnter={newQuery => {
       //   if (!isMobile) {
       //     onEnter()

@@ -139,7 +139,7 @@ export const slice = createSlice({
     messageGuids: [],
     messagesByGuid: {},
     status: 'idle',
-    error: ''
+    error: '',
   },
   extraReducers: (builder) => {
     builder

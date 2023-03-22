@@ -4,6 +4,7 @@ import { useLanguageAPI } from 'Lexi/System/Language/hooks'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
+import styled from 'styled-components'
 import { Indicator } from './Indicator'
 import { ItemMessage } from './ItemMessage'
 import { MatrixLoading } from './MatrixLoading'
@@ -11,7 +12,9 @@ import { NewMessage } from './NewMessage'
 import { ThreadSuggestions } from './ThreadSuggestions'
 
 interface Props extends ThreadProps {
-  threadGuid: string
+  threadGuid: string,
+  expanded: boolean,
+  onExpand: (arg0: boolean) => void
 }
 
 export const Thread = ({
@@ -21,6 +24,8 @@ export const Thread = ({
     messageGuids,
     description,
     threadGuid,
+    expanded,
+    onExpand
  }: Props) => {
 
   const [newThreadName, set_newThreadName] = useState(name)
@@ -66,6 +71,8 @@ export const Thread = ({
     updateThread,
     removeThreadFromChannel,
     removeThread,
+    setActiveThreadGuid,
+    activeThreadGuid
   } = useSpaces() 
 
   const [edit, set_edit] = useState(false)
@@ -74,12 +81,9 @@ export const Thread = ({
     set_newThreadDescription(description)
   }, [edit])
 
-  const expandedRef = useRef(false);
-  const [expanded, setExpanded] = useState(expandedRef.current);
 
   const handleClick = () => {
-    setExpanded(!expanded);
-    expandedRef.current = !expanded;
+    onExpand(!expanded);
   };
 
   const sendMessageToWebsocket = (message: string) => {
@@ -122,8 +126,10 @@ export const Thread = ({
 
   const showSpinner = loading
 
-  return (<Box wrap width={'100%'} pb={.5}>
-    <Box width='100%' pt={.5} >
+
+
+  return (<S.Thread active={guid === activeThreadGuid}>
+    <Box width='100%'>
     
     {
       edit
@@ -180,8 +186,7 @@ export const Thread = ({
             iconPrefix='fas'
             minimalIcon
             // @ts-ignore
-
-            title={
+            text={
               showSpinner 
                 ? <MatrixLoading
                     text={response}
@@ -207,6 +212,14 @@ export const Thread = ({
               iconPrefix='fas'
               minimal
               items={[
+                {
+                  icon: 'reply',
+                  iconPrefix: 'fas',
+                  name: 'Reply',
+                  onClick: () => {
+                    setActiveThreadGuid(guid)
+                  }
+                },
                 {
                   icon: 'bolt-lightning',
                   iconPrefix: 'fas',
@@ -257,23 +270,41 @@ export const Thread = ({
     
     {
       expanded &&
-        <Box width={'100%'} p={.75}  wrap>
+        <Box width={'100%'} px={.75}  wrap>
           <Gap>
 
           <ThreadSuggestions guid={guid} onSend={(message) => sendMessageToWebsocket(message)} />
           {/* <Box pb={.5} width='100%'>
             <Item subtitle={`${name}`} />
           </Box> */}
-            <NewMessage
-              channelGuid={guid}
-              thread={false}
-              threadName={name}
-              onSend={(message) => sendMessageToWebsocket(message)}
+          <Button
+            expand
+            icon='reply'
+            iconPrefix='fas'
+            text={activeThreadGuid === guid ? 'Replying' : 'Reply'}
+            secondary
+            disabled={activeThreadGuid === guid}
+            onClick={() => {
+              setActiveThreadGuid(guid)
+            }}  
           />
+           
         </Gap>
      
     </Box>
     }
    
-  </Box>)
+  </S.Thread>)
+}
+
+const S = {
+  Thread: styled.div<{
+    active: boolean
+  }>`
+    width: calc(100% - 4px);
+    display: flex;
+    flex-wrap: wrap;
+    border-left: ${props => props.active ? '4px solid var(--F_Primary)' : '4px solid var(--F_Surface_0)'};
+    padding: .5rem 0;
+  `
 }
