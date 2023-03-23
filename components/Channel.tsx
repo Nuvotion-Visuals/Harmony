@@ -81,8 +81,6 @@ export const Channel = ({ }: Props) => {
       messagesByGuid[messageGuids[messageGuids.length - 1]]?.parentMessageId
       || 'initial'
 
-    console.log(messageGuids, parentMessageId)
-
       const messageGuid = generateUUID()
       const newMessage ={
         guid: messageGuid,
@@ -111,6 +109,7 @@ export const Channel = ({ }: Props) => {
       const newResponse ={
         guid: responseGuid,
         message: '',
+        userLabel: 'Lexi'
       } as MessageProps
       addMessage({ guid: responseGuid, message: newResponse })
       addMessageToThread({ threadGuid: activeThreadGuid || '', messageGuid: responseGuid })
@@ -161,7 +160,8 @@ export const Channel = ({ }: Props) => {
     const responseGuid = generateUUID()
     const newResponse ={
       guid: responseGuid,
-      message: ''
+      message: '',
+      userLabel: 'Lexi'
     } as MessageProps
     addMessage({ guid: responseGuid, message: newResponse })
     addMessageToThread({ threadGuid: guid, messageGuid: responseGuid })
