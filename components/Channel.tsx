@@ -100,8 +100,8 @@ export const Channel = ({ }: Props) => {
         message,
         conversationId: activeThreadGuid,
         parentMessageId,
-        chatGptLabel: 'Lexi',
-        promptPrefix: 'You are Lexi',
+        personaLabel: 'Lexi',
+        systemMessage: 'You are Lexi',
         userLabel: 'User',
       }
       websocketClient.send(JSON.stringify(action))
@@ -173,8 +173,8 @@ export const Channel = ({ }: Props) => {
       message,
       conversationId: guid,
       parentMessageId: 'initial',
-      chatGptLabel: 'Lexi',
-      promptPrefix: 'You are Lexi',
+      personaLabel: 'Lexi',
+      systemMessage: 'You are Lexi',
       userLabel: 'User',
     }
     websocketClient.send(JSON.stringify(action))

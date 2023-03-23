@@ -134,7 +134,7 @@ var clients = {};
 var messageGuids = {};
 var threadsByThreadId = {};
 var sendMessage = function (_a) {
-    var conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, chatGptLabel = _a.chatGptLabel, promptPrefix = _a.promptPrefix, userLabel = _a.userLabel, message = _a.message, threadId = _a.threadId, onComplete = _a.onComplete, onProgress = _a.onProgress;
+    var conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, personaLabel = _a.personaLabel, systemMessage = _a.systemMessage, userLabel = _a.userLabel, message = _a.message, threadId = _a.threadId, onComplete = _a.onComplete, onProgress = _a.onProgress;
     return __awaiter(void 0, void 0, void 0, function () {
         var guid, storedClient, ChatGPTAPI, api, onCompleteWrapper, onProgressWrapper, res;
         return __generator(this, function (_b) {
@@ -142,7 +142,7 @@ var sendMessage = function (_a) {
                 case 0:
                     guid = uuidv4();
                     messageGuids[guid] = true;
-                    storedClient = clients["".concat(promptPrefix, "-").concat(chatGptLabel, "-").concat(userLabel)];
+                    storedClient = clients["".concat(systemMessage, "-").concat(personaLabel, "-").concat(userLabel)];
                     if (!!storedClient) return [3 /*break*/, 2];
                     return [4 /*yield*/, import('chatgpt')];
                 case 1:
@@ -150,11 +150,11 @@ var sendMessage = function (_a) {
                     api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY || '' });
                     storedClient = {
                         api: api,
-                        chatGptLabel: chatGptLabel,
-                        promptPrefix: promptPrefix,
+                        personaLabel: personaLabel,
+                        systemMessage: systemMessage,
                         userLabel: userLabel,
                     };
-                    clients["".concat(promptPrefix, "-").concat(chatGptLabel, "-").concat(userLabel)] = storedClient;
+                    clients["".concat(systemMessage, "-").concat(personaLabel, "-").concat(userLabel)] = storedClient;
                     _b.label = 2;
                 case 2:
                     onCompleteWrapper = function (data) {
@@ -175,8 +175,8 @@ var sendMessage = function (_a) {
                             onProgress({
                                 conversationId: conversationId,
                                 parentMessageId: parentMessageId,
-                                chatGptLabel: chatGptLabel,
-                                promptPrefix: promptPrefix,
+                                personaLabel: personaLabel,
+                                systemMessage: systemMessage,
                                 userLabel: userLabel,
                                 message: message,
                                 response: partialResponse.text,
@@ -193,8 +193,8 @@ var sendMessage = function (_a) {
                     onCompleteWrapper({
                         conversationId: conversationId,
                         parentMessageId: res.id,
-                        chatGptLabel: chatGptLabel,
-                        promptPrefix: promptPrefix,
+                        personaLabel: personaLabel,
+                        systemMessage: systemMessage,
                         userLabel: userLabel,
                         message: message,
                         response: res.text,
@@ -231,8 +231,8 @@ wss.on('connection', function connection(ws) {
             sendMessage({
                 conversationId: action.conversationId,
                 parentMessageId: action.parentMessageId,
-                chatGptLabel: action.chatGptLabel,
-                promptPrefix: action.promptPrefix,
+                personaLabel: action.personaLabel,
+                systemMessage: action.systemMessage,
                 userLabel: action.userLabel,
                 message: action.message,
                 onComplete: function (_a) {
@@ -240,13 +240,13 @@ wss.on('connection', function connection(ws) {
                     console.log('Sending response to client');
                     ws.send(JSON.stringify({
                         // server send complete response to message
-                        type: action.chatGptLabel === 'GENERATE' ? 'GENERATE_response' : 'response',
+                        type: action.personaLabel === 'GENERATE' ? 'GENERATE_response' : 'response',
                         message: response || '',
                         guid: action.guid,
                         conversationId: conversationId,
                         parentMessageId: parentMessageId,
-                        chatGptLabel: action.chatGptLabel,
-                        promptPrefix: action.promptPrefix,
+                        personaLabel: action.personaLabel,
+                        systemMessage: action.systemMessage,
                         userLabel: action.userLabel,
                         status: 200,
                         messageTime: action.messageTime
@@ -256,13 +256,13 @@ wss.on('connection', function connection(ws) {
                     var response = _a.response, parentMessageId = _a.parentMessageId, conversationId = _a.conversationId;
                     ws.send(JSON.stringify({
                         // server send complete response to message
-                        type: action.chatGptLabel === 'GENERATE' ? 'GENERATE_partial-response' : 'partial-response',
+                        type: action.personaLabel === 'GENERATE' ? 'GENERATE_partial-response' : 'partial-response',
                         message: response || '',
                         guid: action.guid,
                         conversationId: conversationId,
                         parentMessageId: parentMessageId,
-                        chatGptLabel: action.chatGptLabel,
-                        promptPrefix: action.promptPrefix,
+                        personaLabel: action.personaLabel,
+                        systemMessage: action.systemMessage,
                         userLabel: action.userLabel,
                         status: 200,
                         messageTime: action.messageTime
@@ -310,8 +310,8 @@ app.prepare().then(function () {
     sendMessage({
         conversationId: '',
         parentMessageId: '',
-        chatGptLabel: 'Lexi',
-        promptPrefix: 'You are Lexi.',
+        personaLabel: 'Lexi',
+        systemMessage: 'You are Lexi.',
         userLabel: '',
         message: 'State if you are functioning properly.',
         onComplete: function (_a) {
@@ -338,19 +338,19 @@ app.prepare().then(function () {
     //   return
     // })
     server.get('/send-message', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, conversationId, parentMessageId, chatGptLabel, promptPrefix, userLabel, message, threadId, error_2;
+        var _a, conversationId, parentMessageId, personaLabel, systemMessage, userLabel, message, threadId, error_2;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 2, , 3]);
-                    _a = req.query, conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, chatGptLabel = _a.chatGptLabel, promptPrefix = _a.promptPrefix, userLabel = _a.userLabel, message = _a.message, threadId = _a.threadId;
+                    _a = req.query, conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, personaLabel = _a.personaLabel, systemMessage = _a.systemMessage, userLabel = _a.userLabel, message = _a.message, threadId = _a.threadId;
                     console.log(res.query);
                     // Call the sendMessage function with the extracted data
                     return [4 /*yield*/, sendMessage({
                             conversationId: conversationId,
                             parentMessageId: parentMessageId,
-                            chatGptLabel: chatGptLabel,
-                            promptPrefix: promptPrefix,
+                            personaLabel: personaLabel,
+                            systemMessage: systemMessage,
                             userLabel: userLabel,
                             message: message,
                             threadId: threadId,

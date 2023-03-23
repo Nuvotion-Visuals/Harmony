@@ -40,8 +40,8 @@ async function connectToServer() {
       type,
       conversationId,
       parentMessageId,
-      chatGptLabel,
-      promptPrefix,
+      personaLabel,
+      systemMessage,
       userLabel,
     } = JSON.parse(ev.data.toString())
     // console.log(type, message)

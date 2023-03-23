@@ -4,8 +4,8 @@ import { getWebsocketClient } from '../Connectvity/websocket-client';
 export interface SendMessageProps {
   conversationId: string;
   parentMessageId?: string;
-  chatGptLabel: string;
-  promptPrefix: string;
+  personaLabel: string;
+  systemMessage: string;
   userLabel: string;
   message: string;
 }
@@ -41,8 +41,8 @@ export function language_sendMessage(
       type,
       conversationId,
       parentMessageId,
-      chatGptLabel,
-      promptPrefix,
+      personaLabel,
+      systemMessage,
       userLabel,
     } = JSON.parse(ev.data.toString());
 
@@ -51,8 +51,8 @@ export function language_sendMessage(
         message,
         conversationId,
         parentMessageId,
-        chatGptLabel,
-        promptPrefix,
+        personaLabel,
+        systemMessage,
         userLabel,
       } as SendMessageProps;
 
@@ -63,8 +63,8 @@ export function language_sendMessage(
         message,
         conversationId,
         parentMessageId,
-        chatGptLabel,
-        promptPrefix,
+        personaLabel,
+        systemMessage,
         userLabel,
       } as SendMessageProps;
 
@@ -109,8 +109,8 @@ function getCodeBlock(markdown: string): string | null {
 export const language_generateGroups = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
     const props: SendMessageProps = {
       conversationId: '12345',
-      chatGptLabel: 'GENERATE',
-      promptPrefix: 'You provide a list of groups for the given input',
+      personaLabel: 'GENERATE',
+      systemMessage: 'You provide a list of groups for the given input',
       userLabel: 'Input prompt provider',
       message: 
 `You are an API endpoint that provides a list of Channels for a project management app based on a description.
@@ -150,8 +150,8 @@ Description: ${prompt}`,
 export const language_generateTitleAndDescription = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
     const props: SendMessageProps = {
       conversationId: '12345',
-      chatGptLabel: 'GENERATE',
-      promptPrefix: 'You are an API that suggests a title for the given input. You do not add any commentary.',
+      personaLabel: 'GENERATE',
+      systemMessage: 'You are an API that suggests a title for the given input. You do not add any commentary.',
       userLabel: 'Input prompt provider',
       message: 
 `You are an API endpoint that provides a name and description for message thread based on a propmt, which is a series of messages.
@@ -183,8 +183,8 @@ Prompt: ${prompt} Reply in JSON`,
 export const language_generateThreadPrompts = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
   const props: SendMessageProps = {
     conversationId: '12345',
-    chatGptLabel: 'GENERATE',
-    promptPrefix: 'You are an API that provides a list of suggested threads for the given input. You do not add any commentary.',
+    personaLabel: 'GENERATE',
+    systemMessage: 'You are an API that provides a list of suggested threads for the given input. You do not add any commentary.',
     userLabel: 'Input prompt provider',
     message: 
 `You are an API in a project management app
@@ -225,8 +225,8 @@ Prompt: ${prompt} Reply in JSON`,
   export const language_generateFollowUpMessages = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
     const props: SendMessageProps = {
       conversationId: '12345',
-      chatGptLabel: 'GENERATE',
-      promptPrefix: 'You are an API that provides a list of follow up messages for the given input. You do not add any commentary. You always answer in a code block.',
+      personaLabel: 'GENERATE',
+      systemMessage: 'You are an API that provides a list of follow up messages for the given input. You do not add any commentary. You always answer in a code block.',
       userLabel: 'Input prompt provider',
       message: 
   `You are an API endpoint that provides a list of three distinct suggestions for follow-up message prompts within a thread of a project management app.

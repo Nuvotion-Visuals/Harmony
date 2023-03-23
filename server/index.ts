@@ -92,16 +92,16 @@ let ready = false
 interface SendMessageProps {
   conversationId: string;
   parentMessageId: string;
-  chatGptLabel: string;
-  promptPrefix: string;
+  personaLabel: string;
+  systemMessage: string;
   userLabel: string;
   message: string;
   threadId?: string;
   onComplete: (data: {
     conversationId: string;
     parentMessageId: string;
-    chatGptLabel: string;
-    promptPrefix: string;
+    personaLabel: string;
+    systemMessage: string;
     userLabel: string;
     message: string;
     response: string;
@@ -109,8 +109,8 @@ interface SendMessageProps {
   onProgress?: (data: {
     conversationId: string;
     parentMessageId: string;
-    chatGptLabel: string;
-    promptPrefix: string;
+    personaLabel: string;
+    systemMessage: string;
     userLabel: string;
     message: string;
     response: string;
@@ -123,8 +123,8 @@ let languageModels: { [key: string]: any } = {};
 interface StoredMessage {
   conversationId: string;
   parentMessageId: string;
-  chatGptLabel: string;
-  promptPrefix: string;
+  personaLabel: string;
+  systemMessage: string;
   userLabel: string;
   message: string;
   response: string;
@@ -136,8 +136,8 @@ interface MessagesByGuid {
 
 interface StoredClient {
   api: any;
-  chatGptLabel: string;
-  promptPrefix: string;
+  personaLabel: string;
+  systemMessage: string;
   userLabel: string;
 }
 
@@ -161,8 +161,8 @@ const threadsByThreadId: ThreadsByThreadId = {};
 const sendMessage = async ({
   conversationId,
   parentMessageId,
-  chatGptLabel,
-  promptPrefix,
+  personaLabel,
+  systemMessage,
   userLabel,
   message,
   threadId,
@@ -172,7 +172,7 @@ const sendMessage = async ({
   const guid = uuidv4();
   messageGuids[guid] = true;
 
-  let storedClient = clients[`${promptPrefix}-${chatGptLabel}-${userLabel}`];
+  let storedClient = clients[`${systemMessage}-${personaLabel}-${userLabel}`];
 
   if (!storedClient) {
     // Dynamically import the ChatGPTAPI
@@ -184,11 +184,11 @@ const sendMessage = async ({
 
     storedClient = {
       api,
-      chatGptLabel,
-      promptPrefix,
+      personaLabel,
+      systemMessage,
       userLabel,
     };
-    clients[`${promptPrefix}-${chatGptLabel}-${userLabel}`] = storedClient;
+    clients[`${systemMessage}-${personaLabel}-${userLabel}`] = storedClient;
   }
 
   const onCompleteWrapper = (data: StoredMessage) => {
@@ -212,8 +212,8 @@ const sendMessage = async ({
       onProgress({
         conversationId,
         parentMessageId,
-        chatGptLabel,
-        promptPrefix,
+        personaLabel,
+        systemMessage,
         userLabel,
         message,
         response: partialResponse.text,
@@ -223,7 +223,7 @@ const sendMessage = async ({
   };
 
   const res = await storedClient.api.sendMessage(`${message}`, {
-    systemMessage: chatGptLabel,
+    systemMessage,
     parentMessageId,
     onProgress: onProgressWrapper,
   });
@@ -231,8 +231,8 @@ const sendMessage = async ({
   onCompleteWrapper({
     conversationId,
     parentMessageId: res.id,
-    chatGptLabel,
-    promptPrefix,
+    personaLabel,
+    systemMessage,
     userLabel,
     message,
     response: res.text,
@@ -248,8 +248,8 @@ const sendMessage = async ({
     guid: string,
     parentMessageId: string,
     messageTime: string,
-    chatGptLabel: string,
-    promptPrefix: string,
+    personaLabel: string,
+    systemMessage: string,
     conversationId: string,
     userLabel: string
   }
@@ -285,21 +285,21 @@ const sendMessage = async ({
         sendMessage({
           conversationId: action.conversationId,
           parentMessageId: action.parentMessageId,
-          chatGptLabel: action.chatGptLabel,
-          promptPrefix: action.promptPrefix,
+          personaLabel: action.personaLabel,
+          systemMessage: action.systemMessage,
           userLabel: action.userLabel,
           message: action.message,
           onComplete: ({ response, parentMessageId, conversationId }) => {
             console.log('Sending response to client')
             ws.send(JSON.stringify({
               // server send complete response to message
-              type: action.chatGptLabel === 'GENERATE' ? 'GENERATE_response' : 'response',
+              type: action.personaLabel === 'GENERATE' ? 'GENERATE_response' : 'response',
               message: response || '',
               guid: action.guid,
               conversationId: conversationId,
               parentMessageId: parentMessageId,
-              chatGptLabel: action.chatGptLabel,
-              promptPrefix: action.promptPrefix,
+              personaLabel: action.personaLabel,
+              systemMessage: action.systemMessage,
               userLabel: action.userLabel,
               status: 200,
               messageTime: action.messageTime
@@ -308,13 +308,13 @@ const sendMessage = async ({
           onProgress: ({ response, parentMessageId, conversationId }) => {
             ws.send(JSON.stringify({
               // server send complete response to message
-              type: action.chatGptLabel === 'GENERATE' ? 'GENERATE_partial-response' : 'partial-response',
+              type: action.personaLabel === 'GENERATE' ? 'GENERATE_partial-response' : 'partial-response',
               message: response || '',
               guid: action.guid,
               conversationId: conversationId,
               parentMessageId: parentMessageId,
-              chatGptLabel: action.chatGptLabel,
-              promptPrefix: action.promptPrefix,
+              personaLabel: action.personaLabel,
+              systemMessage: action.systemMessage,
               userLabel: action.userLabel,
               status: 200,
               messageTime: action.messageTime
@@ -370,8 +370,8 @@ app.prepare().then(() => {
   sendMessage({
     conversationId: '',
     parentMessageId: '',
-    chatGptLabel: 'Lexi',
-    promptPrefix: 'Your name is Lexi.',
+    personaLabel: 'Lexi',
+    systemMessage: 'Your name is Lexi.',
     userLabel: 'user',
     message: 'State if you are functioning properly. What is your name?',
     onComplete: ({ response, parentMessageId, conversationId }) => {
@@ -404,8 +404,8 @@ app.prepare().then(() => {
       const {
         conversationId,
         parentMessageId,
-        chatGptLabel,
-        promptPrefix,
+        personaLabel,
+        systemMessage,
         userLabel,
         message,
         threadId,
@@ -417,8 +417,8 @@ app.prepare().then(() => {
     await sendMessage({
       conversationId,
       parentMessageId,
-      chatGptLabel,
-      promptPrefix,
+      personaLabel,
+      systemMessage,
       userLabel,
       message,
       threadId,

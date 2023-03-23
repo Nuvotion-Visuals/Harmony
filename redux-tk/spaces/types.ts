@@ -83,8 +83,8 @@ export interface Message {
   guid: Guid;
   conversationId: string;
   parentMessageId: string;
-  chatGptLabel: string;
-  promptPrefix: string;
+  personaLabel: string;
+  systemMessage: string;
   userLabel: string;
   message: string;
   threadGuid?: string;

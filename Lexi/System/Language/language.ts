@@ -1,8 +1,8 @@
 export interface SendMessageProps {
   conversationId: string;
   parentMessageId?: string;
-  chatGptLabel: string;
-  promptPrefix: string;
+  personaLabel: string;
+  systemMessage: string;
   userLabel: string;
   message: string;
   threadId: string;
@@ -43,8 +43,8 @@ function getCodeBlock(markdown: string): string | null {
 export const language_generateGroups = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onError?: SendErrorCallback): void => {
   const props: SendMessageProps = {
     conversationId: '12345',
-    chatGptLabel: 'GENERATOR',
-    promptPrefix: 'You provide a list of groups for the given input',
+    personaLabel: 'GENERATOR',
+    systemMessage: 'You provide a list of groups for the given input',
     userLabel: 'Input prompt provider',
     message: 
 `You are an API endpoint that provides a list of Channels for a project management app based on a description.

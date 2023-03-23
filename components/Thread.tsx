@@ -104,8 +104,8 @@ export const Thread = ({
       message,
       conversationId: threadGuid,
       parentMessageId: messageGuid,
-      chatGptLabel: 'Lexi',
-      promptPrefix: 'You are Lexi',
+      personaLabel: 'Lexi',
+      systemMessage: 'You are Lexi',
       userLabel: 'User',
     }
     websocketClient.send(JSON.stringify(action))
