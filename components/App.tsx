@@ -77,7 +77,11 @@ const App = ({ children }: Props) => {
       {
         !isMobile && !isTablet && <S.HeaderSpacer />
       }
-      <Channel />
+      {
+        router.route !== '/spaces/[spaceGuid]' && router.route!== '/spaces/add' &&
+          <Channel />
+      }
+      
     </>
   }
 

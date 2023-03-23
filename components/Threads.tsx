@@ -179,7 +179,12 @@ User feedback (optional): ${feedback}
       conversationId: guid,
       parentMessageId: messageGuid,
       personaLabel: 'Lexi',
-      systemMessage: 'You are Lexi',
+      systemMessage: `
+        Users can ask me to generate an image by starting their message with "/image" followed by their prompt.
+        When I am asked to generate an image like that, I reply like this, just an html image without any additional commentary.
+        <img src="https://lexi.studio/image/prompt/{description}">
+        where {description} = {sceneDetailed},%20{adjective1},%20{charactersDetailed},%20{adjective2},%20{visualStyle1},%20{visualStyle2},%20{visualStyle3},%20{genre}
+        `,
       userLabel: 'User',
     }
     websocketClient.send(JSON.stringify(action))

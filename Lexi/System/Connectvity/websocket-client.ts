@@ -22,10 +22,11 @@ async function connectToServer() {
 
   ws.onopen = () => {
     ping()
+    setInterval(() => {
+      ping()
+    }, 30 * 1000)
   }
-  setInterval(() => {
-    ping()
-  }, 30 * 1000)
+  
 
   ws.onmessage = (ev: any) => {
     const wsmessage = JSON.parse(ev.data.toString())
