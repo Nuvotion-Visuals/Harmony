@@ -1,4 +1,4 @@
-import { Box, Button, Dropdown, generateUUID, Item, LineBreak, NavTabs, Page, RichTextEditor, Spacer, stringInArray, TextInput, useBreakpoint } from '@avsync.live/formation'
+import { Box, Button, Dropdown, generateUUID, Item, Page, RichTextEditor, Spacer, TextInput, useBreakpoint } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { use100vh } from 'react-div-100vh'
@@ -22,10 +22,8 @@ interface Props {
 
 export const Channel = ({ }: Props) => {
   const router = useRouter()
-  const { spaceGuid, groupGuid, channelGuid } = router.query
+  const { channelGuid } = router.query
   const true100vh = use100vh()
-
-  
 
   const [height, setHeight] = useState(160);
   const componentRef = useRef<HTMLDivElement>(null);
@@ -42,8 +40,6 @@ export const Channel = ({ }: Props) => {
     };
   }, []);
 
-  
-
   const [message, set_message] = useState('')
 
   useEffect(() => {
@@ -51,10 +47,6 @@ export const Channel = ({ }: Props) => {
       setHeight(componentRef.current.clientHeight);
     }
   }, [message])
-
-  const { 
-   
-  } = useSpaces() 
 
   const { isDesktop } = useBreakpoint()
   const { decrementActiveSwipeIndex } = useLayout()
@@ -88,6 +80,8 @@ export const Channel = ({ }: Props) => {
     const parentMessageId = 
       messagesByGuid[messageGuids[messageGuids.length - 1]]?.parentMessageId
       || 'initial'
+
+    console.log(messageGuids, parentMessageId)
 
       const messageGuid = generateUUID()
       const newMessage ={
@@ -199,7 +193,6 @@ export const Channel = ({ }: Props) => {
         });
       }
     }, 100)
-   
   }
 
   const send = (message: string) => {
@@ -313,7 +306,6 @@ export const Channel = ({ }: Props) => {
         icon='hashtag'
         minimalIcon
       >
-
         <Item
           subtitle={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
           onClick={() => {
@@ -405,69 +397,61 @@ export const Channel = ({ }: Props) => {
             value={query} 
             onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
             onEnter={() => send(query)}
-            // onEnter={newQuery => {
-            //   if (!isMobile) {
-            //     onEnter()
-            //   }
-            // }}
             placeholder='Chat'
             outset
           >
             <Button 
-                icon={'paper-plane'}
-                iconPrefix='fas'
-                minimal
-                onClick={() => {
-                  send(query)
-                }}
-              />
-              <Dropdown
-                icon='plus'
-                iconPrefix='fas'
-                minimal
-                circle
-                items={[
-                  {
-                    children: <div onClick={e => e.stopPropagation()}>
-                      <Box minWidth={13.5}>
-                        <TextInput
-                          value={urlToScrape}
-                          onChange={newValue => set_urlToScrape(newValue)}
-                          iconPrefix='fas'
-                          compact
-                          placeholder='Insert from URL'
-                          canClear={urlToScrape !== ''}
-                          buttons={[
-                            {
-                              icon: 'arrow-right',
-                              iconPrefix: 'fas',
-                              minimal: true,
-                              onClick: () => insertContentByUrl(urlToScrape, content => set_query(oldQuery => `${oldQuery}\n${content}`))
-                            }
-                          ]}
-                        />
-                      </Box>
-                    </div>
-                  }
-                ]}
-              />
-              <Button 
-                icon={listening ? 'microphone-slash' : 'microphone'}
-                iconPrefix='fas'
-                circle={true}
-                minimal
-                onClick={() => {
-                  if (listening) {
-                    stop()
-                    set_disableTimer(true)
-                  }
-                  else {
-                    start()
-                  }
-                }}
-                blink={listening}
-              />
-            
+              icon={'paper-plane'}
+              iconPrefix='fas'
+              minimal
+              onClick={() => send(query)}
+            />
+            <Dropdown
+              icon='plus'
+              iconPrefix='fas'
+              minimal
+              circle
+              items={[
+                {
+                  children: <div onClick={e => e.stopPropagation()}>
+                    <Box minWidth={13.5}>
+                      <TextInput
+                        value={urlToScrape}
+                        onChange={newValue => set_urlToScrape(newValue)}
+                        iconPrefix='fas'
+                        compact
+                        placeholder='Insert from URL'
+                        canClear={urlToScrape !== ''}
+                        buttons={[
+                          {
+                            icon: 'arrow-right',
+                            iconPrefix: 'fas',
+                            minimal: true,
+                            onClick: () => insertContentByUrl(urlToScrape, content => set_query(oldQuery => `${oldQuery}\n${content}`))
+                          }
+                        ]}
+                      />
+                    </Box>
+                  </div>
+                }
+              ]}
+            />
+            <Button 
+              icon={listening ? 'microphone-slash' : 'microphone'}
+              iconPrefix='fas'
+              circle={true}
+              minimal
+              onClick={() => {
+                if (listening) {
+                  stop()
+                  set_disableTimer(true)
+                }
+                else {
+                  start()
+                }
+              }}
+              blink={listening}
+            />
           </RichTextEditor>
         </Page>
       </Box>

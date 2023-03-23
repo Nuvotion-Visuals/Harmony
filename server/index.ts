@@ -177,7 +177,10 @@ const sendMessage = async ({
   if (!storedClient) {
     // Dynamically import the ChatGPTAPI
     const { ChatGPTAPI } = await import('chatgpt');
-    const api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY || '' });
+    const api = new ChatGPTAPI({ 
+      apiKey: process.env.OPENAI_API_KEY || '',
+
+    });
 
     storedClient = {
       api,
@@ -220,6 +223,7 @@ const sendMessage = async ({
   };
 
   const res = await storedClient.api.sendMessage(`${message}`, {
+    systemMessage: chatGptLabel,
     parentMessageId,
     onProgress: onProgressWrapper,
   });
@@ -367,9 +371,9 @@ app.prepare().then(() => {
     conversationId: '',
     parentMessageId: '',
     chatGptLabel: 'Lexi',
-    promptPrefix: 'You are Lexi.',
-    userLabel: '',
-    message: 'State if you are functioning properly.',
+    promptPrefix: 'Your name is Lexi.',
+    userLabel: 'user',
+    message: 'State if you are functioning properly. What is your name?',
     onComplete: ({ response, parentMessageId, conversationId }) => {
       console.log(response)
     },

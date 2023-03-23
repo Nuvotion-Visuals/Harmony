@@ -71,7 +71,7 @@ export const Thread = ({
     removeThreadFromChannel,
     removeThread,
     setActiveThreadGuid,
-    activeThreadGuid
+    activeThreadGuid,
   } = useSpaces() 
 
   const [edit, set_edit] = useState(false)
@@ -256,6 +256,9 @@ export const Thread = ({
                   onClick: (e) => {
                     removeThreadFromChannel({ threadGuid: guid, channelGuid})
                     removeThread(guid)
+                    if (activeThreadGuid === guid) {
+                      setActiveThreadGuid(null)
+                    }
                   }
                 }
               ]}
@@ -276,12 +279,11 @@ export const Thread = ({
               {
                 ...message
               }
+              threadGuid={threadGuid}
             />
         )
       })
     }
-
-    
     
     {
       expanded &&
@@ -289,28 +291,22 @@ export const Thread = ({
           <Gap>
 
           <ThreadSuggestions guid={guid} onSend={(message) => sendMessageToWebsocket(message)} />
-          {/* <Box pb={.5} width='100%'>
-            <Item subtitle={`${name}`} />
-          </Box> */}
-          {
-            activeThreadGuid !== guid &&
-              <Button
-                expand
-                icon='reply'
-                iconPrefix='fas'
-                text={activeThreadGuid === guid ? 'Replying' : 'Reply'}
-                secondary
-                disabled={activeThreadGuid === guid}
-                onClick={() => {
-                  setActiveThreadGuid(guid)
-                }}  
-              />
-          }
-        
-           
+            {
+              activeThreadGuid !== guid &&
+                <Button
+                  expand
+                  icon='reply'
+                  iconPrefix='fas'
+                  text={activeThreadGuid === guid ? 'Replying' : 'Reply'}
+                  secondary
+                  disabled={activeThreadGuid === guid}
+                  onClick={() => {
+                    setActiveThreadGuid(guid)
+                  }}  
+                />
+            }
         </Gap>
-     
-    </Box>
+      </Box>
     }
    <div id={`bottom_${guid}`}></div>
   </S.Thread>)

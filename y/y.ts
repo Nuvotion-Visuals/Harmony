@@ -42,34 +42,37 @@ if (typeof window !== 'undefined') {
 
   Object.entries(db).forEach(([name, map]) => {
     map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group | Thread | Message>) => {
-      console.log(event)
       setTimeout(() => {
-        const payload = map.toJSON()
+        try {
+          const payload = map.toJSON()
 
-        switch (name) {
-          case 'spaces':
-            store.dispatch({ type: 'spaces/setSpaces', payload });
-            break;
-          case 'groups':
-            store.dispatch({ type: 'spaces/setGroups', payload });
-            break;
-          case 'channels':
-            store.dispatch({ type: 'spaces/setChannels', payload });
-            break;
-          case 'assets':
-            store.dispatch({ type: 'spaces/setAssets', payload });
-            break;
-          case 'threads':
-            store.dispatch({ type: 'spaces/setThreads', payload });
-            break;
-          case 'messages':
-            store.dispatch({ type: 'spaces/setMessages', payload });
-            break;
-          default:
-            break;
+          switch (name) {
+            case 'spaces':
+              store.dispatch({ type: 'spaces/setSpaces', payload });
+              break;
+            case 'groups':
+              store.dispatch({ type: 'spaces/setGroups', payload });
+              break;
+            case 'channels':
+              store.dispatch({ type: 'spaces/setChannels', payload });
+              break;
+            case 'assets':
+              store.dispatch({ type: 'spaces/setAssets', payload });
+              break;
+            case 'threads':
+              store.dispatch({ type: 'spaces/setThreads', payload });
+              break;
+            case 'messages':
+              store.dispatch({ type: 'spaces/setMessages', payload });
+              break;
+            default:
+              break;
+          }
+        }
+        catch(e) {
+          console.log(e)
         }
       }, Math.random())
-     
     });
   });
 } 

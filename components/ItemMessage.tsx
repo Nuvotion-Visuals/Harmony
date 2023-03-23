@@ -146,8 +146,8 @@ export const ItemMessage = React.memo((props: Props) => {
                     e.preventDefault()
                     if (threadGuid) {
                       removeMessageFromThread({ threadGuid, messageGuid: guid})
+                      removeMessage(guid)
                     }
-                    removeMessage(guid)
                   }
                 }
               ]}
@@ -196,13 +196,6 @@ export const ItemMessage = React.memo((props: Props) => {
         }
        
         <Spacer />
-
-        <Box width='100%'>
-          <S.Date>
-              PARENT: { parentMessageId }
-            </S.Date>
-            <Spacer />
-        </Box>
       </Box>
     </S.ItemMessage>
   )
@@ -218,7 +211,7 @@ const S = {
   ItemMessage: styled.div`
     width: 100%;
     display: flex;
-    padding: .5rem 0;
+    padding: .325rem 0;
     transition: height 0.3s ease-out;
   `,
   VerticalSpacer: styled.div`
