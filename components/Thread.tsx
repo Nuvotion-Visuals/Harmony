@@ -127,7 +127,7 @@ export const Thread = ({
 
   useEffect(() => {
     if (messageGuids?.length === 2 && !name && !description) {
-      if (messagesByGuid[messageGuids[1]].message) {
+      if (messagesByGuid[messageGuids[1]]?.message) {
         generateTitle(messageContent)
       }
     }

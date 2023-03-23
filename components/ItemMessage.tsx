@@ -49,7 +49,7 @@ export const ItemMessage = React.memo((props: Props) => {
     message,
     threadGuid,
     parentMessageId,
-
+    conversationId
   } = props
   const [edit, set_edit] = useState(false)
 
@@ -105,9 +105,6 @@ export const ItemMessage = React.memo((props: Props) => {
             }
           </S.DisplayName>
           <S.Date>
-            {
-              
-            }
             { new Date().toLocaleTimeString([], {weekday: 'short', year: 'numeric', month: 'numeric', day: '2-digit', hour: '2-digit', minute: '2-digit'})}
           </S.Date>
           <Spacer />
@@ -199,9 +196,14 @@ export const ItemMessage = React.memo((props: Props) => {
         }
        
         <Spacer />
-      
+
+        <Box width='100%'>
+          <S.Date>
+              PARENT: { parentMessageId }
+            </S.Date>
+            <Spacer />
+        </Box>
       </Box>
-        
     </S.ItemMessage>
   )
 

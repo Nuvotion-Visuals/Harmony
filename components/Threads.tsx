@@ -190,27 +190,28 @@ User feedback (optional): ${feedback}
       selected
         ? <>
             <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
+             
               <Page noPadding>
                 <Gap>
-                  {
-                    activeChannel?.previewSrc &&
-                    <Box px={.75} width='100%'>
-                      <S.ThreadPoster>
-                        
-                        <AspectRatio
-                          backgroundSrc={activeChannel?.previewSrc}
-                          ratio={2}
-                          coverBackground
-                        />
-                      </S.ThreadPoster>
-                    </Box>
-                  }
+                 
                   {
                     activeChannel?.description &&
                       <>
                         <Box mt={-.25} width='100%' wrap>
-                          
-                         
+                        {
+                          activeChannel?.previewSrc &&
+                          <Box px={.75} width='100%'>
+                            <S.ThreadPoster>
+                              
+                              <AspectRatio
+                                backgroundSrc={activeChannel?.previewSrc}
+                                ratio={3}
+                                coverBackground
+                              />
+                            </S.ThreadPoster>
+                          </Box>
+                        }
+                                  
                           <Item icon='hashtag' minimalIcon pageTitle={activeChannel?.name}>
                             <Indicator
                               count={activeChannel?.threadGuids?.length}
