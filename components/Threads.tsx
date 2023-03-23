@@ -354,7 +354,6 @@ User feedback (optional): ${feedback}
                   }
                 </Gap>
                 
-                
                   {
                     activeChannel?.threadGuids?.map((threadGuid, index) => (
                       <S.ThreadsContainer key={threadGuid}>
@@ -369,8 +368,6 @@ User feedback (optional): ${feedback}
                       </S.ThreadsContainer>
                     ))
                   }
-
-              
               </Page>
             </S.Threads>
           </>

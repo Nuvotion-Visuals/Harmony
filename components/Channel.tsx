@@ -396,7 +396,9 @@ export const Channel = ({ }: Props) => {
             key='testley'
             value={query} 
             onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
-            onEnter={() => send(query)}
+            onEnter={() => {
+              send(query.substring(0, query.length - 11)) // trim off <p><br></p>
+            }}
             placeholder='Chat'
             outset
           >

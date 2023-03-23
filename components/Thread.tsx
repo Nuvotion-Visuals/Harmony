@@ -321,6 +321,5 @@ const S = {
     flex-wrap: wrap;
     border-left: ${props => props.active ? '4px solid var(--F_Primary)' : '4px solid var(--F_Surface_0)'};
     padding: .5rem 0;
-    border-bottom: 1px solid var(--F_Surface_0);
   `
 }
