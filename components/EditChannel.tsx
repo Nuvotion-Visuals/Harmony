@@ -31,7 +31,7 @@ export interface ExpandableListProps {
 
 interface Props {}
 
-export const EditChannel = ({}: Props) => {
+export const EditChannel = React.memo(({}: Props) => {
   const router = useRouter();
   const channelGuid = router.query.channelGuid as string
   const { updateChannel, activeGroup, activeSpace, activeChannel, channelsByGuid } = useSpaces();
@@ -113,4 +113,4 @@ export const EditChannel = ({}: Props) => {
       </Box>
     </Box>
   );
-};
+});

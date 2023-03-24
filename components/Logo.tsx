@@ -7,7 +7,7 @@ interface Props {
   large?: boolean
 }
 
-export const Logo = ({ large }: Props) => {
+export const Logo = React.memo(({ large }: Props) => {
   return (
     <S.LogoContainer large={large || false}>
     <MatrixLoading logo={true}> 
@@ -17,7 +17,7 @@ export const Logo = ({ large }: Props) => {
     </S.Connection>
     </S.LogoContainer>
   )
-}
+})
 
 const S = {
 LogoContainer: styled.div<{

@@ -11,12 +11,14 @@ import {
   useBreakpoint,
   Label
 } from '@avsync.live/formation'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
+// @ts-ignore
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
 import { useRouter } from 'next/router'
 import { useLayout } from 'redux-tk/layout/hook'
 import { Indicator } from './Indicator'
+import { AddChannelInput } from './AddChannelInput'
 
 type List = {
   expanded: boolean,
@@ -32,7 +34,7 @@ interface Props {
   locked: boolean
 }
 
-export const Groups = ({ locked }: Props) => {
+export const Groups = React.memo(({ locked }: Props) => {
     const router = useRouter()
 
     const { incrementActiveSwipeIndex } = useLayout()
@@ -57,10 +59,13 @@ export const Groups = ({ locked }: Props) => {
 
     const [value, set_value] = useState<Lists>([])
 
-    const spaceGroupGuids = activeSpace?.groupGuids
-    const spaceChannelGuids = activeSpace?.groupGuids.map(groupGuid => groupsByGuid[groupGuid]?.channelGuids)
+    const spaceGroupGuids = useMemo(() => activeSpace?.groupGuids, [activeSpace]);
+    const spaceChannelGuids = useMemo(
+      () => activeSpace?.groupGuids.map(groupGuid => groupsByGuid[groupGuid]?.channelGuids),
+      [activeSpace, groupsByGuid]
+    );
 
-    const onAddChannel = (i : number) => {
+    const onAddChannel = useCallback((i: number) => {
       if (activeSpace?.guid && newChannelName) {
         const guid = generateUUID()
         addChannel({
@@ -79,10 +84,10 @@ export const Groups = ({ locked }: Props) => {
         })
       }
       set_newChannelName('')
-    }
+    }, [activeSpace?.guid, newChannelName, addChannel, addChannelToGroup]);
 
     const [newGroupName, set_newGroupName] = useState('')
-    const onAddGroup = () => {
+    const onAddGroup = useCallback(() => {
       set_newGroupName('')
       if (activeSpace?.guid) {
         const guid = generateUUID()
@@ -99,11 +104,11 @@ export const Groups = ({ locked }: Props) => {
           groupGuid: guid
         })
       }
-    }
+    }, [activeSpace?.guid, newGroupName, addGroup, addGroupToSpace]);
 
     useEffect(() => {
       if (activeSpace?.groupGuids) {
-        set_value(activeSpace?.groupGuids.map((groupGuid, i) => {
+        set_value(prevValue => activeSpace?.groupGuids.map((groupGuid, i) => {
           const groupsList = groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
             icon: 'hashtag' as IconName,
             labelColor: ('none' as LabelColor),
@@ -117,7 +122,7 @@ export const Groups = ({ locked }: Props) => {
             }
           }))
           return ({
-            expanded: value[i]?.expanded || true,
+            expanded: prevValue[i]?.expanded || true,
             value: {
               item: {
                 labelColor: 'none',
@@ -126,35 +131,38 @@ export const Groups = ({ locked }: Props) => {
               list: [
                 ...groupsList,
                 {
-                  content: !locked && <Box><TextInput
-                    value={newChannelName}
-                    onChange={newValue => set_newChannelName(newValue)}
-                    iconPrefix='fas'
-                    compact
-                    hideOutline
-                    placeholder='Add channel'
-                    onEnter={() => onAddChannel(i)}
-                    buttons={[
-                      {
-                        icon: 'plus',
-                        iconPrefix: 'fas',
-                        minimal: true,
-                        onClick: () => onAddChannel(i),
-                        disabled: !newChannelName
-                      }
-                    ]}
-                  />
-                </Box>
-                }
-              ]
+                  content: (
+                    <Box>
+                      <AddChannelInput
+                        newChannelName={newChannelName}
+                        setNewChannelName={set_newChannelName}
+                        onAddChannel={onAddChannel}
+                        index={i}
+                      />
+                    </Box>
+                  ),
+                },
+              ],
             }
-          }
-        )}
-        ))
+          })
+        }))
       }
-     
-    }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, newChannelName, router.asPath, activeSpaceGuid, locked])
-  
+    }, [activeSpace?.groupGuids, groupsByGuid, channelsByGuid, activeSpaceGuid, isDesktop, incrementActiveSwipeIndex, newChannelName, addChannel, addChannelToGroup, router, removeChannel, removeChannelFromGroup, addGroup, addGroupToSpace, removeGroupFromSpace, activeChannel])
+
+    const createAddChannelButtons = useCallback((i: number) => {
+      return [
+        {
+          icon: 'plus' as IconName,
+          iconPrefix: 'fas' as IconPrefix,
+          minimal: true,
+          onClick: () => onAddChannel(i),
+          disabled: !newChannelName,
+        },
+      ]
+    }, [onAddChannel, newChannelName])
+
+    
+    
     return (<>
       <ExpandableLists 
         value={value.map((expandableList, i) => ({
@@ -254,26 +262,21 @@ export const Groups = ({ locked }: Props) => {
         !locked && activeSpace?.name &&
           <Item
             content={<Box>  
-            <TextInput
-              value={newGroupName}
-              onChange={newValue => set_newGroupName(newValue)}
-              iconPrefix='fas'
-              compact
-              placeholder='Add group'
-              hideOutline
-              onEnter={onAddGroup}
-              buttons={[
-                {
-                  icon: 'plus',
-                  iconPrefix: 'fas',
-                  minimal: true,
-                  onClick: onAddGroup
-                }
-              ]}
-            />
+            <Box>
+              <TextInput
+                value={newGroupName}
+                onChange={(newValue) => set_newGroupName(newValue)}
+                iconPrefix="fas"
+                compact
+                placeholder="Add group"
+                hideOutline
+                onEnter={onAddGroup}
+                buttons={createAddChannelButtons(0)} // Or any index, as needed.
+              />
+              </Box>
             </Box>}
           />
       }
     </>
     )
-}
+})

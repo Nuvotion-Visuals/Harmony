@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 
 import { Groups } from 'components/Groups'
@@ -11,7 +11,7 @@ interface Props {
 
 }
 
-export const SpaceSidebar = ({ }: Props) => {
+export const SpaceSidebar = React.memo(({ }: Props) => {
   const router = useRouter()
 
   const { spaceGuid } = router.query
@@ -26,7 +26,7 @@ export const SpaceSidebar = ({ }: Props) => {
     set_activeSpaceIndex(spaceGuids.indexOf(spaceGuid as string))
   }, [spaceGuid])
 
-  const SpaceName = () => (<S.SpaceName>
+  const SpaceName = React.memo(() => (<S.SpaceName>
     <Box>
       <Item pageTitle={activeSpace?.name}>
     <Dropdown
@@ -73,7 +73,7 @@ export const SpaceSidebar = ({ }: Props) => {
     </Box>
 
     </S.SpaceName>
-  )
+  ));
 
 
   return (<S.GroupsSidebar>
@@ -151,7 +151,7 @@ export const SpaceSidebar = ({ }: Props) => {
       </Box>
     </S.SidebarContainer>
   </S.GroupsSidebar>)
-}
+})
 
 const S = {
   GroupsSidebar: styled.div`

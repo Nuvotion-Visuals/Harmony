@@ -147,7 +147,9 @@ var sendMessage = function (_a) {
                     return [4 /*yield*/, import('chatgpt')];
                 case 1:
                     ChatGPTAPI = (_b.sent()).ChatGPTAPI;
-                    api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY || '' });
+                    api = new ChatGPTAPI({
+                        apiKey: process.env.OPENAI_API_KEY || '',
+                    });
                     storedClient = {
                         api: api,
                         personaLabel: personaLabel,
@@ -185,6 +187,7 @@ var sendMessage = function (_a) {
                         }
                     };
                     return [4 /*yield*/, storedClient.api.sendMessage("".concat(message), {
+                            systemMessage: systemMessage,
                             parentMessageId: parentMessageId,
                             onProgress: onProgressWrapper,
                         })];
@@ -311,9 +314,9 @@ app.prepare().then(function () {
         conversationId: '',
         parentMessageId: '',
         personaLabel: 'Lexi',
-        systemMessage: 'You are Lexi.',
-        userLabel: '',
-        message: 'State if you are functioning properly.',
+        systemMessage: 'Your name is Lexi.',
+        userLabel: 'user',
+        message: 'State if you are functioning properly. What is your name?',
         onComplete: function (_a) {
             var response = _a.response, parentMessageId = _a.parentMessageId, conversationId = _a.conversationId;
             console.log(response);
@@ -371,11 +374,13 @@ app.prepare().then(function () {
             }
         });
     }); });
+    var fs = require('fs');
+    var path = require('path');
     // Set cache duration to 1 hour
     var CACHE_DURATION = 24 * 60 * 60 * 1000;
     var cache = require('memory-cache');
     server.get('/image/prompt/:prompt', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var prompt, imageUrl, cachedImage, imageRes, contentType, imageBuffer, err_1, placeholderUrl, placeholderRes, contentType, placeholderBuffer, placeholderErr_1;
+        var prompt, imageUrl, cachedImage, filename, imageBuffer, contentType, imageRes, contentType, imageBuffer, err_1, placeholderUrl, placeholderRes, contentType, placeholderBuffer, placeholderErr_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -385,6 +390,17 @@ app.prepare().then(function () {
                     if (cachedImage) {
                         res.setHeader('Content-Type', cachedImage.contentType);
                         res.send(cachedImage.data);
+                        return [2 /*return*/];
+                    }
+                    filename = path.join(__dirname, 'data', 'images', "".concat(encodeURIComponent(prompt), ".jpg"));
+                    if (fs.existsSync(filename)) {
+                        imageBuffer = fs.readFileSync(filename);
+                        contentType = 'image/jpeg';
+                        res.setHeader('Content-Type', contentType);
+                        res.send(imageBuffer);
+                        // Store image in cache
+                        console.log("Caching image ".concat(imageUrl));
+                        cache.put(imageUrl, { contentType: contentType, data: imageBuffer }, CACHE_DURATION);
                         return [2 /*return*/];
                     }
                     _a.label = 1;
@@ -407,9 +423,11 @@ app.prepare().then(function () {
                     imageBuffer = _a.sent();
                     res.setHeader('Content-Type', contentType);
                     res.send(imageBuffer);
-                    // Store image in cache
+                    // Store image in cache and on disk
                     console.log("Caching image ".concat(imageUrl));
                     cache.put(imageUrl, { contentType: contentType, data: imageBuffer }, CACHE_DURATION);
+                    fs.writeFileSync(filename, imageBuffer);
+                    console.log("Saved image to disk: ".concat(filename));
                     return [3 /*break*/, 10];
                 case 4:
                     err_1 = _a.sent();
@@ -432,7 +450,7 @@ app.prepare().then(function () {
                     placeholderBuffer = _a.sent();
                     res.setHeader('Content-Type', contentType);
                     res.send(Buffer.from(placeholderBuffer));
-                    return [3 /*break*/, 9];
+                    return [2 /*return*/];
                 case 8:
                     placeholderErr_1 = _a.sent();
                     console.error("Error fetching placeholder image from ".concat(placeholderUrl, ": ").concat(placeholderErr_1.message));

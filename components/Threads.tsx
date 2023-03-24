@@ -1,6 +1,6 @@
 import { Button, Gap, LineBreak, generateUUID, Item, TextInput, RichTextEditor, Box, Page, Tabs, Label, Dropdown, useBreakpoint, HTMLtoMarkdown, AspectRatio, Icon, LoadingSpinner } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
 import styled from 'styled-components'
@@ -79,7 +79,16 @@ export const Threads = ({ }: Props) => {
     }
   }, [activeChannel?.threadGuids])
 
-  
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    scrollToBottom(scrollContainerRef)
+  }, [])
+
+  useEffect(() => {
+    scrollToBottom(scrollContainerRef)
+  }, [response, suggestedPrompts?.length])
+
 
   const websocketClient = getWebsocketClient()
 
@@ -106,36 +115,26 @@ User feedback (optional): ${feedback}
   }, [activeChannel?.threadGuids, websocketClient, activeChannel?.guid])
 
   const [expandedThreads, setExpandedThreads] = useState<boolean[]>([]);
-  const handleExpandClick = (index: number) => {
-    setExpandedThreads(prevExpandedThreads => {
+  const handleExpandClick = useCallback((index: number) => {
+    setExpandedThreads((prevExpandedThreads) => {
       const newExpandedThreads = [...prevExpandedThreads];
       newExpandedThreads[index] = !newExpandedThreads[index];
       return newExpandedThreads;
     });
-  };
-
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    scrollToBottom(scrollContainerRef)
-  }, [])
-
-  useEffect(() => {
-    scrollToBottom(scrollContainerRef)
-  }, [response, suggestedPrompts?.length])
+  }, []);
 
   useEffect(() => {
     if (activeThreadGuid) {
-     const targetIndex = activeChannel?.threadGuids.findIndex(item => item === activeThreadGuid)
-     if (targetIndex !== undefined) {
-      setExpandedThreads(prevExpandedThreads => {
-        const newExpandedThreads = [...prevExpandedThreads];
-        newExpandedThreads[targetIndex] = true;
-        return newExpandedThreads;
-      });
-     }
+      const targetIndex = activeChannel?.threadGuids.findIndex((item) => item === activeThreadGuid);
+      if (targetIndex !== undefined) {
+        setExpandedThreads((prevExpandedThreads) => {
+          const newExpandedThreads = [...prevExpandedThreads];
+          newExpandedThreads[targetIndex] = true;
+          return newExpandedThreads;
+        });
+      }
     }
-  }, [activeThreadGuid])
+  }, [activeThreadGuid]);
 
   const sendThread = (message: string) => {
     const websocketClient = getWebsocketClient()
@@ -380,9 +379,7 @@ User feedback (optional): ${feedback}
                     activeChannel?.threadGuids?.map((threadGuid, index) => (
                       <S.ThreadsContainer key={threadGuid}>
                         <Thread
-                          {
-                            ...threadsByGuid[threadGuid]
-                          }
+                          {...threadsByGuid[threadGuid]}
                           expanded={expandedThreads?.[index]}
                           onExpand={() => handleExpandClick(index)}
                           threadGuid={threadGuid}

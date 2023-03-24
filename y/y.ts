@@ -42,7 +42,6 @@ if (typeof window !== 'undefined') {
 
   Object.entries(db).forEach(([name, map]) => {
     map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group | Thread | Message>) => {
-      setTimeout(() => {
         try {
           const payload = map.toJSON()
 
@@ -72,7 +71,6 @@ if (typeof window !== 'undefined') {
         catch(e) {
           console.log(e)
         }
-      }, Math.random())
     });
   });
 } 

@@ -31,7 +31,7 @@ export interface ExpandableListProps {
 
 interface Props {}
 
-export const EditGroup = ({}: Props) => {
+export const EditGroup = React.memo(({}: Props) => {
   const router = useRouter();
   const groupGuid = router.query.groupGuid as string
   const { activeGroup, activeSpace, groupsByGuid, updateGroup } = useSpaces();
@@ -113,4 +113,4 @@ export const EditGroup = ({}: Props) => {
       </Box>
     </Box>
   );
-};
+});

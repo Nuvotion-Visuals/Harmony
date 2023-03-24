@@ -1,7 +1,7 @@
 import { Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, LoadingSpinner, ParseHTML, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { useLanguageAPI } from 'Lexi/System/Language/hooks'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
 import styled from 'styled-components'
@@ -16,7 +16,7 @@ interface Props extends ThreadProps {
   onExpand: (arg0: boolean) => void
 }
 
-export const Thread = ({
+export const Thread = React.memo(({
     guid,
     name,
     channelGuid,
@@ -35,11 +35,14 @@ export const Thread = ({
 
   useEffect(() => {
     const newMessageContent = messageGuids?.map((messageGuid, index) => {
-      const message = messagesByGuid?.[messageGuid]
-      return message?.message
-    }).join('\n')
-    set_messageContent(newMessageContent)
-  }, [messageGuids])
+      const message = messagesByGuid?.[messageGuid];
+      return message?.message;
+    }).join('\n');
+    
+    if (newMessageContent !== messageContent) {
+      set_messageContent(newMessageContent);
+    }
+  }, [JSON.stringify(messageGuids)]);
 
   const { language, response, loading, error, completed } = useLanguageAPI(messageContent);
   const { generateTitle } = language;
@@ -81,9 +84,9 @@ export const Thread = ({
   }, [edit])
 
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     onExpand(!expanded);
-  };
+  }, [onExpand, expanded]);
 
   const sendMessageToWebsocket = (message: string) => {
   const websocketClient = getWebsocketClient()
@@ -323,6 +326,16 @@ export const Thread = ({
                   secondary
                   disabled={activeThreadGuid === guid}
                   onClick={() => {
+                    setTimeout(() => {
+                      const target = document.getElementById(`bottom_${guid}`)
+                      if (target) {
+                        target.scrollIntoView({
+                          behavior: "smooth", // "auto" or "smooth"
+                          block: "end", // "start", "center", "end", or "nearest"
+                          inline: "nearest" // "start", "center", "end", or "nearest"
+                        });
+                      }
+                    }, 100)
                     setActiveThreadGuid(guid)
                   }}  
                 />
@@ -332,7 +345,7 @@ export const Thread = ({
     }
    <div id={`bottom_${guid}`}></div>
   </S.Thread>)
-}
+})
 
 const S = {
   Thread: styled.div<{

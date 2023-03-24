@@ -1,6 +1,6 @@
 import { Box, Button, Dropdown, generateUUID, Item, Page, RichTextEditor, Spacer, TextInput, useBreakpoint } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { use100vh } from 'react-div-100vh'
 import { useLayout } from 'redux-tk/layout/hook'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -20,7 +20,7 @@ interface Props {
   
 }
 
-export const Channel = ({ }: Props) => {
+export const Channel = React.memo(({ }: Props) => {
   const router = useRouter()
   const { channelGuid } = router.query
   const true100vh = use100vh()
@@ -59,20 +59,17 @@ export const Channel = ({ }: Props) => {
     activeGroup,
     addMessage,
     addThread,
-    addMessageToThread,
     addThreadToChannel,
     threadsByGuid,
     activeThreadGuid,
     setActiveThreadGuid,
-    messagesByGuid
+    messagesByGuid,
+    addMessageToThread
   } = useSpaces()
 
   const [query, set_query] = useState('')
 
-  const [newThreadName, set_newThreadName] = useState('')
-  const [newThreadDescription, set_newThreadDescription] = useState('')
-
-  const sendMessageToThread = (message: string) => {
+  const sendMessageToThread = useCallback((message: string) => {
     const websocketClient = getWebsocketClient()
 
     const messageGuids = threadsByGuid[activeThreadGuid || ''].messageGuids
@@ -140,27 +137,30 @@ export const Channel = ({ }: Props) => {
         setHeight(componentRef.current.clientHeight);
       }
 
-      const target = document.getElementById(`bottom_${activeThreadGuid}`)
-      if (target) {
-        target.scrollIntoView({
-          behavior: "smooth", // "auto" or "smooth"
-          block: "end", // "start", "center", "end", or "nearest"
-          inline: "nearest" // "start", "center", "end", or "nearest"
-        });
-      }
-    }
+      setTimeout(() => {
+        const target = document.getElementById(`bottom_${activeThreadGuid}`)
+        if (target) {
+          target.scrollIntoView({
+            behavior: "auto", // "auto" or "smooth"
+            block: "end", // "start", "center", "end", or "nearest"
+            inline: "nearest" // "start", "center", "end", or "nearest"
+          });
+        }
+      }, 100)
+    
+  }, [activeThreadGuid, messagesByGuid, threadsByGuid]);
 
-  const sendThread = (message: string) => {
+  const sendThread = useCallback((message: string) => {
     const websocketClient = getWebsocketClient()
     const guid = generateUUID()
 
     // add thread
     const newThread = {
       guid,
-      name: newThreadName,
+      name: '',
       channelGuid,
       messageGuids: [],
-      description: newThreadDescription
+      description: ''
     } as ThreadProps
     addThread({ guid, thread: newThread })
     addThreadToChannel({ channelGuid: channelGuid as string, threadGuid: guid })
@@ -237,9 +237,19 @@ export const Channel = ({ }: Props) => {
         });
       }
     }, 100)
-  }
+  }, [channelGuid, setActiveThreadGuid, addThread, addThreadToChannel, addMessage, addMessageToThread]);
 
   const send = (message: string) => {
+    setTimeout(() => {
+      const target = document.getElementById(`bottom_${activeThreadGuid}`)
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth", // "auto" or "smooth"
+          block: "end", // "start", "center", "end", or "nearest"
+          inline: "nearest" // "start", "center", "end", or "nearest"
+        });
+      }
+    }, 100)
     if (activeThreadGuid) {
       sendMessageToThread(message)
     }
@@ -337,13 +347,10 @@ export const Channel = ({ }: Props) => {
     }
   }
   
-  const [focus, set_focus] = useState(false)
-
   useEffect(() => {
     if (componentRef.current) {
       setHeight(componentRef.current.clientHeight);
     }
-    set_focus(true)
   }, [activeThreadGuid])
 
   return (<S.Channel true100vh={true100vh || 0}>
@@ -444,6 +451,7 @@ export const Channel = ({ }: Props) => {
             value={query} 
             onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
             onEnter={() => {
+              (document?.activeElement as HTMLElement)?.blur();
               send(query.substring(0, query.length - 11)) // trim off <p><br></p>
             }}
             placeholder='Chat'
@@ -454,7 +462,12 @@ export const Channel = ({ }: Props) => {
               icon={'paper-plane'}
               iconPrefix='fas'
               minimal
-              onClick={() => send(query)}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                setTimeout(() => {
+                  send(query)
+                }, 100)
+              }}
             />
             <Dropdown
               icon='plus'
@@ -507,7 +520,7 @@ export const Channel = ({ }: Props) => {
       </Box>
     </S.Bottom>
   </S.Channel>)
-}
+})
 
 const S = {
   Channel: styled.div<{

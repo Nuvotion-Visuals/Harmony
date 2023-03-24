@@ -31,7 +31,7 @@ export interface ExpandableListProps {
 
 interface Props {}
 
-export const EditSpace = ({}: Props) => {
+export const EditSpace = React.memo(({}: Props) => {
   const router = useRouter();
   const { updateSpace, activeSpace, activeSpaceGuid } = useSpaces();
   const [name, set_name] = useState(activeSpace?.name || '');
@@ -113,4 +113,4 @@ export const EditSpace = ({}: Props) => {
       </Box>
     </Box>
   );
-};
+});

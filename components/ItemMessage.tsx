@@ -5,6 +5,7 @@ import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { speak } from 'Lexi/System/Language/speech'
 import { useLexi } from 'redux-tk/lexi/hook'
+import { useMemo, useCallback } from 'react';
 
 const highlightText = (html: string, currentlySpeaking: string | null): string => {
   const openingTag = `<span style="color: var(--F_Primary_Variant)">`;
@@ -48,8 +49,6 @@ export const ItemMessage = React.memo((props: Props) => {
     userLabel,
     message,
     threadGuid,
-    parentMessageId,
-    conversationId
   } = props
   const [edit, set_edit] = useState(false)
 
@@ -57,14 +56,9 @@ export const ItemMessage = React.memo((props: Props) => {
 
   const [localValue, set_localValue] = useState(markdownToHTML(message))
 
-    // useEffect(() => {
-    //   set_localValue(highlightText(markdownToHTML(message), ('')))
-    // }, [message])
-
-
   const { removeMessage, removeMessageFromThread, updateMessage } = useSpaces()
 
-  const copy = (str: string) => {
+  const copy = useCallback((str: string) => {
     const tempElement = document.createElement("textarea");
     tempElement.style.position = "fixed";
     tempElement.style.top = "-9999px";
@@ -74,7 +68,7 @@ export const ItemMessage = React.memo((props: Props) => {
     tempElement.select();
     document.execCommand("copy");
     document.body.removeChild(tempElement);
-  }
+  }, []);
 
   const [isSpeaking, set_isSpeaking] = useState(false)
 
@@ -84,7 +78,7 @@ export const ItemMessage = React.memo((props: Props) => {
     set_localValue(highlightText(markdownToHTML(message), (currentlySpeaking || '')))
   }, [message, currentlySpeaking])
 
-  const Message = ({ text } : { text: string }) => (
+  const Message = React.memo(({ text } : { text: string }) => (
     <S.ItemMessage>
       <Box width={2} height='100%' wrap>
         <S.Avatar>
@@ -198,7 +192,7 @@ export const ItemMessage = React.memo((props: Props) => {
         <Spacer />
       </Box>
     </S.ItemMessage>
-  )
+  ))
 
   return (<>
     <Message 
