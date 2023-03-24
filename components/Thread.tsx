@@ -61,6 +61,16 @@ export const Thread = React.memo(({
             description: obj.description,
           }
         })
+        setTimeout(() => {
+          const target = document.getElementById(`bottom_${guid}`)
+          if (target) {
+            target.scrollIntoView({
+              behavior: "auto", // "auto" or "smooth"
+              block: "end", // "start", "center", "end", or "nearest"
+              inline: "nearest" // "start", "center", "end", or "nearest"
+            });
+          }
+        }, 100)
         console.log(response)
       } catch (e) {}
     }

@@ -1,2 +1,2 @@
-docker compose --profile download up --build;
-docker compose --profile invoke up --build
+docker compose --profile download up --build &&
+docker compose --profile auto up --build

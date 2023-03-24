@@ -351,7 +351,7 @@ export const Channel = React.memo(({ }: Props) => {
     if (componentRef.current) {
       setHeight(componentRef.current.clientHeight);
     }
-  }, [activeThreadGuid])
+  }, [activeThreadGuid, query])
 
   return (<S.Channel true100vh={true100vh || 0}>
     <Box height='var(--F_Header_Height)' width={'100%'}>
@@ -458,63 +458,73 @@ export const Channel = React.memo(({ }: Props) => {
             outset
             // autoFocus
           >
-            <Button 
-              icon={'paper-plane'}
-              iconPrefix='fas'
-              minimal
-              onClick={() => {
-                (document?.activeElement as HTMLElement)?.blur();
-                setTimeout(() => {
-                  send(query)
-                }, 100)
-              }}
-            />
-            <Dropdown
-              icon='plus'
-              iconPrefix='fas'
-              minimal
-              circle
-              items={[
-                {
-                  children: <div onClick={e => e.stopPropagation()}>
-                    <Box minWidth={13.5}>
-                      <TextInput
-                        value={urlToScrape}
-                        onChange={newValue => set_urlToScrape(newValue)}
-                        iconPrefix='fas'
-                        compact
-                        placeholder='Insert from URL'
-                        canClear={urlToScrape !== ''}
-                        buttons={[
-                          {
-                            icon: 'arrow-right',
-                            iconPrefix: 'fas',
-                            minimal: true,
-                            onClick: () => insertContentByUrl(urlToScrape, content => set_query(oldQuery => `${oldQuery}\n${content}`))
-                          }
-                        ]}
-                      />
-                    </Box>
-                  </div>
-                }
-              ]}
-            />
-            <Button 
-              icon={listening ? 'microphone-slash' : 'microphone'}
-              iconPrefix='fas'
-              circle={true}
-              minimal
-              onClick={() => {
-                if (listening) {
-                  stop()
-                  set_disableTimer(true)
-                }
-                else {
-                  start()
-                }
-              }}
-              blink={listening}
-            />
+            <Box wrap>
+              {
+                query && query !== '<p><br><p>' &&
+                <>
+                  <Button 
+                    icon={'paper-plane'}
+                    iconPrefix='fas'
+                    minimal
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      setTimeout(() => {
+                        send(query)
+                      }, 100)
+                    }}
+                  />
+                  <Dropdown
+                    icon='plus'
+                    iconPrefix='fas'
+                    minimal
+                    circle
+                    items={[
+                      {
+                        children: <div onClick={e => e.stopPropagation()}>
+                          <Box minWidth={13.5}>
+                            <TextInput
+                              value={urlToScrape}
+                              onChange={newValue => set_urlToScrape(newValue)}
+                              iconPrefix='fas'
+                              compact
+                              placeholder='Insert from URL'
+                              canClear={urlToScrape !== ''}
+                              buttons={[
+                                {
+                                  icon: 'arrow-right',
+                                  iconPrefix: 'fas',
+                                  minimal: true,
+                                  onClick: () => insertContentByUrl(urlToScrape, content => set_query(oldQuery => `${oldQuery}\n${content}`))
+                                }
+                              ]}
+                            />
+                          </Box>
+                        </div>
+                      }
+                    ]}
+                  />
+                </>
+              }
+            
+              <Button 
+                icon={listening ? 'microphone-slash' : 'microphone'}
+                iconPrefix='fas'
+                circle={true}
+                minimal
+                onClick={() => {
+                  if (listening) {
+                    stop()
+                    set_disableTimer(true)
+                  }
+                  else {
+                    start()
+                  }
+                }}
+                blink={listening}
+              />
+              <Box height='100%' />
+            </Box>
+           
           </RichTextEditor>
         </Page>
       </Box>
@@ -541,11 +551,10 @@ const S = {
     overflow-y: auto;
   `,
   Bottom: styled.div`
-    height: auto;
-    max-height: 160px;
     background: var(--F_Background_Alternating);
     width: 100%;
     overflow-y: auto;
+    max-height: 40vh;
   `,
   Reply: styled.div`
     width: 100%;
