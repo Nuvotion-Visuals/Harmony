@@ -94,6 +94,8 @@ const S = {
     max-width: ${props => props.isDesktop ? '90vw' : 'none'};
   `,
   CardContainer: styled.div`
+    border-radius: 1rem;
+    background: var(--F_Surface_0);
     * {
       cursor: pointer;
     }

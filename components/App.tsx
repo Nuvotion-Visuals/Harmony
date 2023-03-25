@@ -21,6 +21,7 @@ import { MatrixLoading } from './MatrixLoading'
 import { Channel } from './Channel'
 import { Logo } from './Logo'
 import Link from './Link'
+import { Space } from './Space'
 
 interface Props {
   children: React.ReactNode
@@ -74,16 +75,23 @@ const App = ({ children }: Props) => {
   }
 
   const renderSecondPage = () => {
-    return <>
+    const Spacer = () => <>
       {
         !isMobile && !isTablet && <S.HeaderSpacer />
       }
-      {
-        router.route === '/spaces/[spaceGuid]/groups/[groupGuid]/channels/[channelGuid]' &&
-        <Channel />
-      }
-      
     </>
+    switch(router.route) {
+      case('/spaces/[spaceGuid]/groups/[groupGuid]/channels/[channelGuid]'):
+        return <>
+          <Spacer />
+          <Channel />
+        </>
+      case '/spaces/[spaceGuid]':
+        return <>
+          <Spacer />
+          <Space />
+        </>
+    }
   }
 
   const renderThirdPage = () => {
