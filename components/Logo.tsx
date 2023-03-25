@@ -25,7 +25,6 @@ LogoContainer: styled.div<{
 }>`
     width: 38px;
     min-width: 38px;
-    margin-left: 19px;
     max-width: 38px;
     height: var(--F_Header_Height);
     display: flex;

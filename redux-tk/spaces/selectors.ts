@@ -18,12 +18,39 @@ export const select_activeSpaceGuid = (state: RootState): Types.Guid | null => {
 export const select_spacesInfo = (state: RootState): { name: string, previewSrc?: string, description?: string, guid: string }[] => {
     const { spacesByGuid } = state.spaces;
     const spaces = Object.values(spacesByGuid);
-    return spaces.map((space) => ({
-      guid: space.guid,
-      name: space.name,
-      previewSrc: space.previewSrc,
-      description: space.description,
-    }));
+    return spaces.map((space) => {
+
+      const groupGuids = space?.groupGuids
+      const groupsCount = groupGuids?.length
+    
+      let channelGuids = groupGuids?.map(groupGuid =>
+        select_groupsByGuid(state)[groupGuid].channelGuids
+      )
+      let flatChannelGuids = channelGuids?.flat()
+      let channelsCount = flatChannelGuids?.length
+    
+      let threadGuids = flatChannelGuids?.map(channelGuid =>
+        select_channelsByGuid(state)[channelGuid].threadGuids
+      )
+      let flatThreadGuids = threadGuids?.flat()
+      let threadsCount = flatThreadGuids?.length
+    
+      let messageGuids = flatThreadGuids?.map(threadGuid =>
+        select_threadsByGuid(state)[threadGuid].messageGuids
+      )
+      let flatMessageGuids = messageGuids?.flat()
+      let messageCount = flatMessageGuids?.length
+    
+      return ({
+        guid: space.guid,
+        name: space.name,
+        previewSrc: space.previewSrc,
+        description: space.description,
+        groupsCount,
+        channelsCount,
+        threadsCount,
+        messageCount
+      })})
   };
 
 // Groups

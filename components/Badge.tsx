@@ -1,15 +1,19 @@
 import React from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 
 interface Props {
-  
+  groupsCount: number,
+  channelsCount: number,
+  threadsCount: number,
+  messageCount: number
 }
 
-export const Badge = React.memo(({ }: Props) => {
-    const { activeSpaceStats} = useSpaces()
-
-  const { groupsCount, channelsCount, threadsCount, messageCount } = activeSpaceStats
+export const Badge = React.memo(({ 
+  groupsCount,
+  channelsCount,
+  threadsCount,
+  messageCount
+}: Props) => {
 
   return (<S.Badge title={`${groupsCount} groups · ${channelsCount} channels · ${threadsCount} threads· ${messageCount} messages`}>
   {`${groupsCount}·${channelsCount}·${threadsCount}·${messageCount}`}

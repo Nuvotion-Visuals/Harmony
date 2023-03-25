@@ -20,6 +20,7 @@ import MyLink from './Link'
 import { MatrixLoading } from './MatrixLoading'
 import { Channel } from './Channel'
 import { Logo } from './Logo'
+import Link from './Link'
 
 interface Props {
   children: React.ReactNode
@@ -99,7 +100,12 @@ const App = ({ children }: Props) => {
 
   return (<S.App>
     <S.NavHeader>
-      <Logo />
+      <Link href='/'>
+        <Box width='78px'>
+          <Logo />
+        </Box>
+      </Link>
+
       <S.Centered isDesktop={isDesktop}>
       <Search />
 

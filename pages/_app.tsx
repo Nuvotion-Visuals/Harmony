@@ -69,6 +69,9 @@ const App = dynamic(() => import('../components/App'), {
   ssr: false,
 });
 
+const SpacesDashboard = dynamic(() => import('../components/SpacesDashboard'), {
+  ssr: false,
+});
 
 setLinkComponent(require('../components/Link').default)
 
@@ -76,6 +79,21 @@ config.autoAddCss = false
 
 const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   const router = useRouter()
+
+  const Content = () => {
+    switch(router.route) {
+      case '/login':
+        return <Component {...pageProps} />
+      case '/':
+      case '/spaces':
+        return <SpacesDashboard />
+      default:
+        return <App>
+          <Component {...pageProps} />
+        </App>
+    }
+  }
+
   return <>
   <Head>
     <title>Lexi - Creative AGI</title>
@@ -90,14 +108,8 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
     />
   </Head>
   <Provider store={store}>
-    {
-      router.route === '/login'
-        ? <Component {...pageProps} />
-        : <App>
-            <Component {...pageProps} />
-          </App>
-      }
-    </Provider>
+    <Content />
+  </Provider>
   </>
 })
 

@@ -6,6 +6,7 @@ import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap, Button, LineBreak
 import { useSpaces } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
 import { Badge } from './Badge'
+import { SpaceCard } from './SpaceCard'
 
 interface Props {
 
@@ -16,7 +17,7 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
 
   const { spaceGuid } = router.query
 
-  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, updateSpace } = useSpaces()
+  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, updateSpace, activeSpaceStats } = useSpaces()
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(spaceGuids.indexOf(spaceGuid as string))
 
@@ -26,54 +27,6 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
     set_activeSpaceIndex(spaceGuids.indexOf(spaceGuid as string))
   }, [spaceGuid])
 
-  const SpaceName = React.memo(() => (<S.SpaceName>
-    <Box>
-      <Item pageTitle={activeSpace?.name}>
-    <Dropdown
-      icon='ellipsis-h'
-      iconPrefix='fas'
-      circle
-      items={[
-        {
-          text: 'Edit',
-          icon: 'edit',
-          iconPrefix: 'fas',
-          href: `/spaces/${activeSpaceGuid}/edit`
-        },
-        {
-          text: locked ? 'Unlock' : 'Lock',
-          icon: locked ? 'lock' : 'lock-open',
-          iconPrefix: 'fas',
-          onClick: () => {
-            updateSpace({
-              guid: spaceGuid as string,
-              space: {
-                ...activeSpace!,
-                locked: !locked
-              }
-            })
-          }
-        },
-        {
-          text: 'Remove',
-          icon: 'trash-alt',
-          iconPrefix: 'fas',
-          onClick: () => {
-            if (activeSpaceGuid) {
-              removeSpace(activeSpaceGuid)
-              router.push('/spaces')
-            }
-
-          }
-        }
-      ]}
-    />
-
-    </Item>
-    </Box>
-
-    </S.SpaceName>
-  ));
 
 
   return (<S.GroupsSidebar>
@@ -97,56 +50,55 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
     />
     <S.SidebarContainer>
       <Box wrap width='100%'>
-        {
-          activeSpace?.previewSrc &&
-            <>
-             
-              <Box p={.75} mb={-.5} width='100%'>
-                <S.OverlayContainer>
-                  <S.Overlay>
-                    <SpaceName />
-                  </S.Overlay>
-                  <S.OverlayBottom>
-                    <S.SpaceStats>
-                      <Spacer />
-                      <Badge />
-                    </S.SpaceStats>
-                  
-                  </S.OverlayBottom>
-                  <AspectRatio
-                    ratio={2}
-                    backgroundSrc={activeSpace.previewSrc}
-                    coverBackground
-                    borderRadius={.75}
-                  />
-                </S.OverlayContainer>
-               
-              </Box>
-            
-            </>
-        }
-        {
-          activeSpace?.name
-            ? <>
-                {
-                  !activeSpace?.previewSrc && <SpaceName />
+        <Box p={.75} width='100%'>
+          <SpaceCard 
+            name={activeSpace?.name}
+            previewSrc={activeSpace?.previewSrc}
+            {
+              ...activeSpaceStats
+            }
+          >
+          <Dropdown
+            icon='ellipsis-h'
+            iconPrefix='fas'
+            circle
+            items={[
+              {
+                text: 'Edit',
+                icon: 'edit',
+                iconPrefix: 'fas',
+                href: `/spaces/${activeSpaceGuid}/edit`
+              },
+              {
+                text: locked ? 'Unlock' : 'Lock',
+                icon: locked ? 'lock' : 'lock-open',
+                iconPrefix: 'fas',
+                onClick: () => {
+                  updateSpace({
+                    guid: spaceGuid as string,
+                    space: {
+                      ...activeSpace!,
+                      locked: !locked
+                    }
+                  })
                 }
-              </>
-            : <Box py={.75}>
-                <Gap gap={.75}>
-              
-                <Item
-                  title='Create a Space'
-                  subtitle='Spaces organize your work into groups of channels.'
-                />
-                <Item
-                  text="Let's Work Together"
-                  subtitle='Hi, my name is Lexi. I can help you with any project. Think of me as your virtual coworker.'
-                />
-                </Gap>
-              </Box>
-        }
+              },
+              {
+                text: 'Remove',
+                icon: 'trash-alt',
+                iconPrefix: 'fas',
+                onClick: () => {
+                  if (activeSpaceGuid) {
+                    removeSpace(activeSpaceGuid)
+                    router.push('/spaces')
+                  }
 
+                }
+              }
+            ]}
+          />
+          </SpaceCard>
+        </Box>
         <Groups locked={locked!} />
       </Box>
     </S.SidebarContainer>
@@ -163,41 +115,5 @@ const S = {
     height: calc(100vh - calc(2 * var(--F_Header_Height)));
     width: 100%;
     overflow-y: auto;
-  `,
-  OverlayContainer: styled.div`
-    height: 100%;
-    width: 100%;
-    position: relative;
-    top: 0;
-    z-index: 2;
-  `,
-  Overlay: styled.div`
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 3;
-    background: linear-gradient(to top, hsla(0, 0%, 7%, 0) 0%, hsla(0, 0%, 7%,.4) 40%, hsla(0, 0%, 7%,.5) 100%);
-  `,
-   OverlayBottom: styled.div`
-    position: absolute;
-    bottom: 0;
-    z-index: 1;
-    width: 100%;
-    background: linear-gradient(to bottom, hsla(0, 0%, 7%, 0) 0%, hsla(0, 0%, 7%,.4) 40%, hsla(0, 0%, 7%,.5) 100%);
-  `,
-  SpaceName: styled.div`
-    width: 100%;
-  `,
-  SpaceStats: styled.div`
-    width: calc(100% - .75rem);
-    height: 2rem;
-    padding: .25rem;
-    display: flex;
-  `,
-  PosterContainer: styled.div`
-    border-radius: .75rem;
-    overflow: hidden;
-    width: 100%;
-  `,
- 
+  `
 }
