@@ -132,7 +132,7 @@ export const Groups = React.memo(({ locked }: Props) => {
                 ...groupsList,
                 {
                   content: (
-                    <Box>
+                    !activeSpace?.locked && <Box>
                       <AddChannelInput
                         newChannelName={newChannelName}
                         setNewChannelName={set_newChannelName}
@@ -160,8 +160,6 @@ export const Groups = React.memo(({ locked }: Props) => {
         },
       ]
     }, [onAddChannel, newChannelName])
-
-    
     
     return (<>
       <ExpandableLists 

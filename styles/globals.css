@@ -8,6 +8,10 @@
   --L_Prompt_Padding: .75rem;
 }
 
+html, body {
+  background: var(--F_Background);
+}
+
 html, body, input {
   font-family: 'Poppins' !important;
 }
