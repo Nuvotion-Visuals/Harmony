@@ -1,6 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useCallback } from 'react';
-import { isEqual } from 'lodash';
 import * as selectors from './selectors';
 import { slice } from './slice';
 import type { Guid, Space, Group, Channel, Asset, Thread, Message, MessagesByGuid, ThreadsByGuid } from './types';
@@ -24,14 +23,14 @@ export const useSpaces = () => {
   const dispatch = useDispatch();
 
   return {
-    activeSpaceStats: useSelector(selectors.select_activeSpaceStats, isEqual),
+    activeSpaceStats: useSelector(selectors.select_activeSpaceStats, shallowEqual),
 
     // spaces
-    activeSpace: useSelector(selectors.select_activeSpace, isEqual),
-    spacesByGuid: useSelector(selectors.select_spacesByGuid, isEqual),
-    activeSpaceGuid: useSelector(selectors.select_activeSpaceGuid, isEqual),
-    spacesInfo: useSelector(selectors.select_spacesInfo, isEqual),
-    spaceGuids: useSelector(selectors.select_spaceGuids, isEqual),
+    activeSpace: useSelector(selectors.select_activeSpace, shallowEqual),
+    spacesByGuid: useSelector(selectors.select_spacesByGuid, shallowEqual),
+    activeSpaceGuid: useSelector(selectors.select_activeSpaceGuid, shallowEqual),
+    spacesInfo: useSelector(selectors.select_spacesInfo, shallowEqual),
+    spaceGuids: useSelector(selectors.select_spaceGuids, shallowEqual),
     addSpaceIncludingGroups: useCallback((payload: { space: Space; guid: Guid; suggested: Suggested }) => {
       dispatch(slice.actions.addSpaceIncludingGroups(payload));
     }, [dispatch]),
@@ -49,8 +48,8 @@ export const useSpaces = () => {
     }, [dispatch]),
     
     // groups
-    groupsByGuid: useSelector(selectors.select_groupsByGuid, isEqual),
-    activeGroup: useSelector(selectors.select_activeGroup, isEqual),
+    groupsByGuid: useSelector(selectors.select_groupsByGuid, shallowEqual),
+    activeGroup: useSelector(selectors.select_activeGroup, shallowEqual),
     setActiveGroupGuid: useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveGroupGuid(payload));
     }, [dispatch]),
@@ -71,8 +70,8 @@ export const useSpaces = () => {
     }, [dispatch]),
     
     // channels
-    activeChannel: useSelector(selectors.select_activeChannel, isEqual),
-    channelsByGuid: useSelector(selectors.select_channelsByGuid, isEqual),
+    activeChannel: useSelector(selectors.select_activeChannel, shallowEqual),
+    channelsByGuid: useSelector(selectors.select_channelsByGuid, shallowEqual),
     setActiveChannelGuid: useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveChannelGuid(payload));
     }, [dispatch]),
@@ -94,8 +93,8 @@ export const useSpaces = () => {
     }, [dispatch]),
     
     // assets
-    assetsByGuid: useSelector(selectors.select_assetsByGuid, isEqual),
-    activeAsset: useSelector(selectors.select_activeAsset, isEqual),
+    assetsByGuid: useSelector(selectors.select_assetsByGuid, shallowEqual),
+    activeAsset: useSelector(selectors.select_activeAsset, shallowEqual),
     setActiveAssetGuid: useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveAssetGuid(payload));
     }, [dispatch]),
@@ -116,9 +115,9 @@ export const useSpaces = () => {
     }, [dispatch]),
     
     // threads
-    activeThreadGuid: useSelector(selectors.select_activeThreadGuid, isEqual),
-    activeThread: useSelector(selectors.select_activeThread, isEqual),
-    threadsByGuid: useSelector(selectors.select_threadsByGuid, isEqual),
+    activeThreadGuid: useSelector(selectors.select_activeThreadGuid, shallowEqual),
+    activeThread: useSelector(selectors.select_activeThread, shallowEqual),
+    threadsByGuid: useSelector(selectors.select_threadsByGuid, shallowEqual),
     setActiveThreadGuid: useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveThreadGuid(payload));
     }, [dispatch]),
@@ -142,9 +141,9 @@ export const useSpaces = () => {
     }, [dispatch]),
     
     // messages
-    activeMessageGuid: useSelector(selectors.select_activeMessageGuid, isEqual),
-    messagesByGuid: useSelector(selectors.select_messagesByGuid, isEqual),
-    messageGuids: useSelector(selectors.select_messageGuids, isEqual),
+    activeMessageGuid: useSelector(selectors.select_activeMessageGuid, shallowEqual),
+    messagesByGuid: useSelector(selectors.select_messagesByGuid, shallowEqual),
+    messageGuids: useSelector(selectors.select_messageGuids, shallowEqual),
     setMessages: useCallback((payload: MessagesByGuid) => {
     dispatch(slice.actions.setMessages(payload));
     }, [dispatch]),

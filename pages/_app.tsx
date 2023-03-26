@@ -61,9 +61,11 @@ library.add(
 )
 
 import { useRouter } from 'next/router'
+import NextLink from "next/link"
+import { Linker } from '@avsync.live/formation'
 
-import { setLinkComponent } from '@avsync.live/formation'
 import dynamic from 'next/dynamic'
+import MyLink from 'components/Link'
 
 const App = dynamic(() => import('../components/App'), {
   ssr: false,
@@ -72,8 +74,6 @@ const App = dynamic(() => import('../components/App'), {
 const SpacesDashboard = dynamic(() => import('../components/SpacesDashboard'), {
   ssr: false,
 });
-
-setLinkComponent(require('../components/Link').default)
 
 config.autoAddCss = false
 
@@ -95,21 +95,23 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   }
 
   return <>
-  <Head>
-    <title>Lexi - Creative AGI</title>
-    <meta name="description" content="Hi, I'm Lexi, a creative AGI ready to help with your project." />
-    <link rel="icon" href="/favicon.ico" />
-    <meta property="og:title" content="Lexi" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <Head>
+      <title>Lexi - Creative AGI</title>
+      <meta name="description" content="Hi, I'm Lexi, a creative AGI ready to help with your project." />
+      <link rel="icon" href="/favicon.ico" />
+      <meta property="og:title" content="Lexi" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <meta
-      property="og:image"
-      content="/assets/lexichat-preview.png"
-    />
-  </Head>
-  <Provider store={store}>
-    <Content />
-  </Provider>
+      <meta
+        property="og:image"
+        content="/assets/lexichat-preview.png"
+      />
+    </Head>
+    <Provider store={store}>
+      <Linker CustomLink={MyLink}> 
+        <Content />
+      </Linker> 
+    </Provider>
   </>
 })
 

@@ -9,7 +9,7 @@ type LinkType = {
   newTab?: boolean
 }
 
-const MyLink = ({ children, href, newTab }: LinkType) => {
+const MyLink = React.memo(({ children, href, newTab }: LinkType) => {
   return (
     <Link href={href || '#'}>
       <S_A href={href || '#'}>
@@ -17,11 +17,11 @@ const MyLink = ({ children, href, newTab }: LinkType) => {
       </S_A>
     </Link>
   )
-}
+})
 
 export default MyLink
 
-const S_A = styled.a`
+const S_A = React.memo(styled.a`
   color: inherit;
   text-decoration: none;
 
@@ -31,4 +31,4 @@ const S_A = styled.a`
   &:hover {
     color: inherit;
   }
-`
+`)

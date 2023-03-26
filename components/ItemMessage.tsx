@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Dropdown, Item, LoadingSpinner, markdownToHTML, RichTextEditor, Spacer } from '@avsync.live/formation'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { useSpaces } from 'redux-tk/spaces/hook'
@@ -148,6 +148,7 @@ export const ItemMessage = React.memo((props: Props) => {
             />
           </Box>
         </S.MessageInfo>
+        
         {
           text
             ?  <RichTextEditor
@@ -184,9 +185,8 @@ export const ItemMessage = React.memo((props: Props) => {
                     </>
                 }
               </RichTextEditor>
-            : <Box pt={.5}>
-                <LoadingSpinner chat />
-              </Box>
+            : <S.PartialResponse id={`${guid}_message`}>
+              </S.PartialResponse>
         }
        
         <Spacer />
@@ -230,5 +230,9 @@ const S = {
     padding-left: .75rem;
     font-size: 11px;
     color: var(--F_Font_Color_Disabled);
+  `,
+  PartialResponse: styled.div`
+    font-size: var(--F_Font_Size);
+    line-height: 1.66;
   `
 }

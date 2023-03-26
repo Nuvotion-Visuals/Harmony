@@ -228,9 +228,7 @@ export const Thread = React.memo(({
             // @ts-ignore
             text={
               showSpinner 
-                ? <MatrixLoading
-                    text={response || ''}
-                  />
+                ? response || ''
                 : name
                   ? name : 'Untitled'}
             // @ts-ignore
