@@ -15,9 +15,11 @@ export const Badge = React.memo(({
   messageCount
 }: Props) => {
 
-  return (<S.Badge title={`${groupsCount} groups · ${channelsCount} channels · ${threadsCount} threads· ${messageCount} messages`}>
-  {`${groupsCount}·${channelsCount}·${threadsCount}·${messageCount}`}
-</S.Badge>)
+  return (
+    <S.Badge title={`${groupsCount} groups · ${channelsCount} channels · ${threadsCount} threads· ${messageCount} messages`}>
+      {`${groupsCount}·${channelsCount}·${threadsCount}·${messageCount}`}
+    </S.Badge>
+  )
 })
 
 const S = {

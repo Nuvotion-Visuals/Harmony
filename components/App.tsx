@@ -48,7 +48,7 @@ const App = ({ children }: Props) => {
 
   const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
-  const { setActiveSpaceGuid } = useSpaces()
+  const { setActiveSpaceGuid, setActiveGroupGuid } = useSpaces()
 
   const renderInnerSidebar = () => {
     switch(router.route) {
@@ -100,11 +100,17 @@ const App = ({ children }: Props) => {
     </S.ThirdPage>
   }
 
-  const { spaceGuid } = router.query
+  const { spaceGuid, groupGuid } = router.query
 
   useEffect(() => {
     setActiveSpaceGuid(spaceGuid as string)
   }, [spaceGuid])
+
+  useEffect(() => {
+    if (groupGuid) {
+      setActiveGroupGuid(groupGuid as string)
+    }
+  }, [groupGuid])
 
   return (<S.App>
     <S.NavHeader>

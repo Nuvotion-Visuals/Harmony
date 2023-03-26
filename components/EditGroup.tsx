@@ -1,6 +1,6 @@
 import { Button, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor, ItemProps } from '@avsync.live/formation';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSpaces } from 'redux-tk/spaces/hook';
 
 interface Channel {
@@ -39,6 +39,13 @@ export const EditGroup = React.memo(({}: Props) => {
   const [description, set_description] = useState(activeGroup?.description || '');
   const [prompt, set_prompt] = useState(decodeURI(activeGroup?.previewSrc?.match(/[^/]*$/)?.[0] ?? ""));
   const [url, set_url] = useState<string | undefined>(activeGroup?.previewSrc);
+
+  useEffect(() => {
+    set_name(activeGroup?.name || '')
+    set_description(activeGroup?.description || '')
+    set_prompt(decodeURI(activeGroup?.previewSrc?.match(/[^/]*$/)?.[0] ?? ""))
+    set_url(activeGroup?.previewSrc)
+  }, [groupGuid, activeGroup])
   
   return (
     <Box wrap>

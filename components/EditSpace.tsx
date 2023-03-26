@@ -42,7 +42,7 @@ export const EditSpace = React.memo(({}: Props) => {
   return (
     <Box wrap>
       <Box my={0.25} width='100%'>
-        <Item icon='chevron-left' pageTitle='Edit space' href={`/spaces`} />
+        <Item icon='chevron-left' pageTitle='Edit space' href={`/spaces/${activeSpace?.guid}`} />
       </Box>
       <Box px={0.75} wrap>
         <Gap gap={0.75}>
