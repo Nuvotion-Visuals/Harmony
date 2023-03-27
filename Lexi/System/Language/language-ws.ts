@@ -94,7 +94,7 @@ export function language_sendMessage(
 }
 
 function getCodeBlock(markdown: string): string | null {
-    // Match a code block starting with three backticks and optional language identifier
+    // Match a code block starting with four backticks and optional language identifier
     const codeBlockRegex = /^```(\S+)?\n([\s\S]+?)\n```$/gm;
   
     const matches = Array.from(markdown.matchAll(codeBlockRegex));
@@ -187,28 +187,24 @@ export const language_generateThreadPrompts = (prompt: string, enableEmoji: bool
     systemMessage: 'You are an API that provides a list of suggested threads for the given input. You do not add any commentary.',
     userLabel: 'Input prompt provider',
     message: 
-`You are an API in a project management app
+`
 
-You are an API endpoint that provides three suggestions for good starting prompts for threads of a channel in a project management app. 
+You are an API endpoint that provides a list of four suggested messages for starting a new conversation thread. 
 
-The three prompts should be distinct, thought-provoking, and sure to lead to productive, rewarding progress. 
+The four messages should be distinct naturally carrying on and advancing the conversation towards the desired goal or purpose of the channel.  The messages are intended to be answered by a language model.
 
-They should all focus on purpose the specified channel, if provided one. 
-
-If there is only one provided existing thread, at least one of your suggestions should be of a distinct topic within the channel.
-
-The titles should always be action-oriented present tense.
+Each message starts with an emoji and title. The titles should always be action-oriented present tense, and always a single capitalized word.
 
 You answer in the following JSON format, provided in a code block.
 
 {
   "suggestions": [
-    "🎛️ Innovate: Brainstorm new and creative ways to combine analog and digital tools to create innovative audio reactive visuals.",
-    "🤖 Automate: Research and explore ways to streamline and automate the integration process between analog and digital tools to create more efficient and effective audio reactive visuals.",
-    "📈 Analyze: Use data from audio and visual sources to improve the accuracy and responsiveness of our audio reactive visuals. How can we use this information to optimize our work?",
-    "🌐 Interact: Explore the use of digital tools to create interactive experiences that respond to audio inputs and user interactions. How can we make our audio reactive visuals more engaging?",
-    "🎨 Optimize: Discuss how we can balance the aesthetics of analog and digital tools to optimize the visual quality of our audio reactive experiences. What techniques can we use to improve the overall visual impact?",
-    "🎓 Learn: Attend conferences, seminars, and workshops to expand our knowledge and gain new perspectives on audio reactive visuals. How can we apply what we learn to our work?"
+    "🤔 Critique: suggested message",
+    "🗣️ Discuss: suggested message",
+    "🔍 Explore: suggested message",
+    "🎓 Teach: suggested message",
+    "📚 Research: suggested message",
+    "🎨 Create: suggested message"
   ]
 }
 Prompt: ${prompt} Reply in JSON`,
@@ -229,24 +225,24 @@ Prompt: ${prompt} Reply in JSON`,
       systemMessage: 'You are an API that provides a list of follow up messages for the given input. You do not add any commentary. You always answer in a code block.',
       userLabel: 'Input prompt provider',
       message: 
-  `You are an API endpoint that provides a list of three distinct suggestions for follow-up message prompts within a thread of a project management app.
+  `You are an API endpoint that provides a list of four distinct suggestions for next messages within a conversation thread.
 
-  The three prompts should be distinct, thought-provoking, and sure to lead to productive, rewarding progress. 
+  The four messages should be distinct naturally carrying on and advancing the conversation towards the desired goal or purpose of the thread. The messages are intended to be answered by a language model.
+
+  The messages should ALWAYS reference specific details, or at least specific themes from pervious messages.
     
-  They should stay on subject of the thread and be a natural continuation and progression of the thread's conversation. They should consider the context, goals, and progress of the existing messages.
-    
-  The titles should always be action-oriented present tense.
+  Each message starts with an emoji and title. The titles should always be action-oriented present tense, and always a single capitalized word.
 
   You answer in the following JSON format, provided in a markdown code block.
   
   {
     "suggestions": [
-      "🤔 Critique: Critically evaluate the current project plan. What are the strengths and weaknesses? How can we improve it to achieve better results?",
-      "🗣️ Discuss: Engage in conversation about the project goals and expectations. How can we ensure that everyone is aligned and working towards the same objectives?",
-      "🔍 Explore: Investigate different approaches to completing the project. How can we incorporate new ideas and techniques to make the project more innovative and effective?",
-      "🎓 Teach: Share knowledge and expertise with each other to improve our collective skill set. What can we teach each other to enhance our performance?",
-      "📚 Research: Conduct research on the best practices in our industry and see how we can apply them to our project. What are the trends and emerging technologies that we should be aware of?",
-      "🎨 Create: Brainstorm creative solutions to the challenges we are facing in the project. How can we think outside the box to come up with original ideas and concepts?"
+      "🤔 Critique: suggested message",
+      "🗣️ Discuss: suggested message",
+      "🔍 Explore: suggested message",
+      "🎓 Teach: suggested message",
+      "📚 Research: suggested message",
+      "🎨 Create: suggested message"
     ]
   }
   
