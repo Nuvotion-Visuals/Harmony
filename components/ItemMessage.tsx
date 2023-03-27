@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Dropdown, Item, LoadingSpinner, markdownToHTML, Ri
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_removeMessage, useSpaces_removeMessageFromThread, useSpaces_updateMessage } from 'redux-tk/spaces/hook'
 import { speak } from 'Lexi/System/Language/speech'
 import { useLexi } from 'redux-tk/lexi/hook'
 import { useMemo, useCallback } from 'react';
@@ -56,7 +56,9 @@ export const ItemMessage = React.memo((props: Props) => {
 
   const [localValue, set_localValue] = useState(markdownToHTML(message))
 
-  const { removeMessage, removeMessageFromThread, updateMessage } = useSpaces()
+  const removeMessage = useSpaces_removeMessage()
+  const removeMessageFromThread = useSpaces_removeMessageFromThread()
+  const updateMessage = useSpaces_updateMessage()
 
   const copy = useCallback((str: string) => {
     const tempElement = document.createElement("textarea");

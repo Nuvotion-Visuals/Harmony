@@ -12,7 +12,7 @@ import {
   Label
 } from '@avsync.live/formation'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_addChannel, useSpaces_addChannelToGroup, useSpaces_addGroup, useSpaces_addGroupToSpace, useSpaces_channelsByGuid, useSpaces_groupsByGuid, useSpaces_removeChannel, useSpaces_removeChannelFromGroup, useSpaces_removeGroupFromSpace } from 'redux-tk/spaces/hook'
 // @ts-ignore
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
 import { useRouter } from 'next/router'
@@ -40,20 +40,19 @@ export const Groups = React.memo(({ locked }: Props) => {
     const { incrementActiveSwipeIndex } = useLayout()
     const { isDesktop } = useBreakpoint()
 
-    const { 
-      activeSpace, 
-      activeSpaceGuid, 
-      groupsByGuid, 
-      addChannel, 
-      channelsByGuid, 
-      addChannelToGroup, 
-      removeChannel, 
-      removeChannelFromGroup, 
-      removeGroupFromSpace,
-      addGroup,
-      addGroupToSpace,
-      activeChannel
-    } = useSpaces()
+    const activeSpace = useSpaces_activeSpace()
+    const activeSpaceGuid = useSpaces_activeSpaceGuid()
+    const groupsByGuid = useSpaces_groupsByGuid()
+    const addChannel = useSpaces_addChannel()
+    const channelsByGuid = useSpaces_channelsByGuid()
+    const addChannelToGroup = useSpaces_addChannelToGroup()
+    const removeChannel = useSpaces_removeChannel()
+    const removeChannelFromGroup = useSpaces_removeChannelFromGroup()
+    const removeGroupFromSpace = useSpaces_removeGroupFromSpace()
+    const addGroup = useSpaces_addGroup()
+    const addGroupToSpace = useSpaces_addGroupToSpace()
+    const activeChannel = useSpaces_activeChannel()
+
 
     const [newChannelName, set_newChannelName] = useState('')
 

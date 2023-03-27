@@ -19,157 +19,270 @@ interface Suggested {
   groups: Groupz[];
 }
 
-export const useSpaces = () => {
+// Spaces
+// export const useSpaces_ActiveSpaceStats = () => useSelector(selectors.select_activeSpaceStats, shallowEqual);
+export const useSpaces_activeSpace = () => useSelector(selectors.select_activeSpace);
+export const useSpaces_spaceGuids = () => useSelector(selectors.select_spaceGuids);
+export const useSpaces_spacesByGuid = () => useSelector(selectors.select_spacesByGuid);
+export const useSpaces_activeSpaceGuid = () => useSelector(selectors.select_activeSpaceGuid);
+export const useSpaces_spacesInfo = () => useSelector(selectors.select_spacesInfo);
+export const useSpaces_addSpaceIncludingGroups = () => {
   const dispatch = useDispatch();
-
-  return {
-    activeSpaceStats: useSelector(selectors.select_activeSpaceStats, shallowEqual),
-
-    // spaces
-    activeSpace: useSelector(selectors.select_activeSpace, shallowEqual),
-    spacesByGuid: useSelector(selectors.select_spacesByGuid, shallowEqual),
-    activeSpaceGuid: useSelector(selectors.select_activeSpaceGuid, shallowEqual),
-    spacesInfo: useSelector(selectors.select_spacesInfo, shallowEqual),
-    spaceGuids: useSelector(selectors.select_spaceGuids, shallowEqual),
-    addSpaceIncludingGroups: useCallback((payload: { space: Space; guid: Guid; suggested: Suggested }) => {
-      dispatch(slice.actions.addSpaceIncludingGroups(payload));
-    }, [dispatch]),
-    setActiveSpaceGuid: useCallback((payload: Guid | null) => {
+  return useCallback((payload: { space: Space; guid: Guid; suggested: Suggested }) => {
+    dispatch(slice.actions.addSpaceIncludingGroups(payload));
+  }, [dispatch]);
+};
+export const useSpaces_setActiveSpaceGuid = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveSpaceGuid(payload));
-    }, [dispatch]),
-    addSpace: useCallback((payload: { guid: Guid; space: Space }) => {
+  }, [dispatch]);
+};
+export const useSpaces_addSpace = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; space: Space }) => {
     dispatch(slice.actions.addSpace(payload));
-    }, [dispatch]),
-    removeSpace: useCallback((payload: Guid) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeSpace = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid) => {
     dispatch(slice.actions.removeSpace(payload));
-    }, [dispatch]),
-    updateSpace: useCallback((payload: { guid: Guid; space: Space }) => {
+  }, [dispatch]);
+};
+export const useSpaces_updateSpace = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; space: Space }) => {
     dispatch(slice.actions.updateSpace(payload));
-    }, [dispatch]),
-    
-    // groups
-    groupsByGuid: useSelector(selectors.select_groupsByGuid, shallowEqual),
-    activeGroup: useSelector(selectors.select_activeGroup, shallowEqual),
-    setActiveGroupGuid: useCallback((payload: Guid | null) => {
+  }, [dispatch]);
+};
+
+// Groups
+export const useSpaces_activeGroup = () => useSelector(selectors.select_activeGroup);
+export const useSpaces_activeGroupGuid = () => useSelector(selectors.select_activeGroupGuid);
+export const useSpaces_groupsByGuid = () => useSelector(selectors.select_groupsByGuid);
+export const useSpaces_setActiveGroupGuid = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveGroupGuid(payload));
-    }, [dispatch]),
-    addGroup: useCallback((payload: { guid: Guid; group: Group }) => {
+  }, [dispatch]);
+};
+export const useSpaces_addGroup = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; group: Group }) => {
     dispatch(slice.actions.addGroup(payload));
-    }, [dispatch]),
-    removeGroup: useCallback((payload: Guid) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeGroup = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid) => {
     dispatch(slice.actions.removeGroup(payload));
-    }, [dispatch]),
-    updateGroup: useCallback((payload: { guid: Guid; group: Group }) => {
+  }, [dispatch]);
+};
+export const useSpaces_updateGroup = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; group: Group }) => {
     dispatch(slice.actions.updateGroup(payload));
-    }, [dispatch]),
-    addGroupToSpace: useCallback((payload: { spaceGuid: Guid; groupGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_addGroupToSpace = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { spaceGuid: Guid; groupGuid: Guid }) => {
     dispatch(slice.actions.addGroupToSpace(payload));
-    }, [dispatch]),
-    removeGroupFromSpace: useCallback((payload: { spaceGuid: Guid; groupGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeGroupFromSpace = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { spaceGuid: Guid; groupGuid: Guid }) => {
     dispatch(slice.actions.removeGroupFromSpace(payload));
-    }, [dispatch]),
-    
-    // channels
-    activeChannel: useSelector(selectors.select_activeChannel, shallowEqual),
-    channelsByGuid: useSelector(selectors.select_channelsByGuid, shallowEqual),
-    setActiveChannelGuid: useCallback((payload: Guid | null) => {
+  }, [dispatch]);
+};
+
+// Channels
+export const useSpaces_activeChannel = () => useSelector(selectors.select_activeChannel);
+export const useSpaces_activeChannelGuid = () => useSelector(selectors.select_activeChannelGuid);
+export const useSpaces_channelsByGuid = () => useSelector(selectors.select_channelsByGuid);
+export const useSpaces_setActiveChannelGuid = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveChannelGuid(payload));
-    }, [dispatch]),
-    addChannel: useCallback((payload: { guid: Guid; channel: Channel }) => {
+  }, [dispatch]);
+};
+export const useSpaces_addChannel = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; channel: Channel }) => {
     dispatch(slice.actions.addChannel(payload));
-    }, [dispatch]),
-    updateChannel: useCallback((payload: { guid: Guid; channel: Channel }) => {
+  }, [dispatch]);
+};
+export const useSpaces_updateChannel = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; channel: Channel }) => {
     dispatch(slice.actions.updateChannel(payload));
-    }, [dispatch]),
-    removeChannel: useCallback((payload: Guid) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeChannel = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid) => {
     dispatch(slice.actions.removeChannel(payload));
-    }, [dispatch]),
-    // TODO: add updateChannel
-    addChannelToGroup: useCallback((payload: { groupGuid: Guid; channelGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_addChannelToGroup = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { groupGuid: Guid; channelGuid: Guid }) => {
     dispatch(slice.actions.addChannelToGroup(payload));
-    }, [dispatch]),
-    removeChannelFromGroup: useCallback((payload: { groupGuid: Guid; channelGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeChannelFromGroup = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { groupGuid: Guid; channelGuid: Guid }) => {
     dispatch(slice.actions.removeChannelFromGroup(payload));
-    }, [dispatch]),
-    
-    // assets
-    assetsByGuid: useSelector(selectors.select_assetsByGuid, shallowEqual),
-    activeAsset: useSelector(selectors.select_activeAsset, shallowEqual),
-    setActiveAssetGuid: useCallback((payload: Guid | null) => {
+  }, [dispatch]);
+};
+
+// Assets
+export const useSpaces_activeAsset = () => useSelector(selectors.select_activeAsset);
+export const useSpaces_activeAssetGuid = () => useSelector(selectors.select_activeAssetGuid);
+export const useSpaces_assetsByGuid = () => useSelector(selectors.select_assetsByGuid);
+export const useSpaces_setActiveAssetGuid = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveAssetGuid(payload));
-    }, [dispatch]),
-    addAsset: useCallback((payload: { guid: Guid; asset: Asset }) => {
+  }, [dispatch]);
+};
+export const useSpaces_addAsset = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; asset: Asset }) => {
     dispatch(slice.actions.addAsset(payload));
-    }, [dispatch]),
-    removeAsset: useCallback((payload: Guid) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeAsset = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid) => {
     dispatch(slice.actions.removeAsset(payload));
-    }, [dispatch]),
-    updateAsset: useCallback((payload: { guid: Guid; asset: Asset }) => {
-      dispatch(slice.actions.updateAsset(payload));
-    }, [dispatch]),
-    addAssetToChannel: useCallback((payload: { channelGuid: Guid; assetGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_updateAsset = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; asset: Asset }) => {
+    dispatch(slice.actions.updateAsset(payload));
+  }, [dispatch]);
+};
+export const useSpaces_addAssetToChannel = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { channelGuid: Guid; assetGuid: Guid }) => {
     dispatch(slice.actions.addAssetToChannel(payload));
-    }, [dispatch]),
-    removeAssetFromChannel: useCallback((payload: { channelGuid: Guid; assetGuid: Guid }) => {
-      dispatch(slice.actions.removeAssetFromChannel(payload));
-    }, [dispatch]),
-    
-    // threads
-    activeThreadGuid: useSelector(selectors.select_activeThreadGuid, shallowEqual),
-    activeThread: useSelector(selectors.select_activeThread, shallowEqual),
-    threadsByGuid: useSelector(selectors.select_threadsByGuid, shallowEqual),
-    setActiveThreadGuid: useCallback((payload: Guid | null) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeAssetFromChannel = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { channelGuid: Guid; assetGuid: Guid }) => {
+    dispatch(slice.actions.removeAssetFromChannel(payload));
+  }, [dispatch]);
+};
+
+// Threads
+export const useSpaces_activeThread = () => useSelector(selectors.select_activeThread);
+export const useSpaces_activeThreadGuid = () => useSelector(selectors.select_activeThreadGuid);
+export const useSpaces_threadsByGuid = () => useSelector(selectors.select_threadsByGuid);
+export const useSpaces_setActiveThreadGuid = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveThreadGuid(payload));
-    }, [dispatch]),
-    setThreads: useCallback((payload: ThreadsByGuid) => {
+  }, [dispatch]);
+};
+export const useSpaces_setThreads = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: ThreadsByGuid) => {
     dispatch(slice.actions.setThreads(payload));
-    }, [dispatch]),
-    addThread: useCallback((payload: { guid: Guid; thread: Thread }) => {
+  }, [dispatch]);
+};
+export const useSpaces_addThread = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; thread: Thread }) => {
     dispatch(slice.actions.addThread(payload));
-    }, [dispatch]),
-    removeThread: useCallback((payload: Guid) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeThread = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid) => {
     dispatch(slice.actions.removeThread(payload));
-    }, [dispatch]),
-    updateThread: useCallback((payload: { guid: Guid; thread: Thread }) => {
+  }, [dispatch]);
+};
+export const useSpaces_updateThread = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; thread: Thread }) => {
     dispatch(slice.actions.updateThread(payload));
-    }, [dispatch]),
-    addThreadToChannel: useCallback((payload: { channelGuid: Guid; threadGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_addThreadToChannel = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { channelGuid: Guid; threadGuid: Guid }) => {
     dispatch(slice.actions.addThreadToChannel(payload));
-    }, [dispatch]),
-    removeThreadFromChannel: useCallback((payload: { channelGuid: Guid; threadGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeThreadFromChannel = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { channelGuid: Guid; threadGuid: Guid }) => {
     dispatch(slice.actions.removeThreadFromChannel(payload));
-    }, [dispatch]),
-    
-    // messages
-    activeMessageGuid: useSelector(selectors.select_activeMessageGuid, shallowEqual),
-    messagesByGuid: useSelector(selectors.select_messagesByGuid, shallowEqual),
-    messageGuids: useSelector(selectors.select_messageGuids, shallowEqual),
-    setMessages: useCallback((payload: MessagesByGuid) => {
-    dispatch(slice.actions.setMessages(payload));
-    }, [dispatch]),
-    addMessage: useCallback((payload: { guid: Guid; message: Message }) => {
-      dispatch(slice.actions.addMessage(payload));
-      }, [dispatch]),
-    setActiveMessageGuid: useCallback((payload: Guid | null) => {
+  }, [dispatch]);
+};
+
+// Messages
+export const useSpaces_activeMessage = () => useSelector(selectors.select_activeMessage);
+export const useSpaces_messageGuids = () => useSelector(selectors.select_messageGuids);
+export const useSpaces_activeMessageGuid = () => useSelector(selectors.select_activeMessageGuid);
+export const useSpaces_messagesByGuid = () => useSelector(selectors.select_messagesByGuid);
+export const useSpaces_setActiveMessageGuid = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid | null) => {
     dispatch(slice.actions.setActiveMessageGuid(payload));
-    }, [dispatch]),
-    setMessageGuids: useCallback((payload: Guid[]) => {
-    dispatch(slice.actions.setMessageGuids(payload));
-    }, [dispatch]),
-    setMessagesByGuid: useCallback((payload: Record<Guid, Message>) => {
-    dispatch(slice.actions.setMessagesByGuid(payload));
-    }, [dispatch]),
-    removeMessage: useCallback((payload: Guid) => {
+  }, [dispatch]);
+};
+export const useSpaces_setMessages = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: MessagesByGuid) => {
+    dispatch(slice.actions.setMessages(payload));
+  }, [dispatch]);
+};
+export const useSpaces_addMessage = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; message: Message }) => {
+    dispatch(slice.actions.addMessage(payload));
+  }, [dispatch]);
+};
+export const useSpaces_removeMessage = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid) => {
     dispatch(slice.actions.removeMessage(payload));
-    }, [dispatch]),
-    updateMessage: useCallback((payload: { guid: Guid; message: Message }) => {
+  }, [dispatch]);
+};
+export const useSpaces_updateMessage = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { guid: Guid; message: Message }) => {
     dispatch(slice.actions.updateMessage(payload));
-    }, [dispatch]),
-    addMessageToThread: useCallback((payload: { threadGuid: Guid; messageGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_setMessageGuids = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Guid[]) => {
+    dispatch(slice.actions.setMessageGuids(payload));
+  }, [dispatch]);
+};
+export const useSpaces_setMessagesByGuid = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: Record<Guid, Message>) => {
+    dispatch(slice.actions.setMessagesByGuid(payload));
+  }, [dispatch]);
+};
+export const useSpaces_addMessageToThread = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { threadGuid: Guid; messageGuid: Guid }) => {
     dispatch(slice.actions.addMessageToThread(payload));
-    }, [dispatch]),
-    removeMessageFromThread: useCallback((payload: { threadGuid: Guid; messageGuid: Guid }) => {
+  }, [dispatch]);
+};
+export const useSpaces_removeMessageFromThread = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: { threadGuid: Guid; messageGuid: Guid }) => {
     dispatch(slice.actions.removeMessageFromThread(payload));
-    }, [dispatch]),
-  };
+  }, [dispatch]);
 };

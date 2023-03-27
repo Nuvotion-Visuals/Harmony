@@ -2,7 +2,7 @@ import { Box, Button, Gap, Item, RichTextEditor, Spacer, TextInput } from '@avsy
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client';
 import { useLanguageAPI } from 'Lexi/System/Language/hooks';
 import React, { useEffect, useState } from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook';
+import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_messagesByGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook';
 import styled from 'styled-components'
 import { MatrixLoading } from './MatrixLoading';
 
@@ -12,19 +12,11 @@ interface Props {
 }
 
 export const ThreadSuggestions = ({ onSend, guid }: Props) => {
-    const { 
-    addThread,
-    addMessage,
-    threadsByGuid,
-    addThreadToChannel,
-    addMessageToThread,
-    setActiveChannelGuid,
-    setActiveGroupGuid,
-    activeChannel,
-    activeSpace,
-    activeGroup,
-    messagesByGuid
-    } = useSpaces() 
+    const threadsByGuid = useSpaces_threadsByGuid()
+    const activeChannel = useSpaces_activeChannel()
+    const activeSpace = useSpaces_activeSpace()
+    const messagesByGuid = useSpaces_messagesByGuid()
+  
 
     const { language, response, loading, error, completed } = useLanguageAPI('');
     const { generateFollowUpMessages } = language;

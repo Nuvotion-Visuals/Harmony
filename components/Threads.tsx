@@ -1,7 +1,7 @@
 import { Button, Gap, LineBreak, generateUUID, Item, TextInput, RichTextEditor, Box, Page, Tabs, Label, Dropdown, useBreakpoint, HTMLtoMarkdown, AspectRatio, Icon, LoadingSpinner } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
 import styled from 'styled-components'
 import { Thread } from './Thread'
@@ -28,20 +28,18 @@ export const Threads = ({ }: Props) => {
     setActiveChannelGuid(channelGuid as string)
   }, [groupGuid, channelGuid])
 
-  const { 
-    addThread,
-    addMessage,
-    threadsByGuid,
-    addThreadToChannel,
-    addMessageToThread,
-    setActiveChannelGuid,
-    setActiveGroupGuid,
-    activeChannel,
-    activeSpace,
-    activeGroup,
-    activeThread,
-    activeThreadGuid
-  } = useSpaces() 
+  const addThread = useSpaces_addThread()
+  const addMessage = useSpaces_addMessage()
+  const threadsByGuid = useSpaces_threadsByGuid()
+  const addThreadToChannel = useSpaces_addThreadToChannel()
+  const addMessageToThread = useSpaces_addMessageToThread()
+  const setActiveChannelGuid = useSpaces_setActiveChannelGuid()
+  const setActiveGroupGuid = useSpaces_setActiveGroupGuid()
+  const activeChannel = useSpaces_activeChannel()
+  const activeSpace = useSpaces_activeSpace()
+  const activeGroup = useSpaces_activeGroup()
+  const activeThreadGuid = useSpaces_activeThreadGuid()
+
 
   // websocket communication with server
   const [newThreadName, set_newThreadName] = useState('')
@@ -317,9 +315,7 @@ User feedback (optional): ${feedback}
                                     </Gap>
                                   </Box>
                                 : loading
-                                  ? <MatrixLoading
-                                      text={response || ''}
-                                    />
+                                  ? response
                                   : null
                             }
   

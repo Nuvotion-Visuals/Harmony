@@ -1,7 +1,7 @@
 import { Button, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor, ItemProps } from '@avsync.live/formation';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { useSpaces } from 'redux-tk/spaces/hook';
+import { useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_groupsByGuid, useSpaces_updateGroup } from 'redux-tk/spaces/hook';
 
 interface Channel {
   name: string;
@@ -34,7 +34,12 @@ interface Props {}
 export const EditGroup = React.memo(({}: Props) => {
   const router = useRouter();
   const groupGuid = router.query.groupGuid as string
-  const { activeGroup, activeSpace, groupsByGuid, updateGroup } = useSpaces();
+
+  const activeGroup = useSpaces_activeGroup()
+  const activeSpace = useSpaces_activeSpace()
+  const groupsByGuid = useSpaces_groupsByGuid()
+  const updateGroup = useSpaces_updateGroup()
+
   const [name, set_name] = useState(activeGroup?.name || '');
   const [description, set_description] = useState(activeGroup?.description || '');
   const [prompt, set_prompt] = useState(decodeURI(activeGroup?.previewSrc?.match(/[^/]*$/)?.[0] ?? ""));

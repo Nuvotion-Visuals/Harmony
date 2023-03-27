@@ -2,7 +2,6 @@ import { Button, Modal, Page, TextInput, generateUUID, Gap, AspectRatio } from '
 import { EditSpace } from 'components/EditSpace'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 
 interface Props {
@@ -15,7 +14,6 @@ const Add = ({ }: Props) => {
   const [name, set_name] = useState('')
   const [description, set_description] = useState('')
 
-  const { addSpace } = useSpaces()
 
   const [url, set_url] = useState('')
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { Groups } from 'components/Groups'
 import { AspectRatio, Box, SpacesSidebar, Item, Dropdown, Gap, Button, LineBreak, Label, Spacer } from '@avsync.live/formation'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_removeSpace, useSpaces_spaceGuids, useSpaces_spacesInfo, useSpaces_updateSpace } from 'redux-tk/spaces/hook'
 import { useRouter } from 'next/router'
 import { Badge } from './Badge'
 import { SpaceCard } from './SpaceCard'
@@ -17,7 +17,14 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
 
   const { spaceGuid } = router.query
 
-  const { spacesInfo, spaceGuids, activeSpace, removeSpace, activeSpaceGuid, updateSpace, activeSpaceStats } = useSpaces()
+  const spacesInfo = useSpaces_spacesInfo()
+  const spaceGuids = useSpaces_spaceGuids()
+  const activeSpace = useSpaces_activeSpace()
+  const removeSpace = useSpaces_removeSpace()
+  const activeSpaceGuid = useSpaces_activeSpaceGuid()
+  const updateSpace = useSpaces_updateSpace()
+  // const activeSpaceStats = useSpaces_activeSpaceStats()
+
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(spaceGuids.indexOf(spaceGuid as string))
 
@@ -54,9 +61,9 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
           <SpaceCard 
             name={activeSpace?.name}
             previewSrc={activeSpace?.previewSrc}
-            {
-              ...activeSpaceStats
-            }
+            // {
+            //   ...activeSpaceStats
+            // }
           >
           <Dropdown
             icon='ellipsis-h'

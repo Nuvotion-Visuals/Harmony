@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { use100vh } from 'react-div-100vh'
 import { useLayout } from 'redux-tk/layout/hook'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Indicator } from './Indicator'
 import { Threads } from './Threads'
@@ -53,19 +53,17 @@ export const Channel = React.memo(({ }: Props) => {
 
   const [urlToScrape, set_urlToScrape] = useState('')
 
-  const {
-    activeChannel,
-    activeSpace,
-    activeGroup,
-    addMessage,
-    addThread,
-    addThreadToChannel,
-    threadsByGuid,
-    activeThreadGuid,
-    setActiveThreadGuid,
-    messagesByGuid,
-    addMessageToThread
-  } = useSpaces()
+  const activeChannel = useSpaces_activeChannel()
+  const activeSpace = useSpaces_activeSpace()
+  const activeGroup = useSpaces_activeGroup()
+  const addMessage = useSpaces_addMessage()
+  const addThread = useSpaces_addThread()
+  const addThreadToChannel = useSpaces_addThreadToChannel()
+  const threadsByGuid = useSpaces_threadsByGuid()
+  const activeThreadGuid = useSpaces_activeThreadGuid()
+  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
+  const messagesByGuid = useSpaces_messagesByGuid()
+  const addMessageToThread = useSpaces_addMessageToThread()
 
   const [query, set_query] = useState('')
 

@@ -1,6 +1,6 @@
 import { AspectRatio, Box, Button, Gap, Grid, Page, TextInput, useBreakpoint } from '@avsync.live/formation'
 import React, { useState } from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_spacesInfo } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import MyLink from './Link'
 import { Logo } from './Logo'
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const SpacesDashboard = ({ }: Props) => {
-    const { spacesInfo } = useSpaces()
+  const spacesInfo = useSpaces_spacesInfo()
     const { isMobile, isDesktop } = useBreakpoint()
     const [searchQuery, set_searchQuery] = useState('')
   return (<S.SpacesDashboard>

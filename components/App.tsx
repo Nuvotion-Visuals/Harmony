@@ -10,7 +10,7 @@ import { SearchResults } from './SearchResults'
 import { AddSpace } from './AddSpace'
 import { EditSpace } from './EditSpace'
 import { EditGroup } from './EditGroup'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_spaceGuids, useSpaces_setActiveSpaceGuid, useSpaces_setActiveGroupGuid } from 'redux-tk/spaces/hook'
 import { useDispatch } from 'react-redux'
 import { fetchInitialData } from 'redux-tk/spaces/slice'
 import type { Dispatch } from '@reduxjs/toolkit'
@@ -31,13 +31,13 @@ const App = ({ children }: Props) => {
   const router = useRouter()
 
   const dispatch: Dispatch = useDispatch();
+  const spaceGuids = useSpaces_spaceGuids()
 
   useEffect(() => {
     // @ts-ignore
     dispatch(fetchInitialData());
   }, [dispatch]);
 
-  const { spaceGuids } = useSpaces()
   useEffect(() => {
     if (spaceGuids.length && (router.route === '/' || router.route === '/spaces') ) {
       router.push(`/spaces/${spaceGuids[0]}`)
@@ -48,7 +48,9 @@ const App = ({ children }: Props) => {
 
   const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
-  const { setActiveSpaceGuid, setActiveGroupGuid } = useSpaces()
+  
+  const setActiveSpaceGuid = useSpaces_setActiveSpaceGuid()
+  const setActiveGroupGuid = useSpaces_setActiveGroupGuid()
 
   const renderInnerSidebar = () => {
     switch(router.route) {

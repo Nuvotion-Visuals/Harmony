@@ -2,7 +2,7 @@ import { Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, Loadi
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { useLanguageAPI } from 'Lexi/System/Language/hooks'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_messagesByGuid, useSpaces_removeThread, useSpaces_removeThreadFromChannel, useSpaces_setActiveThreadGuid, useSpaces_updateThread } from 'redux-tk/spaces/hook'
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
 import styled from 'styled-components'
 import { Indicator } from './Indicator'
@@ -76,16 +76,15 @@ export const Thread = React.memo(({
     }
   }, [response, completed]);
   
-  const { 
-    addMessage,
-    messagesByGuid,
-    addMessageToThread,
-    updateThread,
-    removeThreadFromChannel,
-    removeThread,
-    setActiveThreadGuid,
-    activeThreadGuid,
-  } = useSpaces() 
+  const addMessage = useSpaces_addMessage()
+  const messagesByGuid = useSpaces_messagesByGuid()
+  const addMessageToThread = useSpaces_addMessageToThread()
+  const updateThread = useSpaces_updateThread()
+  const removeThreadFromChannel = useSpaces_removeThreadFromChannel()
+  const removeThread = useSpaces_removeThread()
+  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
+  const activeThreadGuid = useSpaces_activeThreadGuid()
+   
 
   const [edit, set_edit] = useState(false)
   useEffect(() => {

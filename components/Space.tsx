@@ -1,7 +1,7 @@
 import { AspectRatio, Box, Button, Dropdown, Gap, Item, LineBreak, markdownToHTML, Page, RichTextEditor, Spacer, useBreakpoint } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { Space as SpaceProps } from 'redux-tk/spaces/types'
-import { useSpaces } from 'redux-tk/spaces/hook'
+import { useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_updateSpace } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Badge } from './Badge'
 import { useLayout } from 'redux-tk/layout/hook'
@@ -11,7 +11,10 @@ interface Props {
 }
 
 export const Space = ({ }: Props) => {
-  const { activeSpace, activeSpaceStats, updateSpace, activeSpaceGuid } = useSpaces()
+  const activeSpace = useSpaces_activeSpace()
+  // const activeSpaceStats = useSpaces_activeSpaceStats()
+  const updateSpace = useSpaces_updateSpace()
+  const activeSpaceGuid = useSpaces_activeSpaceGuid()
 
   const [localValue, set_localValue] = useState(activeSpace?.description || '')
   const [edit, set_edit] = useState(false)
@@ -33,9 +36,9 @@ export const Space = ({ }: Props) => {
               <S.SpaceStats>
                 <Spacer />
                 {/* @ts-ignore */}
-                <Badge 
+                {/* <Badge 
                   {...activeSpaceStats}
-                />
+                /> */}
               </S.SpaceStats>
               
               </S.OverlayBottom>

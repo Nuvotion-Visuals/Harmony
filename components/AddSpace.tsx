@@ -2,7 +2,7 @@ import { Button, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextE
 import { useLanguageAPI } from 'Lexi/System/Language/hooks';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { useSpaces } from 'redux-tk/spaces/hook';
+import { useSpaces_addSpaceIncludingGroups } from 'redux-tk/spaces/hook';
 import { MatrixLoading } from './MatrixLoading';
 
 import { IconName } from '@fortawesome/fontawesome-svg-core';
@@ -37,7 +37,7 @@ interface Props {}
 
 export const AddSpace = React.memo(({}: Props) => {
   const router = useRouter();
-  const { addSpaceIncludingGroups } = useSpaces();
+  const addSpaceIncludingGroups = useSpaces_addSpaceIncludingGroups();
   const [name, set_name] = useState('');
   const [description, set_description] = useState('');
   const [prompt, set_prompt] = useState('');

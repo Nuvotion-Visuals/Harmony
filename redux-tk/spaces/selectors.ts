@@ -1,22 +1,168 @@
 import { RootState } from '../store';
 import * as Types from './types';
 
+import { createSelector } from 'reselect';
+
 // Spaces
-export const select_activeSpace = (state: RootState): Types.Space | null => {
-  const { activeSpaceGuid, spacesByGuid } = state.spaces;
-  return activeSpaceGuid ? spacesByGuid[activeSpaceGuid] || null : null;
-};
-export const select_spaceGuids = (state: RootState): Types.Guid[] => {
-  return state.spaces.spaceGuids;
-};
-export const select_spacesByGuid = (state: RootState): Types.SpaceByGuid => {
-  return state.spaces.spacesByGuid;
-};
-export const select_activeSpaceGuid = (state: RootState): Types.Guid | null => {
-  return state.spaces.activeSpaceGuid;
-};
-export const select_spacesInfo = (state: RootState): { name: string, previewSrc?: string, description?: string, guid: string }[] => {
-    const { spacesByGuid } = state.spaces;
+const selectSpacesState = (state: RootState) => state.spaces;
+
+export const select_activeSpace = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    const { activeSpaceGuid, spacesByGuid } = spacesState;
+    return activeSpaceGuid ? spacesByGuid[activeSpaceGuid] || null : null;
+  }
+);
+
+export const select_spaceGuids = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.spaceGuids;
+  }
+);
+
+export const select_spacesByGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.spacesByGuid;
+  }
+);
+
+export const select_activeSpaceGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.activeSpaceGuid;
+  }
+);
+
+
+
+// Groups
+export const select_activeGroup = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    const { activeGroupGuid, groupsByGuid } = spacesState;
+    return activeGroupGuid ? groupsByGuid[activeGroupGuid] || null : null;
+  }
+);
+
+export const select_activeGroupGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.activeGroupGuid;
+  }
+);
+
+export const select_groupsByGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.groupsByGuid;
+  }
+);
+
+// Channels
+export const select_activeChannel = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    const { activeChannelGuid, channelsByGuid } = spacesState;
+    return activeChannelGuid ? channelsByGuid[activeChannelGuid] || null : null;
+  }
+);
+
+export const select_activeChannelGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.activeChannelGuid;
+  }
+);
+
+export const select_channelsByGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.channelsByGuid;
+  }
+);
+
+// Assets
+export const select_activeAsset = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    const { activeAssetGuid, assetsByGuid } = spacesState;
+    return activeAssetGuid ? assetsByGuid[activeAssetGuid] || null : null;
+  }
+);
+
+export const select_activeAssetGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.activeAssetGuid;
+  }
+);
+
+export const select_assetsByGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.assetsByGuid;
+  }
+);
+
+// Threads
+export const select_activeThread = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    const { activeThreadGuid, threadsByGuid } = spacesState;
+    return activeThreadGuid ? threadsByGuid[activeThreadGuid] || null : null;
+  }
+);
+
+export const select_activeThreadGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.activeThreadGuid;
+  }
+);
+
+export const select_threadsByGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.threadsByGuid;
+  }
+);
+
+// Messages
+export const select_activeMessage = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    const { activeMessageGuid, messagesByGuid } = spacesState;
+    return activeMessageGuid ? messagesByGuid[activeMessageGuid] || null : null;
+  }
+);
+
+export const select_messageGuids = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.messageGuids;
+  }
+);
+
+export const select_activeMessageGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.activeMessageGuid;
+  }
+);
+
+export const select_messagesByGuid = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    return spacesState.messagesByGuid;
+  }
+);
+
+export const select_spacesInfo = createSelector(
+  [selectSpacesState, select_groupsByGuid, select_channelsByGuid, select_threadsByGuid],
+  (spacesState, groupsByGuid, channelsByGuid, threadsByGuid) => {
+    const { spacesByGuid } = spacesState;
     const spaces = Object.values(spacesByGuid);
     return spaces.map((space) => {
 
@@ -24,19 +170,19 @@ export const select_spacesInfo = (state: RootState): { name: string, previewSrc?
       const groupsCount = groupGuids?.length
     
       let channelGuids = groupGuids?.map(groupGuid =>
-        select_groupsByGuid(state)[groupGuid].channelGuids
+        groupsByGuid[groupGuid].channelGuids
       )
       let flatChannelGuids = channelGuids?.flat()
       let channelsCount = flatChannelGuids?.length
     
       let threadGuids = flatChannelGuids?.map(channelGuid =>
-        select_channelsByGuid(state)[channelGuid].threadGuids
+        channelsByGuid[channelGuid].threadGuids
       )
       let flatThreadGuids = threadGuids?.flat()
       let threadsCount = flatThreadGuids?.length
     
       let messageGuids = flatThreadGuids?.map(threadGuid =>
-        select_threadsByGuid(state)[threadGuid].messageGuids
+        threadsByGuid[threadGuid].messageGuids
       )
       let flatMessageGuids = messageGuids?.flat()
       let messageCount = flatMessageGuids?.length
@@ -51,100 +197,5 @@ export const select_spacesInfo = (state: RootState): { name: string, previewSrc?
         threadsCount,
         messageCount
       })})
-  };
-
-// Groups
-export const select_activeGroup = (state: RootState): Types.Group | null => {
-  const { activeGroupGuid, groupsByGuid } = state.spaces;
-  return activeGroupGuid ? groupsByGuid[activeGroupGuid] || null : null;
-};
-export const select_activeGroupGuid = (state: RootState): Types.Guid | null => {
-  return state.spaces.activeGroupGuid;
-};
-export const select_groupsByGuid = (state: RootState): { [key: string]: Types.Group } => {
-  return state.spaces.groupsByGuid;
-};
-
-// Channels
-export const select_activeChannel = (state: RootState): Types.Channel | null => {
-  const { activeChannelGuid, channelsByGuid } = state.spaces;
-  return activeChannelGuid ? channelsByGuid[activeChannelGuid] || null : null;
-};
-export const select_activeChannelGuid = (state: RootState): Types.Guid | null => {
-  return state.spaces.activeChannelGuid;
-};
-export const select_channelsByGuid = (state: RootState): { [key: string]: Types.Channel } => {
-  return state.spaces.channelsByGuid;
-};
-
-// Assets
-export const select_activeAsset = (state: RootState): Types.Asset | null => {
-  const { activeAssetGuid, assetsByGuid } = state.spaces;
-  return activeAssetGuid ? assetsByGuid[activeAssetGuid] || null : null;
-};
-export const select_activeAssetGuid = (state: RootState): Types.Guid | null => {
-  return state.spaces.activeAssetGuid;
-};
-export const select_assetsByGuid = (state: RootState): { [key: string]: Types.Asset } => {
-  return state.spaces.assetsByGuid;
-};
-
-// Threads
-export const select_activeThread = (state: RootState): Types.Thread | null => {
-  const { activeThreadGuid, threadsByGuid } = state.spaces;
-  return activeThreadGuid ? threadsByGuid[activeThreadGuid] || null : null;
-};
-export const select_activeThreadGuid = (state: RootState): Types.Guid | null => {
-  return state.spaces.activeThreadGuid;
-};
-export const select_threadsByGuid = (state: RootState): { [key: string]: Types.Thread } => {
-  return state.spaces.threadsByGuid;
-};
-
-// Messages
-export const select_activeMessage = (state: RootState): Types.Message | null => {
-  const { activeMessageGuid, messagesByGuid } = state.spaces;
-  return activeMessageGuid ? messagesByGuid[activeMessageGuid] || null : null;
-};
-export const select_messageGuids = (state: RootState) : Types.Guid[] => {
-  const { messageGuids } = state.spaces
-  return messageGuids
-}
-export const select_activeMessageGuid = (state: RootState): Types.Guid | null => {
-  return state.spaces.activeMessageGuid;
-};
-export const select_messagesByGuid = (state: RootState): { [key: string]: Types.Message } => {
-  return state.spaces.messagesByGuid;
-};
-
-export const select_activeSpaceStats = (state: RootState) => {
-  const activeSpace = select_activeSpace(state)
-
-  const groupGuids = activeSpace?.groupGuids
-  const groupsCount = groupGuids?.length
-
-  let channelGuids = groupGuids?.map(groupGuid =>
-    select_groupsByGuid(state)[groupGuid].channelGuids
-  )
-  let flatChannelGuids = channelGuids?.flat()
-  let channelsCount = flatChannelGuids?.length
-
-  let threadGuids = flatChannelGuids?.map(channelGuid =>
-    select_channelsByGuid(state)[channelGuid].threadGuids
-  )
-  let flatThreadGuids = threadGuids?.flat()
-  let threadsCount = flatThreadGuids?.length
-
-  let messageGuids = flatThreadGuids?.map(threadGuid =>
-    select_threadsByGuid(state)[threadGuid].messageGuids
-  )
-  let flatMessageGuids = messageGuids?.flat()
-  let messageCount = flatMessageGuids?.length
-
-  return {
-    groupsCount,
-    channelsCount,
-    threadsCount,
-    messageCount
   }
-}
+);
