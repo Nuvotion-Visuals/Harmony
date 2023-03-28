@@ -98,6 +98,8 @@ async function connectToServer() {
         payload: { guid: targetMessageGuid, message: newMessage }
       })
 
+      speakStream(message, guid)
+
       setTimeout(() => {
         const target = document.getElementById(`bottom_${conversationId}`)
         if (target) {
@@ -112,25 +114,25 @@ async function connectToServer() {
     }
 
     if (type === 'partial-response') {
-      console.log('partial-response')
       const targetThreadMessageGuids = store.getState().spaces.threadsByGuid[conversationId].messageGuids
       const targetMessageGuid = targetThreadMessageGuids.slice(-1)[0]
 
-      // const newMessage ={
-      //   guid: targetMessageGuid,
-      //   message,
-      //   conversationId,
-      //   parentMessageId,
-      //   userLabel: 'Lexi'
-      // } as MessageProps
-      if (document.getElementById(`${targetMessageGuid}_message`)) {
-        const highlightedMessage = highlightText(markdownToHTML(message), (store.getState().lexi.currentlySpeaking || ''))
-        // @ts-ignore
-        document.getElementById(`${targetMessageGuid}_message`).innerHTML = highlightedMessage
-      }
+      const newMessage ={
+        guid: targetMessageGuid,
+        message,
+        conversationId,
+        parentMessageId,
+        userLabel: 'Lexi'
+      } as MessageProps
 
-      speakStream(message, targetMessageGuid)
+      store.dispatch({
+        type: 'spaces/updateMessage',
+        payload: { guid: targetMessageGuid, message: newMessage }
+      })
 
+      speakStream(message, guid)
+
+      setTimeout(() => {
         const target = document.getElementById(`bottom_${conversationId}`)
         if (target) {
           target.scrollIntoView({
@@ -139,7 +141,7 @@ async function connectToServer() {
             inline: "nearest" // "start", "center", "end", or "nearest"
           });
         }
-     
+      }, 100)
     }
   }
 

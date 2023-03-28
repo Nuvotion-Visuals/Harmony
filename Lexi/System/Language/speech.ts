@@ -50,7 +50,7 @@ const speakSentences = (callback : () => void) => {
     // Set the onended event handler to speak the next sentence and start speaking the current sentence
     source.onended = speakSentence
     source.start()
-    console.log(sentence.replace(/\n|\r/g, " "))
+    // console.log(sentence.replace(/\n|\r/g, " "))
 
     store.dispatch({
       type: 'lexi/set_currentlySpeaking',
@@ -144,7 +144,7 @@ let accumulatedSentences: string[] = [];
 export const speakStream = (text: string, guid: string) => {
   // Split the input into sentences and loop over them
   const sentences = text.match(/[^.!?:\n]+[.!?:\n]+/g);
-  console.log(sentences)
+  // console.log(sentences)
   if (sentences) {
     for (const sentence of sentences) {
       // Trim leading and trailing whitespace from the sentence
