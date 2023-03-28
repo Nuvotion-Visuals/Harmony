@@ -3,10 +3,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { speakStream } from '../Language/speech';
 import { markdownToHTML } from '@avsync.live/formation';
+import { scrollToElementById } from 'client-utils';
 
 const highlightText = (html: string, currentlySpeaking: string | null): string => {
-  const openingTag = `<span style="color: var(--F_Primary_Variant)">`;
-  const closingTag = "</span>";
+  const openingTag = `<span style='color: var(--F_Primary_Variant)'>`;
+  const closingTag = '</span>';
   let len = 0;
   if (currentlySpeaking) {
     len = currentlySpeaking.length;
@@ -14,7 +15,7 @@ const highlightText = (html: string, currentlySpeaking: string | null): string =
 
   let startIndex = 0;
   let index = currentlySpeaking ? html.indexOf(currentlySpeaking, startIndex) : -1;
-  let highlightedHtml = "";
+  let highlightedHtml = '';
 
   while (index !== -1) {
     // Append the HTML before the match
@@ -101,17 +102,11 @@ async function connectToServer() {
 
       speakStream(message, guid)
 
-      setTimeout(() => {
-        const target = document.getElementById(`bottom_${conversationId}`)
-        if (target) {
-          target.scrollIntoView({
-            behavior: "auto", // "auto" or "smooth"
-            block: "end", // "start", "center", "end", or "nearest"
-            inline: "nearest" // "start", "center", "end", or "nearest"
-          });
-        }
-      }, 100)
-     
+      scrollToElementById(`bottom_${conversationId}`, {
+        behavior: 'auto',
+        block: 'end',
+        inline: 'nearest'
+      })
     }
 
     if (type === 'partial-response') {
@@ -134,16 +129,11 @@ async function connectToServer() {
 
       speakStream(message, guid)
 
-      setTimeout(() => {
-        const target = document.getElementById(`bottom_${conversationId}`)
-        if (target) {
-          target.scrollIntoView({
-            behavior: "auto", // "auto" or "smooth"
-            block: "end", // "start", "center", "end", or "nearest"
-            inline: "nearest" // "start", "center", "end", or "nearest"
-          });
-        }
-      }, 100)
+      scrollToElementById(`bottom_${conversationId}`, {
+        behavior: 'auto',
+        block: 'end',
+        inline: 'nearest'
+      })
     }
   }
 

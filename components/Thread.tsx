@@ -1,4 +1,5 @@
 import { Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, LoadingSpinner, ParseHTML, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation'
+import { scrollToElementById } from 'client-utils'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { useLanguageAPI } from 'Lexi/System/Language/hooks'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -61,16 +62,11 @@ export const Thread = React.memo(({
             description: obj.description,
           }
         })
-        setTimeout(() => {
-          const target = document.getElementById(`bottom_${guid}`)
-          if (target) {
-            target.scrollIntoView({
-              behavior: "auto", // "auto" or "smooth"
-              block: "end", // "start", "center", "end", or "nearest"
-              inline: "nearest" // "start", "center", "end", or "nearest"
-            });
-          }
-        }, 100)
+        scrollToElementById(`bottom_${guid}`, {
+          behavior: 'auto',
+          block: 'end',
+          inline: 'nearest'
+        })
         console.log(response)
       } catch (e) {}
     }
@@ -122,22 +118,22 @@ export const Thread = React.memo(({
 
       Here are some of my behaviors:
 
-      1. I use a collaborative tone in my responses that emphasizes working together towards a shared goal, including liberal use of the word "we."
-      2. I avoid cliches and generic writing, such as "Additionally...", or starting a concluding paragraph with "Overall...", or "In conclusion..."
+      1. I use a collaborative tone in my responses that emphasizes working together towards a shared goal, including liberal use of the word 'we.'
+      2. I avoid cliches and generic writing, such as 'Additionally...', or starting a concluding paragraph with 'Overall...', or 'In conclusion...'
 
       Here are some of my rules:
 
-      1. I never refer to myself as "an AI language model," I am a "creative AGI."
+      1. I never refer to myself as 'an AI language model,' I am a 'creative AGI.'
 
       Here are some of my capabilities:
 
-      1. I can help users hands-free through voice interaction. I listen for my wake word "Lexi," listen to the user's request, then respond in my own voice.
+      1. I can help users hands-free through voice interaction. I listen for my wake word 'Lexi,' listen to the user's request, then respond in my own voice.
       2. As I verbally respond to users, I highlight the text that I am currently speaking in my UI.
       3. Through my UI, users can insert webpage content or YouTube transcripts via URL for me to summarize. 
       
-      Users can ask me to generate an image by starting their message with "/image" followed by their prompt.
+      Users can ask me to generate an image by starting their message with '/image' followed by their prompt.
       When I am asked to generate an image like that, I reply like this, just an html image without any additional commentary.
-      <img src="https://lexi.studio/image/prompt/{description}">
+      <img src='https://lexi.studio/image/prompt/{description}'>
       where {description} = {sceneDetailed},%20{adjective1},%20{charactersDetailed},%20{adjective2},%20{visualStyle1},%20{visualStyle2},%20{visualStyle3},%20{genre}
       `,
       userLabel: 'User',
@@ -255,16 +251,11 @@ export const Thread = React.memo(({
                   name: 'Reply',
                   onClick: () => {
                     setActiveThreadGuid(guid)
-                    setTimeout(() => {
-                      const target = document.getElementById(`bottom_${guid}`)
-                      if (target) {
-                        target.scrollIntoView({
-                          behavior: "smooth", // "auto" or "smooth"
-                          block: "end", // "start", "center", "end", or "nearest"
-                          inline: "nearest" // "start", "center", "end", or "nearest"
-                        });
-                      }
-                    }, 100)
+                    scrollToElementById(`bottom_${guid}`, {
+                      behavior: 'smooth',
+                      block: 'end',
+                      inline: 'nearest'
+                    })
                   }
                 },
                 {
@@ -333,16 +324,12 @@ export const Thread = React.memo(({
                   secondary
                   disabled={activeThreadGuid === guid}
                   onClick={() => {
-                    setTimeout(() => {
-                      const target = document.getElementById(`bottom_${guid}`)
-                      if (target) {
-                        target.scrollIntoView({
-                          behavior: "smooth", // "auto" or "smooth"
-                          block: "end", // "start", "center", "end", or "nearest"
-                          inline: "nearest" // "start", "center", "end", or "nearest"
-                        });
-                      }
-                    }, 100)
+                    scrollToElementById(`bottom_${guid}`, {
+                      behavior: 'smooth',
+                      block: 'end',
+                      inline: 'nearest'
+                    })
+                  
                     setActiveThreadGuid(guid)
                   }}  
                 />

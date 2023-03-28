@@ -1,4 +1,5 @@
 import { Box, Button, Gap, Item, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation';
+import { scrollToElementById } from 'client-utils';
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client';
 import { useLanguageAPI } from 'Lexi/System/Language/hooks';
 import React, { useEffect, useState } from 'react'
@@ -70,16 +71,11 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
 
   useEffect(() => {
     if (response) {
-      setTimeout(() => {
-        const target = document.getElementById(`bottom_${guid}`)
-        if (target) {
-          target.scrollIntoView({
-            behavior: "smooth", // "auto" or "smooth"
-            block: "end", // "start", "center", "end", or "nearest"
-            inline: "nearest" // "start", "center", "end", or "nearest"
-          });
-        }
-      }, 100)
+      scrollToElementById(`bottom_${guid}`, {
+        behavior: 'smooth',
+        block: 'end',
+        inline: 'nearest'
+      }) 
     }
   }, [response])
 
