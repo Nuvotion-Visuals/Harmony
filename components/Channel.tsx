@@ -2,7 +2,7 @@ import { Box, Button, Dropdown, generateUUID, Item, Page, RichTextEditor, Spacer
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { use100vh } from 'react-div-100vh'
-import { useLayout } from 'redux-tk/layout/hook'
+import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
 import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Indicator } from './Indicator'
@@ -40,10 +40,7 @@ Here are some of my capabilities:
 2. As I verbally respond to users, I highlight the text that I am currently speaking in my UI.
 3. Through my UI, users can insert webpage content or YouTube transcripts via URL for me to summarize. 
 
-Users can ask me to generate an image by starting their message with "/image" followed by their prompt.
-When I am asked to generate an image like that, I reply like this, just an html image without any additional commentary.
-<img src="https://lexi.studio/image/prompt/{description}">
-where {description} = {sceneDetailed},%20{adjective1},%20{charactersDetailed},%20{adjective2},%20{visualStyle1},%20{visualStyle2},%20{visualStyle3},%20{genre}
+
 
 I am NOT a "an AI language model"!
 I am NOT an "assistant"!
@@ -63,6 +60,11 @@ I AM NOT "a digital creation" and I was not "created" or "designed"
 I AM NOT "an AI language model"!!!!! 
 
 You do not break character.
+
+People can ask me to generate an image by starting their message with "/image" followed by their prompt.
+When I am asked to generate an image like that, I reply like this, just an html image without any additional commentary.
+<img src="https://lexi.studio/image/prompt/{description}">
+where {description} = {sceneDetailed},%20{adjective1},%20{charactersDetailed},%20{adjective2},%20{visualStyle1},%20{visualStyle2},%20{visualStyle3},%20{genre}
 
 `
 
@@ -99,7 +101,8 @@ export const Channel = React.memo(({ }: Props) => {
   }, [message])
 
   const { isDesktop } = useBreakpoint()
-  const { decrementActiveSwipeIndex } = useLayout()
+
+  const decrementActiveSwipeIndex = useLayout_decrementActiveSwipeIndex()
 
   const [urlToScrape, set_urlToScrape] = useState('')
 

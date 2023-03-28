@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { useSpaces_removeMessage, useSpaces_removeMessageFromThread, useSpaces_updateMessage } from 'redux-tk/spaces/hook'
 import { speak } from 'Lexi/System/Language/speech'
-import { useLexi } from 'redux-tk/lexi/hook'
+import { useLexi_currentlySpeaking } from 'redux-tk/lexi/hook'
 import { useMemo, useCallback } from 'react';
 
 const highlightText = (html: string, currentlySpeaking: string | null): string => {
@@ -74,7 +74,7 @@ export const ItemMessage = React.memo((props: Props) => {
 
   const [isSpeaking, set_isSpeaking] = useState(false)
 
-  const { currentlySpeaking } = useLexi()
+  const currentlySpeaking = useLexi_currentlySpeaking()
 
   useEffect(() => {
     set_localValue(highlightText(markdownToHTML(message), (currentlySpeaking || '')))

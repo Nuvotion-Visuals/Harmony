@@ -1,7 +1,7 @@
 import { NavSpaces, Box, useBreakpoint, LoadingSpinner } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { useLayout } from 'redux-tk/layout/hook'
+import { useLayout_activeSwipeIndex, useLayout_setActiveSwipeIndex } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
 import { SpaceSidebar } from './SpaceSidebar'
@@ -46,7 +46,9 @@ const App = ({ children }: Props) => {
 
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
 
-  const {activeSwipeIndex, setActiveSwipeIndex } = useLayout()
+  const activeSwipeIndex = useLayout_activeSwipeIndex()
+  const setActiveSwipeIndex = useLayout_setActiveSwipeIndex()
+
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(0)
   
   const setActiveSpaceGuid = useSpaces_setActiveSpaceGuid()

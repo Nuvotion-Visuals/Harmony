@@ -89,6 +89,7 @@ export interface Message {
   message: string;
   threadGuid?: string;
   response?: string;
+  complete?: boolean
 }
 export interface MessagesByGuid {
   [guid: string]: Message;

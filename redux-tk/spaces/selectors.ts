@@ -1,5 +1,4 @@
 import { RootState } from '../store';
-import * as Types from './types';
 
 import { createSelector } from 'reselect';
 

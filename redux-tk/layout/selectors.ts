@@ -1,3 +1,7 @@
-import type { RootState } from 'redux-tk/store'
+import type { RootState } from 'redux-tk/store';
+import { createSelector } from 'reselect';
 
-export const selectActiveSwipeIndex = (state: RootState) => state.layout.activeSwipeIndex
+export const selectActiveSwipeIndex = createSelector(
+  (state: RootState) => state.layout.activeSwipeIndex,
+  (activeSwipeIndex) => activeSwipeIndex
+);

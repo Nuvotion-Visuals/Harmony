@@ -4,7 +4,7 @@ import { Space as SpaceProps } from 'redux-tk/spaces/types'
 import { useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_updateSpace } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Badge } from './Badge'
-import { useLayout } from 'redux-tk/layout/hook'
+import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
 
 interface Props {
   
@@ -20,7 +20,7 @@ export const Space = ({ }: Props) => {
   const [edit, set_edit] = useState(false)
 
   const { isMobile } = useBreakpoint()
-  const { decrementActiveSwipeIndex } = useLayout()
+  const decrementActiveSwipeIndex = useLayout_decrementActiveSwipeIndex()
 
   useEffect(() => {
     set_localValue(activeSpace?.description || '')

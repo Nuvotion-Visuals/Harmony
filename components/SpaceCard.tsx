@@ -13,7 +13,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-export const SpaceCard = ({ previewSrc, name, groupsCount, channelsCount, threadsCount, messageCount, children }: Props) => {
+export const SpaceCard = React.memo(({ previewSrc, name, groupsCount, channelsCount, threadsCount, messageCount, children }: Props) => {
   const SpaceName = React.memo(() => (<S.SpaceName>
     <Box>
       <Item pageTitle={name}>
@@ -78,7 +78,7 @@ export const SpaceCard = ({ previewSrc, name, groupsCount, channelsCount, thread
           </Box>
     }
   </S.SpaceCard>)
-}
+})
 
 const S = {
   SpaceCard: styled.div`

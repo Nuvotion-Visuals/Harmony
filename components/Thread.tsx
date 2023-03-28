@@ -159,13 +159,13 @@ export const Thread = React.memo(({
 
   const showSpinner = loading
 
-  // useEffect(() => {
-  //   if (messageGuids?.length === 2 && !name && !description) {
-  //     if (messagesByGuid[messageGuids[1]]?.message) {
-  //       generateTitle(messageContent)
-  //     }
-  //   }
-  // }, [messagesByGuid?.length])
+  useEffect(() => {
+    if (messageGuids?.length === 2 && !name && !description) {
+      if (messagesByGuid[messageGuids[1]]?.complete) {
+        generateTitle(messageContent)
+      }
+    }
+  }, [messagesByGuid[messageGuids[1]]?.complete])
 
   return (<S.Thread active={guid === activeThreadGuid}>
     <Box width='100%'>

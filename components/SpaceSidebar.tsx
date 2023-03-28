@@ -28,13 +28,9 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
 
   const [activeSpaceIndex, set_activeSpaceIndex] = useState(spaceGuids.indexOf(spaceGuid as string))
 
-  const locked = activeSpace?.locked
-
   useEffect(() => {
     set_activeSpaceIndex(spaceGuids.indexOf(spaceGuid as string))
   }, [spaceGuid])
-
-
 
   return (<S.GroupsSidebar>
     <SpacesSidebar 
@@ -77,15 +73,15 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
                 href: `/spaces/${activeSpaceGuid}/edit`
               },
               {
-                text: locked ? 'Unlock' : 'Lock',
-                icon: locked ? 'lock' : 'lock-open',
+                text: activeSpace?.locked ? 'Unlock' : 'Lock',
+                icon: activeSpace?.locked ? 'lock' : 'lock-open',
                 iconPrefix: 'fas',
                 onClick: () => {
                   updateSpace({
                     guid: spaceGuid as string,
                     space: {
                       ...activeSpace!,
-                      locked: !locked
+                      locked: !activeSpace?.locked
                     }
                   })
                 }
@@ -106,7 +102,7 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
           />
           </SpaceCard>
         </Box>
-        <Groups locked={locked!} />
+        <Groups />
       </Box>
     </S.SidebarContainer>
   </S.GroupsSidebar>)

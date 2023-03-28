@@ -8,7 +8,7 @@ import { Thread } from './Thread'
 import { scrollToBottom } from 'client-utils'
 import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
 import { use100vh } from 'react-div-100vh'
-import { useLayout } from 'redux-tk/layout/hook'
+import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
 import { Indicator } from './Indicator'
 import { useLanguageAPI } from 'Lexi/System/Language/hooks'
 import { MatrixLoading } from './MatrixLoading'
@@ -47,7 +47,7 @@ export const Threads = ({ }: Props) => {
 
   const true100vh = use100vh()
 
-  const { decrementActiveSwipeIndex } = useLayout()
+  const decrementActiveSwipeIndex = useLayout_decrementActiveSwipeIndex()
   const { isDesktop } = useBreakpoint()
 
   const selected = useMemo(() => activeGroup?.name && activeGroup?.name, [activeGroup]);

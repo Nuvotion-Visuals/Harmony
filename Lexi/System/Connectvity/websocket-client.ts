@@ -90,7 +90,8 @@ async function connectToServer() {
         message,
         conversationId,
         parentMessageId,
-        userLabel: 'Lexi'
+        userLabel: 'Lexi',
+        complete: true
       } as MessageProps
 
       store.dispatch({
@@ -122,7 +123,8 @@ async function connectToServer() {
         message,
         conversationId,
         parentMessageId,
-        userLabel: 'Lexi'
+        userLabel: 'Lexi',
+        complete: false
       } as MessageProps
 
       store.dispatch({

@@ -16,7 +16,7 @@ import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_activeSpaceGu
 // @ts-ignore
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
 import { useRouter } from 'next/router'
-import { useLayout } from 'redux-tk/layout/hook'
+import { useLayout_incrementActiveSwipeIndex } from 'redux-tk/layout/hook'
 import { Indicator } from './Indicator'
 import { AddChannelInput } from './AddChannelInput'
 
@@ -31,13 +31,13 @@ type List = {
 type Lists = List[]
 
 interface Props {
-  locked: boolean
+
 }
 
-export const Groups = React.memo(({ locked }: Props) => {
+export const Groups = React.memo(({ }: Props) => {
     const router = useRouter()
 
-    const { incrementActiveSwipeIndex } = useLayout()
+    const incrementActiveSwipeIndex = useLayout_incrementActiveSwipeIndex()
     const { isDesktop } = useBreakpoint()
 
     const activeSpace = useSpaces_activeSpace()
@@ -256,7 +256,7 @@ export const Groups = React.memo(({ locked }: Props) => {
       />
 
       {
-        !locked && activeSpace?.name &&
+        !activeSpace?.locked && activeSpace?.name &&
           <Item
             content={<Box>  
             <Box>

@@ -1,6 +1,6 @@
 import { Box, LoadingSpinner } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
-import { useLexi } from 'redux-tk/lexi/hook'
+import { useLexi_searchQuery } from 'redux-tk/lexi/hook'
 import styled from 'styled-components'
 import LogoPlaceholder from './LogoPlaceholder'
 import { MatrixLoading } from './MatrixLoading'
@@ -10,10 +10,7 @@ interface Props {
 }
 
 export const SearchResults = React.memo(({ }: Props) => {
-    const {
-    searchQuery
-  } = useLexi()
-
+  const searchQuery = useLexi_searchQuery()
   const [loading, set_loading] = useState(true)
 
   useEffect(() => {

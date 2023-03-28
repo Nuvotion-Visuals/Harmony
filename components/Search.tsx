@@ -1,18 +1,19 @@
 import { Box, TextInput, Page } from '@avsync.live/formation'
 import React from 'react'
-import { useLayout } from 'redux-tk/layout/hook'
-import { useLexi } from 'redux-tk/lexi/hook'
+import { useLayout_setActiveSwipeIndex } from 'redux-tk/layout/hook'
+import { useLexi_searchQuery, useLexi_setSearchQuery } from 'redux-tk/lexi/hook'
 
 interface Props {
   
 }
 
 export const Search = React.memo(({ }: Props) => {
-    const {
-    searchQuery, set_searchQuery
-  } = useLexi()
 
-  const { setActiveSwipeIndex } = useLayout()
+
+  const searchQuery = useLexi_searchQuery()
+  const set_searchQuery = useLexi_setSearchQuery()
+
+  const setActiveSwipeIndex = useLayout_setActiveSwipeIndex()
 
   return (
     <Page >

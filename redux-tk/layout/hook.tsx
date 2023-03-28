@@ -1,21 +1,30 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { useCallback } from 'react'
-import { isEqual } from 'lodash'
+import { useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { isEqual } from 'lodash';
+import * as selectors from './selectors';
+import { slice } from './slice';
 
-import * as selectors from './selectors'
+export const useLayout_activeSwipeIndex = () => {
+  return useSelector(selectors.selectActiveSwipeIndex, isEqual);
+};
 
-import { slice } from './slice'
+export const useLayout_incrementActiveSwipeIndex = () => {
+  const dispatch = useDispatch();
+  return useCallback(() => {
+    dispatch(slice.actions.incrementActiveSwipeIndex());
+  }, [dispatch]);
+};
 
-export const useLayout = () => {
-  const dispatch = useDispatch()
+export const useLayout_decrementActiveSwipeIndex = () => {
+  const dispatch = useDispatch();
+  return useCallback(() => {
+    dispatch(slice.actions.deccrementActiveSwipeIndex());
+  }, [dispatch]);
+};
 
-  return {
-    // selectors
-    activeSwipeIndex: useSelector(selectors.selectActiveSwipeIndex, isEqual),
-
-    // actions
-    incrementActiveSwipeIndex: useCallback(() => dispatch(slice.actions.incrementActiveSwipeIndex()), [dispatch]),
-    decrementActiveSwipeIndex: useCallback(() => dispatch(slice.actions.deccrementActiveSwipeIndex()), [dispatch]),
-    setActiveSwipeIndex: useCallback((payload: number) => dispatch(slice.actions.setActiveSwipeIndex(payload)), [dispatch]),
-  }
-}
+export const useLayout_setActiveSwipeIndex = () => {
+  const dispatch = useDispatch();
+  return useCallback((payload: number) => {
+    dispatch(slice.actions.setActiveSwipeIndex(payload));
+  }, [dispatch]);
+};
