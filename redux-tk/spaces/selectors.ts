@@ -198,3 +198,46 @@ export const select_spacesInfo = createSelector(
       })})
   }
 );
+
+export const select_activeSpaceStats = createSelector(
+  [
+    select_activeSpace,
+    select_groupsByGuid,
+    select_channelsByGuid,
+    select_threadsByGuid,
+  ],
+  (activeSpace, groupsByGuid, channelsByGuid, threadsByGuid) => {
+    if (!activeSpace) {
+      return null;
+    }
+
+    const groupGuids = activeSpace.groupGuids;
+    const groupsCount = groupGuids.length;
+
+    const channelGuids = groupGuids
+      .map((groupGuid) => groupsByGuid[groupGuid].channelGuids)
+      .flat();
+    const channelsCount = channelGuids.length;
+
+    const threadGuids = channelGuids
+      .map((channelGuid) => channelsByGuid[channelGuid].threadGuids)
+      .flat();
+    const threadsCount = threadGuids.length;
+
+    const messageGuids = threadGuids
+      .map((threadGuid) => threadsByGuid[threadGuid].messageGuids)
+      .flat();
+    const messageCount = messageGuids.length;
+
+    return {
+      guid: activeSpace.guid,
+      name: activeSpace.name,
+      previewSrc: activeSpace.previewSrc,
+      description: activeSpace.description,
+      groupsCount,
+      channelsCount,
+      threadsCount,
+      messageCount,
+    };
+  }
+);

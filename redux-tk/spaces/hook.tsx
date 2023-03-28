@@ -20,7 +20,7 @@ interface Suggested {
 }
 
 // Spaces
-// export const useSpaces_ActiveSpaceStats = () => useSelector(selectors.select_activeSpaceStats, shallowEqual);
+export const useSpaces_activeSpaceStats = () => useSelector(selectors.select_activeSpaceStats);
 export const useSpaces_activeSpace = () => useSelector(selectors.select_activeSpace);
 export const useSpaces_spaceGuids = () => useSelector(selectors.select_spaceGuids);
 export const useSpaces_spacesByGuid = () => useSelector(selectors.select_spacesByGuid);
