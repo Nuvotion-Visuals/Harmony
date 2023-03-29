@@ -73,8 +73,6 @@ export const ChatBox = ({ }: Props) => {
   const router = useRouter()
   const { channelGuid } = router.query
 
-  const componentRef = useRef<HTMLDivElement>(null);
-
   const [urlToScrape, set_urlToScrape] = useState('')
 
   const addMessage = useSpaces_addMessage()
@@ -370,10 +368,4 @@ export const ChatBox = ({ }: Props) => {
       </RichTextEditor>
     </Page>
  )
-}
-
-const S = {
-  ChatBox: styled.div`
-    
-  `
 }

@@ -1,4 +1,3 @@
-import { Box, LoadingSpinner } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { useLexi_searchQuery } from 'redux-tk/lexi/hook'
 import styled from 'styled-components'
@@ -19,11 +18,11 @@ export const SearchResults = React.memo(({ }: Props) => {
 
   return (
     <>
-    {
-      searchQuery && loading &&
-        <MatrixLoading></MatrixLoading>
-    }
-     {
+      {
+        searchQuery && loading &&
+          <MatrixLoading></MatrixLoading>
+      }
+      {
         searchQuery
           ? <S.Iframe 
               src={searchQuery ? `https://search.lexi.studio/search?q=${searchQuery}` : ''} 
@@ -32,7 +31,7 @@ export const SearchResults = React.memo(({ }: Props) => {
             >
             </S.Iframe>
           : <LogoPlaceholder />
-      }
+        }
     </>
    
   )

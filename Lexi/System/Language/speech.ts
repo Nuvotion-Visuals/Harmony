@@ -76,6 +76,9 @@ export const speak = async (text: string, callback: (error: any) => void) => {
   audioBuffers = []
   audioBufferSentences = []
 
+  text = text.replace(/```[\s\S]*?```/g, "");
+  text = text.replace(/`/g, '')
+
   // If the text is empty, stop any current audio and return
   if (text === '' && source) {
     source.stop()
