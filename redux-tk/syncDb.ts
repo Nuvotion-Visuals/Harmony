@@ -1,4 +1,4 @@
-import { Space, Guid, Channel, Group, Asset, Thread, Message } from 'redux-tk/spaces/types';
+import { Space, Channel, Group, Asset, Thread, Message } from 'redux-tk/spaces/types';
 import * as Y from 'yjs';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { WebsocketProvider } from 'y-websocket';
@@ -13,7 +13,7 @@ interface MyDatabase {
   messages: Y.Map<Message>;
 }
 
-let db: MyDatabase;
+let syncDb: MyDatabase;
 
 if (typeof window !== 'undefined') {
   const ydoc = new Y.Doc();
@@ -31,7 +31,7 @@ if (typeof window !== 'undefined') {
     // Update the UI with the latest data
   });
 
-  db = {
+  syncDb = {
     spaces: ydoc.getMap('spaces'),
     channels: ydoc.getMap('channels'),
     assets: ydoc.getMap('assets'),
@@ -40,11 +40,12 @@ if (typeof window !== 'undefined') {
     messages: ydoc.getMap('messages'),
   };
 
-  Object.entries(db).forEach(([name, map]) => {
+  Object.entries(syncDb).forEach(([name, map]) => {
     map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group | Thread | Message>) => {
+      setTimeout(() => {
         try {
-          const payload = map.toJSON()
-
+          const payload = map.toJSON();
+    
           switch (name) {
             case 'spaces':
               store.dispatch({ type: 'spaces/setSpaces', payload });
@@ -64,18 +65,16 @@ if (typeof window !== 'undefined') {
             case 'messages':
               store.dispatch({ type: 'spaces/setMessages', payload });
               break;
-            default:
-              break;
           }
+        } catch (e) {
+          console.log(e);
         }
-        catch(e) {
-          console.log(e)
-        }
+      }, 1)
     });
   });
 } 
 else {
-  db = {
+  syncDb = {
     spaces: new Y.Map(),
     channels: new Y.Map(),
     assets: new Y.Map(),
@@ -85,4 +84,4 @@ else {
   };
 }
 
-export default db;
+export default syncDb;

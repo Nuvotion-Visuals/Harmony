@@ -1,4 +1,4 @@
-import { Box, Button, Dropdown, generateUUID, Page, RichTextEditor, TextInput} from '@avsync.live/formation'
+import { Box, Button, Dropdown, generateUUID, Page, RichTextEditor, TextInput, useBreakpoint} from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
@@ -284,6 +284,8 @@ export const ChatBox = ({ }: Props) => {
     }
   }, [listening])
 
+  const { isMobile } = useBreakpoint()
+
   return (
     <Page noPadding>
       <RichTextEditor
@@ -291,8 +293,10 @@ export const ChatBox = ({ }: Props) => {
         value={query} 
         onChange={(value : string) => value === '<p><br></p>' ? null : set_query(value)} 
         onEnter={() => {
-          (document?.activeElement as HTMLElement)?.blur();
-          send(query.substring(0, query.length - 11)) // trim off <p><br></p>
+          if (!isMobile) {
+            (document?.activeElement as HTMLElement)?.blur();
+            send(query) // trim off <p><br></p>
+          }
         }}
         placeholder='Chat'
         outset

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as Types from './types';
 
-import db from 'y/y'
+import syncDb from 'redux-tk/syncDb'
 import { generateUUID } from '@avsync.live/formation';
 
 interface SpaceState {
@@ -53,8 +53,8 @@ interface FetchDataResult<T extends Item> {
   guids: string[];
 }
 
-async function fetchData<T extends Item>(db: any, objectType: string): Promise<FetchDataResult<T>> {
-  const iterator = db[objectType].values();
+async function fetchData<T extends Item>(syncDb: any, objectType: string): Promise<FetchDataResult<T>> {
+  const iterator = syncDb[objectType].values();
   const array: T[] = [];
   let item = iterator.next();
   while (!item.done) {
@@ -75,27 +75,27 @@ async function fetchData<T extends Item>(db: any, objectType: string): Promise<F
 export const fetchInitialData = createAsyncThunk(
   'spaces/fetchInitialData',
   async () => {
-    const spaces = await fetchData<Types.Space>(db, 'spaces');
+    const spaces = await fetchData<Types.Space>(syncDb, 'spaces');
     const spacesByGuid = spaces.byGuid;
     const spaceGuids = spaces.guids;
 
-    const groups = await fetchData<Types.Group>(db, 'groups');
+    const groups = await fetchData<Types.Group>(syncDb, 'groups');
     const groupsByGuid = groups.byGuid;
     const groupGuids = groups.guids;
 
-    const channels = await fetchData<Types.Channel>(db, 'channels');
+    const channels = await fetchData<Types.Channel>(syncDb, 'channels');
     const channelsByGuid = channels.byGuid;
     const channelGuids = channels.guids;
 
-    const assets = await fetchData<Types.Asset>(db, 'assets');
+    const assets = await fetchData<Types.Asset>(syncDb, 'assets');
     const assetsByGuid = assets.byGuid;
     const assetGuids = assets.guids;
 
-    const messages = await fetchData<Types.Message>(db, 'messages');
+    const messages = await fetchData<Types.Message>(syncDb, 'messages');
     const messagesByGuid = messages.byGuid;
     const messageGuids = messages.guids
 
-    const threads = await fetchData<Types.Thread>(db, 'threads');
+    const threads = await fetchData<Types.Thread>(syncDb, 'threads');
     const threadsByGuid = threads.byGuid;
     const threadGuids = threads.guids
 
@@ -193,12 +193,12 @@ export const slice = createSlice({
         });
       });
     
-      db.spaces.set(spaceGuid, { ...space, guid: spaceGuid, groupGuids: groups.map(group => group.guid) });
+      syncDb.spaces.set(spaceGuid, { ...space, guid: spaceGuid, groupGuids: groups.map(group => group.guid) });
       groups.forEach(group => {
-        db.groups.set(group.guid, { ...group, channelGuids: group.channels.map(channel => channel.guid) });
+        syncDb.groups.set(group.guid, { ...group, channelGuids: group.channels.map(channel => channel.guid) });
         group.channels.forEach(channel => {
           // @ts-ignore
-          db.channels.set(channel.guid, channel);
+          syncDb.channels.set(channel.guid, channel);
         });
       });
     },
@@ -216,14 +216,14 @@ export const slice = createSlice({
       state.spaceGuids.push(guid);
       state.spacesByGuid[guid] = space;
 
-      db.spaces.set(guid, space);
+      syncDb.spaces.set(guid, space);
     },
     removeSpace: (state, action: PayloadAction<Types.Guid>) => {
       const guidToRemove = action.payload;
       state.spaceGuids = state.spaceGuids.filter((guid) => guid !== guidToRemove);
       delete state.spacesByGuid[guidToRemove];
     
-      db.spaces.delete(guidToRemove);
+      syncDb.spaces.delete(guidToRemove);
     },
     updateSpace: (state, action: PayloadAction<{ guid: Types.Guid; space: Types.Space }>) => {
       const { guid, space } = action.payload;
@@ -233,7 +233,7 @@ export const slice = createSlice({
         ...space,
       };
 
-      db.spaces.set(guid, space)
+      syncDb.spaces.set(guid, space)
     },
 
     // groups
@@ -249,14 +249,14 @@ export const slice = createSlice({
       state.groupGuids.push(guid);
       state.groupsByGuid[guid] = group;
     
-      db.groups.set(guid, group);
+      syncDb.groups.set(guid, group);
     },
     removeGroup: (state, action: PayloadAction<Types.Guid>) => {
       const guidToRemove = action.payload;
       state.groupGuids = state.groupGuids.filter((guid) => guid !== guidToRemove);
       delete state.groupsByGuid[guidToRemove];
 
-      db.groups.delete(guidToRemove);
+      syncDb.groups.delete(guidToRemove);
     },
     updateGroup: (state, action: PayloadAction<{ guid: Types.Guid; group: Types.Group }>) => {
       const { guid, group } = action.payload;
@@ -266,7 +266,7 @@ export const slice = createSlice({
         ...group,
       };
 
-      db.groups.set(guid, group)
+      syncDb.groups.set(guid, group)
     },
     addGroupToSpace: (state, action: PayloadAction<{ spaceGuid: Types.Guid; groupGuid: Types.Guid }>) => {
       const { spaceGuid, groupGuid } = action.payload;
@@ -278,7 +278,7 @@ export const slice = createSlice({
         ]
         space.groupGuids = newGroupGuids
     
-        db.spaces.set(spaceGuid, space);
+        syncDb.spaces.set(spaceGuid, space);
       }
     },
     removeGroupFromSpace: (state, action: PayloadAction<{ spaceGuid: Types.Guid; groupGuid: Types.Guid }>) => {
@@ -289,7 +289,7 @@ export const slice = createSlice({
         const newGroupGuids = space.groupGuids.filter((guid) => guid !== groupGuid);
         space.groupGuids = newGroupGuids;
     
-        db.spaces.set(spaceGuid, space);
+        syncDb.spaces.set(spaceGuid, space);
       }
     },
 
@@ -306,14 +306,14 @@ export const slice = createSlice({
       state.channelGuids.push(guid);
       state.channelsByGuid[guid] = channel;
 
-      db.channels.set(guid, channel);
+      syncDb.channels.set(guid, channel);
     },
     removeChannel: (state, action: PayloadAction<Types.Guid>) => {
       const guidToRemove = action.payload;
       state.channelGuids = state.channelGuids.filter((guid) => guid !== guidToRemove);
       delete state.channelsByGuid[guidToRemove];
 
-      db.channels.delete(guidToRemove);
+      syncDb.channels.delete(guidToRemove);
     },
     updateChannel: (state, action: PayloadAction<{ guid: Types.Guid; channel: Types.Channel }>) => {
       const { guid, channel } = action.payload;
@@ -323,7 +323,7 @@ export const slice = createSlice({
         ...channel,
       };
       
-      db.channels.set(guid, channel)
+      syncDb.channels.set(guid, channel)
     },
     addChannelToGroup: (state, action: PayloadAction<{ groupGuid: Types.Guid; channelGuid: Types.Guid }>) => {
       const { groupGuid, channelGuid } = action.payload;
@@ -335,7 +335,7 @@ export const slice = createSlice({
         ]
         group.channelGuids = newChannelGuids
     
-        db.groups.set(groupGuid, group);
+        syncDb.groups.set(groupGuid, group);
       }
     },
     removeChannelFromGroup: (state, action: PayloadAction<{ groupGuid: Types.Guid; channelGuid: Types.Guid }>) => {
@@ -346,7 +346,7 @@ export const slice = createSlice({
         const newChannelGuids = group.channelGuids.filter((guid) => guid !== channelGuid);
         group.channelGuids = newChannelGuids;
 
-        db.groups.set(groupGuid, group);
+        syncDb.groups.set(groupGuid, group);
       }
     },
 
@@ -363,14 +363,14 @@ export const slice = createSlice({
       state.assetGuids.push(guid);
       state.assetsByGuid[guid] = asset;
 
-      db.assets.set(guid, asset);
+      syncDb.assets.set(guid, asset);
     },
     removeAsset: (state, action: PayloadAction<Types.Guid>) => {
       const guidToRemove = action.payload;
       state.assetGuids = state.assetGuids.filter((guid) => guid !== guidToRemove);
       delete state.assetsByGuid[guidToRemove];
 
-      db.assets.delete(guidToRemove);
+      syncDb.assets.delete(guidToRemove);
     },
     updateAsset: (state, action: PayloadAction<{ guid: Types.Guid; asset: Types.Asset }>) => {
       const { guid, asset } = action.payload;
@@ -380,7 +380,7 @@ export const slice = createSlice({
         ...asset,
       };
 
-      db.assets.set(guid, asset)
+      syncDb.assets.set(guid, asset)
     },
     addAssetToChannel: (state, action: PayloadAction<{ channelGuid: Types.Guid; assetGuid: Types.Guid }>) => {
       const { channelGuid, assetGuid } = action.payload;
@@ -392,7 +392,7 @@ export const slice = createSlice({
         ]
         channel.assetGuids = newAssetGuids
     
-        db.channels.set(channelGuid, channel);
+        syncDb.channels.set(channelGuid, channel);
       }
     },
     removeAssetFromChannel: (state, action: PayloadAction<{ channelGuid: Types.Guid; assetGuid: Types.Guid }>) => {
@@ -403,7 +403,7 @@ export const slice = createSlice({
         const newAssetGuids = channel.assetGuids.filter((guid) => guid !== assetGuid);
         channel.assetGuids = newAssetGuids;
     
-        db.channels.set(channelGuid, channel);
+        syncDb.channels.set(channelGuid, channel);
       }
     },
 
@@ -420,14 +420,14 @@ export const slice = createSlice({
       state.threadGuids.push(guid);
       state.threadsByGuid[guid] = thread;
 
-      db.threads.set(guid, thread);
+      syncDb.threads.set(guid, thread);
     },
     removeThread: (state, action: PayloadAction<Types.Guid>) => {
       const guidToRemove = action.payload;
       state.threadGuids = state.threadGuids.filter((guid) => guid !== guidToRemove);
       delete state.threadsByGuid[guidToRemove];
 
-      db.threads.delete(guidToRemove);
+      syncDb.threads.delete(guidToRemove);
     },
     updateThread: (state, action: PayloadAction<{ guid: Types.Guid; thread: Types.Thread }>) => {
       const { guid, thread } = action.payload;
@@ -437,7 +437,7 @@ export const slice = createSlice({
         ...thread,
       };
 
-      db.threads.set(guid, thread);
+      syncDb.threads.set(guid, thread);
     },
     addThreadToChannel: (state, action: PayloadAction<{ channelGuid: Types.Guid; threadGuid: Types.Guid }>) => {
       const { channelGuid, threadGuid } = action.payload;
@@ -449,7 +449,7 @@ export const slice = createSlice({
         ]
         channel.threadGuids = newThreadGuids
     
-        db.channels.set(channelGuid, channel);
+        syncDb.channels.set(channelGuid, channel);
       }
     },
     removeThreadFromChannel: (state, action: PayloadAction<{ channelGuid: Types.Guid; threadGuid: Types.Guid }>) => {
@@ -460,7 +460,7 @@ export const slice = createSlice({
         const newThreadGuids = channel.threadGuids.filter((guid) => guid !== threadGuid);
         channel.threadGuids = newThreadGuids;
 
-        db.channels.set(channelGuid, channel);
+        syncDb.channels.set(channelGuid, channel);
       }
     },
     
@@ -483,14 +483,14 @@ export const slice = createSlice({
       state.messageGuids.push(guid);
       state.messagesByGuid[guid] = message;
 
-      db.messages.set(guid, message);
+      syncDb.messages.set(guid, message);
     },
     removeMessage: (state, action: PayloadAction<Types.Guid>) => {
       const guidToRemove = action.payload;
       state.messageGuids = state.messageGuids.filter((guid) => guid !== guidToRemove);
       delete state.messagesByGuid[guidToRemove];
 
-      db.messages.delete(guidToRemove);
+      syncDb.messages.delete(guidToRemove);
     },
     updateMessage: (state, action: PayloadAction<{ guid: Types.Guid; message: Types.Message }>) => {
       const { guid, message } = action.payload;
@@ -500,7 +500,7 @@ export const slice = createSlice({
         ...message,
       };
 
-      db.messages.set(guid, message);
+      syncDb.messages.set(guid, message);
     },
     addMessageToThread: (state, action: PayloadAction<{ threadGuid: Types.Guid; messageGuid: Types.Guid }>) => {
       const { threadGuid, messageGuid } = action.payload;
@@ -512,7 +512,7 @@ export const slice = createSlice({
         ]
         thread.messageGuids = newMessageGuids
     
-        db.threads.set(threadGuid, thread);
+        syncDb.threads.set(threadGuid, thread);
       }
     },
     removeMessageFromThread: (state, action: PayloadAction<{ threadGuid: Types.Guid; messageGuid: Types.Guid }>) => {
@@ -523,7 +523,7 @@ export const slice = createSlice({
         const newMessageGuids = thread.messageGuids.filter((guid) => guid !== messageGuid);
         thread.messageGuids = newMessageGuids;
 
-        db.threads.set(threadGuid, thread);
+        syncDb.threads.set(threadGuid, thread);
       }
     },
   }
