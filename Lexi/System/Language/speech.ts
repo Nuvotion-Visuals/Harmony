@@ -1,121 +1,79 @@
-import { store } from 'redux-tk/store'
-
+import { store } from 'redux-tk/store';
 // @ts-ignore
-import { convert } from 'html-to-text'
+import { convert } from 'html-to-text';
+import { split } from 'sentence-splitter';
 
-let audioCtx: any
-let audioBuffers: AudioBuffer[] = []
-let audioBufferSentences: string[] = []
-let source: any
+let audioElements: HTMLAudioElement[] = [];
+let audioSentences: string[] = [];
 
-/**
- * Sends a request to the Lexi Studio TTS API for the given text and returns the response as an AudioBuffer.
- *
- * @param text - The text to generate audio for
- * @returns A promise that resolves with an AudioBuffer containing the audio data for the given text
- */
-async function ttsRequest(text: string): Promise<AudioBuffer> {
-  if (!audioCtx) { audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)() }
-  const response = await fetch(`${process.env.NEXT_PUBLIC_LEXITTS_URL || 'http://localhost:1621'}/tts?text=${text}.`)
-  const arrayBuffer = await response.arrayBuffer()
-  return audioCtx.decodeAudioData(arrayBuffer)
+function createAudioElement(text: string): HTMLAudioElement {
+  const audioUrl = `https://tts.lexi.studio/tts?text=${encodeURIComponent(text)}`;
+  const audioElement = document.createElement('audio');
+  const sourceElement = document.createElement('source');
+  sourceElement.src = audioUrl;
+  sourceElement.type = 'audio/wav';
+  audioElement.appendChild(sourceElement);
+  return audioElement;
 }
 
-/**
- * Synthesizes the audio buffers in the audioBuffers array and plays them in sequence using the Web Audio API.
- *
- * @param callback - The callback to call when all audio buffers have been played
- * @returns void
- */
-const speakSentences = (callback : () => void) => {
-  let index = 0
+const speakSentences = (callback: () => void) => {
+  let index = 0;
 
   const speakSentence = () => {
-    // If all sentences have been spoken, call the callback and return
-    if (index >= audioBuffers.length) {
-      callback()
-      return
+    if (index >= audioElements.length) {
+      callback();
+      return;
     }
 
-    // Stop any current audio and create a new buffer source node with the next audio buffer
-    if (source) {
-      source.stop()
-    }
-    const audioBuffer = audioBuffers[index]
-    const sentence = audioBufferSentences[index]
-    source = audioCtx.createBufferSource()
-    source.buffer = audioBuffer
-    source.connect(audioCtx.destination)
-
-    // Set the onended event handler to speak the next sentence and start speaking the current sentence
-    source.onended = speakSentence
-    source.start()
-    // console.log(sentence.replace(/\n|\r/g, " "))
+    const audioElement = audioElements[index];
+    const sentence = audioSentences[index];
+    document.body.appendChild(audioElement);
+    audioElement.play();
 
     store.dispatch({
       type: 'lexi/set_currentlySpeaking',
-      payload: sentence.replace(/\n|\r/g, " ")
-    })
+      payload: sentence.replace(/\n|\r/g, " "),
+    });
 
-    index++
-  }
+    audioElement.addEventListener('ended', () => {
+      document.body.removeChild(audioElement);
+      index++;
+      speakSentence();
+    });
+  };
 
-  // Start speaking the first sentence
-  speakSentence()
-}
+  speakSentence();
+};
 
-/**
- * Normalizes and tokenizes a string of text and synthesizes it into speech using the Lexi Studio TTS API.
- *
- * @param text - The text to synthesize into speech
- * @param callback - The callback to call when speech synthesis is complete, or an error occurs
- * @returns void
- */
 export const speak = async (text: string, callback: (error: any) => void) => {
-  // Reset the audio buffer array
-  audioBuffers = []
-  audioBufferSentences = []
+  audioElements = [];
+  audioSentences = [];
 
   text = text.replace(/```[\s\S]*?```/g, "");
-  text = text.replace(/`/g, '')
+  text = text.replace(/`/g, '');
 
-  // If the text is empty, stop any current audio and return
-  if (text === '' && source) {
-    source.stop()
-    return
+  if (text === '') {
+    return;
   }
 
-  // Normalize the text: This means to convert the text into a standardized format, such as plaintext, in order to make it easier to process.
-  const normalizedText = convert(text)
+  const normalizedText = convert(text);
+  const splitSentences = split(normalizedText);
+  const sentences = splitSentences.filter(item => item.type === 'Sentence').map(item => item.raw);
 
-  // Tokenize the text: This means to split the text into smaller units, such as words or sentences, in order to analyze or process it more easily.
-  const sentences = normalizedText.split('. ').filter((sentence : string) => sentence ! === '' || sentence !== '. ')
-
-  let firstRequestCompleted = false
-  try {
-    // Request audio for each sentence and addToSpeechQueue it to the audio buffer array
-    for (const sentence of sentences) {
-      const audioBuffer = await ttsRequest(sentence)
-      audioBuffers.push(audioBuffer)
-      audioBufferSentences.push(sentence)
-
-      // If this is the first sentence being processed, start speaking immediately after audio generation is complete
-      if (!firstRequestCompleted) {
-        speakSentences(() => {
-          callback(null)
-          store.dispatch({
-            type: 'lexi/set_currentlySpeaking',
-            payload: ''
-          })
-        })
-        firstRequestCompleted = true
-      }
-    }
-  } 
-  catch (error) {
-    callback(error)
+  for (const sentence of sentences) {
+    const audioElement = createAudioElement(sentence);
+    audioElements.push(audioElement);
+    audioSentences.push(sentence);
   }
-}
+
+  speakSentences(() => {
+    callback(null);
+    // store.dispatch({
+    //   type: 'lexi/set_currentlySpeaking',
+    //   payload: '',
+    // });
+  });
+};
 
 let queue: string[] = [];
 let isProcessing = false;
@@ -125,10 +83,9 @@ const processSpeechQueue = (): void => {
   const next = () => {
     if (queue.length > 0) {
       const combineSentences = queue.reduce((prev, curr) => prev + ' ' + curr, '');
-      speak(combineSentences, next)
-      queue = []
-    } 
-    else {
+      speak(combineSentences, next);
+      queue = [];
+    } else {
       isProcessing = false;
     }
   };
@@ -145,25 +102,29 @@ const addToSpeechQueue = (sentence: string): void => {
 let accumulatedSentences: string[] = [];
 
 export const speakStream = (text: string, guid: string) => {
-  // Split the input into sentences and loop over them
-  const sentences = text.match(/[^.!?:\n]+[.!?:\n]+/g);
-  // console.log(sentences)
+  // Check if the last character is a sentence-ending punctuation mark
+  const lastChar = text.slice(-1);
+  if (!['.', '!', '?', ':'].includes(lastChar)) {
+    return; // Return early if the input text doesn't end with a completed sentence
+  }
+
+  const splitSentences = split(text);
+  const sentences = splitSentences.filter(item => item.type === 'Sentence').map(item => item.raw);
+
+  console.log(sentences);
+
   if (sentences) {
     for (const sentence of sentences) {
-      // Trim leading and trailing whitespace from the sentence
       const trimmedSentence = sentence.trim();
       if (trimmedSentence === '') {
-        // Ignore empty sentences
         continue;
       }
-  
+
       // Check if the sentence has already been logged
       if (!accumulatedSentences.includes(trimmedSentence)) {
-        addToSpeechQueue(trimmedSentence)
-  
-        // Add the sentence to the list of logged sentences
+        addToSpeechQueue(trimmedSentence);
         accumulatedSentences.push(trimmedSentence);
       }
     }
   }
-}
+};

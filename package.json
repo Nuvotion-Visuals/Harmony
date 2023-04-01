@@ -58,6 +58,7 @@
     "redux-batched-subscribe": "^0.1.6",
     "redux-logger": "^3.0.6",
     "reselect": "^4.1.7",
+    "sentence-splitter": "^4.2.0",
     "sharp": "^0.31.3",
     "socket.io-client": "^4.5.4",
     "spark-md5": "^3.0.2",
