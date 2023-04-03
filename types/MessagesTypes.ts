@@ -39,3 +39,9 @@ export interface MessageGuids {
 export interface ThreadsByThreadId {
   [threadId: string]: string[]; // Array of GUIDs
 }
+
+export interface WebsocketMessage extends CommonMessageProps {
+  type: string;
+  guid: string;
+  messageTime: string;
+}
