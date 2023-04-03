@@ -1,3 +1,5 @@
+import { CommonMessageProps } from "types/MessagesTypes";
+
 export type Guid = string;
 
 // spaces
@@ -79,17 +81,9 @@ export interface ThreadsByGuid {
 }
 
 // messages
-export interface Message {
+export interface Message extends CommonMessageProps {
   guid: Guid;
-  conversationId: string;
-  parentMessageId: string;
-  personaLabel: string;
-  systemMessage: string;
-  userLabel: string;
-  message: string;
-  threadGuid?: string;
-  response?: string;
-  complete?: boolean
+  complete?: boolean;
 }
 export interface MessagesByGuid {
   [guid: string]: Message;

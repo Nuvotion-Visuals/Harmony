@@ -39,19 +39,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMessage = void 0;
 var formation_1 = require("@avsync.live/formation");
 var tsimportlib_1 = require("tsimportlib");
-var messagesByGuid = {};
 var clients = {};
-var messageGuids = {};
-var threadsByThreadId = {};
 var sendMessage = function (_a) {
-    var conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, personaLabel = _a.personaLabel, systemMessage = _a.systemMessage, userLabel = _a.userLabel, message = _a.message, threadId = _a.threadId, onComplete = _a.onComplete, onProgress = _a.onProgress;
+    var conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, personaLabel = _a.personaLabel, systemMessage = _a.systemMessage, userLabel = _a.userLabel, message = _a.message, onComplete = _a.onComplete, onProgress = _a.onProgress;
     return __awaiter(void 0, void 0, void 0, function () {
-        var guid, storedClient, ChatGPTAPI, api, onCompleteWrapper, onProgressWrapper, res;
+        var guid, storedClient, ChatGPTAPI, api, onProgressWrapper, res;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     guid = (0, formation_1.generateUUID)();
-                    messageGuids[guid] = true;
                     storedClient = clients["".concat(systemMessage, "-").concat(personaLabel, "-").concat(userLabel)];
                     if (!!storedClient) return [3 /*break*/, 2];
                     return [4 /*yield*/, (0, tsimportlib_1.dynamicImport)('chatgpt', module)];
@@ -69,19 +65,6 @@ var sendMessage = function (_a) {
                     clients["".concat(systemMessage, "-").concat(personaLabel, "-").concat(userLabel)] = storedClient;
                     _b.label = 2;
                 case 2:
-                    onCompleteWrapper = function (data) {
-                        if (!messagesByGuid[guid]) {
-                            messagesByGuid[guid] = [];
-                        }
-                        messagesByGuid[guid].push(data);
-                        if (threadId) {
-                            if (!threadsByThreadId[threadId]) {
-                                threadsByThreadId[threadId] = [];
-                            }
-                            threadsByThreadId[threadId].push(guid);
-                        }
-                        onComplete(data);
-                    };
                     onProgressWrapper = function (partialResponse) {
                         if (onProgress) {
                             onProgress({
@@ -103,7 +86,7 @@ var sendMessage = function (_a) {
                         })];
                 case 3:
                     res = _b.sent();
-                    onCompleteWrapper({
+                    onComplete({
                         conversationId: conversationId,
                         parentMessageId: res.id,
                         personaLabel: personaLabel,

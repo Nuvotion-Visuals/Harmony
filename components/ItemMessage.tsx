@@ -39,11 +39,10 @@ const highlightText = (html: string, currentlySpeaking: string | null): string =
 
 
 interface Props extends MessageProps {
-  
+  threadGuid: string
 }
 
 export const ItemMessage = React.memo((props: Props) => {
-
   const { 
     guid,
     userLabel,

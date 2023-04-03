@@ -54,12 +54,12 @@ var express_1 = __importDefault(require("express"));
 var sendMessage_1 = require("../sendMessage");
 var router = express_1.default.Router();
 router.get('/send-message', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, conversationId, parentMessageId, personaLabel, systemMessage, userLabel, message, threadId, error_1;
+    var _a, conversationId, parentMessageId, personaLabel, systemMessage, userLabel, message, error_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 2, , 3]);
-                _a = req.query, conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, personaLabel = _a.personaLabel, systemMessage = _a.systemMessage, userLabel = _a.userLabel, message = _a.message, threadId = _a.threadId;
+                _a = req.query, conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, personaLabel = _a.personaLabel, systemMessage = _a.systemMessage, userLabel = _a.userLabel, message = _a.message;
                 // Call the sendMessage function with the extracted data
                 return [4 /*yield*/, (0, sendMessage_1.sendMessage)({
                         conversationId: conversationId,
@@ -68,7 +68,6 @@ router.get('/send-message', function (req, res) { return __awaiter(void 0, void 
                         systemMessage: systemMessage,
                         userLabel: userLabel,
                         message: message,
-                        threadId: threadId,
                         onComplete: function (data) {
                             res.status(200).json(__assign({}, data));
                         },

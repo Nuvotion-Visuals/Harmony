@@ -15,7 +15,6 @@ router.get('/send-message', async (req: Request, res: Response) => {
       systemMessage,
       userLabel,
       message,
-      threadId,
     } = req.query as Record<string, string>;
   
     // Call the sendMessage function with the extracted data
@@ -26,7 +25,6 @@ router.get('/send-message', async (req: Request, res: Response) => {
       systemMessage,
       userLabel,
       message,
-      threadId,
       onComplete: (data: CommonMessageProps & { response: string }) => {
         res.status(200).json({ ...data });
       },

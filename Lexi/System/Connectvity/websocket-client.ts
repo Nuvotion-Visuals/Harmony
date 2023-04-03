@@ -1,5 +1,5 @@
 import { store } from 'redux-tk/store';
-import { v4 as uuidv4 } from 'uuid'
+import { generateUUID } from '@avsync.live/formation';
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { speakStream } from '../Language/speech';
 import { scrollToElementById } from 'client-utils';
@@ -18,7 +18,7 @@ async function connectToServer() {
     ws.send(JSON.stringify({
       type: 'ping',
       time: latestPing,
-      guid: uuidv4()
+      guid: generateUUID()
     }))
   }
 

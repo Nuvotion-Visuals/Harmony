@@ -2,17 +2,10 @@ import { generateUUID } from '@avsync.live/formation';
 import { dynamicImport } from 'tsimportlib';
 import type {
     SendMessageProps,
-    StoredMessage,
-    MessagesByGuid,
     Clients,
-    MessageGuids,
-    ThreadsByThreadId,
   } from '../types/MessagesTypes';
   
-const messagesByGuid: MessagesByGuid = {};
 const clients: Clients = {};
-const messageGuids: MessageGuids = {};
-const threadsByThreadId: ThreadsByThreadId = {};
 
 export const sendMessage = async ({
   conversationId,
@@ -21,12 +14,10 @@ export const sendMessage = async ({
   systemMessage,
   userLabel,
   message,
-  threadId,
   onComplete,
   onProgress,
 }: SendMessageProps) => {
   const guid = generateUUID();
-  messageGuids[guid] = true;
 
   let storedClient = clients[`${systemMessage}-${personaLabel}-${userLabel}`];
 
@@ -45,22 +36,6 @@ export const sendMessage = async ({
     };
     clients[`${systemMessage}-${personaLabel}-${userLabel}`] = storedClient;
   }
-
-  const onCompleteWrapper = (data: StoredMessage) => {
-    if (!messagesByGuid[guid]) {
-      messagesByGuid[guid] = [];
-    }
-    messagesByGuid[guid].push(data);
-
-    if (threadId) {
-      if (!threadsByThreadId[threadId]) {
-        threadsByThreadId[threadId] = [];
-      }
-      threadsByThreadId[threadId].push(guid);
-    }
-
-    onComplete(data);
-  };
 
   const onProgressWrapper = (partialResponse: any) => {
     if (onProgress) {
@@ -83,7 +58,7 @@ export const sendMessage = async ({
     onProgress: onProgressWrapper,
   });
 
-  onCompleteWrapper({
+  onComplete({
     conversationId,
     parentMessageId: res.id,
     personaLabel,

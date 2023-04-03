@@ -5,7 +5,6 @@ export interface SendMessageProps {
   systemMessage: string;
   userLabel: string;
   message: string;
-  threadId: string;
 }
 
 export type SendMessageCallback = (response: SendMessageProps) => void;
@@ -71,7 +70,6 @@ ${enableEmoji && 'Each group and channel name starts with an emoji'}
 }
 
 Description: ${prompt}`,
-    threadId: '67890',
   };
 
   language_sendMessage(props, (response: any) => {

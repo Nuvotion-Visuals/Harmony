@@ -1,20 +1,13 @@
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@avsync.live/formation';
 import { getWebsocketClient } from '../Connectvity/websocket-client';
 
-export interface SendMessageProps {
-  conversationId: string;
-  parentMessageId?: string;
-  personaLabel: string;
-  systemMessage: string;
-  userLabel: string;
-  message: string;
-}
+import { CommonMessageProps } from 'types/MessagesTypes';
 
-export type SendMessageCallback = (response: SendMessageProps) => void;
+export type SendMessageCallback = (response: CommonMessageProps) => void;
 export type SendErrorCallback = (error: any) => void;
 
 export function language_sendMessage(
-  props: SendMessageProps,
+  props: CommonMessageProps,
   onComplete: SendMessageCallback,
   onError?: SendErrorCallback,
   onPartialResponse?: SendMessageCallback
@@ -23,7 +16,7 @@ export function language_sendMessage(
 
   const action = {
     type: "message",
-    guid: uuidv4(),
+    guid: generateUUID(),
     ...props,
   };
   websocketClient.send(JSON.stringify(action));
@@ -54,7 +47,7 @@ export function language_sendMessage(
         personaLabel,
         systemMessage,
         userLabel,
-      } as SendMessageProps;
+      } as CommonMessageProps;
 
       onComplete(newMessage);
       removeListeners();
@@ -66,7 +59,7 @@ export function language_sendMessage(
         personaLabel,
         systemMessage,
         userLabel,
-      } as SendMessageProps;
+      } as CommonMessageProps;
 
       onPartialResponse(newMessage);
     }
@@ -107,8 +100,9 @@ function getCodeBlock(markdown: string): string | null {
   }
 
 export const language_generateGroups = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
-    const props: SendMessageProps = {
-      conversationId: '12345',
+    const props: CommonMessageProps = {
+      conversationId: '',
+      parentMessageId: '',
       personaLabel: 'GENERATE',
       systemMessage: 'You provide a list of groups for the given input',
       userLabel: 'Input prompt provider',
@@ -148,8 +142,9 @@ Description: ${prompt}`,
   };
   
 export const language_generateTitleAndDescription = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
-    const props: SendMessageProps = {
-      conversationId: '12345',
+    const props: CommonMessageProps = {
+      conversationId: '',
+      parentMessageId: '',
       personaLabel: 'GENERATE',
       systemMessage: 'You are an API that suggests a title for the given input. You do not add any commentary.',
       userLabel: 'Input prompt provider',
@@ -181,8 +176,9 @@ Prompt: ${prompt} Reply in JSON`,
   };
 
 export const language_generateThreadPrompts = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
-  const props: SendMessageProps = {
-    conversationId: '12345',
+  const props: CommonMessageProps = {
+    conversationId: '',
+    parentMessageId: '',
     personaLabel: 'GENERATE',
     systemMessage: 'You are an API that provides a list of suggested threads for the given input. You do not add any commentary.',
     userLabel: 'Input prompt provider',
@@ -219,8 +215,9 @@ Prompt: ${prompt} Reply in JSON`,
   };
 
   export const language_generateFollowUpMessages = (prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, ): { removeListeners: () => void } => {
-    const props: SendMessageProps = {
-      conversationId: '12345',
+    const props: CommonMessageProps = {
+      conversationId: '',
+      parentMessageId: '',
       personaLabel: 'GENERATE',
       systemMessage: 'You are an API that provides a list of follow up messages for the given input. You do not add any commentary. You always answer in a code block.',
       userLabel: 'Input prompt provider',
