@@ -2,39 +2,7 @@ import { store } from 'redux-tk/store';
 import { v4 as uuidv4 } from 'uuid'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { speakStream } from '../Language/speech';
-import { markdownToHTML } from '@avsync.live/formation';
 import { scrollToElementById } from 'client-utils';
-
-const highlightText = (html: string, currentlySpeaking: string | null): string => {
-  const openingTag = `<span style='color: var(--F_Primary_Variant)'>`;
-  const closingTag = '</span>';
-  let len = 0;
-  if (currentlySpeaking) {
-    len = currentlySpeaking.length;
-  }
-
-  let startIndex = 0;
-  let index = currentlySpeaking ? html.indexOf(currentlySpeaking, startIndex) : -1;
-  let highlightedHtml = '';
-
-  while (index !== -1) {
-    // Append the HTML before the match
-    highlightedHtml += html.substring(startIndex, index);
-
-    // Append the highlighted match
-    highlightedHtml += openingTag + html.substring(index, index + len) + closingTag;
-
-    // Update the start index and search for the next match
-    startIndex = index + len;
-    index = html.indexOf(currentlySpeaking as string, startIndex);
-  }
-
-  // Append any remaining HTML after the last match
-  highlightedHtml += html.substring(startIndex);
-
-  return highlightedHtml;
-}
-
 
 async function connectToServer() {
   let ws = {} as any
@@ -65,9 +33,7 @@ async function connectToServer() {
   ws.onmessage = (ev: any) => {
     const wsmessage = JSON.parse(ev.data.toString())
     if (wsmessage.type === 'pong') {
-      // console.log(wsmessage)
     }
-
 
     const { 
       guid, 
@@ -79,7 +45,6 @@ async function connectToServer() {
       systemMessage,
       userLabel,
     } = JSON.parse(ev.data.toString())
-    // console.log(type, message)
 
     if (type === 'response') {
       console.log('response')
