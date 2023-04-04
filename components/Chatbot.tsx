@@ -18,6 +18,7 @@ const Chatbot = () => {
       });
       const jsonResponse = await response.json();
       setResponse(jsonResponse.message);
+      setMessage('')
     } catch (error) {
       console.error(error);
       setResponse("Sorry, there was an error processing your request.");
@@ -27,6 +28,7 @@ const Chatbot = () => {
   return (
     <div>
       <h1>Chatbot</h1>
+      {response && <p>{response}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -35,7 +37,6 @@ const Chatbot = () => {
         />
         <button type="submit">Send</button>
       </form>
-      {response && <p>{response}</p>}
     </div>
   );
 };

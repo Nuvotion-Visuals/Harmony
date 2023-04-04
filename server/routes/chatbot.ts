@@ -6,7 +6,7 @@ import { dockStart } from '@nlpjs/basic';
 // @ts-ignore
 import { BuiltinCompromise } from '@nlpjs/builtin-compromise'
 
-
+// modify answer before getting response
 const onIntent = (nlp: any, input: any) => {
   if (input.intent === 'greetings.hello') {
     const output = input;
@@ -23,8 +23,9 @@ const chatbotController = async (req: Request, res: Response) => {
     settings: {
       nlp: {
         corpora: [
-          path.join(__dirname, './corpa/corpus-en.json'),
-          path.join(__dirname, './corpa/slotFilling-en.json')
+          // path.join(__dirname, './corpa/corpus-en.json'),
+          path.join(__dirname, './corpa/membership-en.json'),
+          // path.join(__dirname, './corpa/slotFilling-en.json')
         ]
       }
     },
@@ -41,6 +42,7 @@ const chatbotController = async (req: Request, res: Response) => {
   ner.container.register('extract-builtin-??', builtin, true);
   
   const nlp = dock.get('nlp');
+  nlp.addAnswer('en', 'None', 'I do not understand');
   nlp.onIntent = onIntent;
 
   nlp.addDocument('en', 'Hello my name is @name', 'greeting.hello');
@@ -72,7 +74,6 @@ const chatbotController = async (req: Request, res: Response) => {
   console.log(`\x1b[32mMessage:\x1b[0m \x1b[94m[${detectedLanguage} - ${intent} - ${sentiment.vote}]\x1b[0m \x1b[32m${message}\x1b[0m`);
   console.log(`\x1b[35mAnswer:\x1b[0m \x1b[94m[${detectedLanguage} - ${intent} - ${sentiment.vote}]\x1b[0m \x1b[35m${answer}\x1b[0m`);
   console.log(entities)
-
   
   switch (intent) {
     case 'agent.birthday':

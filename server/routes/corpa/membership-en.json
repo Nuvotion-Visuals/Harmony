@@ -1,0 +1,38 @@
+{
+  "name": "Membership Application Corpus",
+  "locale": "en-US",
+  "entities": {
+      "email": {
+          "type": "email",
+          "prompt": "What is your email address?"
+      },
+      "reason": {
+          "prompt": "Why do you want to join?"
+      }
+  },
+  "data": [
+      {
+          "intent": "apply_membership",
+          "utterances": [
+              "I want to become a member because @reason",
+              "I'm interested in joining because @reason",
+              "Can you tell me more about the benefits of membership?",
+              "What are the perks of becoming a member?",
+              "I'd like to apply for membership"
+          ],
+          "answers": [
+              "Thank you for your interest in becoming a member. We will send you more information to {{email}}."
+          ],
+          "slotFilling": {
+              "reason": {
+                  "mandatory": true,
+                  "question": "Why do you want to join?"
+              },
+              "email": {
+                  "mandatory": true,
+                  "question": "Please provide your email address so we can contact you."
+              }
+          }
+      }
+  ]
+}
