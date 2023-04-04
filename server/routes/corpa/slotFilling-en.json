@@ -1,0 +1,58 @@
+{
+    "name": "Slot Filling Corpus",
+    "locale": "en-US",
+    "entities": {
+        "fromCity": {
+            "trim": [
+                {
+                    "position": "betweenLast",
+                    "leftWords": ["from"],
+                    "rightWords": ["to"]
+                },
+                {
+                    "position": "afterLast",
+                    "words": ["from"]
+                }
+            ]
+        },
+        "toCity": {
+            "trim": [
+                {
+                    "position": "betweenLast",
+                    "leftWords": ["to"],
+                    "rightWords": ["from"]
+                },
+                {
+                    "position": "afterLast",
+                    "words": ["to"]
+                }
+            ]
+        }
+    },
+    "data": [
+        {
+            "intent": "travel",
+            "utterances": [
+                "I want to travel from @fromCity to @toCity @date",
+                "I want to travel from @fromCity @date",
+                "I want to travel to @toCity @date",
+                "I want to travel from @fromCity",
+                "I want to travel to @toCity"
+            ],
+            "answers": [
+                "Ok, I book the flight for you from {{fromCity}} to {{toCity}} {{date}}"
+            ],
+            "slotFilling": {
+                "fromCity": {
+                    "mandatory": true,
+                    "question": "From where you are traveling?"
+                },
+                "toCity": {
+                    "mandatory": true,
+                    "question": "Where do you want to go?"
+                },
+                "date": "When do you want to travel from {{fromCity}} to {{toCity}}?"
+            }
+        }
+    ]
+}
