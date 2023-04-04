@@ -1,0 +1,18 @@
+{
+  "name": "Help Options Corpus",
+  "locale": "en-US",
+  "data": [
+    {
+      "intent": "help",
+      "utterances": [
+        "What can you do?",
+        "How can you help me?",
+        "What are my options?",
+        "What services do you provide?"
+      ],
+      "answers": [
+        "I can help you RSVP for the party or become a member. Which one would you like to do?"
+      ]
+    }
+  ]
+}

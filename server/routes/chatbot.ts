@@ -25,6 +25,8 @@ const chatbotController = async (req: Request, res: Response) => {
         corpora: [
           // path.join(__dirname, './corpa/corpus-en.json'),
           path.join(__dirname, './corpa/membership-en.json'),
+          path.join(__dirname, './corpa/rsvp-en.json'),
+          path.join(__dirname, './corpa/help-en.json'),
           // path.join(__dirname, './corpa/slotFilling-en.json')
         ]
       }
