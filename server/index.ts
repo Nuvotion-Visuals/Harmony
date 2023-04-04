@@ -10,6 +10,7 @@ import { sendMessage } from './sendMessage'
 import toolsRouter from './routes/tools';
 import imageRouter from './routes/image'
 import sendMessageRouter from './routes/sendMessage'
+import chatbotRouter from './routes/chatbot'
 import { startMessagingServer } from './messaging';
 
 dotenv.config();
@@ -44,6 +45,7 @@ async function startServer() {
     server.use('/send-message', sendMessageRouter);
     server.use('/image', imageRouter);
     server.use('/tools', toolsRouter);
+    server.use('/api/chatbot', chatbotRouter)
 
     server.all('/next/*', async (req, res) => {
       res.status(400).json({ error: 'Next API route not found' });

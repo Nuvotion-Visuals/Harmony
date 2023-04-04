@@ -22,6 +22,7 @@ import { Channel } from './Channel'
 import { Logo } from './Logo'
 import Link from './Link'
 import { Space } from './Space'
+import Chatbot from './Chatbot'
 
 interface Props {
   children: React.ReactNode
@@ -100,6 +101,7 @@ const App = ({ children }: Props) => {
 
   const renderThirdPage = () => {
     return <S.ThirdPage>
+      {/* <Chatbot /> */}
       <SearchResults />
     </S.ThirdPage>
   }
