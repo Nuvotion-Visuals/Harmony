@@ -825,6 +825,16 @@
     "@nlpjs/logger" "^4.26.1"
     "@nlpjs/nlp" "^4.26.1"
 
+"@nlpjs/builtin-compromise@^4.26.1":
+  version "4.26.1"
+  resolved "https://registry.yarnpkg.com/@nlpjs/builtin-compromise/-/builtin-compromise-4.26.1.tgz#fd2e2541404e2f0ae48b6a861d99559a2f397aea"
+  integrity sha512-wc4tN0NIyfjMyRt1qpU+A4i6hIdtg92ZlfIgzx1q67sZJ+jMp0EQU2slokqFSRK1m4+WT9jAsbd/nrUan3oWlA==
+  dependencies:
+    "@nlpjs/core" "^4.26.1"
+    compromise "^13.7.0"
+    compromise-dates "^1.2.0"
+    compromise-numbers "^1.0.0"
+
 "@nlpjs/builtin-duckling@^4.26.1":
   version "4.26.1"
   resolved "https://registry.yarnpkg.com/@nlpjs/builtin-duckling/-/builtin-duckling-4.26.1.tgz#430771ab99f22916d445fbc4167f425f6f1b94c2"
@@ -2730,6 +2740,26 @@ commander@^9.0.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-9.5.0.tgz#bc08d1eb5cedf7ccb797a96199d41c7bc3e60d30"
   integrity sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==
 
+compromise-dates@^1.2.0:
+  version "1.5.6"
+  resolved "https://registry.yarnpkg.com/compromise-dates/-/compromise-dates-1.5.6.tgz#c2be5d0695b7cd684db7ffabd4eb19d5a7bc6235"
+  integrity sha512-i51/snFZtaW+cLx16HrBMHdgqc9eB3lsT5igtm9pOw6sNsNMX64lKiJdp3/kxGtOnl0fjGbZ69DoHb6o4pGUJw==
+  dependencies:
+    spacetime "6.14.0"
+    spacetime-holiday "0.1.0"
+
+compromise-numbers@^1.0.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/compromise-numbers/-/compromise-numbers-1.4.0.tgz#22e545923243333bc1e8a2e82da2e922afb50400"
+  integrity sha512-3ceRpwZIWduVSMYn54ET1ELdI7bvXQk42uDwxffxiJBxgKCwcCfVbiLuTG62cI+qTHchwLDh4vp9i3WARXROFQ==
+
+compromise@^13.7.0:
+  version "13.11.4"
+  resolved "https://registry.yarnpkg.com/compromise/-/compromise-13.11.4.tgz#3136e6d2c2cca822ba7cebd140c9f27f405b67f1"
+  integrity sha512-nBITcNdqIHSVDDluaG6guyFFCSNXN+Hu87fU8VlhkE5Z0PwTZN1nro2O7a8JcUH88nB5EOzrxd9zKfXLSNFqcg==
+  dependencies:
+    efrt-unpack "2.2.0"
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
@@ -3360,6 +3390,11 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
+
+efrt-unpack@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/efrt-unpack/-/efrt-unpack-2.2.0.tgz#b05dbec0fb8cb346a27840e00c969df9c72fee52"
+  integrity sha512-9xUSSj7qcUxz+0r4X3+bwUNttEfGfK5AH+LVa1aTpqdAfrN5VhROYCfcF+up4hp5OL7IUKcZJJrzAGipQRDoiQ==
 
 emoji-data-css@^1.0.1:
   version "1.0.1"
@@ -7930,6 +7965,16 @@ space-separated-tokens@^1.0.0:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/space-separated-tokens/-/space-separated-tokens-1.1.5.tgz#85f32c3d10d9682007e917414ddc5c26d1aa6899"
   integrity sha512-q/JSVd1Lptzhf5bkYm4ob4iWPjx0KiRe3sRFBNrVqbJkFaBm5vbbowy1mymoPNLRa52+oadOhJ+K49wsSeSjTA==
+
+spacetime-holiday@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/spacetime-holiday/-/spacetime-holiday-0.1.0.tgz#e680d17e0ac26e36b2101ee4ac40eb642b6d31d4"
+  integrity sha512-rYIpSDbHnznZRstUrmYYFAaruW8e96t+1JfS0b6qMiAAQ2DrkLKc8oMotAAkB9qMTUwXXf5bIkdTHfP434uitQ==
+
+spacetime@6.14.0:
+  version "6.14.0"
+  resolved "https://registry.yarnpkg.com/spacetime/-/spacetime-6.14.0.tgz#3acb5e82d1d93637cd95c26eacc3a4aca9ccd3d8"
+  integrity sha512-pz/nMIRGNSJeFfDFvhPjMHXhFU1NcrYnpydMuSS2Zsk0NEoHJc2rRKXugkmlqUv/l/fPxWVJVnj8isVS0//vbQ==
 
 spark-md5@^3.0.2:
   version "3.0.2"

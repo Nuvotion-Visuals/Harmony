@@ -3,6 +3,24 @@
     "locale": "en-US",
     "data": [
       {
+        "intent": "whatTimeIsIt",
+        "utterances": [
+          "What time is it?"
+        ],
+        "answers": [
+          "It is {{ time }}"
+        ],
+        "actions": [
+          {
+            "name": "handleWhatsTimeIntent",
+            "parameters": [
+              "en-US",
+              "parameter 2"
+            ]
+          }
+        ]
+      },
+      {
         "intent": "agent.whereami",
         "utterances": [
           "where am i",

@@ -28,6 +28,7 @@
     "@google-cloud/text-to-speech": "^4.1.0",
     "@next/bundle-analyzer": "^13.2.3",
     "@nlpjs/basic": "^4.26.1",
+    "@nlpjs/builtin-compromise": "^4.26.1",
     "@reduxjs/toolkit": "^1.9.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/cookie-session": "^2.0.44",

@@ -101,8 +101,8 @@ const App = ({ children }: Props) => {
 
   const renderThirdPage = () => {
     return <S.ThirdPage>
-      {/* <Chatbot /> */}
-      <SearchResults />
+      <Chatbot />
+      {/* <SearchResults /> */}
     </S.ThirdPage>
   }
 

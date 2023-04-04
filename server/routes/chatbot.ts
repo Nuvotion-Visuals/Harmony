@@ -1,7 +1,19 @@
 import { Request, Response } from 'express';
+import path from 'path';
+
 // @ts-ignore
 import { dockStart } from '@nlpjs/basic';
-import path from 'path';
+// @ts-ignore
+import { BuiltinCompromise } from '@nlpjs/builtin-compromise'
+
+
+const onIntent = (nlp: any, input: any) => {
+  if (input.intent === 'greetings.hello') {
+    const output = input;
+    output.answer = 'Fuck off';
+  }
+  return input;
+}
 
 const context = {};
 
@@ -16,15 +28,38 @@ const chatbotController = async (req: Request, res: Response) => {
         ]
       }
     },
-    'use': ['Basic', 'BuiltinMicrosoft', 'LangEn']
+    'use': ['Basic', 'LangEn']
   });
 
-  const builtin = dock.get('builtin-microsoft');
   const ner = dock.get('ner');
+  const builtin = new BuiltinCompromise({
+    enable: [
+      'hashtags', 'person', 'place', 'organization',
+      'email', 'phonenumber', 'date', 'url', 'number', 'dimension'
+    ]
+   });
   ner.container.register('extract-builtin-??', builtin, true);
-
+  
   const nlp = dock.get('nlp');
+  nlp.onIntent = onIntent;
+
+  nlp.addDocument('en', 'Hello my name is @name', 'greeting.hello');
+  nlp.addDocument('en', 'Hello I\'m @name', 'greeting.hello');
+  nlp.addNerAfterLastCondition('en', 'name', ['is', 'I\'m']);
+
+  nlp.addDocument('en', 'I have to go', 'greeting.bye');
+  nlp.addAnswer('en', 'greeting.hello', 'Hey there!');
+  nlp.addAnswer('en', 'greeting.bye', 'Till next time, {{name}}!');
+
+  nlp.addAction('whatTimeIsIt', 'handleWhatsTimeAction', ['en-US', 'parameter 2'], async (data: any, locale: any, param2: any) => { 
+    // Inject a new entitiy into context used for answer generation
+    data.context.time = new Date().toLocaleTimeString(locale);
+    return data;
+  });
+
   await nlp.train();
+
+
   const response = await nlp.process('en', message, context);
 
   const intent = response.intent;
