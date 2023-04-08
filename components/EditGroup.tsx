@@ -83,7 +83,7 @@ export const EditGroup = React.memo(({}: Props) => {
                 minimal: true,
                 disabled: prompt === '',
                 blink: !!prompt && !url,
-                onClick: () => set_url(`https://lexi.studio/image/prompt/${encodeURIComponent(prompt)}`),
+                onClick: () => set_url(`/image/prompt/${encodeURIComponent(prompt)}`),
               },
             ]}
           />

@@ -1,0 +1,39 @@
+{
+    "name": "Create Space Corpus",
+    "locale": "en-US",
+    "entities": {
+      "space": {
+        "type": "custom",
+        "values": []
+      }
+    },
+    "data": [
+      {
+        "intent": "create_space",
+        "utterances": [
+          "I want to create a new space",
+          "Can you help me create a new space?",
+          "Create a space",
+          "Let's make a new space"
+        ],
+        "answers": [
+          "Ok, I created the '{{name}}' Space for you."
+        ],
+        "slotFilling": {
+          "name": {
+            "mandatory": true,
+            "question": "What would you like to name this space?"
+          },
+          "description": {
+            "mandatory": true,
+            "question": "Please provide a brief description of this space."
+          },
+          "image": {
+            "mandatory": true,
+            "question": "Please provide an image for this space."
+          }
+        }
+      }
+    ]
+  }
+  

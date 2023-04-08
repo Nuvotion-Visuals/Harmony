@@ -104,7 +104,7 @@ let accumulatedSentences: string[] = [];
 export const speakStream = (text: string, guid: string) => {
   // Check if the last character is a sentence-ending punctuation mark
   const lastChar = text.slice(-1);
-  if (!['.', '!', '?', ':'].includes(lastChar)) {
+  if (!['.', '!', '?', '\n'].includes(lastChar)) {
     return; // Return early if the input text doesn't end with a completed sentence
   }
 

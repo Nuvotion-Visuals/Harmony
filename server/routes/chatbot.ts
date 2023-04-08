@@ -6,7 +6,6 @@ import { dockStart } from '@nlpjs/basic';
 // @ts-ignore
 import { BuiltinCompromise } from '@nlpjs/builtin-compromise'
 
-// modify answer before getting response
 const onIntent = (nlp: any, input: any) => {
   if (input.intent === 'greetings.hello') {
     const output = input;
@@ -15,19 +14,22 @@ const onIntent = (nlp: any, input: any) => {
   return input;
 }
 
-const context = {};
+let context = {};
 
 const chatbotController = async (req: Request, res: Response) => {
   const { message } = req.body;
+
+   if (message.toLowerCase() === 'nevermind') {
+    context = {};
+    return res.json({ message: 'Okay, let\'s start over.', lang: 'en' });
+  }
+
   const dock = await dockStart({
     settings: {
       nlp: {
         corpora: [
-          // path.join(__dirname, './corpa/corpus-en.json'),
-          path.join(__dirname, './corpa/membership-en.json'),
-          path.join(__dirname, './corpa/rsvp-en.json'),
-          path.join(__dirname, './corpa/help-en.json'),
-          // path.join(__dirname, './corpa/slotFilling-en.json')
+          path.join(__dirname, './corpa/lexi/space-en.json'),
+          path.join(__dirname, './corpa/lexi/time-en.json'),
         ]
       }
     },
@@ -44,25 +46,11 @@ const chatbotController = async (req: Request, res: Response) => {
   ner.container.register('extract-builtin-??', builtin, true);
   
   const nlp = dock.get('nlp');
+
   nlp.addAnswer('en', 'None', 'I do not understand');
   nlp.onIntent = onIntent;
 
-  nlp.addDocument('en', 'Hello my name is @name', 'greeting.hello');
-  nlp.addDocument('en', 'Hello I\'m @name', 'greeting.hello');
-  nlp.addNerAfterLastCondition('en', 'name', ['is', 'I\'m']);
-
-  nlp.addDocument('en', 'I have to go', 'greeting.bye');
-  nlp.addAnswer('en', 'greeting.hello', 'Hey there!');
-  nlp.addAnswer('en', 'greeting.bye', 'Till next time, {{name}}!');
-
-  nlp.addAction('whatTimeIsIt', 'handleWhatsTimeAction', ['en-US', 'parameter 2'], async (data: any, locale: any, param2: any) => { 
-    // Inject a new entitiy into context used for answer generation
-    data.context.time = new Date().toLocaleTimeString(locale);
-    return data;
-  });
-
   await nlp.train();
-
 
   const response = await nlp.process('en', message, context);
 
@@ -78,11 +66,38 @@ const chatbotController = async (req: Request, res: Response) => {
   console.log(entities)
   
   switch (intent) {
-    case 'agent.birthday':
-    case 'agent.age':
-    // add more intents here
+    case 'getTime':
+      const time = new Date().toLocaleTimeString(detectedLanguage, { hour: 'numeric', minute: 'numeric', hour12: true });
+      response.answer = response.answer.replace('{{ time }}', time);
+      response.entities.time = time;
+      res.json({ message: response.answer, lang: detectedLanguage, entities: response.entities });
+      break;
+    case 'getDayOfWeek':
+      const dayOfWeek = new Date().toLocaleDateString(detectedLanguage, { weekday: 'long' });
+      response.answer = response.answer.replace('{{ dayOfWeek }}', dayOfWeek);
+      response.entities.dayOfWeek = dayOfWeek;
+      res.json({ message: response.answer, lang: detectedLanguage, entities: response.entities });
+      break;
+    case 'getMonth':
+      const month = new Date().toLocaleDateString(detectedLanguage, { month: 'long' });
+      response.answer = response.answer.replace('{{ month }}', month);
+      response.entities.month = month;
+      res.json({ message: response.answer, lang: detectedLanguage, entities: response.entities });
+      break;
+    case 'getYear':
+      const year = new Date().toLocaleDateString(detectedLanguage, { year: 'numeric' });
+      response.answer = response.answer.replace('{{ year }}', year);
+      response.entities.year = year;
+      res.json({ message: response.answer, lang: detectedLanguage, entities: response.entities });
+      break;
+    case 'getDateTime':
+      const dateTime = new Date().toLocaleString(detectedLanguage, { dateStyle: 'long', timeStyle: 'short' });
+      response.answer = response.answer.replace('{{ dateTime }}', dateTime);
+      response.entities.dateTime = dateTime;
+      res.json({ message: response.answer, lang: detectedLanguage, entities: response.entities });
+      break;
     default:
-      res.json({ message: answer, lang: detectedLanguage });
+      res.json({ message: response.answer, lang: detectedLanguage });
       break;
   }
 };
