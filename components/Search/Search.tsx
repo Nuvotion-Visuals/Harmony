@@ -1,4 +1,4 @@
-import { TextInput } from "@avsync.live/formation";
+import { Box, Gap, Item, LineBreak, TextInput } from "@avsync.live/formation";
 import React, { useState, useEffect } from "react";
 
 import * as Types from './types'
@@ -27,11 +27,14 @@ export const Search = () => {
 
   return (
     <div>
+      <Box p={.5}>
       <TextInput 
         value={query}
         onChange={val => set_query(val)}
         onEnter={handleSearch}
         canClear={query !== ''}
+        compact
+        placeholder='Search'
         buttons={[
           {
             icon: 'search',
@@ -41,29 +44,43 @@ export const Search = () => {
           }
         ]}
       />
-      {/* Display the knowledge panel */}
-      <div>
-        {searchResults?.data?.results && (
-          <KnowledgePanel knowledge_panel={searchResults.data.results.knowledge_panel} />
+      </Box>
+    
+
+      <Gap>
+      </Gap>
+        {/* Display the knowledge panel */}
+        <div>
+          {searchResults?.data?.results && (
+            <KnowledgePanel knowledge_panel={searchResults.data.results.knowledge_panel} />
+          )}
+        </div>
+
+        <LineBreak />
+
+          
+        {/* Display the translation component if it is defined */}
+        {searchResults?.data?.results?.translation && (
+          <Translation translation={searchResults.data.results.translation} />
         )}
-      </div>
 
-      {/* Display the translation component if it is defined */}
-      {searchResults?.data?.results?.translation && (
-        <Translation translation={searchResults.data.results.translation} />
-      )}
+        {/* Display the dictionary component if it is defined */}
+        {searchResults?.data?.results?.dictionary && (
+          <Dictionary dictionary={searchResults.data.results.dictionary} />
+        )}
 
-      {/* Display the dictionary component if it is defined */}
-      {searchResults?.data?.results?.dictionary && (
-        <Dictionary dictionary={searchResults.data.results.dictionary} />
-      )}
+        {/* Display the search results */}
+        <Box py={.75} wrap>
+          <Gap>
+          <Item title='Results'/>
 
-      {/* Display the search results */}
-      <div>
-        {searchResults?.data?.results && searchResults.data.results.results.map((result, index) => (
-          <SearchResult key={index} result={result} />
-        ))}
-      </div>
+            {searchResults?.data?.results && searchResults.data.results.results.map((result, index) => (
+              <SearchResult key={index} result={result} />
+            ))}
+          </Gap>
+        </Box>
+        
+
     </div>
   );
 };
