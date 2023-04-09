@@ -7,7 +7,7 @@ interface Props {
   
 }
 
-export const Search = React.memo(({ }: Props) => {
+export const SearchBar = React.memo(({ }: Props) => {
   const searchQuery = useLexi_searchQuery()
   const set_searchQuery = useLexi_setSearchQuery()
 

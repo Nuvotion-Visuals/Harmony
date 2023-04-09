@@ -1,12 +1,12 @@
-import { NavSpaces, Box, useBreakpoint, LoadingSpinner } from '@avsync.live/formation'
+import { NavSpaces, Box, useBreakpoint } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useLayout_activeSwipeIndex, useLayout_setActiveSwipeIndex } from 'redux-tk/layout/hook'
 import styled from 'styled-components'
 
 import { SpaceSidebar } from './SpaceSidebar'
-import { Search } from './Search'
-import { SearchResults } from './SearchResults'
+import { SearchBar } from './SearchBar'
+import { Search } from './Search/Search'
 import { AddSpace } from './AddSpace'
 import { EditSpace } from './EditSpace'
 import { EditGroup } from './EditGroup'
@@ -14,10 +14,7 @@ import { useSpaces_spaceGuids, useSpaces_setActiveSpaceGuid, useSpaces_setActive
 import { useDispatch } from 'react-redux'
 import { fetchInitialData } from 'redux-tk/spaces/slice'
 import type { Dispatch } from '@reduxjs/toolkit'
-import { Threads } from './Threads'
 import { EditChannel } from './EditChannel'
-import MyLink from './Link'
-import { MatrixLoading } from './MatrixLoading'
 import { Channel } from './Channel'
 import { Logo } from './Logo'
 import Link from './Link'
@@ -102,7 +99,7 @@ const App = ({ children }: Props) => {
   const renderThirdPage = () => {
     return <S.ThirdPage>
       {/* <Chatbot /> */}
-      <SearchResults />
+      <Search />
     </S.ThirdPage>
   }
 
@@ -127,8 +124,7 @@ const App = ({ children }: Props) => {
       </Link>
 
       <S.Centered isDesktop={isDesktop}>
-      <Search />
-
+        <SearchBar />
       </S.Centered>
     </S.NavHeader>
     <NavSpaces
