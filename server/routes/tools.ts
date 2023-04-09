@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { extract } from '@extractus/article-extractor';
 // @ts-ignore
 import { getSubtitles, Caption } from 'youtube-captions-scraper';
+import google from 'googlethis';
 
 const router = express.Router();
 
@@ -45,5 +46,26 @@ router.post('/parse-youtube-video', async (req: Request, res: Response) => {
     handleError(res, error as Error & { statusCode?: number; code?: number });
   }
 });
+
+router.get('/search', async (req: Request, res: Response) => {
+  const query = req.query.q as string;
+  const options = {
+    page: 0, 
+    safe: false, 
+    parse_ads: false, 
+    additional_params: {
+      hl: 'en' 
+    }
+  }
+
+  try {
+    const results = await google.search(query, options);
+    res.send({ status: 200, data: { results } });
+  } catch (error) {
+    console.log('🟣', `I experienced the following error: ${error}`);
+    res.status(500).send({ status: 500, message: 'internal error' });
+  }
+});
+
 
 export default router;

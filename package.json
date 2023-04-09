@@ -44,6 +44,7 @@
     "cuid": "^2.1.8",
     "express": "^4.18.2",
     "formik": "^2.2.9",
+    "googlethis": "^1.7.1",
     "html-to-text": "^9.0.2",
     "markdown-to-text": "^0.1.1",
     "memory-cache": "^0.2.0",
