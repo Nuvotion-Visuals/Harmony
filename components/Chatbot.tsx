@@ -113,6 +113,11 @@ const Chatbot = (): JSX.Element => {
             secondary
             onClick={() => send('What is the weather in Chicago?')}
           />
+          <Button
+            text='Create a space'
+            secondary
+            onClick={() => send('Create a space')}
+          />
         </Gap>
       </Box>
 

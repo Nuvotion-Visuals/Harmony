@@ -1,0 +1,30 @@
+{
+    "name": "Weather Corpus",
+    "locale": "en-US",
+    "entities": {},
+    "data": [
+      {
+        "intent": "getWeather",
+        "utterances": [
+          "What's the weather like?",
+          "Can you tell me the current weather?",
+          "How's the weather?",
+          "What's the forecast?",
+          "What's the weather forecast?",
+          "What's the temperature?",
+          "What's the humidity like?",
+          "How fast is the wind blowing?",
+          "What's the wind speed?",
+          "What direction is the wind blowing?",
+          "What's the current temperature?",
+          "What's the current humidity?",
+          "What's the current wind speed?",
+          "What's the current wind direction?"
+        ],
+        "answers": [
+          "The current weather is {{ description }} with a temperature of {{ temperature }}. The wind speed is {{ windSpeed }}, blowing from the {{ windDirection }}."
+        ]
+      }
+    ]
+  }
+  

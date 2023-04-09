@@ -1,0 +1,30 @@
+{
+  "name": "DateTime Corpus",
+  "locale": "en-US",
+  "entities": {},
+  "data": [
+    {
+      "intent": "getDateTime",
+      "utterances": [
+        "What time is it now?",
+        "Can you tell me the current time?",
+        "What's the time?",
+        "What day of the week is it?",
+        "What's today?",
+        "What's the day today?",
+        "What month is it?",
+        "What's the current month?",
+        "Which month are we in?",
+        "What year is it?",
+        "What's the current year?",
+        "Which year are we in?",
+        "What's the date and time?",
+        "Can you tell me the current date and time?",
+        "What's the time and date now?"
+      ],
+      "answers": [
+        "It's {{ dateTime }}"
+      ]
+    }
+  ]
+}
