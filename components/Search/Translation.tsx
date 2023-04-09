@@ -2,7 +2,7 @@ import React from 'react';
 import * as Types from './types';
 
 export const Translation = ({ translation }: { translation?: Types.Translation }) => {
-  if (!translation) return null;
+  if (!translation?.source_text) return null;
 
   return (
     <div>

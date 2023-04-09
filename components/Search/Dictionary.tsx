@@ -2,7 +2,7 @@ import React from 'react';
 import * as Types from './types';
 
 export const Dictionary = ({ dictionary }: { dictionary?: Types.Dictionary }) => {
-  if (!dictionary) return null;
+  if (!dictionary?.word) return null;
 
   return (
     <div>
