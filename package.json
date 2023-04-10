@@ -53,6 +53,7 @@
     "net": "^1.0.2",
     "next": "12.2.5",
     "node-nlp": "^4.26.1",
+    "nprogress": "^0.2.0",
     "puppeteer": "^19.4.0",
     "puppeteer-core": "^19.4.0",
     "react": "18.2.0",

@@ -1,4 +1,4 @@
-import { Box, Button, Gap, LineBreak, TextInput } from "@avsync.live/formation";
+import { Box, Button, Gap, LineBreak, LoadingSpinner, Placeholders, Spacer, TextInput } from "@avsync.live/formation";
 import React, { useState, useEffect } from "react";
 
 import * as Types from './types'
@@ -9,12 +9,16 @@ import { Dictionary } from "./Dictionary";
 import { PeopleAlsoAsk } from "./PeopleAlsoAsk";
 import { FeaturedSnippet } from "./FeaturedSnippet";
 import { PeopleAlsoSearch } from "./PeopleAlsoSearch";
+import { Logo } from "components/Logo";
 
 export const Search = () => {
   const [searchResults, setSearchResults] = useState<Types.SearchResultsData | null>(null);
   const [query, set_query] = useState('');
 
+  const [loading, set_loading] = useState(false)
+
   async function fetchData(query: string) {
+    set_loading(true)
     try {
       const response = await fetch(`/tools/search?q=${query}`);
       const data = await response.json();
@@ -22,11 +26,93 @@ export const Search = () => {
     } catch (error) {
       console.error(error);
     }
+    set_loading(false)
   }
 
   const handleSearch = () => {
     fetchData(query);
   }
+
+  const Content = () => (
+    <>
+    <LineBreak />
+        {
+          searchResults?.data?.results?.knowledge_panel?.title && (
+            <KnowledgePanel knowledge_panel={searchResults.data.results.knowledge_panel} />
+          )
+        }
+
+        {
+          searchResults?.data.results?.featured_snippet?.title &&
+            <FeaturedSnippet featuredSnippet={searchResults?.data.results.featured_snippet} />
+        }
+        
+        {
+          !!searchResults?.data?.results.people_also_ask?.length && (
+            <>
+              <LineBreak />
+              <PeopleAlsoAsk 
+                peopleAlsoAsk={searchResults.data.results.people_also_ask} 
+                onSearch={(searchTerm) => {
+                  set_query(searchTerm)
+                  fetchData(searchTerm)
+                }}
+              />
+            </>
+          
+          )
+        }
+
+      <LineBreak />
+
+      {
+        searchResults?.data?.results?.translation && (
+          <Translation translation={searchResults.data.results.translation} />
+        )
+      }
+
+      {
+        searchResults?.data?.results?.dictionary && (
+          <Dictionary dictionary={searchResults.data.results.dictionary} />
+        )
+      }
+
+      {
+        searchResults?.data?.results?.results &&
+          <Box wrap py={.25}>
+            <Gap>
+
+              {
+                searchResults?.data?.results && searchResults.data.results.results.map((result, index) => (
+                  <SearchResult key={index} result={result} />
+                ))
+              }
+          <Box />
+
+          </Gap>
+          <LineBreak />
+        </Box>
+      }
+     
+
+      {
+        !!searchResults?.data?.results?.people_also_search?.length && (
+          <>
+            <PeopleAlsoSearch 
+              peopleAlsoSearch={searchResults.data.results.people_also_search} 
+              onSearch={(searchTerm) => {
+                set_query(searchTerm)
+                fetchData(searchTerm)
+              }}
+            />
+          </>
+        
+        )
+      }
+      </>
+  )
+
+  const nothing = !(query && !loading && searchResults?.data?.results?.results)
 
   return (
     <div>
@@ -50,109 +136,47 @@ export const Search = () => {
       />
       </Box>
       
-      <Box px={.5}>
-        <Gap>
+      <Box px={.5} width='calc(100% - 1rem)'>
           <Button 
-            text='Search' 
-            tab
+            text='All' 
+            tab={!nothing}
+            icon='search'
+            iconPrefix="fas"
           />
           <Button 
             text='Images' 
             secondary
             minimal
+            icon="image"
+            iconPrefix="fas"
           />
           <Button 
             text='Videos' 
             secondary
             minimal
+            icon="video"
+            iconPrefix="fas"
           />
           <Button 
             text='News' 
             secondary
             minimal
+            icon="newspaper"
+            iconPrefix="fas"
           />
-           <Button 
-            text='Maps' 
-            secondary
-            minimal
-          />
-        </Gap>
+          <Spacer />
       </Box>
 
-      <LineBreak />
-        {
-          searchResults?.data?.results?.knowledge_panel?.title && (
-            <KnowledgePanel knowledge_panel={searchResults.data.results.knowledge_panel} />
-          )
-        }
-
-        {
-          searchResults?.data.results?.featured_snippet?.title &&
-            <FeaturedSnippet featuredSnippet={searchResults?.data.results.featured_snippet} />
-        }
-        
-        {
-          searchResults?.data?.results && (
-            <>
-              <LineBreak />
-              <PeopleAlsoAsk 
-                peopleAlsoAsk={searchResults.data.results.people_also_ask} 
-                onSearch={(searchTerm) => {
-                  set_query(searchTerm)
-                  fetchData(searchTerm)
-                }}
-              />
-            </>
-          
-          )
-        }
-
-     
-
-      <LineBreak />
-
       {
-        searchResults?.data?.results?.translation && (
-          <Translation translation={searchResults.data.results.translation} />
-        )
+        loading
+          ? <Placeholders
+              // @ts-ignore
+              message={<LoadingSpinner />}
+            />
+          : !nothing
+            ? <Content />
+            : null
       }
-
-      {
-        searchResults?.data?.results?.dictionary && (
-          <Dictionary dictionary={searchResults.data.results.dictionary} />
-        )
-      }
-
-      {
-        searchResults?.data?.results?.results &&
-          <Gap>
-          <Box wrap py={.25}>
-            {
-              searchResults?.data?.results && searchResults.data.results.results.map((result, index) => (
-                <SearchResult key={index} result={result} />
-              ))
-            }
-          </Box>
-          <LineBreak />
-        </Gap>
-      }
-     
-
-      {
-          searchResults?.data?.results?.people_also_search &&
-          searchResults?.data?.results?.people_also_search?.length > 0 && (
-            <>
-              <PeopleAlsoSearch 
-                peopleAlsoSearch={searchResults.data.results.people_also_search} 
-                onSearch={(searchTerm) => {
-                  set_query(searchTerm)
-                  fetchData(searchTerm)
-                }}
-              />
-            </>
-          
-          )
-        }
     </div>
   );
 };

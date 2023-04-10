@@ -4,7 +4,7 @@ import { Metadata } from './Metadata';
 import { Books } from './Books';
 import { TVShowsAndMovies } from './TVShowsAndMovies';
 import { Images } from './Images';
-import { Box, Item } from '@avsync.live/formation';
+import { Box, Button, Item } from '@avsync.live/formation';
 
 export const KnowledgePanel = ({ knowledge_panel }: { knowledge_panel: Types.KnowledgePanel }) => (
   <Box width={'100%'} pb={.75} wrap>

@@ -34,20 +34,21 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
       disabled={disabled}
     >
       <Box wrap maxWidth={'100%'} width={'100%'}>
-        <Box mb={-.65} width={'100%'}>
+        <Box mb={-.25} width={'100%'}>
           <Item
             subtitle={result.url?.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)?.[1]}
             src={result.favicons.low_res}
             children={
               <div >
              
-              <Box mr={1}>
+              <Box mr={1.5} width='calc(100% - 1.75rem)'>
               {
                 disabled && <LoadingSpinner small />
               }
                <Button
                   icon='plus'
                   iconPrefix='fas'
+                  minimalIcon
                   minimal
                   square
                   onClick={(e) => {
@@ -66,6 +67,7 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
                   icon='up-right-from-square'
                   iconPrefix='fas'
                   minimal
+                  minimalIcon
                   href={result.url}
                   newTab
                   square
@@ -98,6 +100,7 @@ const S = {
     hasClicked: boolean;
     disabled?: boolean
   }>`
+  width: 100%;
   opacity: ${props => props.hasClicked ? '0.5' : '1'};
   * {
     cursor: ${props => props.disabled ? 'wait' : 'pointer'};

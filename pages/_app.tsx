@@ -66,6 +66,7 @@ import { Linker } from '@avsync.live/formation'
 
 import dynamic from 'next/dynamic'
 import MyLink from 'components/Link'
+import ProgressBar from 'components/ProgressBar'
 
 const App = dynamic(() => import('../components/App'), {
   ssr: false,
@@ -110,6 +111,7 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
     <Provider store={store}>
       <Linker CustomLink={MyLink}> 
         <Content />
+        <ProgressBar />
       </Linker> 
     </Provider>
   </>
