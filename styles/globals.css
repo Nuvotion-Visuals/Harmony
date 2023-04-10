@@ -10,7 +10,9 @@
 
 html, body {
   background: var(--F_Background);
+  overflow-wrap: break-word;
 }
+
 
 html, body, input {
   font-family: 'Poppins' !important;

@@ -24,6 +24,21 @@ export interface Dictionary {
   examples: string[];
 }
 
+export type PeopleAlsoAsk = string[]
+
+export interface FeaturedSnippet {
+  title: string;
+  description: string;
+  url: string
+}
+
+export interface PeopleSearch {
+  title: string;
+  thumbnail: string
+}
+
+export type PeopleAlsoSearch = PeopleSearch[]
+
 export interface KnowledgePanel {
   type: string | null;
   title: string | null;
@@ -56,6 +71,9 @@ export interface SearchResultsData {
       knowledge_panel: KnowledgePanel;
       dictionary?: Dictionary; // Move dictionary to the results object
       translation?: Translation; // Move translation to the results object
+      people_also_ask: PeopleAlsoAsk,
+      featured_snippet: FeaturedSnippet,
+      people_also_search: PeopleAlsoSearch
     };
   };
 }

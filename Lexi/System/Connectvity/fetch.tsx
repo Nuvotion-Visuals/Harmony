@@ -1,8 +1,6 @@
 // @ts-ignore
 import { convert } from 'html-to-text'
 
-import { store } from 'redux-tk/store'
-
 /**
  * Calls the /tools/parse-article endpoint to get the transcript of an article
  * @param contentUrl The URL of the article to parse
@@ -74,8 +72,7 @@ export const getArticleContent = (
   };
   
   export const insertContentByUrl = (url: string, callback: (data: string) => void) => {
-    const youtubeDomains = ['www.youtube.com', 'youtube.com', 'youtu.be']
-    const query = store.getState().lexi.query
+    const youtubeDomains = ['m.youtube.com', 'www.youtube.com', 'youtube.com', 'youtu.be']
     const { hostname } = new URL(url);
     if (youtubeDomains.includes(hostname)) {
       getYouTubeTranscript(url,
@@ -90,7 +87,7 @@ export const getArticleContent = (
     else {
       getArticleContent(url, 
         (content) => {
-          callback(convert(content))
+          callback(content)
         },
         () => {
           alert('Sorry, I could not get the page content.')

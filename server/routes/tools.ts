@@ -19,6 +19,7 @@ router.post('/parse-article', async (req: Request, res: Response) => {
   try {
     const input = contentUrl as string;
     const article = await extract(input);
+    console.log(article)
     res.send({ status: 200, data: { article } });
   } catch (error) {
     handleError(res, error as Error & { statusCode?: number; code?: number });
@@ -60,6 +61,8 @@ router.get('/search', async (req: Request, res: Response) => {
 
   try {
     const results = await google.search(query, options);
+  //   const news = await google.getTopNews();
+  //  console.info('Google Top News:', news);
     res.send({ status: 200, data: { results } });
   } catch (error) {
     console.log('🟣', `I experienced the following error: ${error}`);

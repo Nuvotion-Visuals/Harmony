@@ -6,7 +6,7 @@ export const Metadata = ({ metadata }: { metadata: Types.KnowledgePanel["metadat
   if (metadata.length === 0) return null;
 
   return (
-    <Box pb={.75} width={'100%'} wrap>
+    <Box pt={.5} width={'100%'} wrap>
         {metadata.map((item, index) => (
           <Item
             text={item.title}

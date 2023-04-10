@@ -111,11 +111,11 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
 const S = {
   GroupsSidebar: styled.div`
     display: flex;
-    height: calc(100% - var(--F_Header_Height));
+    height: 100%;
     align-items: flex-start;
   `,
   SidebarContainer: styled.div`
-    height: calc(100vh - calc(2 * var(--F_Header_Height)));
+    height: calc(calc(100vh - calc(1 * var(--F_Header_Height))) - .25rem);
     width: 100%;
     overflow-y: auto;
   `

@@ -69,7 +69,6 @@ const App = ({ children }: Props) => {
 
   const renderFirstPage = () => {
     return <S.Sidebar>
-      <Box height='var(--F_Header_Height)' width='100%'/>
       { 
         renderInnerSidebar() 
       }
@@ -77,20 +76,14 @@ const App = ({ children }: Props) => {
   }
 
   const renderSecondPage = () => {
-    const Spacer = () => <>
-      {
-        !isMobile && !isTablet && <S.HeaderSpacer />
-      }
-    </>
+    
     switch(router.route) {
       case('/spaces/[spaceGuid]/groups/[groupGuid]/channels/[channelGuid]'):
         return <>
-          <Spacer />
           <Channel />
         </>
       case '/spaces/[spaceGuid]':
         return <>
-          <Spacer />
           <Space />
         </>
     }
@@ -116,7 +109,7 @@ const App = ({ children }: Props) => {
   }, [groupGuid])
 
   return (<S.App>
-    <S.NavHeader>
+    {/* <S.NavHeader>
       <Link href='/'>
         <Box width='78px'>
           <Logo />
@@ -126,7 +119,7 @@ const App = ({ children }: Props) => {
       <S.Centered isDesktop={isDesktop}>
         <SearchBar />
       </S.Centered>
-    </S.NavHeader>
+    </S.NavHeader> */}
     <NavSpaces
       dropdownOptions={[]}
       disableTablet

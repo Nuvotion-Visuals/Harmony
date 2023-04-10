@@ -12,7 +12,7 @@ type LinkType = {
 const MyLink = React.memo(({ children, href, newTab }: LinkType) => {
   return (
     <Link href={href || '#'}>
-      <S_A href={href || '#'}>
+      <S_A href={href || '#'} target={newTab ? '_blank' : '_self'}>
         { children }
       </S_A>
     </Link>

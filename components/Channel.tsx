@@ -157,7 +157,7 @@ const S = {
   Channel: styled.div<{
     true100vh: number
   }>`
-    height: ${props => `calc(calc(${props.true100vh}px - calc(var(--F_Header_Height) * 2)) - 2px)`};
+    height: ${props => `calc(calc(${props.true100vh}px - calc(var(--F_Header_Height) * 1)) - 2px)`};
     width: 100%;
     display: flex;
     flex-wrap: wrap;

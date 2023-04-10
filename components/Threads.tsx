@@ -216,7 +216,7 @@ User feedback (optional): ${feedback}
                   {
                     activeChannel?.description &&
                       <>
-                        <Box mt={-.25} width='100%' wrap>
+                        <Box width='100%' wrap>
                         {
                           activeChannel?.previewSrc &&
                           <Box px={.75} width='100%'>

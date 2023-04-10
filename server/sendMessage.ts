@@ -52,7 +52,7 @@ export const sendMessage = async ({
     }
   };
 
-  const res = await storedClient.api.sendMessage(`${message}`, {
+  const res = await storedClient.api.sendMessage(`${message.slice(0, 4096)}`, {
     systemMessage,
     parentMessageId,
     onProgress: onProgressWrapper,

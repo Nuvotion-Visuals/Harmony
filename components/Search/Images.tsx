@@ -27,6 +27,6 @@ const S = {
     padding: 0 .5rem;
   `,
   Image: styled.img`
-    border-radius: 1rem;
+    border-radius: .75rem;
   `
 }
