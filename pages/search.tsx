@@ -11,113 +11,134 @@ const SearchPage = () => {
       <ZoomableHierarchyNavigator
         flareData={
           {
-            name: "Cars",
+            name: 'User Experience Design',
+            size: 90,
             children: [
               {
-                name: "Sedan",
+                name: 'Research',
+                size: 70,
                 children: [
                   {
-                    name: "Compact",
-                    size: 100,
+                    name: 'User Interviews',
+                    size: 40,
                   },
                   {
-                    name: "Mid-size",
-                    size: 90,
+                    name: 'Surveys',
+                    size: 50,
                   },
                   {
-                    name: "Full-size",
-                    size: 80,
+                    name: 'Competitive Analysis',
+                    size: 60,
+                  },
+                  {
+                    name: 'Analytics',
+                    size: 30,
                   },
                 ],
               },
               {
-                name: "SUV",
+                name: 'Design',
+                size: 80,
                 children: [
                   {
-                    name: "Crossover",
+                    name: 'Information Architecture',
+                    size: 75,
                     children: [
                       {
-                        name: "Compact",
-                        size: 100,
+                        name: 'Site Map',
+                        size: 45,
                       },
                       {
-                        name: "Mid-size",
-                        size: 90,
-                      },
-                      {
-                        name: "Full-size",
-                        size: 80,
+                        name: 'Content Strategy',
+                        size: 60,
                       },
                     ],
                   },
                   {
-                    name: "Traditional",
+                    name: 'Interaction Design',
+                    size: 85,
                     children: [
                       {
-                        name: "Compact",
-                        size: 100,
+                        name: 'Wireframing',
+                        size: 55,
                       },
                       {
-                        name: "Mid-size",
-                        size: 90,
+                        name: 'Prototyping',
+                        size: 70,
+                        children: [
+                          {
+                            name: 'Low-Fidelity Prototype',
+                            size: 50,
+                          },
+                          {
+                            name: 'High-Fidelity Prototype',
+                            size: 60,
+                          },
+                        ],
                       },
                       {
-                        name: "Full-size",
-                        size: 80,
+                        name: 'Animation Design',
+                        size: 35,
+                      },
+                      {
+                        name: 'Microinteraction Design',
+                        size: 40,
+                      },
+                    ],
+                  },
+                  {
+                    name: 'Visual Design',
+                    size: 65,
+                    children: [
+                      {
+                        name: 'Brand Identity',
+                        size: 55,
+                      },
+                      {
+                        name: 'UI Design',
+                        size: 70,
+                      },
+                      {
+                        name: 'Graphic Design',
+                        size: 50,
+                      },
+                      {
+                        name: 'Typography',
+                        size: 40,
+                      },
+                      {
+                        name: 'Color Theory',
+                        size: 30,
                       },
                     ],
                   },
                 ],
               },
               {
-                name: "Hatchback",
+                name: 'Testing',
+                size: 50,
                 children: [
                   {
-                    name: "Subcompact",
-                    size: 100,
+                    name: 'Usability Testing',
+                    size: 45,
                   },
                   {
-                    name: "Compact",
-                    size: 90,
+                    name: 'A/B Testing',
+                    size: 60,
                   },
                   {
-                    name: "Mid-size",
-                    size: 80,
-                  },
-                ],
-              },
-              {
-                name: "Coupe",
-                children: [
-                  {
-                    name: "Compact",
-                    size: 100,
+                    name: 'Remote Testing',
+                    size: 30,
                   },
                   {
-                    name: "Mid-size",
-                    size: 90,
-                  },
-                  {
-                    name: "Full-size",
-                    size: 80,
-                  },
-                ],
-              },
-              {
-                name: "Convertible",
-                children: [
-                  {
-                    name: "Soft-top",
-                    size: 100,
-                  },
-                  {
-                    name: "Hardtop",
-                    size: 90,
+                    name: 'Focus Groups',
+                    size: 55,
                   },
                 ],
               },
             ],
           }
+          
         }
       />
       <Search />

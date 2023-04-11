@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { Badge } from './Badge'
 import { SpaceCard } from './SpaceCard'
 import { Logo } from './Logo'
+import MyLink from './Link'
 
 interface Props {
 
@@ -52,7 +53,9 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
         }
       ]}
     >
-      <Logo />
+      <MyLink href='/'>
+        <Logo />
+      </MyLink>
     </SpacesSidebar>
     <S.SidebarContainer>
       <Box wrap width='100%'>

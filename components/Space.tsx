@@ -1,10 +1,11 @@
 import { AspectRatio, Box, Button, Dropdown, Gap, Item, LineBreak, markdownToHTML, Page, RichTextEditor, Spacer, useBreakpoint } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
 import { Space as SpaceProps } from 'redux-tk/spaces/types'
-import { useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_updateSpace } from 'redux-tk/spaces/hook'
+import { useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_channelsByGuid, useSpaces_groupsByGuid, useSpaces_threadsByGuid, useSpaces_updateSpace } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Badge } from './Badge'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
+import { ZoomableHierarchyNavigator } from './ZoomableHierarchyNavigator'
 
 interface Props {
   
@@ -15,6 +16,9 @@ export const Space = ({ }: Props) => {
   // const activeSpaceStats = useSpaces_activeSpaceStats()
   const updateSpace = useSpaces_updateSpace()
   const activeSpaceGuid = useSpaces_activeSpaceGuid()
+  const groupsByGuid = useSpaces_groupsByGuid()
+  const channelsByGuid = useSpaces_channelsByGuid()
+  const threadsByGuid = useSpaces_threadsByGuid()
 
   const [localValue, set_localValue] = useState(activeSpace?.description || '')
   const [edit, set_edit] = useState(false)
@@ -35,10 +39,7 @@ export const Space = ({ }: Props) => {
               <S.OverlayBottom>
               <S.SpaceStats>
                 <Spacer />
-                {/* @ts-ignore */}
-                {/* <Badge 
-                  {...activeSpaceStats}
-                /> */}
+                
               </S.SpaceStats>
               
               </S.OverlayBottom>
@@ -122,6 +123,7 @@ export const Space = ({ }: Props) => {
         }
     </RichTextEditor>
     </Page>
+
     
   </S.Space>)
 }

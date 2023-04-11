@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 // @ts-ignore
 import d3 from 'd3';
 import styled from 'styled-components';
+import { AspectRatio, Box, Break, Item } from '@avsync.live/formation';
 
 interface Node {
   name: string;
@@ -11,6 +12,7 @@ interface Node {
   y?: number;
   r?: number;
   parent?: Node;
+  src?: string
 }
 
 interface Props {
@@ -19,6 +21,10 @@ interface Props {
 
 export const ZoomableHierarchyNavigator = ({ flareData }: Props) => {
   const containerRef = useRef<any>();
+  const [breadcrumbs, setBreadcrumbs] = useState<Node[]>([])
+
+  const [zoomLevel, setZoomLevel] = useState<number>(0)
+  const [activeNodeName, setActiveNodeName] = useState<string>('')
 
   const depthCount = (branch: Node): number => {
     if (!branch.children) {
@@ -30,22 +36,22 @@ export const ZoomableHierarchyNavigator = ({ flareData }: Props) => {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const margin = 20,
-      padding = 2,
-      diameter = 650,
+    const margin = 0,
+      padding = 0,
+      diameter = 550,
       root = flareData;
 
     const color = d3.scale
       .linear()
       .domain([0, depthCount(root)])
-      .range(['hsl(152,80%,80%)', 'hsl(228,30%,40%)'])
+      .range(['#121212', '#343434'])
       .interpolate(d3.interpolateHcl);
 
-    const pack = d3.layout
+      const pack = d3.layout
       .pack()
       .padding(padding)
       .size([diameter, diameter])
-      .value(() => 100);
+      .value((d: any) => d.size ?? 100);
 
     const svgExists = d3.select(containerRef.current).select('svg').size() > 0;
     if (svgExists) {
@@ -93,11 +99,9 @@ export const ZoomableHierarchyNavigator = ({ flareData }: Props) => {
       .enter()
       .append('text')
       .attr('class', 'label')
-      .style('fill-opacity', function (d: any) {
-        return d.parent === root ? 1 : 0;
-      })
+      .style('fill', '#eee')
       .style('display', function (d: any) {
-        return d.parent === root ? null : 'none';
+          return d.depth !== 0 && d.depth <= 1 ? null : 'none';
       })
       .text(function (d: any) {
         return d.name;
@@ -112,6 +116,27 @@ export const ZoomableHierarchyNavigator = ({ flareData }: Props) => {
     const zoom = (d: Node): void => {
       const focus0 = focus;
       focus = d;
+
+      let newBreadcrumbs: Node[] = [];
+      let node: Node | undefined = focus;
+      while (node) {
+        newBreadcrumbs.unshift(node);
+        node = node.parent;
+      }
+      setBreadcrumbs(newBreadcrumbs)
+
+        // derive the current zoom level based on the depth of the current focus node
+        let zoomLevel = 0;
+        if (focus.parent) {
+          const parent = nodes.find((node : Node) => node.name === focus.parent?.name);
+          if (parent) {
+            zoomLevel = parent.depth + 1;
+          }
+        }
+
+        // update the zoom level
+        setZoomLevel(zoomLevel);
+        setActiveNodeName(d.name);
 
       const transition = d3
         .transition()
@@ -160,26 +185,46 @@ export const ZoomableHierarchyNavigator = ({ flareData }: Props) => {
     zoomTo([root.x ?? 0, root.y ?? 0, (root.r ?? 0) * 2 + margin]);
   }, []);
 
-  return <Container ref={containerRef}></Container>;
+  return <Box wrap>
+    <Box pb={.5}>
+      <Item
+        title={breadcrumbs.map(breadcrumb => breadcrumb.name).join(' > ')}
+      />
+    </Box>
+    <Break />
+    <Container ref={containerRef}>
+  </Container>
+ 
+ 
+  </Box>;
 };
 
 const Container = styled.div`
+  display: flex;
+  /* border-radius: 100%;
+  overflow: hidden; */
   .node {
     cursor: pointer;
+    stroke: rgba(0,0,0,0);
+    transition: stroke .3s;
   }
-
+/* 
   .node:hover {
-    stroke: #000;
+    stroke: var(--F_Font_Color_Disabled);
     stroke-width: 1.5px;
+  } */
+
+  .node--leaf {
+    fill: var(--F_Surface_1);
   }
 
   .node--leaf {
-    fill: white;
+    fill: var(--F_Surface_1);
   }
 
   .label {
     text-anchor: middle;
-    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+    text-shadow: 0 1.5px 0 #000, 1.5px 0 0 #000, -1.5px 0 0 #000, 0 -1.5px 0 #000;
   }
 
   .label,

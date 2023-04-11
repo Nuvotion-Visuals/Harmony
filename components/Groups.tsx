@@ -217,7 +217,7 @@ export const Groups = React.memo(({ }: Props) => {
                         {
                           spaceChannelGuids &&
                             <Indicator
-                              count={channelsByGuid[spaceChannelGuids[i][listItemIndex1]].threadGuids.length}
+                              count={channelsByGuid?.[spaceChannelGuids?.[i]?.[listItemIndex1]]?.threadGuids?.length}
                             />
                         }
                         
