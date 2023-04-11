@@ -11,7 +11,11 @@ import { FeaturedSnippet } from "./FeaturedSnippet";
 import { PeopleAlsoSearch } from "./PeopleAlsoSearch";
 import { Logo } from "components/Logo";
 
-export const Search = () => {
+interface Props {
+  hero?: boolean
+}
+
+export const Search = ({ hero } : Props) => {
   const [searchResults, setSearchResults] = useState<Types.SearchResultsData | null>(null);
   const [query, set_query] = useState('');
 
@@ -123,7 +127,7 @@ export const Search = () => {
         onChange={val => set_query(val)}
         onEnter={handleSearch}
         canClear={query !== ''}
-        compact
+        compact={!hero}
         placeholder='Search'
         buttons={[
           {

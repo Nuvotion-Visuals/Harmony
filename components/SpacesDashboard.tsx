@@ -4,6 +4,7 @@ import { useSpaces_spacesInfo } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import MyLink from './Link'
 import { SpaceCard } from './SpaceCard'
+import { Search } from './Search/Search'
 
 interface Props {
   
@@ -17,23 +18,7 @@ const SpacesDashboard = ({ }: Props) => {
     <S.Inner isDesktop={isDesktop}>
       <Gap gap={isMobile ? 1 : 1.5}>
       <Page noPadding>
-        <TextInput
-          iconPrefix='fas'
-          placeholder='Search'
-          value={searchQuery}
-          onChange={(newValue: string) => set_searchQuery(newValue)}
-          canClear
-          buttons={[
-            {
-              minimal: true,
-              icon: 'search',
-              iconPrefix: 'fas',
-              onClick: () => {
-
-              }
-            },
-          ]}
-        />
+        <Search hero/>
       </Page>
     
     <Grid maxWidth={isMobile ? 10 : 18} gap={isMobile ? .75 : 1.5} >

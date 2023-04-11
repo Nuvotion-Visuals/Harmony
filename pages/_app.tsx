@@ -67,6 +67,7 @@ import { Linker } from '@avsync.live/formation'
 import dynamic from 'next/dynamic'
 import MyLink from 'components/Link'
 import ProgressBar from 'components/ProgressBar'
+import { Search } from 'components/Search/Search'
 
 const App = dynamic(() => import('../components/App'), {
   ssr: false,
@@ -84,6 +85,7 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   const Content = () => {
     switch(router.route) {
       case '/login':
+      case '/search':
         return <Component {...pageProps} />
       case '/':
       case '/spaces':

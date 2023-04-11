@@ -27,7 +27,7 @@ const S = {
     background: var(--F_Surface_0);
     padding: .5rem .75rem;
     border-radius: 1rem;
-    color: var(--F_Font_Color_Disabled);
+    color: var(--F_Font_Color_Label);
     font-family: monospace;
     display: flex;
     align-items: center;
