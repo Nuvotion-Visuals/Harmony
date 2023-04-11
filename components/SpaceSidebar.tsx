@@ -7,6 +7,7 @@ import { useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_removeSpace
 import { useRouter } from 'next/router'
 import { Badge } from './Badge'
 import { SpaceCard } from './SpaceCard'
+import { Logo } from './Logo'
 
 interface Props {
 
@@ -50,7 +51,9 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
           href: '/spaces/add'
         }
       ]}
-    />
+    >
+      <Logo />
+    </SpacesSidebar>
     <S.SidebarContainer>
       <Box wrap width='100%'>
         <Box p={.75} width='100%'>

@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.145":
-  version "0.9.145"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.145.tgz#a84d90d1188d5b4c150e8f93d93a91a4a08c6751"
-  integrity sha512-YKmafBgpX92OyOoxj91B7qep4MDj0qBRbTDRce6J9CAv+R8Uxk0sI5niFh2P0Vbbzvn0K6QJMDksUVPf65ccgQ==
+"@avsync.live/formation@^0.9.146":
+  version "0.9.146"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.146.tgz#a5c0a01ac0e71f965ab251f86909a08698618d13"
+  integrity sha512-+Z6CChV8YlzaY1tJmttqGrvswT2DxGVIyyxagj/fm+Bt9UOJ6VB03qdtGSnbPt0DeAHqbVqu9KmxqgRxcVieIA==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -1504,6 +1504,11 @@
   dependencies:
     "@types/express" "*"
     "@types/keygrip" "*"
+
+"@types/d@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/d/-/d-1.0.1.tgz#14346d1e2b13d69cf6c36e7459fe4fe1ae6eb055"
+  integrity sha512-QulmL64LyXp3f0B5YnGpNDQfwOnVdrF8SEj3I8UFY6BwNyV3p0RrU66UVTudG/pn15++bf1Zfjhr4389VClGGw==
 
 "@types/express-serve-static-core@^4.17.18":
   version "4.17.31"
@@ -3072,6 +3077,11 @@ cuid@^2.1.8:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.8.tgz#cbb88f954171e0d5747606c0139fb65c5101eac0"
   integrity sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==
+
+d3@3:
+  version "3.5.17"
+  resolved "https://registry.yarnpkg.com/d3/-/d3-3.5.17.tgz#bc46748004378b21a360c9fc7cf5231790762fb8"
+  integrity sha512-yFk/2idb8OHPKkbAL8QaOaqENNoMhIaSHZerk3oQsECwkObkCpJyjYwCe+OHiq6UEdhe1m8ZGARRRO3ljFjlKg==
 
 damerau-levenshtein@^1.0.8:
   version "1.0.8"
