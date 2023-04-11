@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { speakStream } from 'Lexi/System/Language/speech'
+import { speakStream } from 'client/speech/speech'
 import { ConversationsByGuid, Message, MessagesByGuid, Guid } from './types'
 
 export const slice = createSlice({

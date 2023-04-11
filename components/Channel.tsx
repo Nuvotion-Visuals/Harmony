@@ -9,7 +9,7 @@ import { Threads } from './Threads'
 
 import { ChatBox } from './ChatBox'
 import { useLexi_query } from 'redux-tk/lexi/hook'
-import { scrollToElementById } from 'client-utils'
+import { scrollToElementById } from 'client/utils'
 
 interface Props {
   

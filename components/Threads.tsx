@@ -5,12 +5,12 @@ import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, 
 import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
 import styled from 'styled-components'
 import { Thread } from './Thread'
-import { scrollToBottom } from 'client-utils'
-import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client'
+import { scrollToBottom } from 'client/utils'
+import { getWebsocketClient } from 'client/connectivity/websocket-client'
 import { use100vh } from 'react-div-100vh'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
 import { Indicator } from './Indicator'
-import { useLanguageAPI } from 'Lexi/System/Language/hooks'
+import { useLanguageAPI } from 'client/language/hooks'
 import { MatrixLoading } from './MatrixLoading'
 
 interface Props {

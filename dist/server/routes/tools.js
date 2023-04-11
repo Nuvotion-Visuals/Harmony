@@ -43,6 +43,7 @@ var express_1 = __importDefault(require("express"));
 var article_extractor_1 = require("@extractus/article-extractor");
 // @ts-ignore
 var youtube_captions_scraper_1 = require("youtube-captions-scraper");
+var googlethis_1 = __importDefault(require("googlethis"));
 var router = express_1.default.Router();
 var handleError = function (res, error) {
     console.log('🟣', "I experienced the following error: ".concat(error));
@@ -63,6 +64,7 @@ router.post('/parse-article', function (req, res) { return __awaiter(void 0, voi
                 return [4 /*yield*/, (0, article_extractor_1.extract)(input)];
             case 2:
                 article = _a.sent();
+                console.log(article);
                 res.send({ status: 200, data: { article: article } });
                 return [3 /*break*/, 4];
             case 3:
@@ -99,6 +101,39 @@ router.post('/parse-youtube-video', function (req, res) { return __awaiter(void 
             case 3:
                 error_2 = _a.sent();
                 handleError(res, error_2);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+router.get('/search', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var query, options, results, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                query = req.query.q;
+                options = {
+                    page: 0,
+                    safe: false,
+                    parse_ads: false,
+                    additional_params: {
+                        hl: 'en'
+                    }
+                };
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, googlethis_1.default.search(query, options)];
+            case 2:
+                results = _a.sent();
+                //   const news = await google.getTopNews();
+                //  console.info('Google Top News:', news);
+                res.send({ status: 200, data: { results: results } });
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _a.sent();
+                console.log('🟣', "I experienced the following error: ".concat(error_3));
+                res.status(500).send({ status: 500, message: 'internal error' });
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }

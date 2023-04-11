@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.142":
-  version "0.9.142"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.142.tgz#d5bb2a0100eef5d80a675fe72a56785773dac835"
-  integrity sha512-A0p5hkaNvHKTjTdXpTsVhGcHkcbxfjQw1NgPN+LzmWVHlWrAjaA4wvzjXS7W9kYNbz5FzDO7NyM3refrXNnAtw==
+"@avsync.live/formation@^0.9.145":
+  version "0.9.145"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.145.tgz#a84d90d1188d5b4c150e8f93d93a91a4a08c6751"
+  integrity sha512-YKmafBgpX92OyOoxj91B7qep4MDj0qBRbTDRce6J9CAv+R8Uxk0sI5niFh2P0Vbbzvn0K6QJMDksUVPf65ccgQ==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -379,10 +379,10 @@
   dependencies:
     prop-types "^15.8.1"
 
-"@google-cloud/text-to-speech@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/text-to-speech/-/text-to-speech-4.1.0.tgz#e3045919c9eba860994154d57f8e2cf955b1a433"
-  integrity sha512-nifCfsqHWU1w4g5FvahS2VZHnopfUZPVxXZvBBFYj2Ar7D9l5ycYbT0q78RRsMGK94c8GldLnLIJbquWKvCZGg==
+"@google-cloud/text-to-speech@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/text-to-speech/-/text-to-speech-4.2.1.tgz#551a4852e40bd253ff044b793413c936a89242e5"
+  integrity sha512-7UpvE5daaNg0hX1m8jmLR2uZTalgd7xm5vqotQbovdhF1nQ9EU0x48XUsVNiXroKOXZ3GDqJCGhGw4vC2Xp03w==
   dependencies:
     google-gax "^3.5.2"
 

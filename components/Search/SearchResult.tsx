@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as Types from './types';
 import { Box, Button, Dropdown, Item, LoadingSpinner } from '@avsync.live/formation'
-import { insertContentByUrl } from 'Lexi/System/Connectvity/fetch';
+import { insertContentByUrl } from 'client/connectivity/fetch';
 import { useLexi_query, useLexi_setQuery } from 'redux-tk/lexi/hook';
 import styled from 'styled-components';
 // @ts-ignore

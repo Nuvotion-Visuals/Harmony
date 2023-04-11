@@ -45,11 +45,13 @@ var cookie_parser_1 = __importDefault(require("cookie-parser"));
 var cookie_session_1 = __importDefault(require("cookie-session"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var dotenv_1 = __importDefault(require("dotenv"));
-var sendMessage_1 = require("./sendMessage");
+var sendMessage_1 = require("./messaging/sendMessage");
 var tools_1 = __importDefault(require("./routes/tools"));
 var image_1 = __importDefault(require("./routes/image"));
 var sendMessage_2 = __importDefault(require("./routes/sendMessage"));
-var messaging_1 = require("./messaging");
+var chatbot_1 = __importDefault(require("./routes/chatbot"));
+var tts_1 = __importDefault(require("./routes/tts"));
+var messaging_1 = require("./messaging/messaging");
 dotenv_1.default.config();
 var LEXISERVER_PORT = parseInt(process.env.LEXISERVER_PORT || '1618');
 var LEXIWEBSOCKETSERVER_PORT = parseInt(process.env.LEXIWEBSOCKETSERVER_PORT || '1619');
@@ -82,6 +84,8 @@ function startServer() {
                     server.use('/send-message', sendMessage_2.default);
                     server.use('/image', image_1.default);
                     server.use('/tools', tools_1.default);
+                    server.use('/api/chatbot', chatbot_1.default);
+                    server.use('/tts', tts_1.default);
                     server.all('/next/*', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             res.status(400).json({ error: 'Next API route not found' });

@@ -1,5 +1,5 @@
 import { Button, TextInput, generateUUID, Gap, AspectRatio, Box, Item, RichTextEditor, ExpandableLists, ItemProps, LabelColor } from '@avsync.live/formation';
-import { useLanguageAPI } from 'Lexi/System/Language/hooks';
+import { useLanguageAPI } from 'client/language/hooks';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useSpaces_addSpaceIncludingGroups } from 'redux-tk/spaces/hook';

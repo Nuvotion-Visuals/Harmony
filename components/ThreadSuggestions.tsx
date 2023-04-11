@@ -1,7 +1,7 @@
 import { Box, Button, Gap, Item, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation';
-import { scrollToElementById } from 'client-utils';
-import { getWebsocketClient } from 'Lexi/System/Connectvity/websocket-client';
-import { useLanguageAPI } from 'Lexi/System/Language/hooks';
+import { scrollToElementById } from 'client/utils';
+import { getWebsocketClient } from 'client/connectivity/websocket-client';
+import { useLanguageAPI } from 'client/language/hooks';
 import React, { useEffect, useState } from 'react'
 import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_messagesByGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook';
 import styled from 'styled-components'

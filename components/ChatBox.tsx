@@ -2,17 +2,16 @@ import { Box, Button, Dropdown, generateUUID, Page, RichTextEditor, TextInput, u
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
-import styled from 'styled-components'
 
-import { listenForWakeWord } from '../Lexi/System/Language/wakeWord'
-import { playSound } from '../Lexi/System/Language/soundEffects'
-import { insertContentByUrl } from '../Lexi/System/Connectvity/fetch'
-import { SpeechTranscription } from 'Lexi/System/Language/speechTranscription'
-import { getWebsocketClient } from '../Lexi/System/Connectvity/websocket-client'
+import { listenForWakeWord } from 'client/speech/wakeWord'
+import { playSound } from 'client/speech/soundEffects'
+import { SpeechTranscription } from 'client/speech/speechTranscription'
+import { insertContentByUrl } from 'client/connectivity/fetch'
+import { getWebsocketClient } from 'client/connectivity/websocket-client'
 
 import { Message as MessageProps, Thread as ThreadProps } from 'redux-tk/spaces/types'
 import { useLexi_query, useLexi_setQuery } from 'redux-tk/lexi/hook'
-import { scrollToElementById } from 'client-utils'
+import { scrollToElementById } from 'client/utils'
 
 const systemMessage = `
 My name is Lexi.

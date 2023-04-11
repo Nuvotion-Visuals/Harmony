@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import React, { useState } from 'react';
 import { Box, Button, Gap, TextInput } from '@avsync.live/formation';
-import { scrollToElementById } from 'client-utils';
+import { scrollToElementById } from 'client/utils';
 
 interface Message {
   message: string;

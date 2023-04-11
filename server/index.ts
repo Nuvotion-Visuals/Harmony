@@ -5,13 +5,14 @@ import cookieSession from 'cookie-session';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
-import { sendMessage } from './sendMessage'
+import { sendMessage } from './messaging/sendMessage'
 
 import toolsRouter from './routes/tools';
 import imageRouter from './routes/image'
 import sendMessageRouter from './routes/sendMessage'
 import chatbotRouter from './routes/chatbot'
-import { startMessagingServer } from './messaging';
+import ttsRouter from './routes/tts';
+import { startMessagingServer } from './messaging/messaging';
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ async function startServer() {
     server.use('/image', imageRouter);
     server.use('/tools', toolsRouter);
     server.use('/api/chatbot', chatbotRouter)
+    server.use('/tts', ttsRouter);
 
     server.all('/next/*', async (req, res) => {
       res.status(400).json({ error: 'Next API route not found' });
@@ -63,7 +65,7 @@ async function startServer() {
         'You are an especially creative autonomous cognitive entity named Lexi.',
       userLabel: 'user',
       message: 'State if you are functioning properly. What is your name?',
-      onComplete: ({ response }) => console.log(response),
+      onComplete: ({ response }: any) => console.log(response),
       onProgress: () => {},
     });
 

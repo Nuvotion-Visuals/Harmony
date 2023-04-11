@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
-import { CommonMessageProps } from 'types/MessagesTypes';
+import { CommonMessageProps } from '../../types/MessagesTypes';
 
-import { sendMessage } from '../sendMessage'
+import { sendMessage } from '../messaging/sendMessage'
 
 const router = express.Router();
 

@@ -1,10 +1,8 @@
-import { AspectRatio, Box, Button, Gap, Grid, Page, TextInput, useBreakpoint } from '@avsync.live/formation'
+import { AspectRatio, Button, Gap, Grid, Page, TextInput, useBreakpoint } from '@avsync.live/formation'
 import React, { useState } from 'react'
 import { useSpaces_spacesInfo } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import MyLink from './Link'
-import { Logo } from './Logo'
-import { Search } from './Search'
 import { SpaceCard } from './SpaceCard'
 
 interface Props {

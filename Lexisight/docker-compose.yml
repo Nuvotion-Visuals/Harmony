@@ -1,8 +1,0 @@
-version: '3'
-services:
-  yolact:
-    image: vibber/yolact
-    command: "python yolact.py --config=yolact_base_config.yaml --weights=weights/yolact_base_54_800000.pth --image=path/to/image.jpg --output=output.jpg"
-    volumes:
-      - "./data/output:/app/output"
-    network_mode: "host"

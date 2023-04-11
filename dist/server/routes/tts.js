@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -51,38 +40,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var sendMessage_1 = require("../messaging/sendMessage");
-var router = express_1.default.Router();
-router.get('/send-message', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, conversationId, parentMessageId, personaLabel, systemMessage, userLabel, message, error_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _b.trys.push([0, 2, , 3]);
-                _a = req.query, conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, personaLabel = _a.personaLabel, systemMessage = _a.systemMessage, userLabel = _a.userLabel, message = _a.message;
-                // Call the sendMessage function with the extracted data
-                return [4 /*yield*/, (0, sendMessage_1.sendMessage)({
-                        conversationId: conversationId,
-                        parentMessageId: parentMessageId,
-                        personaLabel: personaLabel,
-                        systemMessage: systemMessage,
-                        userLabel: userLabel,
-                        message: message,
-                        onComplete: function (data) {
-                            res.status(200).json(__assign({}, data));
+var text_to_speech_1 = require("@google-cloud/text-to-speech");
+var client = new text_to_speech_1.TextToSpeechClient({
+    keyFilename: __dirname + '/key.json',
+});
+function synthesizeText(text, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var request, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    request = {
+                        input: { text: text },
+                        voice: {
+                            languageCode: 'en-US',
+                            voiceType: 'Neural2',
+                            name: 'en-US-Neural2-C',
+                            ssmlGender: 'FEMALE'
                         },
-                    })];
+                        audioConfig: {
+                            audioEncoding: 'LINEAR16'
+                        }
+                    };
+                    return [4 /*yield*/, client.synthesizeSpeech(request)];
+                case 1:
+                    response = (_a.sent())[0];
+                    res.setHeader('Content-Type', 'audio/wav');
+                    res.send(response.audioContent);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+var ttsRouter = express_1.default.Router();
+ttsRouter.get('/tts', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var text, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                text = req.query.text;
+                _a.label = 1;
             case 1:
-                // Call the sendMessage function with the extracted data
-                _b.sent();
-                return [3 /*break*/, 3];
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, synthesizeText(text, res)];
             case 2:
-                error_1 = _b.sent();
-                console.error(error_1);
-                res.status(500).send('An error occurred while sending the message');
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                error_1 = _a.sent();
+                res.status(500).send({ error: error_1.message });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
-exports.default = router;
+exports.default = ttsRouter;

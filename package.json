@@ -19,13 +19,13 @@
     "unused-ts": "ts-unused-exports ./tsconfig.json > unused-ts-exports-report.txt"
   },
   "dependencies": {
-    "@avsync.live/formation": "^0.9.142",
+    "@avsync.live/formation": "^0.9.145",
     "@extractus/article-extractor": "^7.2.8-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@google-cloud/text-to-speech": "^4.1.0",
+    "@google-cloud/text-to-speech": "^4.2.1",
     "@next/bundle-analyzer": "^13.2.3",
     "@nlpjs/basic": "^4.26.1",
     "@nlpjs/builtin-compromise": "^4.26.1",

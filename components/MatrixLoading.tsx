@@ -1,5 +1,5 @@
 import { Box, LoadingSpinner } from '@avsync.live/formation';
-import { scrollToBottom } from 'client-utils';
+import { scrollToBottom } from 'client/utils';
 import React, { ReactNode, useEffect, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
