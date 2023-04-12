@@ -47,9 +47,6 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
       // @ts-ignore
       if (activeChannel?.description && getWebsocketClient?.send) {
         generateSearchQueries(`
-          Space name: ${activeSpace?.name}
-          Space description: ${activeSpace?.description}
-          
           Channel name: ${activeChannel?.name}
           Channel description: ${activeChannel?.description} 
 
@@ -115,9 +112,6 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
                     onClick={() => {
                       // set_suggestedPrompts([])
                       generateSearchQueries(`
-                        Space name: ${activeSpace?.name}
-                        Space description: ${activeSpace?.description}
-                        
                         Channel name: ${activeChannel?.name}
                         Channel description: ${activeChannel?.description} 
                       
@@ -129,6 +123,7 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
                         Your previous suggestions (optional): ${suggestedPrompts}
                       
                         User feedback (optional): ${feedback}
+
                       `)
                     }} 
                   />
