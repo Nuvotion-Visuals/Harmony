@@ -3,7 +3,8 @@ import {
   language_generateGroups, 
   language_generateTitleAndDescription, 
   language_generateThreadPrompts,
-  language_generateFollowUpMessages
+  language_generateFollowUpMessages,
+  language_generateSearchQueries
 } from './language-ws';
 
 type PartialResponse = string;
@@ -92,6 +93,9 @@ export const useLanguageAPI = (initialValue: string) => {
     },
     generateFollowUpMessages: (guid: string) => {
       generate(guid, true, language_generateFollowUpMessages)
+    },
+    generateSearchQueries: (guid: string) => {
+      generate(guid, true, language_generateSearchQueries)
     }
   };
 

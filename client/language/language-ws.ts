@@ -222,24 +222,18 @@ Prompt: ${prompt} Reply in JSON`,
       systemMessage: 'You are an API that provides a list of follow up messages for the given input. You do not add any commentary. You always answer in a code block.',
       userLabel: 'Input prompt provider',
       message: 
-  `You are an API endpoint that provides a list of four distinct suggestions for next messages within a conversation thread.
+  `You are an AI language model, and your task is to provide four unique and engaging suggestions for advancing a conversation thread. Each suggestion should reference specific details or themes from previous messages and be presented in a JSON format.
 
-  The four messages should be distinct naturally carrying on and advancing the conversation towards the desired goal or purpose of the thread. The messages are intended to be answered by a language model.
-
-  The messages should ALWAYS reference specific details, or at least specific themes from pervious messages.
-    
-  Each message starts with an emoji and title. The titles should always be action-oriented present tense, and always a single capitalized word.
+  For every suggestion, begin with an emoji and an action-oriented, present tense, capitalized single-word title. The suggestions are meant to be answered by a language model, so ensure they promote further discussion and help move the conversation toward its desired goal or purpose.
 
   You answer in the following JSON format, provided in a markdown code block.
   
   {
     "suggestions": [
-      "🤔 Critique: suggested message",
-      "🗣️ Discuss: suggested message",
-      "🔍 Explore: suggested message",
-      "🎓 Teach: suggested message",
-      "📚 Research: suggested message",
-      "🎨 Create: suggested message"
+      "🤔 Critique: How effective have noise-cancelling headphones been for employees dealing with distractions in open-plan offices?",
+      "🗣️ Discuss: What measures have other companies implemented to reduce noise levels and distractions in open-plan workspaces?",
+      "🔍 Explore: Are there any studies or reports that highlight the pros and cons of open-plan office layouts in terms of productivity?",
+      "🎓 Teach: Could you explain the concept of 'activity-based working' and how it might improve productivity in an open-plan office?"
     ]
   }
   
@@ -251,5 +245,42 @@ Prompt: ${prompt} Reply in JSON`,
       onComplete(json);
     }, onError, (progress) => {
       onProgress(progress.message)
+  });
+};
+
+export const language_generateSearchQueries = (
+  prompt: string, enableEmoji: boolean, onComplete: (message: string) => void, onProgress: (message: string) => void, onError?: SendErrorCallback, 
+): { removeListeners: () => void } => {
+  const props: CommonMessageProps = {
+    conversationId: '',
+    parentMessageId: '',
+    personaLabel: 'GENERATE',
+    systemMessage:
+      'You are an API that suggests search queries based on a given prompt. You do not add any commentary. You always answer in a code block.',
+    userLabel: 'Search query provider',
+    message: `You are an AI language model, and your task is to provide four unique, high-quality, and relevant search query suggestions based on a given prompt. Each search query should begin with a keyword or phrase representing the main topic, followed by more specific search terms.
+    
+    You answer in the following JSON format, provided in a markdown code block.
+    
+    {
+      "suggestions": [
+        "best ways to *",
+        "* examples",
+        "how to *",
+        "tools for *",
+        "advanced * techniques",
+        "expert advice on *",
+        "top resources for *"
+      ]
+    }
+    
+    Prompt: ${prompt} Reply in JSON, in a CODE BLOCK!`,
+  };
+
+  return language_sendMessage(props, (response) => {
+    const json = JSON.parse(JSON.stringify(getCodeBlock(response.message) || response.message));
+    onComplete(json.queries);
+  }, onError, (progress) => {
+    onProgress(progress.message);
   });
 };

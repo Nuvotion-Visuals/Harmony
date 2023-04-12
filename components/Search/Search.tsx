@@ -10,6 +10,7 @@ import { PeopleAlsoAsk } from "./PeopleAlsoAsk";
 import { FeaturedSnippet } from "./FeaturedSnippet";
 import { PeopleAlsoSearch } from "./PeopleAlsoSearch";
 import { Logo } from "components/Logo";
+import { SearchSuggestions } from "components/SearchSuggestions";
 
 interface Props {
   hero?: boolean
@@ -169,6 +170,16 @@ export const Search = ({ hero } : Props) => {
             iconPrefix="fas"
           />
           <Spacer />
+      </Box>
+      
+      <Box p={.5} width='calc(100% - .5rem)'>
+        <SearchSuggestions 
+          onSend={(suggestedQuery) => {
+            fetchData(suggestedQuery)
+            set_query(suggestedQuery)
+          }}
+          guid={''}
+        />
       </Box>
 
       {

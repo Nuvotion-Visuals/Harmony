@@ -253,7 +253,7 @@ const Container = styled.div`
 
   .label {
     text-anchor: middle;
-    text-shadow: 0 1.5px 0 #000, 1.5px 0 0 #000, -1.5px 0 0 #000, 0 -1.5px 0 #000;
+    text-shadow: 0 1px 0 #000, 1px 0 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
   }
 
   .label,

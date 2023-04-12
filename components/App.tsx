@@ -21,6 +21,7 @@ import Link from './Link'
 import { Space } from './Space'
 import Chatbot from './Chatbot'
 import { ActiveSpaceMap } from './ActiveSpaceMap'
+import { SearchSuggestions } from './SearchSuggestions'
 
 interface Props {
   children: React.ReactNode
@@ -94,6 +95,7 @@ const App = ({ children }: Props) => {
     return <S.ThirdPage>
       {/* <Chatbot /> */}
       <Search />
+
       <ActiveSpaceMap />
     </S.ThirdPage>
   }
