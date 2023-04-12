@@ -172,7 +172,7 @@ export const Search = ({ hero } : Props) => {
           <Spacer />
       </Box>
       
-      <Box p={.5} width='calc(100% - .5rem)'>
+      <Box py={.5} width='calc(100% - .5rem)'>
         <SearchSuggestions 
           onSend={(suggestedQuery) => {
             fetchData(suggestedQuery)
