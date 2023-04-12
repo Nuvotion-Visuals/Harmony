@@ -6,12 +6,15 @@ import MyLink from './Link'
 import { SpaceCard } from './SpaceCard'
 import { Search } from './Search/Search'
 import { ZoomableHierarchyNavigator } from './ZoomableHierarchyNavigator'
+import { useRouter } from 'next/router'
 
 interface Props {
   
 }
 
 const SpacesDashboard = ({ }: Props) => {
+  const router = useRouter()
+
   const spacesInfo = useSpaces_spacesInfo()
     const { isMobile, isDesktop } = useBreakpoint()
     const [searchQuery, set_searchQuery] = useState('')
@@ -62,15 +65,21 @@ const SpacesDashboard = ({ }: Props) => {
               children: spacesByGuid[spaceGuid]?.groupGuids?.map(groupGuid => ({
                 name: groupsByGuid[groupGuid].name,
                 size: groupsByGuid[groupGuid].channelGuids.length || 1,
-                children: groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
-                  name: channelsByGuid[channelGuid].name,
-                  size: channelsByGuid[channelGuid].threadGuids.length || 1,
-                  children: channelsByGuid[channelGuid].threadGuids.map(threadGuid => ({
-                    name: threadsByGuid[threadGuid].name,
-                    size: threadsByGuid[threadGuid].messageGuids.length || 1,
-                    // children: channelsByGuid[groupGuid].channelGuids
-                  }))
-                }))
+                children: 
+                  groupsByGuid[groupGuid].channelGuids.length
+                    ? groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
+                        name: channelsByGuid[channelGuid].name,
+                        size: channelsByGuid[channelGuid].threadGuids.length || 1,
+                        onClick: () => router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}`),
+                        children: 
+                          channelsByGuid[channelGuid].threadGuids.length
+                            ? channelsByGuid[channelGuid].threadGuids.map(threadGuid => ({
+                                name: threadsByGuid[threadGuid].name,
+                                size: threadsByGuid[threadGuid].messageGuids.length || 1,
+                              }))
+                            : [{ name: 'ADD ', size: 2}]
+                      })) 
+                    : [{ name: 'ADD ', size: 2}]
               }))
             }))
           }}

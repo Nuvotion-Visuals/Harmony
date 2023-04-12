@@ -12,7 +12,8 @@ interface Node {
   y?: number;
   r?: number;
   parent?: Node;
-  src?: string
+  src?: string,
+  onClick?: () => void;
 }
 
 interface Props {
@@ -24,7 +25,6 @@ export const ZoomableHierarchyNavigator = ({ flareData }: Props) => {
   const [breadcrumbs, setBreadcrumbs] = useState<Node[]>([])
 
   const [zoomLevel, setZoomLevel] = useState<number>(0)
-  const [activeNodeName, setActiveNodeName] = useState<string>('')
   const [zoomFunction, setZoomFunction] = useState<((d: Node) => void) | null>(null);
   const [selectedNodes, setSelectedNodes] = useState<Node[]>([flareData]);
 
@@ -92,7 +92,15 @@ export const ZoomableHierarchyNavigator = ({ flareData }: Props) => {
         return d.children ? color(d.depth) : null;
       })
       .on('click', function (d: any) {
-        if (focus !== d) zoom(d), d3.event.stopPropagation();
+         if (d.onClick) {
+          d.onClick();
+          d3.event.stopPropagation();
+        }
+        else if (focus !== d) {
+          zoom(d);
+          d3.event.stopPropagation();
+        }
+       
       });
 
     svg
@@ -141,7 +149,6 @@ export const ZoomableHierarchyNavigator = ({ flareData }: Props) => {
     
       // update the zoom level and the active node name
       setZoomLevel(zoomLevel);
-      setActiveNodeName(d.name);
     
       const transition = d3
         .transition()
@@ -230,11 +237,11 @@ const Container = styled.div`
     stroke: rgba(0,0,0,0);
     transition: stroke .3s;
   }
-/* 
+
   .node:hover {
     stroke: var(--F_Font_Color_Disabled);
     stroke-width: 1.5px;
-  } */
+  }
 
   .node--leaf {
     fill: var(--F_Surface_1);

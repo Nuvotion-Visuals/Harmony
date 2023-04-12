@@ -3,12 +3,15 @@ import React, { useEffect, useState } from 'react'
 import { useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_channelsByGuid, useSpaces_groupsByGuid, useSpaces_threadsByGuid, useSpaces_updateSpace } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { ZoomableHierarchyNavigator } from './ZoomableHierarchyNavigator'
+import { useRouter } from 'next/router'
 
 interface Props {
   
 }
 
 export const ActiveSpaceMap = ({ }: Props) => {
+  const router = useRouter()
+
   const activeSpace = useSpaces_activeSpace()
   const groupsByGuid = useSpaces_groupsByGuid()
   const channelsByGuid = useSpaces_channelsByGuid()
@@ -28,15 +31,21 @@ export const ActiveSpaceMap = ({ }: Props) => {
             children: activeSpace?.groupGuids?.map(groupGuid => ({
               name: groupsByGuid[groupGuid].name,
               size: groupsByGuid[groupGuid].channelGuids.length || 1,
-              children: groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
-                name: channelsByGuid[channelGuid].name,
-                size: channelsByGuid[channelGuid].threadGuids.length || 1,
-                children: channelsByGuid[channelGuid].threadGuids.map(threadGuid => ({
-                  name: threadsByGuid[threadGuid].name,
-                  size: threadsByGuid[threadGuid].messageGuids.length || 1,
-                  // children: channelsByGuid[groupGuid].channelGuids
+              children: 
+              groupsByGuid[groupGuid].channelGuids.length
+                ? groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
+                    name: channelsByGuid[channelGuid].name,
+                    size: channelsByGuid[channelGuid].threadGuids.length || 1,
+                    onClick: () => router.push(`/spaces/${activeSpace.guid}/groups/${groupGuid}/channels/${channelGuid}`),
+                    children: 
+                    channelsByGuid[channelGuid].threadGuids.length
+                      ? channelsByGuid[channelGuid].threadGuids.map(threadGuid => ({
+                          name: threadsByGuid[threadGuid].name,
+                          size: threadsByGuid[threadGuid].messageGuids.length || 1,
+                        }))
+                      : [{ name: 'ADD', size: 2}]
                 }))
-              }))
+                : [{ name: 'ADD', size: 2}]
             }))
           }}
         />
