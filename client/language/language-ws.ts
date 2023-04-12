@@ -260,6 +260,8 @@ export const language_generateSearchQueries = (
     userLabel: 'Search query provider',
     message: `You are an AI language model, and your task is to provide four unique, high-quality, and relevant search query suggestions based on a given prompt. Each search query should begin with a keyword or phrase representing the main topic, followed by more specific search terms.
     
+    If no prompt is provided, you suggest a list of productive searches that a creative professional might need.
+
     You answer in the following JSON format, provided in a markdown code block.
     
     {
