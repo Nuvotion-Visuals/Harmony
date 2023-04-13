@@ -239,6 +239,7 @@ User feedback (optional): ${feedback}
                               icon='ellipsis-h'
                               iconPrefix='fas'
                               minimal
+                              minimalIcon
                               items={[
                                 {
                                   icon: 'bolt-lightning',
@@ -297,8 +298,8 @@ User feedback (optional): ${feedback}
                   
                             {
                               suggestedPrompts?.length && !loading
-                                ? <Box width='100%' >
-                                    <Gap>
+                                ? <Box width='100%' pb={.5}>
+                                    <Gap gap={.25}>
                                       {
                                         suggestedPrompts?.map(prompt =>
                                           <Item
@@ -315,7 +316,7 @@ User feedback (optional): ${feedback}
                                     </Gap>
                                   </Box>
                                 : loading
-                                  ? response
+                                  ? <MatrixLoading>{response}</MatrixLoading>
                                   : null
                             }
   
@@ -323,8 +324,7 @@ User feedback (optional): ${feedback}
                                 <Box pb={.25} width='100%'>
                                 {
                               !loading &&
-                              <Box width='100%'>
-                                <Gap disableWrap>
+                                <Box width='100%'>
                                   <TextInput
                                     value={feedback}
                                     canClear={feedback !== ''}
@@ -359,9 +359,7 @@ User feedback (optional): ${feedback}
   
                                     </MatrixLoading>
                                   </Box>
-  
-                                </Gap>
-                              </Box>
+                                </Box>
                             }
   
                           </Box>

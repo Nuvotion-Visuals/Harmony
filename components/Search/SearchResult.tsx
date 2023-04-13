@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import * as Types from './types';
-import { Box, Button, Dropdown, Item, LoadingSpinner } from '@avsync.live/formation'
+import { Box, Button, Dropdown, Gap, Item, LoadingSpinner } from '@avsync.live/formation'
 import { insertContentByUrl } from 'client/connectivity/fetch';
 import { useLexi_query, useLexi_setQuery } from 'redux-tk/lexi/hook';
 import styled from 'styled-components';
 // @ts-ignore
 import { convert } from 'html-to-text'
+import { useRouter } from 'next/router';
 
 export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
+  const router = useRouter()
+
   const set_query = useLexi_setQuery()
   const query = useLexi_query()
   const [hasClicked, set_hasClicked] = useState(false)
@@ -20,12 +23,12 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
 
   return (
     <S.SearchResult
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation()
         if (!disabled) {
           set_disabled(true)
           insertContentByUrl(result.url, content => {
-            set_query(`${query}\n${content}`)
-            set_disabled(false)
+            router.push(`${router.asPath}?url=${result.url}`)
           })
           set_hasClicked(true)
         }
@@ -45,12 +48,12 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
               {
                 disabled && <LoadingSpinner small />
               }
-               <Button
+              <Gap disableWrap>
+              <Button
                   icon='plus'
                   iconPrefix='fas'
                   minimalIcon
                   minimal
-                  square
                   onClick={(e) => {
                     e.stopPropagation()
                     if (!disabled) {
@@ -61,6 +64,18 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
                       })
                       set_hasClicked(true)
                     }
+                  }}
+                />
+                <Button
+                  icon='eye'
+                  iconPrefix='fas'
+                  minimal
+                  minimalIcon
+             
+                  square
+                  onClick={(e) => {
+                    router.push(`${router.asPath}?url=${result.url}`)
+                    e.stopPropagation()
                   }}
                 />
                 <Button
@@ -75,6 +90,8 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
                     e.stopPropagation()
                   }}
                 />
+              </Gap>
+              
               </Box>
               </div>
            }

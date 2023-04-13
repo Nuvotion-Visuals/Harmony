@@ -240,52 +240,74 @@ export const Thread = React.memo(({
               e.preventDefault()
               e.stopPropagation()
             }}>
-            <Dropdown
-              icon='ellipsis-h'
-              iconPrefix='fas'
-              minimal
-              items={[
-                {
-                  icon: 'reply',
-                  iconPrefix: 'fas',
-                  name: 'Reply',
-                  onClick: () => {
-                    setActiveThreadGuid(guid)
-                    scrollToElementById(`bottom_${guid}`, {
-                      behavior: 'smooth',
-                      block: 'end',
-                      inline: 'nearest'
-                    })
-                  }
-                },
-                {
-                  icon: 'bolt-lightning',
-                  iconPrefix: 'fas',
-                  name: 'Generate title',
-                  onClick: () => {
-                    generateTitle(messageContent)
-                  }
-                },
-                {
-                  icon: 'edit',
-                  iconPrefix: 'fas',
-                  name: 'Edit',
-                  onClick: () => set_edit(!edit)
-                },
-                {
-                  icon: 'trash-alt',
-                  iconPrefix: 'fas',
-                  name: 'Delete',
-                  onClick: (e) => {
-                    removeThreadFromChannel({ threadGuid: guid, channelGuid})
-                    removeThread(guid)
-                    if (activeThreadGuid === guid) {
-                      setActiveThreadGuid(null)
+              <Box wrap maxWidth={2} ml={.25} mr={.25}>
+                <Box mb={.25} >
+                  <Button
+                    icon='reply'
+                    iconPrefix='fas'
+                    minimal
+                    minimalIcon
+                    onClick={() => {
+                      setActiveThreadGuid(guid)
+                      scrollToElementById(`bottom_${guid}`, {
+                        behavior: 'smooth',
+                        block: 'end',
+                        inline: 'nearest'
+                      })
+                    }}
+                  />
+                </Box>
+              
+                <Dropdown
+                  icon='ellipsis-h'
+                  iconPrefix='fas'
+                  minimal
+                  minimalIcon
+
+                  items={[
+                    {
+                      icon: 'reply',
+                      iconPrefix: 'fas',
+                      name: 'Reply',
+                      onClick: () => {
+                        setActiveThreadGuid(guid)
+                        scrollToElementById(`bottom_${guid}`, {
+                          behavior: 'smooth',
+                          block: 'end',
+                          inline: 'nearest'
+                        })
+                      }
+                    },
+                    {
+                      icon: 'bolt-lightning',
+                      iconPrefix: 'fas',
+                      name: 'Generate title',
+                      onClick: () => {
+                        generateTitle(messageContent)
+                      }
+                    },
+                    {
+                      icon: 'edit',
+                      iconPrefix: 'fas',
+                      name: 'Edit',
+                      onClick: () => set_edit(!edit)
+                    },
+                    {
+                      icon: 'trash-alt',
+                      iconPrefix: 'fas',
+                      name: 'Delete',
+                      onClick: (e) => {
+                        removeThreadFromChannel({ threadGuid: guid, channelGuid})
+                        removeThread(guid)
+                        if (activeThreadGuid === guid) {
+                          setActiveThreadGuid(null)
+                        }
+                      }
                     }
-                  }
-                }
-              ]}
-            />
+                  ]}
+                />
+              </Box>
+           
             </div>
           </Item>
     }
@@ -310,12 +332,14 @@ export const Thread = React.memo(({
     
     {
       expanded &&
-        <Box width={'100%'} px={.75}  mt={.25} wrap>
+        <Box width={'100%'}  mt={.25} wrap>
           <Gap>
+
 
           <ThreadSuggestions guid={guid} onSend={(message) => sendMessageToWebsocket(message)} />
             {
               activeThreadGuid !== guid &&
+              <Box width='100%' px={.75} my={.25}>
                 <Button
                   expand
                   icon='reply'
@@ -333,6 +357,8 @@ export const Thread = React.memo(({
                     setActiveThreadGuid(guid)
                   }}  
                 />
+              </Box>
+                
             }
         </Gap>
       </Box>

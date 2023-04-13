@@ -19,7 +19,7 @@
     "unused-ts": "ts-unused-exports ./tsconfig.json > unused-ts-exports-report.txt"
   },
   "dependencies": {
-    "@avsync.live/formation": "^0.9.146",
+    "@avsync.live/formation": "^0.9.147",
     "@extractus/article-extractor": "^7.2.8-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",

@@ -26,7 +26,7 @@ const speakSentences = (callback: () => void) => {
     const audioElement = audioElements[index];
     const sentence = audioSentences[index];
     document.body.appendChild(audioElement);
-    audioElement.playbackRate = 1.25;
+    audioElement.playbackRate = 1.15;
     audioElement.play();
 
     store.dispatch({
@@ -50,6 +50,8 @@ export const speak = async (text: string, callback: (error: any) => void) => {
 
   text = text.replace(/```[\s\S]*?```/g, "");
   text = text.replace(/`/g, '');
+  text = text.replace(/#\w+/g, '')
+  text = text.replace(/\[[^\]]*\]/g, '')
 
   if (text === '') {
     return;

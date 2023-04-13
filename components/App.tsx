@@ -22,6 +22,7 @@ import { Space } from './Space'
 import Chatbot from './Chatbot'
 import { ActiveSpaceMap } from './ActiveSpaceMap'
 import { SearchSuggestions } from './SearchSuggestions'
+import { Reader } from './Reader'
 
 interface Props {
   children: React.ReactNode
@@ -82,7 +83,11 @@ const App = ({ children }: Props) => {
     switch(router.route) {
       case('/spaces/[spaceGuid]/groups/[groupGuid]/channels/[channelGuid]'):
         return <>
-          <Channel />
+          {
+            router.query.url
+              ? <Reader />
+              : <Channel />
+          }
         </>
       case '/spaces/[spaceGuid]':
         return <>
@@ -96,7 +101,7 @@ const App = ({ children }: Props) => {
       {/* <Chatbot /> */}
       <Search />
 
-      <ActiveSpaceMap />
+      {/* <ActiveSpaceMap /> */}
     </S.ThirdPage>
   }
 

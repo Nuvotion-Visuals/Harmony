@@ -81,7 +81,7 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
 
   return (<S.ThreadSuggestions>
     <Box width='100%'>
-      <Gap>
+      <Gap gap={.25}>
         {
           suggestedPrompts.length > 0 
             ? suggestedPrompts?.map(prompt =>
@@ -106,9 +106,6 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
             />
           : 
             <Box width={'100%'}>
-              <Gap disableWrap>
-           
-
               <TextInput
                 value={feedback}
                 onChange={val => set_feedback(val)}
@@ -148,12 +145,7 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
                   />
                 </MatrixLoading>
                 </Box>
-            
-            
               </Box>
-             
-              </Gap>
-           
             </Box>
          
         }

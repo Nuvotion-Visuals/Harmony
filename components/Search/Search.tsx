@@ -1,4 +1,4 @@
-import { Box, Button, Gap, LineBreak, LoadingSpinner, Placeholders, Spacer, TextInput } from "@avsync.live/formation";
+import { Box, Button, Gap, LineBreak, LoadingSpinner, Placeholders, Spacer, Tabs, Tags, TextInput } from "@avsync.live/formation";
 import React, { useState, useEffect } from "react";
 
 import * as Types from './types'
@@ -162,17 +162,17 @@ export const Search = ({ hero } : Props) => {
             icon="video"
             iconPrefix="fas"
           />
-          <Button 
+          {/* <Button 
             text='News' 
             secondary
             minimal
             icon="newspaper"
             iconPrefix="fas"
-          />
+          /> */}
           <Spacer />
       </Box>
       
-      <Box py={.5} width='calc(100% - .5rem)'>
+      <Box py={.5} width='100%'>
         <SearchSuggestions 
           onSend={(suggestedQuery) => {
             fetchData(suggestedQuery)

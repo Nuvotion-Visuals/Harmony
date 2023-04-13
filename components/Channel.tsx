@@ -91,6 +91,7 @@ export const Channel = React.memo(({ }: Props) => {
           icon='ellipsis-h'
           iconPrefix='fas'
           minimal
+          minimalIcon
           items={[
             {
               icon: 'edit',

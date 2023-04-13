@@ -64,7 +64,7 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
 
   return (<S.ThreadSuggestions>
     <Box width='100%'>
-      <Gap>
+      <Gap gap={.25}>
         {
           suggestedPrompts?.length > 0 
             ? suggestedPrompts?.map(prompt =>
@@ -89,7 +89,6 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
             />
           : 
             <Box width={'100%'}>
-              <Gap disableWrap>
            
 
               <TextInput
@@ -110,7 +109,7 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
                     text='Auto'
                     iconPrefix='fas' 
                     onClick={() => {
-                      // set_suggestedPrompts([])
+                      set_suggestedPrompts([])
                       generateSearchQueries(`
                         Channel name: ${activeChannel?.name}
                         Channel description: ${activeChannel?.description} 
@@ -133,7 +132,6 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
             
               </Box>
              
-              </Gap>
            
             </Box>
          

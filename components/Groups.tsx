@@ -113,7 +113,7 @@ export const Groups = React.memo(({ }: Props) => {
             labelColor: ('none' as LabelColor),
             subtitle: channelsByGuid[channelGuid]?.name,
             href: `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`,
-            active: router.asPath === `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`,
+            active: router.asPath.startsWith(`/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`),
             onClick: () => {
               if (!isDesktop) {
                 incrementActiveSwipeIndex()
@@ -181,6 +181,7 @@ export const Groups = React.memo(({ }: Props) => {
                   icon='ellipsis-h'
                   iconPrefix='fas'
                   minimal
+                  minimalIcon
                   circle
                   items={[
                     {
@@ -226,6 +227,7 @@ export const Groups = React.memo(({ }: Props) => {
                           iconPrefix='fas'
                           key={`dropdown_${listItemIndex1}`}
                           minimal
+                          minimalIcon
                           items={[
                             {
                               text: 'Edit',

@@ -73,11 +73,10 @@ export const ItemMessage = React.memo((props: Props) => {
 
   const [isSpeaking, set_isSpeaking] = useState(false)
 
-  const currentlySpeaking = useLexi_currentlySpeaking()
 
-  useEffect(() => {
-    set_localValue(highlightText(markdownToHTML(message), (currentlySpeaking || '')))
-  }, [message, currentlySpeaking])
+  // useEffect(() => {
+  //   set_localValue(highlightText(markdownToHTML(message), (currentlySpeaking || '')))
+  // }, [message, currentlySpeaking])
 
   const Message = React.memo(({ text } : { text: string }) => (
     <S.ItemMessage>

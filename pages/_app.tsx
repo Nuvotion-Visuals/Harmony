@@ -62,7 +62,7 @@ library.add(
 
 import { useRouter } from 'next/router'
 import NextLink from "next/link"
-import { Linker } from '@avsync.live/formation'
+import { Linker, Ripple } from '@avsync.live/formation'
 
 import dynamic from 'next/dynamic'
 import MyLink from 'components/Link'
@@ -86,7 +86,6 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
     switch(router.route) {
       case '/login':
       case '/search':
-        return <Component {...pageProps} />
       case '/':
       case '/spaces':
         return <SpacesDashboard />

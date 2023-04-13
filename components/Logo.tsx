@@ -23,14 +23,14 @@ const S = {
 LogoContainer: styled.div<{
   large: boolean
 }>`
-    width: 38px;
-    min-width: 38px;
-    max-width: 38px;
+    width: 48px;
+    min-width: 48px;
+    max-width: 48px;
     height: var(--F_Header_Height);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 38px;
+    height: 48px;
     position: relative;;
     * {
       border-radius: 100%;
