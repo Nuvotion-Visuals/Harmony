@@ -14,7 +14,7 @@ interface Props {}
 
 export const Reader: React.FC<Props> = () => {
   const router = useRouter();
-  const { url } = router.query;
+  const { url, spaceGuid, groupGuid, channelGuid } = router.query;
 
   const [content, set_content] = useState<string>()
 
@@ -34,14 +34,14 @@ export const Reader: React.FC<Props> = () => {
     <S.reader>
       <S.Header>
         <Item
-         
+         minimalIcon
           content={<Button
             icon='chevron-left'
             iconPrefix='fas'
             minimal
             text='Back'
             onClick={() => {
-              router.back();
+              router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}`);
             }}
           />}
           children={
@@ -62,7 +62,7 @@ export const Reader: React.FC<Props> = () => {
                 minimal
                 onClick={() => {
                   setQuery(content || '')
-                  router.back();
+                  router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}`);
                 }}
               />
             </>

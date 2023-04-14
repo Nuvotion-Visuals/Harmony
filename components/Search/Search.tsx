@@ -38,11 +38,9 @@ export const Search = ({ hero } : Props) => {
     fetchData(query);
   }
 
-
   const [suggestions, set_suggestions] = useState<any>([])
 
   async function fetchSuggestions(query: string) {
-    set_loading(true)
     try {
       const response = await fetch(`/tools/suggest?q=${query}`);
       const data = await response.json();
@@ -50,9 +48,7 @@ export const Search = ({ hero } : Props) => {
     } catch (error) {
       console.error(error);
     }
-    set_loading(false)
   }
-
 
   useEffect(() => {
     if (query) {
@@ -62,12 +58,13 @@ export const Search = ({ hero } : Props) => {
     }
     else {
       set_suggestions([])
+      setSearchResults(null)
     }
   }, [query])
 
   const Content = () => (
     <>
-    <LineBreak />
+      <LineBreak />
         {
           searchResults?.data?.results?.knowledge_panel?.title && (
             <KnowledgePanel knowledge_panel={searchResults.data.results.knowledge_panel} />
@@ -167,25 +164,30 @@ export const Search = ({ hero } : Props) => {
         ]}
       />
       </Box>
-      <Box width='100%'>
-      <Box wrap width='100%'>
-        { 
-          suggestions.map((suggestion: any) => 
-            <Item 
-              subtitle={suggestion.suggestion} 
-              onClick={() => {
-                set_query(suggestion.suggestion)
-                handleSearch()
-                set_suggestions([])
-              }}  
-            />
-          )
-        }
-      </Box>
-      </Box>
+      
       
       
       </Box>
+
+      {
+        !!suggestions?.length && <Box wrap width='100%' pb={.5}>
+          <Gap gap={.25}>
+            { 
+              suggestions.map((suggestion: any) => 
+                <Item 
+                  icon='search'
+                  subtitle={suggestion.suggestion} 
+                  onClick={() => {
+                    set_query(suggestion.suggestion)
+                    handleSearch()
+                    set_suggestions([])
+                  }}  
+                />
+              )
+            }
+          </Gap>
+      </Box>
+      }
       
       <Box px={.5} width='calc(100% - 1rem)'>
           <Button 

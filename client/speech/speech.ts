@@ -59,11 +59,35 @@ export const speak = async (text: string, callback: (error: any) => void) => {
     return;
   }
 
-  const normalizedText = html2plaintext(text)
+  const normalizedText = html2plaintext(text);
   const splitSentences = split(normalizedText);
   const sentences = splitSentences.filter(item => item.type === 'Sentence').map(item => item.raw);
+  const maxLengthSentences = sentences.flatMap(sentence => {
+    if (sentence.length > 320) {
+      const words = sentence.split(' ');
+      const splitSentences = [];
+      let currentSentence = '';
+  
+      words.forEach((word : string) => {
+        if (currentSentence.length + word.length + 1 <= 320) {
+          currentSentence += (currentSentence ? ' ' : '') + word;
+        } else {
+          splitSentences.push(currentSentence);
+          currentSentence = word;
+        }
+      });
+  
+      if (currentSentence) {
+        splitSentences.push(currentSentence);
+      }
+  
+      return splitSentences;
+    } else {
+      return sentence;
+    }
+  });
 
-  for (const sentence of sentences) {
+  for (const sentence of maxLengthSentences) {
     const audioElement = createAudioElement(sentence);
     audioElements.push(audioElement);
     audioSentences.push(sentence);

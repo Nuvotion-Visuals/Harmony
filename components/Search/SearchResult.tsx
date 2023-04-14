@@ -10,6 +10,11 @@ import { useRouter } from 'next/router';
 
 export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
   const router = useRouter()
+  const {
+    spaceGuid,
+    groupGuid,
+    channelGuid
+  } = router.query
 
   const set_query = useLanguage_setQuery()
   const query = useLanguage_query()
@@ -28,7 +33,7 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
         if (!disabled) {
           set_disabled(true)
           insertContentByUrl(result.url, content => {
-            router.push(`${router.asPath}?url=${result.url}`)
+            router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}?url=${result.url}`)
           })
           set_hasClicked(true)
         }

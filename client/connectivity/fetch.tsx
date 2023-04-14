@@ -24,23 +24,23 @@ export const getArticleContent = (
   callback: (content: string) => void,
   errorCallback: (error: Error) => void
 ): void => {
-  fetch('/tools/parse-article', {
-    method: 'POST',
+  fetch("/tools/parse-article", {
+    method: "POST",
     body: JSON.stringify({ contentUrl }),
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   })
     .then((response) => {
       if (response.status === 200) {
         return response.json();
       } else {
-        throw new Error('Could not get article content.');
+        throw new Error("Could not get article content.");
       }
     })
     .then((data) => {
       const content = data.data.article;
-      const articleContent: ArticleContent = {
+      const articleContent = {
         url: content.url,
         title: content.title,
         description: content.description,
@@ -50,33 +50,54 @@ export const getArticleContent = (
         links: content.links,
         image: content.image,
         content: content.content,
+        ttr: content.ttr
       };
 
-      const builder = (fieldName: string, value: string) => {
-        return value ? `<p><strong>${fieldName}:</strong> ${value}</p>` : '';
+      const builder = (fieldName: string, value: string | null) => {
+        if (!value) return "";
+        if (fieldName === "Image") {
+          return value;
+        } 
+        else {
+          return `<p><strong>${fieldName}:</strong> ${value}.</p>`;
+        }
       };
 
+      const formatDate = (dateString: string | null) => {
+        if (!dateString) {
+          return null;
+        }
+        try {
+          const date = new Date(dateString);
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        } catch (error) {
+          console.error("Invalid date format:", dateString);
+          return null;
+        }
+      };
 
-      const linkHtml = articleContent.links
-        .map((link) => `<a href="${link}">${link}</a>`)
-        .join(', ');
+      const isImageSrcUnique = (src: string, content: string) => {
+        const regex = new RegExp(`src\s*=\s*"${src}"`, "i");
+        return !regex.test(content);
+      };
 
-      const metadataHtml = `
-        ${builder('Author', articleContent.author)}
-        ${builder('Source', `<a href="${articleContent.url}">${articleContent.source}</a>`)}
-        ${builder('Published', articleContent.published ? new Date(articleContent.published).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }) : null)}
-        ${builder('Links', linkHtml)}
-        ${builder('Image', `<img src="${articleContent.image}" alt="${articleContent.title}" />`)}
-      `;
+      const uniqueImageHtml =
+        isImageSrcUnique(articleContent.image, articleContent.content)
+          ? builder("Image", `<img src="${articleContent.image}" alt="${articleContent.title}" />`)
+          : "";
 
       const articleHtml = `
         <div>
           <h1>${articleContent.title}</h1>
-          ${metadataHtml}
+          ${builder("Author", articleContent.author)}
+          ${builder("Source", articleContent.source ? `<a href="${articleContent.url}">${articleContent.source}</a>` : null)}
+          ${builder("Published", formatDate(articleContent.published))}
+          ${builder("Length", `${(articleContent.ttr / 60).toFixed()} min read`)}
+          ${uniqueImageHtml}
           ${articleContent.content}
         </div>
       `;
@@ -88,7 +109,6 @@ export const getArticleContent = (
       errorCallback(error);
     });
 };
-
 
   /**
    * Calls the /tools/parse-youtube-video endpoint to get the transcript of a YouTube video
