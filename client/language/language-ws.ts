@@ -275,6 +275,8 @@ export const language_generateSearchQueries = (
         "top resources for *"
       ]
     }
+
+    * is the topic of the search
     
     Prompt: ${prompt} Reply in JSON, in a CODE BLOCK!`,
   };

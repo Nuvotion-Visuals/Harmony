@@ -163,7 +163,9 @@ export const Thread = React.memo(({
     }
   }, [messagesByGuid[messageGuids[1]]?.complete])
 
-  return (<S.Thread active={guid === activeThreadGuid}>
+  const active = guid === activeThreadGuid
+
+  return (<S.Thread active={active}>
     <Box width='100%'>
     
     {
@@ -241,22 +243,25 @@ export const Thread = React.memo(({
               e.stopPropagation()
             }}>
               <Box wrap maxWidth={2} ml={.25} mr={.25}>
-                <Box mb={.25} >
-                  <Button
-                    icon='reply'
-                    iconPrefix='fas'
-                    minimal
-                    minimalIcon
-                    onClick={() => {
-                      setActiveThreadGuid(guid)
-                      scrollToElementById(`bottom_${guid}`, {
-                        behavior: 'smooth',
-                        block: 'end',
-                        inline: 'nearest'
-                      })
-                    }}
-                  />
-                </Box>
+                {
+                  !active &&
+                    <Box mb={.25} >
+                      <Button
+                        icon='reply'
+                        iconPrefix='fas'
+                        minimal
+                        minimalIcon
+                        onClick={() => {
+                          setActiveThreadGuid(guid)
+                          scrollToElementById(`bottom_${guid}`, {
+                            behavior: 'smooth',
+                            block: 'end',
+                            inline: 'nearest'
+                          })
+                        }}
+                      />
+                    </Box>
+                }
               
                 <Dropdown
                   icon='ellipsis-h'

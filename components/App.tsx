@@ -5,7 +5,6 @@ import { useLayout_activeSwipeIndex, useLayout_setActiveSwipeIndex } from 'redux
 import styled from 'styled-components'
 
 import { SpaceSidebar } from './SpaceSidebar'
-import { SearchBar } from './SearchBar'
 import { Search } from './Search/Search'
 import { AddSpace } from './AddSpace'
 import { EditSpace } from './EditSpace'
@@ -16,12 +15,9 @@ import { fetchInitialData } from 'redux-tk/spaces/slice'
 import type { Dispatch } from '@reduxjs/toolkit'
 import { EditChannel } from './EditChannel'
 import { Channel } from './Channel'
-import { Logo } from './Logo'
-import Link from './Link'
 import { Space } from './Space'
 import Chatbot from './Chatbot'
 import { ActiveSpaceMap } from './ActiveSpaceMap'
-import { SearchSuggestions } from './SearchSuggestions'
 import { Reader } from './Reader'
 
 interface Props {
@@ -118,17 +114,6 @@ const App = ({ children }: Props) => {
   }, [groupGuid])
 
   return (<S.App>
-    {/* <S.NavHeader>
-      <Link href='/'>
-        <Box width='78px'>
-          <Logo />
-        </Box>
-      </Link>
-
-      <S.Centered isDesktop={isDesktop}>
-        <SearchBar />
-      </S.Centered>
-    </S.NavHeader> */}
     <NavSpaces
       dropdownOptions={[]}
       disableTablet

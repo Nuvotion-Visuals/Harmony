@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Item } from '@avsync.live/formation';
 import { use100vh } from 'react-div-100vh';
-import { useLexi_setQuery } from 'redux-tk/lexi/hook';
+import { useLanguage_setQuery } from 'redux-tk/language/hook';
 import { speak, speakStream } from 'client/speech/speech';
 // @ts-ignore
 import { convert } from 'html-to-text'
@@ -18,7 +18,7 @@ export const Reader: React.FC<Props> = () => {
 
   const [content, set_content] = useState<string>()
 
-  const setQuery = useLexi_setQuery()
+  const setQuery = useLanguage_setQuery()
 
   const true100vh = use100vh()
 

@@ -10,7 +10,7 @@ import { insertContentByUrl } from 'client/connectivity/fetch'
 import { getWebsocketClient } from 'client/connectivity/websocket-client'
 
 import { Message as MessageProps, Thread as ThreadProps } from 'redux-tk/spaces/types'
-import { useLexi_query, useLexi_setQuery } from 'redux-tk/lexi/hook'
+import { useLanguage_query, useLanguage_setQuery } from 'redux-tk/language/hook'
 import { scrollToElementById } from 'client/utils'
 
 const systemMessage = `
@@ -83,8 +83,8 @@ export const ChatBox = ({ }: Props) => {
   const messagesByGuid = useSpaces_messagesByGuid()
   const addMessageToThread = useSpaces_addMessageToThread()
 
-  const query = useLexi_query()
-  const set_query = useLexi_setQuery()
+  const query = useLanguage_query()
+  const set_query = useLanguage_setQuery()
 
   const sendMessageToThread = useCallback((message: string) => {
     const websocketClient = getWebsocketClient()

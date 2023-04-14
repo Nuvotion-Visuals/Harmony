@@ -8,7 +8,7 @@ import { Indicator } from './Indicator'
 import { Threads } from './Threads'
 
 import { ChatBox } from './ChatBox'
-import { useLexi_query } from 'redux-tk/lexi/hook'
+import { useLanguage_query } from 'redux-tk/language/hook'
 import { scrollToElementById } from 'client/utils'
 
 interface Props {
@@ -29,7 +29,7 @@ export const Channel = React.memo(({ }: Props) => {
   const activeThreadGuid = useSpaces_activeThreadGuid()
   const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
 
-  const query = useLexi_query()
+  const query = useLanguage_query()
 
   const handleClickBottom = () => {
     scrollToElementById(`bottom_channel`, {
@@ -63,10 +63,7 @@ export const Channel = React.memo(({ }: Props) => {
   return (<S.Channel true100vh={true100vh || 0}>
     <Box height='var(--F_Header_Height)' width={'100%'}>
 
-      <Item
-        icon='hashtag'
-        minimalIcon
-      >
+      <Item>
         <Item
           subtitle={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
           onClick={() => {
@@ -79,6 +76,7 @@ export const Channel = React.memo(({ }: Props) => {
         <Button
           icon='chevron-down'
           iconPrefix='fas'
+          minimalIcon
           minimal
           onClick={() => {
             handleClickBottom()

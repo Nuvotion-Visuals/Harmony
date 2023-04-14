@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { useSpaces_removeMessage, useSpaces_removeMessageFromThread, useSpaces_updateMessage } from 'redux-tk/spaces/hook'
 import { speak } from 'client/speech/speech'
-import { useLexi_currentlySpeaking } from 'redux-tk/lexi/hook'
+import { useLanguage_currentlySpeaking } from 'redux-tk/language/hook'
 import { useMemo, useCallback } from 'react';
 
 const highlightText = (html: string, currentlySpeaking: string | null): string => {

@@ -109,7 +109,7 @@ export const Groups = React.memo(({ }: Props) => {
       if (activeSpace?.groupGuids) {
         set_value(prevValue => activeSpace?.groupGuids.map((groupGuid, i) => {
           const groupsList = groupsByGuid[groupGuid].channelGuids.map(channelGuid => ({
-            icon: 'hashtag' as IconName,
+            // icon: 'hashtag' as IconName,
             labelColor: ('none' as LabelColor),
             subtitle: channelsByGuid[channelGuid]?.name,
             href: `/spaces/${activeSpaceGuid}/groups/${groupGuid}/channels/${channelGuid}`,
@@ -168,12 +168,12 @@ export const Groups = React.memo(({ }: Props) => {
           value: {
             item: {
               ...expandableList.value.item,
-              icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
+              // icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
               iconPrefix: 'fas',
-              minimalIcon: true,
+              // minimalIcon: true,
               children: <div onClick={e => e.stopPropagation()}>
                 <Spacer />
-                <Box>
+                <Box height={2}>
                 <Indicator
                   count={spaceGroupGuids?.length}
                 />  
@@ -214,7 +214,7 @@ export const Groups = React.memo(({ }: Props) => {
                       e.stopPropagation()
                       e.preventDefault()
                     }}>
-                      <Box>
+                      <Box height={1.65}>
                         {
                           spaceChannelGuids &&
                             <Indicator

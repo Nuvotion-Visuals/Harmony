@@ -231,7 +231,7 @@ User feedback (optional): ${feedback}
                           </Box>
                         }
                                   
-                          <Item icon='hashtag' minimalIcon pageTitle={activeChannel?.name}>
+                          <Item  minimalIcon pageTitle={activeChannel?.name}>
                             <Indicator
                               count={activeChannel?.threadGuids?.length}
                             />

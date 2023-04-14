@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as Types from './types';
 import { Box, Button, Dropdown, Gap, Item, LoadingSpinner } from '@avsync.live/formation'
 import { insertContentByUrl } from 'client/connectivity/fetch';
-import { useLexi_query, useLexi_setQuery } from 'redux-tk/lexi/hook';
+import { useLanguage_query, useLanguage_setQuery } from 'redux-tk/language/hook';
 import styled from 'styled-components';
 // @ts-ignore
 import { convert } from 'html-to-text'
@@ -11,8 +11,8 @@ import { useRouter } from 'next/router';
 export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
   const router = useRouter()
 
-  const set_query = useLexi_setQuery()
-  const query = useLexi_query()
+  const set_query = useLanguage_setQuery()
+  const query = useLanguage_query()
   const [hasClicked, set_hasClicked] = useState(false)
   const [disabled, set_disabled] = useState(false)
 

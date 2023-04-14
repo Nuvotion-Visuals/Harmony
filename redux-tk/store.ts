@@ -3,14 +3,14 @@ import logger from 'redux-logger'
 import { batchedSubscribe } from 'redux-batched-subscribe'
 import { debounce } from 'lodash'
 import { slice as layoutSlice } from './layout/slice'
-import { slice as lexiSlice } from './lexi/slice'
+import { slice as languageSlice } from './language/slice'
 import { slice as spacesSlice } from './spaces/slice'
 
 const debounceNotify = debounce(notify => notify())
 
 const rootReducer = combineReducers({
   layout: layoutSlice.reducer,
-  lexi: lexiSlice.reducer,
+  language: languageSlice.reducer,
   spaces: spacesSlice.reducer
 })
 
