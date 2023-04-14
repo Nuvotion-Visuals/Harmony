@@ -1,5 +1,5 @@
-// @ts-ignore
-import { convert } from 'html-to-text'
+// @ts-nocheck
+import html2plaintext from 'html2plaintext'
 
 /**
  * Calls the /tools/parse-article endpoint to get the transcript of an article
@@ -77,7 +77,7 @@ export const getArticleContent = (
     if (youtubeDomains.includes(hostname)) {
       getYouTubeTranscript(url,
         (transcript) => {
-          callback(convert(transcript))
+          callback(html2plaintext(transcript))
         },
         () => {
           alert('Sorry, I could not get the video transcript.')

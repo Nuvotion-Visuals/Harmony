@@ -5,7 +5,7 @@ import { insertContentByUrl } from 'client/connectivity/fetch';
 import { useLanguage_query, useLanguage_setQuery } from 'redux-tk/language/hook';
 import styled from 'styled-components';
 // @ts-ignore
-import { convert } from 'html-to-text'
+import html2plaintext from 'html2plaintext'
 import { useRouter } from 'next/router';
 
 export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
@@ -59,7 +59,7 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
                     if (!disabled) {
                       set_disabled(true)
                       insertContentByUrl(result.url, content => {
-                        set_query(`${query}\n${convert(content).replace(/\[[^\]]*\]/g, '')}`)
+                        set_query(`${query}\n${html2plaintext(content).replace(/\[[^\]]*\]/g, '')}`)
                         set_disabled(false)
                       })
                       set_hasClicked(true)

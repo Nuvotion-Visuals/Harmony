@@ -8,7 +8,7 @@ import { use100vh } from 'react-div-100vh';
 import { useLanguage_setQuery } from 'redux-tk/language/hook';
 import { speak, speakStream } from 'client/speech/speech';
 // @ts-ignore
-import { convert } from 'html-to-text'
+import html2plaintext from 'html2plaintext'
 
 interface Props {}
 
@@ -52,7 +52,7 @@ export const Reader: React.FC<Props> = () => {
                 text='Speak'
                 minimal
                 onClick={() => {
-                  speak(convert(content), () => {})
+                  speak(html2plaintext(content), () => {})
                 }}
               />
               <Button

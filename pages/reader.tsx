@@ -23,31 +23,35 @@ const Reader: React.FC<Props> = () => {
 
   return (
     <S.reader>
- <Page>
-      <Item
-        icon='chevron-left'
-        iconPrefix='fas'
-        text='Back to search'
-        onClick={() => {
-          router.back();
-        }}
-        children={
-          <Button
-            icon='plus'
-            iconPrefix='fas'
-            text='Insert'
-            minimal
-            onClick={() => {
+      <Page>
+        <Item
+          icon='chevron-left'
+          iconPrefix='fas'
+          text='Back to search'
+          onClick={() => {
+            router.back();
+          }}
+          children={
+            <Button
+              icon='plus'
+              iconPrefix='fas'
+              text='Insert'
+              minimal
+              onClick={() => {
 
-            }}
+              }}
+            />
+          }
+        />
+        {
+          content &&
+          <RichTextEditor
+            value={content || ''}
+            readOnly
           />
         }
-      />
-      <RichTextEditor
-        value={content || ''}
-        readOnly
-      />
-    </Page>
+        
+      </Page>
     </S.reader>
    
   );

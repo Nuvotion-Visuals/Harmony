@@ -3,6 +3,8 @@ import { split } from 'sentence-splitter';
 
 let audioElements: HTMLAudioElement[] = [];
 let audioSentences: string[] = [];
+// @ts-ignore
+import html2plaintext from 'html2plaintext'
 
 function createAudioElement(text: string): HTMLAudioElement {
   const audioUrl = `/tts/tts?text=${encodeURIComponent(text)}`;
@@ -57,7 +59,7 @@ export const speak = async (text: string, callback: (error: any) => void) => {
     return;
   }
 
-  const normalizedText = text
+  const normalizedText = html2plaintext(text)
   const splitSentences = split(normalizedText);
   const sentences = splitSentences.filter(item => item.type === 'Sentence').map(item => item.raw);
 
@@ -69,10 +71,10 @@ export const speak = async (text: string, callback: (error: any) => void) => {
 
   speakSentences(() => {
     callback(null);
-    // store.dispatch({
-    //   type: 'lexi/set_currentlySpeaking',
-    //   payload: '',
-    // });
+    store.dispatch({
+      type: 'lexi/set_currentlySpeaking',
+      payload: '',
+    });
   });
 };
 
