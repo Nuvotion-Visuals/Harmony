@@ -1,4 +1,4 @@
-import { Box, Button, Gap, LineBreak, LoadingSpinner, Placeholders, Spacer, Tabs, Tags, TextInput } from "@avsync.live/formation";
+import { Box, Button, Gap, Item, LineBreak, LoadingSpinner, Placeholders, Spacer, Tabs, Tags, TextInput } from "@avsync.live/formation";
 import React, { useState, useEffect } from "react";
 
 import * as Types from './types'
@@ -37,6 +37,33 @@ export const Search = ({ hero } : Props) => {
   const handleSearch = () => {
     fetchData(query);
   }
+
+
+  const [suggestions, set_suggestions] = useState<any>([])
+
+  async function fetchSuggestions(query: string) {
+    set_loading(true)
+    try {
+      const response = await fetch(`/tools/suggest?q=${query}`);
+      const data = await response.json();
+      set_suggestions(data.data.suggestions);
+    } catch (error) {
+      console.error(error);
+    }
+    set_loading(false)
+  }
+
+
+  useEffect(() => {
+    if (query) {
+      (async () => {
+        await fetchSuggestions(query)
+      })()
+    }
+    else {
+      set_suggestions([])
+    }
+  }, [query])
 
   const Content = () => (
     <>
@@ -121,8 +148,8 @@ export const Search = ({ hero } : Props) => {
 
   return (
     <div>
-      <Box p={.5}>
-
+      <Box p={.5} wrap>
+      <Box width='100%'>
       <TextInput 
         value={query}
         onChange={val => set_query(val)}
@@ -139,6 +166,25 @@ export const Search = ({ hero } : Props) => {
           }
         ]}
       />
+      </Box>
+      <Box width='100%'>
+      <Box wrap width='100%'>
+        { 
+          suggestions.map((suggestion: any) => 
+            <Item 
+              subtitle={suggestion.suggestion} 
+              onClick={() => {
+                set_query(suggestion.suggestion)
+                handleSearch()
+                set_suggestions([])
+              }}  
+            />
+          )
+        }
+      </Box>
+      </Box>
+      
+      
       </Box>
       
       <Box px={.5} width='calc(100% - 1rem)'>

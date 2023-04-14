@@ -2181,6 +2181,11 @@ atomically@^2.0.0:
     stubborn-fs "^1.2.4"
     when-exit "^2.0.0"
 
+autocomplete@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/autocomplete/-/autocomplete-0.0.1.tgz#a2974c97aeb211b05cce655b0e910b3b32546c16"
+  integrity sha512-7xLPGkQPDYIxGWZA2uXblCWiaODiNHUET1JA/qTrMB8v4OfDPZeTXN1LLwMcfNl4L9cb4OwyzZvUGS1vqNrTrg==
+
 avvio@^8.2.0:
   version "8.2.1"
   resolved "https://registry.yarnpkg.com/avvio/-/avvio-8.2.1.tgz#b5a482729847abb84d5aadce06511c04a0a62f82"

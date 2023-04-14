@@ -70,5 +70,58 @@ router.get('/search', async (req: Request, res: Response) => {
   }
 });
 
+interface Suggestion {
+  suggestion: string;
+  relevance: number;
+  type: string;
+}
+
+export function getAllSuggestions(string: string): Promise<Suggestion[]> {
+  const searchURL = 'https://suggestqueries.google.com/complete/search?client=chrome&q=';
+
+  return fetch(searchURL + encodeURIComponent(string))
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((result) => {
+      const suggestions: Suggestion[] = result[1].map((suggestion: Suggestion, index: number) => {
+        return {
+          suggestion: suggestion,
+          relevance: result[4]['google:suggestrelevance'][index],
+          type: result[4]['google:suggesttype'][index],
+        };
+      });
+      return suggestions;
+    })
+    .catch((error) => {
+      throw new Error(`Network error: ${error.message}`);
+    });
+}
+
+export function getQuerySuggestions(string: string): Promise<Suggestion[]> {
+  return getAllSuggestions(string).then((suggestions) => {
+    return suggestions.filter((suggestion) => {
+      return suggestion.type == 'QUERY';
+    });
+  });
+}
+
+router.get('/suggest', async (req: Request, res: Response) => {
+  const query = req.query.q as string;
+  if (!query) {
+    return res.status(400).send({ status: 400, message: 'Missing query parameter' });
+  }
+
+  try {
+    const suggestions = await getQuerySuggestions(query);
+    res.send({ status: 200, data: { suggestions } });
+  } catch (error) {
+    console.log(`🟣 I experienced the following error: ${error}`);
+    res.status(500).send({ status: 500, message: 'internal error' });
+  }
+});
 
 export default router;
