@@ -25,7 +25,7 @@ export const Reader: React.FC<Props> = () => {
   useEffect(() => {
     if (url) {
       insertContentByUrl(url as string, (newContent) => {
-        set_content(newContent)
+        set_content(`${newContent}`)
       })
     }
   }, [url])
@@ -93,6 +93,7 @@ export const Reader: React.FC<Props> = () => {
 
 const S = {
   reader: styled.div`
+    background: var(--F_Background_Alternating);
   `,
   Header: styled.div`
     width: 100%;

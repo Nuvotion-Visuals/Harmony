@@ -13,10 +13,10 @@
     react "^16.13.1"
     react-dom "^16.13.1"
 
-"@avsync.live/formation@^0.9.149":
-  version "0.9.149"
-  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.149.tgz#e5372e574cd8ce00c060ee10bd57f68f4d49d565"
-  integrity sha512-G1fui0N+e+nLaDYt+8K+MMBtQoPoNo+PkdKhngT68jhivuUdF/wlr4HOV5MSeoGqB6nRfYvC8l4TLDkN5y5aeg==
+"@avsync.live/formation@^0.9.150":
+  version "0.9.150"
+  resolved "https://registry.yarnpkg.com/@avsync.live/formation/-/formation-0.9.150.tgz#7846e0a087234b44bb5c8925235398026329fdf2"
+  integrity sha512-sC/vuzrdH5gJ6dhu1rtfaR/mdPjUf34VvMiYijsMENWILkaRFiUagnkFWfhIsMMSWokgT0zUa0siZUdTZOe6Nw==
   dependencies:
     "@annotationhub/react-golden-layout" "^2.3.2"
     "@fortawesome/fontawesome-common-types" "^6.1.2"
@@ -351,7 +351,7 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "6.2.1"
 
-"@fortawesome/free-regular-svg-icons@^6.1.2":
+"@fortawesome/free-regular-svg-icons@^6.1.2", "@fortawesome/free-regular-svg-icons@^6.4.0":
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/@fortawesome/free-regular-svg-icons/-/free-regular-svg-icons-6.4.0.tgz#cacc53bd8d832d46feead412d9ea9ce80a55e13a"
   integrity sha512-ZfycI7D0KWPZtf7wtMFnQxs8qjBXArRzczABuMQqecA/nXohquJ5J/RCR77PmY5qGWkxAZDxpnUFVXKwtY/jPw==

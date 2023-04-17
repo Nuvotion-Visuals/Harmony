@@ -62,17 +62,16 @@ export const Channel = React.memo(({ }: Props) => {
 
   return (<S.Channel true100vh={true100vh || 0}>
     <Box height='var(--F_Header_Height)' width={'100%'}>
-
       <Item>
+        
         <Item
-          subtitle={`${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
+          subtitle={activeSpace?.name && `${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
           onClick={() => {
             if (!isDesktop) {
               decrementActiveSwipeIndex()
             }
           }}
         />
-        
         <Button
           icon='chevron-down'
           iconPrefix='fas'

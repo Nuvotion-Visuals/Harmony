@@ -39,6 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getQuerySuggestions = exports.getAllSuggestions = void 0;
 var express_1 = __importDefault(require("express"));
 var article_extractor_1 = require("@extractus/article-extractor");
 // @ts-ignore
@@ -133,6 +134,64 @@ router.get('/search', function (req, res) { return __awaiter(void 0, void 0, voi
             case 3:
                 error_3 = _a.sent();
                 console.log('🟣', "I experienced the following error: ".concat(error_3));
+                res.status(500).send({ status: 500, message: 'internal error' });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+function getAllSuggestions(string) {
+    var searchURL = 'https://suggestqueries.google.com/complete/search?client=chrome&q=';
+    return fetch(searchURL + encodeURIComponent(string))
+        .then(function (response) {
+        if (!response.ok) {
+            throw new Error("Network response was not ok: ".concat(response.status));
+        }
+        return response.json();
+    })
+        .then(function (result) {
+        var suggestions = result[1].map(function (suggestion, index) {
+            return {
+                suggestion: suggestion,
+                relevance: result[4]['google:suggestrelevance'][index],
+                type: result[4]['google:suggesttype'][index],
+            };
+        });
+        return suggestions;
+    })
+        .catch(function (error) {
+        throw new Error("Network error: ".concat(error.message));
+    });
+}
+exports.getAllSuggestions = getAllSuggestions;
+function getQuerySuggestions(string) {
+    return getAllSuggestions(string).then(function (suggestions) {
+        return suggestions.filter(function (suggestion) {
+            return suggestion.type == 'QUERY';
+        });
+    });
+}
+exports.getQuerySuggestions = getQuerySuggestions;
+router.get('/suggest', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var query, suggestions, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                query = req.query.q;
+                if (!query) {
+                    return [2 /*return*/, res.status(400).send({ status: 400, message: 'Missing query parameter' })];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, getQuerySuggestions(query)];
+            case 2:
+                suggestions = _a.sent();
+                res.send({ status: 200, data: { suggestions: suggestions } });
+                return [3 /*break*/, 4];
+            case 3:
+                error_4 = _a.sent();
+                console.log("\uD83D\uDFE3 I experienced the following error: ".concat(error_4));
                 res.status(500).send({ status: 500, message: 'internal error' });
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
