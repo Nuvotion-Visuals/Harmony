@@ -145,7 +145,7 @@ export const getArticleContent = (
       });
   };
   
-  export const insertContentByUrl = (url: string, callback: (data: string) => void) => {
+  export const insertContentByUrl = (url: string, callback: (data: string) => void, onError: (error: string) => void) => {
     const youtubeDomains = ['m.youtube.com', 'www.youtube.com', 'youtube.com', 'youtu.be']
     const { hostname } = new URL(url);
     if (youtubeDomains.includes(hostname)) {
@@ -154,7 +154,7 @@ export const getArticleContent = (
           callback(html2plaintext(transcript))
         },
         () => {
-          alert('Sorry, I could not get the video transcript.')
+          onError('Sorry, I could not get the video transcript')
         }
       )
     }
@@ -164,7 +164,7 @@ export const getArticleContent = (
           callback(content)
         },
         () => {
-          alert('Sorry, I could not get the page content.')
+          onError('Sorry, I could not get the page content.')
         }
       )
     }

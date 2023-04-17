@@ -337,7 +337,13 @@ export const ChatBox = ({ }: Props) => {
                               icon: 'arrow-right',
                               iconPrefix: 'fas',
                               minimal: true,
-                              onClick: () => insertContentByUrl(urlToScrape, content => set_query(`${query}\n${content}`))
+                              onClick: () => insertContentByUrl(
+                                urlToScrape, 
+                                content => set_query(`${query}\n${content}`),
+                                error => {
+                                  alert(error)
+                                }
+                              )
                             }
                           ]}
                         />

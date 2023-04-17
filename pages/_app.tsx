@@ -58,6 +58,7 @@ library.add(
   fas.faDiagramProject, fas.faUserCircle, fas.faEllipsisH, fas.faLock, fas.faLockOpen,
   fas.faCircleDot, fas.faGripLines, fas.faEllipsisH, fas.faComments, fas.faMinimize,
   fas.faReply, fas.faChevronUp, fas.faGripHorizontal, fas.faUpRightFromSquare,
+  fas.faTriangleExclamation
 )
 
 import { useRouter } from 'next/router'

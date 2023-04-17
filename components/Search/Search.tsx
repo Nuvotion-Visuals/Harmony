@@ -11,6 +11,7 @@ import { FeaturedSnippet } from "./FeaturedSnippet";
 import { PeopleAlsoSearch } from "./PeopleAlsoSearch";
 import { Logo } from "components/Logo";
 import { SearchSuggestions } from "components/SearchSuggestions";
+import styled from "styled-components";
 
 interface Props {
   hero?: boolean
@@ -28,6 +29,8 @@ export const Search = ({ hero } : Props) => {
       const response = await fetch(`/tools/search?q=${query}`);
       const data = await response.json();
       setSearchResults(data);
+      localStorage.setItem('lastSearch', query);
+      localStorage.setItem('searchResults', JSON.stringify(data));
     } catch (error) {
       console.error(error);
     }
@@ -61,6 +64,17 @@ export const Search = ({ hero } : Props) => {
       setSearchResults(null)
     }
   }, [query])
+
+  useEffect(() => {
+    const lastSearch = localStorage.getItem('lastSearch');
+    const savedResults = localStorage.getItem('searchResults');
+    if (lastSearch) {
+      set_query(lastSearch);
+    }
+    if (savedResults) {
+      setSearchResults(JSON.parse(savedResults));
+    }
+  }, []);
 
   const Content = () => (
     <>
@@ -144,7 +158,7 @@ export const Search = ({ hero } : Props) => {
   const nothing = !(query && !loading && searchResults?.data?.results?.results)
 
   return (
-    <div>
+    <S.Search>
       <Box p={.5} wrap>
       <Box width='100%'>
       <TextInput 
@@ -152,6 +166,9 @@ export const Search = ({ hero } : Props) => {
         onChange={val => set_query(val)}
         onEnter={handleSearch}
         canClear={query !== ''}
+        onClear={() => {
+          localStorage.setItem('lastSearch', '')
+        }}
         compact={!hero}
         placeholder='Search'
         buttons={[
@@ -189,7 +206,7 @@ export const Search = ({ hero } : Props) => {
       </Box>
       }
       
-      <Box px={.5} width='calc(100% - 1rem)'>
+      {/* <Box px={.5} width='calc(100% - 1rem)'>
           <Button 
             text='All' 
             tab={!nothing}
@@ -210,15 +227,9 @@ export const Search = ({ hero } : Props) => {
             icon="video"
             iconPrefix="fas"
           />
-          {/* <Button 
-            text='News' 
-            secondary
-            minimal
-            icon="newspaper"
-            iconPrefix="fas"
-          /> */}
+        
           <Spacer />
-      </Box>
+      </Box> */}
       
       <Box py={.5} width='100%'>
         <SearchSuggestions 
@@ -240,6 +251,15 @@ export const Search = ({ hero } : Props) => {
             ? <Content />
             : null
       }
-    </div>
+    </S.Search>
   );
 };
+
+const S = {
+  Search: styled.div`
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+  `
+}

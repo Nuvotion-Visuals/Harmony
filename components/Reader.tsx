@@ -1,4 +1,4 @@
-import { Button, Page, Placeholders, RichTextEditor, LoadingSpinner } from '@avsync.live/formation';
+import { Button, Page, Placeholders, RichTextEditor, LoadingSpinner, useBreakpoint } from '@avsync.live/formation';
 import { getArticleContent, insertContentByUrl } from 'client/connectivity/fetch';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -9,8 +9,27 @@ import { useLanguage_setQuery } from 'redux-tk/language/hook';
 import { speak, speakStream } from 'client/speech/speech';
 // @ts-ignore
 import html2plaintext from 'html2plaintext'
+import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook';
+import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_activeGroup, useSpaces_threadsByGuid, useSpaces_activeThreadGuid, useSpaces_setActiveThreadGuid } from 'redux-tk/spaces/hook';
 
 interface Props {}
+
+function replaceLinks(
+  htmlString: string,
+  spaceGuid: string,
+  groupGuid: string,
+  channelGuid: string
+): string {
+  const prefix = `/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}?url=`;
+  const pattern = /(href=[\'"]?)([^\'" >]+)/g;
+
+  function replace(match: string, p1: string, p2: string) {
+    const url = p2;
+    return `${p1}${prefix}${url}`;
+  }
+
+  return htmlString.replace(pattern, replace);
+}
 
 export const Reader: React.FC<Props> = () => {
   const router = useRouter();
@@ -22,52 +41,65 @@ export const Reader: React.FC<Props> = () => {
 
   const true100vh = use100vh()
 
+  const decrementActiveSwipeIndex = useLayout_decrementActiveSwipeIndex()
+
+  const activeChannel = useSpaces_activeChannel()
+  const activeSpace = useSpaces_activeSpace()
+  const activeGroup = useSpaces_activeGroup()
+  const { isDesktop } = useBreakpoint()
+
   useEffect(() => {
     if (url) {
       insertContentByUrl(url as string, (newContent) => {
-        set_content(`${newContent}`)
+        set_content(`${replaceLinks(newContent, activeSpace?.guid, activeGroup?.guid, activeChannel?.guid)}`)
+      },
+      (e) => {
+        // alert(e)
       })
     }
   }, [url])
 
+
   return (
     <S.reader>
       <S.Header>
-        <Item
-         minimalIcon
-          content={<Button
-            icon='chevron-left'
+      <Item
+          subtitle={activeSpace?.name && `${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
+          onClick={() => {
+            if (!isDesktop) {
+              decrementActiveSwipeIndex()
+            }
+          }}
+          
+        />
+       <>
+          <Button
+            icon='plus'
             iconPrefix='fas'
             minimal
-            text='Back'
+            onClick={() => {
+              setQuery(content || '')
+              router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}`);
+            }}
+          />
+          <Button
+            icon='play'
+            iconPrefix='fas'
+            minimal
+            onClick={() => {
+              speak(html2plaintext(content), () => {})
+            }}
+          />
+          <Button
+            icon='times'
+            iconPrefix='fas'
+            minimal
+            circle
             onClick={() => {
               router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}`);
             }}
-          />}
-          children={
-            <>
-              <Button
-                icon='play'
-                iconPrefix='fas'
-                text='Speak'
-                minimal
-                onClick={() => {
-                  speak(html2plaintext(content), () => {})
-                }}
-              />
-              <Button
-                icon='plus'
-                iconPrefix='fas'
-                text='Insert'
-                minimal
-                onClick={() => {
-                  setQuery(content || '')
-                  router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}`);
-                }}
-              />
-            </>
-          }
-        />
+          />
+        </>
       </S.Header>
      
       <S.Content true100vh={true100vh || 0}>

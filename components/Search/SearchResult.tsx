@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import * as Types from './types';
-import { Box, Button, Dropdown, Gap, Item, LoadingSpinner } from '@avsync.live/formation'
+import { Box, Button, Dropdown, Gap, Icon, Item, LoadingSpinner } from '@avsync.live/formation'
 import { insertContentByUrl } from 'client/connectivity/fetch';
 import { useLanguage_query, useLanguage_setQuery } from 'redux-tk/language/hook';
 import styled from 'styled-components';
 // @ts-ignore
 import html2plaintext from 'html2plaintext'
 import { useRouter } from 'next/router';
+import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook';
 
 export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
+  const decrementActiveSwipeIndex = useLayout_decrementActiveSwipeIndex()
   const router = useRouter()
   const {
     spaceGuid,
@@ -20,6 +22,8 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
   const query = useLanguage_query()
   const [hasClicked, set_hasClicked] = useState(false)
   const [disabled, set_disabled] = useState(false)
+  const [error, set_error] = useState(false)
+  const [loading, set_loading] = useState(false)
 
   useEffect(() => {
     set_hasClicked(false)
@@ -32,14 +36,28 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
         e.stopPropagation()
         if (!disabled) {
           set_disabled(true)
-          insertContentByUrl(result.url, content => {
-            router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}?url=${result.url}`)
-          })
+          set_loading(true)
+          insertContentByUrl(result.url, 
+            content => {
+              decrementActiveSwipeIndex()
+              setTimeout(() => {
+                router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}?url=${result.url}`)
+
+              }, 100)
+              set_loading(false)
+            },
+            error => {
+              set_error(true)
+              set_disabled(false)
+              set_loading(false)
+            }
+          )
           set_hasClicked(true)
         }
       }}
       hasClicked={hasClicked}
       disabled={disabled}
+      active={router.asPath.includes(result.url)}
     >
       <Box wrap maxWidth={'100%'} width={'100%'}>
         <Box mb={-.25} width={'100%'}>
@@ -51,9 +69,12 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
              
               <Box mr={1.5} width='calc(100% - 1.75rem)'>
               {
-                disabled && <LoadingSpinner small />
+                loading && <LoadingSpinner small />
               }
               <Gap disableWrap>
+                {
+                  error && <Icon icon='triangle-exclamation' />
+                }
               <Button
                   icon='plus'
                   iconPrefix='fas'
@@ -62,25 +83,18 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
                   onClick={(e) => {
                     e.stopPropagation()
                     if (!disabled) {
-                      set_disabled(true)
-                      insertContentByUrl(result.url, content => {
-                        set_query(`${query}\n${html2plaintext(content).replace(/\[[^\]]*\]/g, '')}`)
-                        set_disabled(false)
-                      })
+                      insertContentByUrl(
+                        result.url, 
+                        content => {
+                          set_query(`${query}\n${html2plaintext(content).replace(/\[[^\]]*\]/g, '')}`)
+                          set_disabled(false)
+                        },
+                        error => {
+                          alert('e')
+                        }
+                      )
                       set_hasClicked(true)
                     }
-                  }}
-                />
-                <Button
-                  icon='eye'
-                  iconPrefix='fas'
-                  minimal
-                  minimalIcon
-             
-                  square
-                  onClick={(e) => {
-                    router.push(`${router.asPath}?url=${result.url}`)
-                    e.stopPropagation()
                   }}
                 />
                 <Button
@@ -120,10 +134,14 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
 const S = {
   SearchResult: styled.div<{
     hasClicked: boolean;
-    disabled?: boolean
+    disabled?: boolean;
+    active?: boolean;
   }>`
-  width: 100%;
+  width: calc(100% - .25rem);
   opacity: ${props => props.hasClicked ? '0.5' : '1'};
+  background: ${props => props.active ? 'var(--F_Surface_0)' : 'none'};
+  border-left: ${props => props.active ? '.325rem solid var(--F_Primary)' : ''};
+  padding-left: .25rem;
   * {
     cursor: ${props => props.disabled ? 'wait' : 'pointer'};
 

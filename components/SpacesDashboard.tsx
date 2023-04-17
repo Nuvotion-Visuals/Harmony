@@ -56,7 +56,7 @@ const SpacesDashboard = ({ }: Props) => {
       </MyLink>
      
     </Grid>
-      <Page noPadding>
+      {/* <Page noPadding>
         <ZoomableHierarchyNavigator
           flareData={{
             name: 'Spaces',
@@ -84,7 +84,7 @@ const SpacesDashboard = ({ }: Props) => {
             }))
           }}
         />
-    </Page>
+    </Page> */}
     
   
     </Gap>
@@ -105,7 +105,7 @@ const S = {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* background: var(--F_Background_Alternating); */
+  /* background: var(--F_Background_Alternating); */
   `,
   Inner: styled.div<{
     isDesktop: boolean
