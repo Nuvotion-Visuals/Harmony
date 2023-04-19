@@ -30,7 +30,9 @@ const SpacesDashboard = ({ }: Props) => {
     <S.Inner isDesktop={isDesktop}>
       <Gap gap={isMobile ? 1 : 1.5}>
       <Page noPadding>
-        <Search hero/>
+        <S.SearchContainer>
+          <Search hero />
+        </S.SearchContainer>
       </Page>
       <Grid maxWidth={isMobile ? 10 : 14} gap={isMobile ? .75 : 1.5} >
       {
@@ -105,7 +107,7 @@ const S = {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  /* background: var(--F_Background_Alternating); */
+    background: var(--F_Background_Alternating);
   `,
   Inner: styled.div<{
     isDesktop: boolean
@@ -137,5 +139,10 @@ const S = {
     box-shadow: var(--F_Outline_Hover);
 
     }
+  `,
+  SearchContainer: styled.div`
+    width: 100%;
+    height: 100%;
+    overflow-y: visible;
   `
 }

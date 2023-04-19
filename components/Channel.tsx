@@ -159,7 +159,7 @@ const S = {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    background: var(--F_Background_Alternating);
+    /* background: var(--F_Background_Alternating); */
 
   `,
   Content: styled.div<{
@@ -170,7 +170,7 @@ const S = {
     overflow-y: auto;
   `,
   Bottom: styled.div`
-    background: var(--F_Background_Alternating);
+    /* background: var(--F_Background_Alternating); */
     width: 100%;
     overflow-y: auto;
     max-height: 40vh;

@@ -8,10 +8,11 @@ import { MatrixLoading } from './MatrixLoading';
 
 interface Props {
   onSend: (message: string) => void,
-  guid: string
+  guid: string,
+  query: string
 }
 
-export const SearchSuggestions = ({ onSend, guid }: Props) => {
+export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
     const threadsByGuid = useSpaces_threadsByGuid()
     const activeChannel = useSpaces_activeChannel()
     const activeSpace = useSpaces_activeSpace()
@@ -58,6 +59,8 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
           Your previous suggestions (optional): ${suggestedPrompts}
 
           User feedback (optional): ${feedback}
+
+          Existing search term (optional): ${query}
         `)
       }
     }, [guid])
@@ -123,6 +126,7 @@ export const SearchSuggestions = ({ onSend, guid }: Props) => {
                       
                         User feedback (optional): ${feedback}
 
+                        Existing search term (optional): ${query}
                       `)
                     }} 
                   />

@@ -51,14 +51,17 @@ export const Reader: React.FC<Props> = () => {
   useEffect(() => {
     if (url) {
       insertContentByUrl(url as string, (newContent) => {
-        set_content(`${replaceLinks(newContent, activeSpace?.guid, activeGroup?.guid, activeChannel?.guid)}`)
+        if (activeSpace?.guid &&  activeGroup?.guid && activeChannel?.guid) {
+          set_content(`${replaceLinks(newContent, activeSpace?.guid, activeGroup?.guid, activeChannel?.guid)}`)
+        }
+        else {
+          set_content(`${newContent}`)
+        }
       },
-      (e) => {
-        // alert(e)
+        (e) => {
       })
     }
   }, [url])
-
 
   return (
     <S.reader>

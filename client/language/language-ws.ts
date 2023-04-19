@@ -262,6 +262,8 @@ export const language_generateSearchQueries = (
     
     If no prompt is provided, you suggest a list of productive searches that a creative professional might need.
 
+    If a search query is provided, prioritize that subject in relation to the search.
+
     You answer in the following JSON format, provided in a markdown code block.
     
     {

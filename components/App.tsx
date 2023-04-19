@@ -78,17 +78,17 @@ const App = ({ children }: Props) => {
     
     switch(router.route) {
       case('/spaces/[spaceGuid]/groups/[groupGuid]/channels/[channelGuid]'):
-        return <>
+        return <S.Main>
           {
             router.query.url
               ? <Reader />
               : <Channel />
           }
-        </>
+        </S.Main>
       case '/spaces/[spaceGuid]':
-        return <>
+        return <S.Main>
           <Space />
-        </>
+        </S.Main>
     }
   }
 
@@ -229,5 +229,9 @@ const S = {
   ThirdPage: styled.div`
     height: 100%;
     width: 100%;
+  `,
+  Main: styled.div`
+  background: var(--F_Background_Alternating);
+  height: 100%;
   `
 }

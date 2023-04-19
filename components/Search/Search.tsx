@@ -1,4 +1,4 @@
-import { Box, Button, Gap, Item, LineBreak, LoadingSpinner, Placeholders, Spacer, Tabs, Tags, TextInput } from "@avsync.live/formation";
+import { AutocompleteDropdown, Box, Button, Gap, Item, LineBreak, LoadingSpinner, Placeholders, Spacer, Tabs, Tags, TextInput } from "@avsync.live/formation";
 import React, { useState, useEffect } from "react";
 
 import * as Types from './types'
@@ -9,12 +9,12 @@ import { Dictionary } from "./Dictionary";
 import { PeopleAlsoAsk } from "./PeopleAlsoAsk";
 import { FeaturedSnippet } from "./FeaturedSnippet";
 import { PeopleAlsoSearch } from "./PeopleAlsoSearch";
-import { Logo } from "components/Logo";
 import { SearchSuggestions } from "components/SearchSuggestions";
 import styled from "styled-components";
 
 interface Props {
-  hero?: boolean
+  hero?: boolean,
+  onChange?: (query: string) => void
 }
 
 export const Search = ({ hero } : Props) => {
@@ -37,8 +37,8 @@ export const Search = ({ hero } : Props) => {
     set_loading(false)
   }
 
-  const handleSearch = () => {
-    fetchData(query);
+  const handleSearch = (directSearch?: string) => {
+    fetchData(directSearch || query);
   }
 
   const [suggestions, set_suggestions] = useState<any>([])
@@ -47,7 +47,9 @@ export const Search = ({ hero } : Props) => {
     try {
       const response = await fetch(`/tools/suggest?q=${query}`);
       const data = await response.json();
-      set_suggestions(data.data.suggestions);
+      if (data.data.suggestions.length) {
+        set_suggestions(data.data.suggestions);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -161,13 +163,17 @@ export const Search = ({ hero } : Props) => {
     <S.Search>
       <Box p={.5} wrap>
       <Box width='100%'>
-      <TextInput 
+      <AutocompleteDropdown
         value={query}
-        onChange={val => set_query(val)}
+        onChange={(val : string) => {
+          set_query(val)
+        }}
         onEnter={handleSearch}
         canClear={query !== ''}
         onClear={() => {
+          set_query('')
           localStorage.setItem('lastSearch', '')
+          localStorage.setItem('searchResults', '')
         }}
         compact={!hero}
         placeholder='Search'
@@ -175,41 +181,28 @@ export const Search = ({ hero } : Props) => {
           {
             icon: 'search',
             iconPrefix: 'fas',
-            onClick: handleSearch,
+            onClick: () => handleSearch(),
             minimal: true
           }
         ]}
+        items={suggestions.map((suggestion : any) => ({
+          icon: 'search',
+          subtitle: suggestion.suggestion,
+          onClick: () => {
+            setTimeout(() => {
+              set_query(suggestion.suggestion)
+              handleSearch(suggestion.suggestion)
+            }, 1)
+            // set_suggestions([])
+          }
+        }))}
       />
       </Box>
-      
-      
-      
       </Box>
 
-      {
-        !!suggestions?.length && <Box wrap width='100%' pb={.5}>
-          <Gap gap={.25}>
-            { 
-              suggestions.map((suggestion: any) => 
-                <Item 
-                  icon='search'
-                  subtitle={suggestion.suggestion} 
-                  onClick={() => {
-                    set_query(suggestion.suggestion)
-                    handleSearch()
-                    set_suggestions([])
-                  }}  
-                />
-              )
-            }
-          </Gap>
-      </Box>
-      }
-      
-      {/* <Box px={.5} width='calc(100% - 1rem)'>
+      <Box px={.5} width='calc(100% - 1rem)'>
           <Button 
             text='All' 
-            tab={!nothing}
             icon='search'
             iconPrefix="fas"
           />
@@ -229,10 +222,11 @@ export const Search = ({ hero } : Props) => {
           />
         
           <Spacer />
-      </Box> */}
+      </Box>
       
-      <Box py={.5} width='100%'>
+      <Box py={hero ? .5 : .25} width='100%'>
         <SearchSuggestions 
+          query={query}
           onSend={(suggestedQuery) => {
             fetchData(suggestedQuery)
             set_query(suggestedQuery)
