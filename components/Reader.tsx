@@ -139,14 +139,13 @@ export const Reader: React.FC<Props> = () => {
     <S.reader>
       <S.Header>
       <Item
-          subtitle={activeSpace?.name && `${activeSpace?.name} > ${activeGroup?.name} > ${activeChannel?.name}`}
-          onClick={() => {
-            if (!isDesktop) {
-              decrementActiveSwipeIndex()
-            }
-          }}
-          
-        />
+        subtitle={activeSpace?.name && `${activeSpace?.name} > ${activeGroup?.name || '·'} > ${activeChannel?.name || '·'}`}
+        onClick={() => {
+          if (!isDesktop) {
+            decrementActiveSwipeIndex()
+          }
+        }}
+      />
        <>
          
           <Button
@@ -166,7 +165,8 @@ export const Reader: React.FC<Props> = () => {
               speak(html2plaintext(content), () => {})
             }}
           />
-           <Dropdown
+          <Box pr={.5}>
+          <Dropdown
             icon='font'
             iconPrefix='fas'
             minimal
@@ -181,6 +181,7 @@ export const Reader: React.FC<Props> = () => {
                     icon='align-left' 
                     iconPrefix='fas'
                     minimal={justify !== 'left'}
+                    circle
                     onClick={e => {
                       e.stopPropagation()
                       e.preventDefault()
@@ -191,6 +192,7 @@ export const Reader: React.FC<Props> = () => {
                   <Button 
                     icon='align-justify' 
                     iconPrefix='fas' 
+                    circle
                     minimal={justify !== 'justify'}
                     onClick={e => {
                       e.stopPropagation()
@@ -200,11 +202,11 @@ export const Reader: React.FC<Props> = () => {
                   />
                 </>
               },
-             
               {
                 icon: 'font',
                 iconPrefix: 'fas',
                 text: 'Size',
+                subtitle: textSize !== 1 ? `${(textSize * 100).toFixed(0)}%` : undefined,
                 children: <>
                   <Button 
                     icon='minus' 
@@ -233,6 +235,7 @@ export const Reader: React.FC<Props> = () => {
                 icon: 'arrows-up-down',
                 iconPrefix: 'fas',
                 text: 'Line',
+                subtitle: lineHeight !== 1 ? `${(lineHeight * 100).toFixed(0)}%` : undefined,
                 children: <>
                   <Button 
                     icon='minus' 
@@ -257,11 +260,11 @@ export const Reader: React.FC<Props> = () => {
                   />
                 </>
               },
-             
               {
                 icon: 'arrows-left-right',
                 iconPrefix: 'fas',
                 text: 'Width',
+                subtitle: maxWidth !== 1 ? `${(maxWidth * 100).toFixed(0)}%` : undefined,
                 children: <>
                   <Button 
                     icon='minus' 
@@ -291,6 +294,7 @@ export const Reader: React.FC<Props> = () => {
                 icon: 'text-width',
                 iconPrefix: 'fas',
                 text: 'Letter',
+                subtitle: letterSpacing !== 1 ? `${(letterSpacing * 100).toFixed(0)}%` : undefined,
                 children: <>
                   <Button 
                     icon='minus' 
@@ -346,6 +350,8 @@ export const Reader: React.FC<Props> = () => {
               }
             ]}
           />
+          </Box>
+           
         </>
       </S.Header>
      
