@@ -69,7 +69,7 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
              
               <Box mr={1.5} width='calc(100% - 1.75rem)'>
               {
-                loading && <LoadingSpinner small />
+                loading && <Box mr={1.5}><LoadingSpinner small /></Box>
               }
               <Gap disableWrap>
                 {

@@ -1,4 +1,4 @@
-import { Button, Page, Placeholders, RichTextEditor, LoadingSpinner, useBreakpoint } from '@avsync.live/formation';
+import { Button, Page, Placeholders, RichTextEditor, LoadingSpinner, useBreakpoint, Dropdown, Box, Select, AutocompleteDropdown, Label } from '@avsync.live/formation';
 import { getArticleContent, insertContentByUrl } from 'client/connectivity/fetch';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -63,6 +63,78 @@ export const Reader: React.FC<Props> = () => {
     }
   }, [url])
 
+  const [lineHeight, set_lineHeight] = useState(parseFloat(localStorage.getItem('lineHeight') || '1') || 1);
+  const [maxWidth, set_maxWidth] = useState(parseFloat(localStorage.getItem('maxWidth') || '1') || 1);
+  const [textSize, set_textSize] = useState(parseFloat(localStorage.getItem('textSize') || '1') || 1);
+  const [font, set_font] = useState(localStorage.getItem('font') || 'Poppins');
+  const [justify, set_justify] = useState(localStorage.getItem('justify') || 'left');
+  const [letterSpacing, set_letterSpacing] = useState(parseFloat(localStorage.getItem('letterSpacing') || '1') || 1);
+
+  useEffect(() => {
+    localStorage.setItem('lineHeight', JSON.stringify(lineHeight));
+  }, [lineHeight]);
+  
+  useEffect(() => {
+    localStorage.setItem('maxWidth', JSON.stringify(maxWidth));
+  }, [maxWidth]);
+  
+  useEffect(() => {
+    localStorage.setItem('textSize', JSON.stringify(textSize));
+  }, [textSize]);
+  
+  useEffect(() => {
+    localStorage.setItem('font', font);
+  }, [font]);
+  
+  useEffect(() => {
+    localStorage.setItem('justify', justify);
+  }, [justify]);
+
+  useEffect(() => {
+    localStorage.setItem('letterSpacing', justify);
+  }, [letterSpacing]);
+
+  const incrementLineHeight = () => {
+    set_lineHeight(prevValue => prevValue + .05);
+  };
+  
+  const decrementLineHeight = () => {
+    set_lineHeight(prevValue => prevValue - .05);
+  };
+  
+  const incrementMaxWidth = () => {
+    set_maxWidth(prevValue => prevValue + .03);
+  };
+  
+  const decrementMaxWidth = () => {
+    set_maxWidth(prevValue => prevValue - .03);
+  };
+  
+  const incrementTextSize = () => {
+    set_textSize(prevValue => prevValue + .03);
+  };
+  
+  const decrementTextSize = () => {
+    set_textSize(prevValue => prevValue - .03);
+  };
+  
+  const incrementLetterSpacing = () => {
+    set_letterSpacing(prevValue => prevValue + .03);
+  };
+  
+  const decrementLetterSpacing = () => {
+    set_letterSpacing(prevValue => prevValue - .03);
+  };
+
+  const fonts = [
+    'Poppins',
+    'Georgia',
+    'Open Sans',
+    'Lato',
+    'Palatino',
+    'Verdana'
+  ];
+
   return (
     <S.reader>
       <S.Header>
@@ -76,6 +148,7 @@ export const Reader: React.FC<Props> = () => {
           
         />
        <>
+         
           <Button
             icon='plus'
             iconPrefix='fas'
@@ -93,31 +166,214 @@ export const Reader: React.FC<Props> = () => {
               speak(html2plaintext(content), () => {})
             }}
           />
-          <Button
-            icon='times'
+           <Dropdown
+            icon='font'
             iconPrefix='fas'
             minimal
-            circle
-            onClick={() => {
-              router.push(`/spaces/${spaceGuid}/groups/${groupGuid}/channels/${channelGuid}`);
-            }}
+            
+            items={[
+              {
+                icon: 'paragraph',
+                iconPrefix: 'fas',
+                text: 'Justify',
+                children: <>
+                  <Button 
+                    icon='align-left' 
+                    iconPrefix='fas'
+                    minimal={justify !== 'left'}
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      set_justify('left')
+                    }}
+                  />
+
+                  <Button 
+                    icon='align-justify' 
+                    iconPrefix='fas' 
+                    minimal={justify !== 'justify'}
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      set_justify('justify')
+                    }}
+                  />
+                </>
+              },
+             
+              {
+                icon: 'font',
+                iconPrefix: 'fas',
+                text: 'Size',
+                children: <>
+                  <Button 
+                    icon='minus' 
+                    iconPrefix='fas'
+                    minimal 
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      decrementTextSize()
+                    }}
+                  />
+
+                  <Button 
+                    icon='plus' 
+                    iconPrefix='fas' 
+                    minimal
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      incrementTextSize()
+                    }}
+                  />
+                </>
+              },
+              {
+                icon: 'arrows-up-down',
+                iconPrefix: 'fas',
+                text: 'Line',
+                children: <>
+                  <Button 
+                    icon='minus' 
+                    iconPrefix='fas'
+                    minimal 
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      decrementLineHeight()
+                    }}
+                  />
+
+                  <Button 
+                    icon='plus' 
+                    iconPrefix='fas' 
+                    minimal
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      incrementLineHeight()
+                    }}
+                  />
+                </>
+              },
+             
+              {
+                icon: 'arrows-left-right',
+                iconPrefix: 'fas',
+                text: 'Width',
+                children: <>
+                  <Button 
+                    icon='minus' 
+                    iconPrefix='fas'
+                    minimal 
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      decrementMaxWidth()
+                    }}
+                  />
+
+                  <Button 
+                    icon='plus' 
+                    iconPrefix='fas' 
+                    minimal
+                    disabled={maxWidth > 1}
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      incrementMaxWidth()
+                    }}
+                  />
+                </>
+              },
+              {
+                icon: 'text-width',
+                iconPrefix: 'fas',
+                text: 'Letter',
+                children: <>
+                  <Button 
+                    icon='minus' 
+                    iconPrefix='fas'
+                    minimal 
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      decrementLetterSpacing()
+                    }}
+                  />
+
+                  <Button 
+                    icon='plus' 
+                    iconPrefix='fas' 
+                    minimal
+                    onClick={e => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      incrementLetterSpacing()
+                    }}
+                  />
+                </>
+              },
+              ...fonts.map(thisFont =>
+                ({
+                  active: font === thisFont,
+                  onClick: (e: any) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    set_font(thisFont)
+                  },
+                  content: <S.FontPreview 
+                    font={thisFont} 
+                   
+                  >
+                    { thisFont }
+                  </S.FontPreview>
+                }) 
+              ),
+              {
+                icon: 'refresh',
+                iconPrefix: 'fas',
+                text: 'Reset',
+                onClick: () => {
+                  set_lineHeight(1)
+                  set_maxWidth(1)
+                  set_textSize(1)
+                  set_letterSpacing(1)
+                  set_font('Poppins')
+                  set_justify('left')
+                }
+              }
+            ]}
           />
         </>
       </S.Header>
      
-      <S.Content true100vh={true100vh || 0}>
+      <S.Content 
+        true100vh={true100vh || 0} 
+        textSize={textSize} 
+        lineHeight={lineHeight} 
+        maxWidth={maxWidth}
+        justify={justify}
+        font={font}
+        letterSpacing={letterSpacing}
+      >
         <Page>
-          {
-            content
-              ?  <RichTextEditor
-                  value={content || ''}
-                  readOnly
-                />
-              : <Placeholders
-                  // @ts-ignore
-                  message={<LoadingSpinner />}
-                />
-          }
+          <Box width='100%' mb={2}>
+            <Box width={`calc(${maxWidth} * 100%)`}>
+              {
+                content
+                  ?  <RichTextEditor
+                      value={content || ''}
+                      readOnly
+                    />
+                  : <Placeholders
+                      // @ts-ignore
+                      message={<LoadingSpinner />}
+                    />
+              }
+            </Box>
+          </Box>
         </Page>
       </S.Content>
    
@@ -129,6 +385,10 @@ export const Reader: React.FC<Props> = () => {
 const S = {
   reader: styled.div`
     background: var(--F_Background_Alternating);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
   `,
   Header: styled.div`
     width: 100%;
@@ -138,10 +398,36 @@ const S = {
   `,
   Content: styled.div<{
     true100vh: number,
+    textSize: number,
+    maxWidth: number,
+    lineHeight: number,
+    letterSpacing: number,
+    justify: string,
+    font: string
   }>`
 
     height: ${props => `calc(${props.true100vh}px - var(--F_Header_Height));`};
     width: 100%;
     overflow-y: auto;
+    * {
+      font-size: ${props => `calc(1em * ${props.textSize})`};
+      line-height: ${props => `calc(1.6 * ${props.lineHeight})`};
+      letter-spacing: ${props => `calc(calc(1px * ${props.letterSpacing}) - 1px)`};
+      font-family: ${props => props.font};
+    }
+    p {
+      text-align: ${props => props.justify};
+    }
   `,
+  FontPreview: styled.div<{
+    font: string
+  }>`
+    font-family: ${props => props.font};
+    font-size: var(--F_Font_Size);
+    height: var(--F_Input_Height);
+    padding-left: 1rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  `
 };
