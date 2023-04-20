@@ -140,6 +140,39 @@ router.get('/search', function (req, res) { return __awaiter(void 0, void 0, voi
         }
     });
 }); });
+router.get('/search/images', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var query, options, results, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                query = req.query.q;
+                options = {
+                    page: 0,
+                    safe: false,
+                    parse_ads: false,
+                    additional_params: {
+                        hl: 'en'
+                    }
+                };
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, googlethis_1.default.image(query, options)];
+            case 2:
+                results = _a.sent();
+                //   const news = await google.getTopNews();
+                //  console.info('Google Top News:', news);
+                res.send({ status: 200, data: { results: results } });
+                return [3 /*break*/, 4];
+            case 3:
+                error_4 = _a.sent();
+                console.log('🟣', "I experienced the following error: ".concat(error_4));
+                res.status(500).send({ status: 500, message: 'internal error' });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
 function getAllSuggestions(string) {
     var searchURL = 'https://suggestqueries.google.com/complete/search?client=chrome&q=';
     return fetch(searchURL + encodeURIComponent(string))
@@ -173,7 +206,7 @@ function getQuerySuggestions(string) {
 }
 exports.getQuerySuggestions = getQuerySuggestions;
 router.get('/suggest', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var query, suggestions, error_4;
+    var query, suggestions, error_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -190,8 +223,8 @@ router.get('/suggest', function (req, res) { return __awaiter(void 0, void 0, vo
                 res.send({ status: 200, data: { suggestions: suggestions } });
                 return [3 /*break*/, 4];
             case 3:
-                error_4 = _a.sent();
-                console.log("\uD83D\uDFE3 I experienced the following error: ".concat(error_4));
+                error_5 = _a.sent();
+                console.log("\uD83D\uDFE3 I experienced the following error: ".concat(error_5));
                 res.status(500).send({ status: 500, message: 'internal error' });
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];

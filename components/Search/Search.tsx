@@ -1,4 +1,4 @@
-import { AutocompleteDropdown, Box, Button, Gap, Item, LineBreak, LoadingSpinner, Placeholders, Spacer, Tabs, Tags, TextInput } from "@avsync.live/formation";
+import { AutocompleteDropdown, Box, Button, Gap, Grid, Item, LineBreak, LoadingSpinner, Placeholders, Spacer, Tabs, Tags, TextInput } from "@avsync.live/formation";
 import React, { useState, useEffect } from "react";
 
 import * as Types from './types'
@@ -11,6 +11,7 @@ import { FeaturedSnippet } from "./FeaturedSnippet";
 import { PeopleAlsoSearch } from "./PeopleAlsoSearch";
 import { SearchSuggestions } from "components/SearchSuggestions";
 import styled from "styled-components";
+import { Image } from "./Image";
 
 interface Props {
   hero?: boolean,
@@ -18,6 +19,22 @@ interface Props {
 }
 
 export const Search = ({ hero } : Props) => {
+  const [activeType, set_activeType] = useState<'All' | 'Images' | 'Videos'>('All')
+
+  const [imageSearchResults, setImageSearchResults] = useState<Types.ImageSearchResultsData | null>(null);
+  async function fetchImagesData(query: string) {
+    set_loading(true)
+    try {
+      const response = await fetch(`/tools/search/images?q=${query}`);
+      const data = await response.json();
+      console.log(data)
+      setImageSearchResults(data);
+    } catch (error) {
+      console.error(error);
+    }
+    set_loading(false)
+  }
+
   const [searchResults, setSearchResults] = useState<Types.SearchResultsData | null>(null);
   const [query, set_query] = useState('');
 
@@ -38,7 +55,14 @@ export const Search = ({ hero } : Props) => {
   }
 
   const handleSearch = (directSearch?: string) => {
-    fetchData(directSearch || query);
+    switch(activeType) {
+      case 'All':
+        fetchData(directSearch || query);
+        break
+      case 'Images':
+        fetchImagesData(directSearch || query)
+        break
+    }
   }
 
   const [suggestions, set_suggestions] = useState<any>([])
@@ -159,6 +183,12 @@ export const Search = ({ hero } : Props) => {
 
   const nothing = !(query && !loading && searchResults?.data?.results?.results)
 
+  useEffect(() => {
+    if (activeType === 'Images') {
+      fetchImagesData(query)
+    }
+  }, [activeType])
+
   return (
     <S.Search>
       <Box p={.5} wrap>
@@ -174,6 +204,7 @@ export const Search = ({ hero } : Props) => {
           set_query('')
           localStorage.setItem('lastSearch', '')
           localStorage.setItem('searchResults', '')
+          setImageSearchResults(null)
         }}
         compact={!hero}
         placeholder='Search'
@@ -203,22 +234,27 @@ export const Search = ({ hero } : Props) => {
       <Box px={.5} width='calc(100% - 1rem)'>
           <Button 
             text='All' 
+            secondary={activeType !== 'All'}
+            minimal={activeType !== 'All'}
             icon='search'
             iconPrefix="fas"
+            onClick={() => set_activeType('All')}
           />
           <Button 
             text='Images' 
-            secondary
-            minimal
+            secondary={activeType !== 'Images'}
+            minimal={activeType !== 'Images'}
             icon="image"
             iconPrefix="fas"
+            onClick={() => set_activeType('Images')}
           />
           <Button 
             text='Videos' 
-            secondary
-            minimal
+            secondary={activeType !== 'Videos'}
+            minimal={activeType !== 'Videos'}
             icon="video"
             iconPrefix="fas"
+            onClick={() => set_activeType('Videos')}
           />
         
           <Spacer />
@@ -241,10 +277,19 @@ export const Search = ({ hero } : Props) => {
               // @ts-ignore
               message={<LoadingSpinner />}
             />
-          : !nothing
+          : !nothing && activeType === 'All'
             ? <Content />
             : null
       }
+      <Box wrap>
+        {
+        activeType === 'Images' && imageSearchResults?.data?.results?.map((searchResult, index) =>
+          <Image {...searchResult} />
+        )
+      }
+      </Box>
+     
+      
     </S.Search>
   );
 };

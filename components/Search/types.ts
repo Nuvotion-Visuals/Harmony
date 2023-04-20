@@ -77,3 +77,32 @@ export interface SearchResultsData {
     };
   };
 }
+
+export interface Image {
+  id: string;
+  url: string;
+  width: number;
+  height: number;
+  color: string;
+  preview: {
+    url: string;
+    width: number;
+    height: number;
+  };
+  origin: {
+    title: string;
+    website: {
+      name: string;
+      domain: string;
+      url: string;
+    };
+  };
+}
+
+export interface ImageSearchResultsData {
+  status: number;
+  data: {
+    results:Image[];
+     
+  };
+}

@@ -17,6 +17,9 @@ const Reader: React.FC<Props> = () => {
     if (url) {
       insertContentByUrl(url as string, (newContent) => {
         set_content(newContent)
+      },
+      (err) => {
+        
       })
     }
   }, [url])

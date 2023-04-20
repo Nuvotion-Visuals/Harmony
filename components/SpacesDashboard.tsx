@@ -99,9 +99,7 @@ export default SpacesDashboard
 
 const S = {
   SpacesDashboard: styled.div`
-    width: calc(100% - 1.5rem);
     min-height: calc(100vh - 1.5rem);
-    padding: .75rem;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
