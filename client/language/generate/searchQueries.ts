@@ -32,6 +32,8 @@ export const generate_searchQueries = (
       }
   
       * is the topic of the search
+
+      If user feedback is provided it must be prioritized.
       
       Prompt: ${prompt} Reply in JSON, in a CODE BLOCK!`,
     };

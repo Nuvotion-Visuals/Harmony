@@ -52,7 +52,16 @@ export const sendMessage = async ({
     }
   };
 
-  const res = await storedClient.api.sendMessage(`${message.slice(0, 4096)}`, {
+  const maxLength = 4096;
+  const period = ".";
+
+  let messageToSend = message;
+
+  if (message.length > maxLength) {
+    messageToSend = message.slice(0, maxLength - period.length) + period;
+  }
+
+  const res = await storedClient.api.sendMessage(messageToSend, {
     systemMessage,
     parentMessageId,
     onProgress: onProgressWrapper,

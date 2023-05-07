@@ -32,6 +32,8 @@ ${enableEmoji && 'Each group and channel name starts with an emoji'}
 ]
 }
 
+If user feedback is provided it must be prioritized.
+
 Description: ${prompt}`,
     };
   

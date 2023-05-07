@@ -29,6 +29,9 @@ export const generate_threadPrompts = (prompt: string, enableEmoji: boolean, onC
       "🎨 Create: suggested message"
     ]
   }
+
+  If user feedback is provided it must be prioritized.
+  
   Prompt: ${prompt} Reply in JSON`,
       };
     

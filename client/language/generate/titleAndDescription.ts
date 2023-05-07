@@ -24,6 +24,8 @@ You answer in the following JSON format, provided in a code block.
   "description": "Craft a successful social media strategy to build your brand's online presence and drive engagement."
 }
 
+If user feedback is provided it must be prioritized.
+
 Prompt: ${prompt} Reply in JSON`,
     };
   

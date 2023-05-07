@@ -19,6 +19,8 @@ You answer in the following JSON format, provided in a code block.
   "title": "🚀 Rocket Science"
 }
 
+If user feedback is provided it must be prioritized.
+
 Prompt: ${prompt} Reply in JSON`,
   };
 
