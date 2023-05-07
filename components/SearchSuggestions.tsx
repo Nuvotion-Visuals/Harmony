@@ -19,7 +19,7 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
     const messagesByGuid = useSpaces_messagesByGuid()
 
     const { language, response, loading, error, completed } = useLanguageAPI('');
-    const { generateSearchQueries } = language;
+    const { generate_searchQueries } = language;
     
     const [suggestedPrompts, set_suggestedPrompts] = useState([])
   
@@ -47,7 +47,7 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
       set_suggestedPrompts([])
       // @ts-ignore
       if (activeChannel?.description && getWebsocketClient?.send) {
-        generateSearchQueries(`
+        generate_searchQueries(`
           Channel name: ${activeChannel?.name}
           Channel description: ${activeChannel?.description} 
 
@@ -113,7 +113,7 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
                     iconPrefix='fas' 
                     onClick={() => {
                       set_suggestedPrompts([])
-                      generateSearchQueries(`
+                      generate_searchQueries(`
                         Channel name: ${activeChannel?.name}
                         Channel description: ${activeChannel?.description} 
                       

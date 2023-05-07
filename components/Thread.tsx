@@ -46,7 +46,7 @@ export const Thread = React.memo(({
   }, [JSON.stringify(messageGuids)]);
 
   const { language, response, loading, error, completed } = useLanguageAPI(messageContent);
-  const { generateTitle } = language;
+  const { generate_title } = language;
   
   useEffect(() => {
     if (response && completed) {
@@ -158,7 +158,7 @@ export const Thread = React.memo(({
   useEffect(() => {
     if (messageGuids?.length === 2 && !name && !description) {
       if (messagesByGuid[messageGuids[1]]?.complete) {
-        generateTitle(messageContent)
+        generate_title(messageContent)
       }
     }
   }, [messagesByGuid[messageGuids[1]]?.complete])
@@ -288,7 +288,7 @@ export const Thread = React.memo(({
                       iconPrefix: 'fas',
                       name: 'Generate title',
                       onClick: () => {
-                        generateTitle(messageContent)
+                        generate_title(messageContent)
                       }
                     },
                     {

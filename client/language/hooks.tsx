@@ -1,11 +1,11 @@
 import { useReducer } from 'react';
-import { 
-  language_generateGroups, 
-  language_generateTitleAndDescription, 
-  language_generateThreadPrompts,
-  language_generateFollowUpMessages,
-  language_generateSearchQueries
-} from './language-ws';
+
+import { generate_groups } from './generate/groups';
+import { generate_titleAndDescription } from './generate/titleAndDescription';
+import { generate_threadPrompts } from './generate/threadPrompts';
+import { generate_followUpMessages } from './generate/followUpMessages';
+import { generate_searchQueries } from './generate/searchQueries';
+import { generate_titleEmoji } from './generate/titleEmoji';
 
 type PartialResponse = string;
 type ErrorType = string;
@@ -18,10 +18,10 @@ type State = {
 };
 
 type Action =
-  | { type: "SET_RESPONSE"; payload: PartialResponse }
-  | { type: "SET_LOADING"; payload: boolean }
-  | { type: "SET_ERROR"; payload: ErrorType | null }
-  | { type: "SET_COMPLETED"; payload: boolean };
+  | { type: 'SET_RESPONSE'; payload: PartialResponse }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: ErrorType | null }
+  | { type: 'SET_COMPLETED'; payload: boolean };
 
 const initialState: State = {
   response: null,
@@ -32,13 +32,13 @@ const initialState: State = {
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case "SET_RESPONSE":
+    case 'SET_RESPONSE':
       return { ...state, response: action.payload };
-    case "SET_LOADING":
+    case 'SET_LOADING':
       return { ...state, loading: action.payload };
-    case "SET_ERROR":
+    case 'SET_ERROR':
       return { ...state, error: action.payload };
-    case "SET_COMPLETED":
+    case 'SET_COMPLETED':
       return { ...state, completed: action.payload };
     default:
       return state;
@@ -59,22 +59,22 @@ export const useLanguageAPI = (initialValue: string) => {
       onError: (error: ErrorType) => void
     ) => { removeListeners: () => void }
   ) => {
-    dispatch({ type: "SET_LOADING", payload: true });
+    dispatch({ type: 'SET_LOADING', payload: true });
 
     const onComplete = (message: string) => {
-      dispatch({ type: "SET_RESPONSE", payload: message });
-      dispatch({ type: "SET_COMPLETED", payload: true });
-      dispatch({ type: "SET_LOADING", payload: false }); // Add this line
+      dispatch({ type: 'SET_RESPONSE', payload: message });
+      dispatch({ type: 'SET_COMPLETED', payload: true });
+      dispatch({ type: 'SET_LOADING', payload: false }); // Add this line
       removeListeners();
     };
 
     const onPartialResponse = (partialResponse: PartialResponse) => {
-      dispatch({ type: "SET_RESPONSE", payload: partialResponse });
+      dispatch({ type: 'SET_RESPONSE', payload: partialResponse });
     };
 
     const onError = (error: ErrorType) => {
-      dispatch({ type: "SET_ERROR", payload: error });
-      dispatch({ type: "SET_LOADING", payload: false }); // Add this line
+      dispatch({ type: 'SET_ERROR', payload: error });
+      dispatch({ type: 'SET_LOADING', payload: false }); // Add this line
       removeListeners();
     };
 
@@ -82,21 +82,24 @@ export const useLanguageAPI = (initialValue: string) => {
   };
 
   const language = {
-    generateGroups: (guid: string) => {
-      generate(guid, true, language_generateGroups);
+    generate_groups: (guid: string) => {
+      generate(guid, true, generate_groups);
     },
-    generateTitle: (guid: string) => {
-      generate(guid, true, language_generateTitleAndDescription);
+    generate_title: (guid: string) => {
+      generate(guid, true, generate_titleAndDescription);
     },
-    generateThreadPrompts: (guid: string) => {
-      generate(guid, true, language_generateThreadPrompts);
+    generate_threadPrompts: (guid: string) => {
+      generate(guid, true, generate_threadPrompts);
     },
-    generateFollowUpMessages: (guid: string) => {
-      generate(guid, true, language_generateFollowUpMessages)
+    generate_followUpMessages: (guid: string) => {
+      generate(guid, true, generate_followUpMessages)
     },
-    generateSearchQueries: (guid: string) => {
-      generate(guid, true, language_generateSearchQueries)
-    }
+    generate_searchQueries: (guid: string) => {
+      generate(guid, true, generate_searchQueries)
+    },
+    generate_titleEmoji: (guid: string) => {
+      generate(guid, true, generate_titleEmoji)
+    },
   };
 
   return { language, ...state };

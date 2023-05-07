@@ -20,7 +20,7 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
   
 
     const { language, response, loading, error, completed } = useLanguageAPI('');
-    const { generateFollowUpMessages } = language;
+    const { generate_followUpMessages } = language;
     
     const [suggestedPrompts, set_suggestedPrompts] = useState([])
   
@@ -50,7 +50,7 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
       set_suggestedPrompts([])
       // @ts-ignore
       if (activeChannel?.description && getWebsocketClient?.send) {
-        generateFollowUpMessages(`
+        generate_followUpMessages(`
   Space name: ${activeSpace?.name}
   Space description: ${activeSpace?.description}
   
@@ -125,7 +125,7 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
                     iconPrefix='fas' 
                     onClick={() => {
                       set_suggestedPrompts([])
-                      generateFollowUpMessages(`
+                      generate_followUpMessages(`
                       Space name: ${activeSpace?.name}
                       Space description: ${activeSpace?.description}
                       

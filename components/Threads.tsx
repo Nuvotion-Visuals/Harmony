@@ -55,7 +55,7 @@ export const Threads = ({ }: Props) => {
 
   
   const { language, response, loading, error, completed } = useLanguageAPI('');
-  const { generateThreadPrompts } = language;
+  const { generate_threadPrompts } = language;
   
   const [suggestedPrompts, set_suggestedPrompts] = useState([])
 
@@ -96,7 +96,7 @@ export const Threads = ({ }: Props) => {
     set_suggestedPrompts([])
     // @ts-ignore
     if (activeChannel?.description && getWebsocketClient?.send) {
-        generateThreadPrompts(`
+        generate_threadPrompts(`
 Space name: ${activeSpace?.name}
 Space description: ${activeSpace?.description}
 
@@ -245,7 +245,7 @@ User feedback (optional): ${feedback}
                                   icon: 'bolt-lightning',
                                   name: 'Suggest threads',
                                   onClick: () => {
-                                    generateThreadPrompts(`
+                                    generate_threadPrompts(`
                                     Space name: ${activeSpace?.name}
                                     Space description: ${activeSpace?.description}
                                     
@@ -342,7 +342,7 @@ User feedback (optional): ${feedback}
                                         iconPrefix='fas'
                                         minimal
                                         text='Auto'
-                                        onClick={() => generateThreadPrompts(`
+                                        onClick={() => generate_threadPrompts(`
                                         Space name: ${activeSpace?.name}
                                         Space description: ${activeSpace?.description}
                                         

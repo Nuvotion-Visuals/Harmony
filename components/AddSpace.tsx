@@ -44,7 +44,7 @@ export const AddSpace = React.memo(({}: Props) => {
   const [url, set_url] = useState<string | undefined>('');
   const { language, response, loading, error, completed } = useLanguageAPI('');
   const [suggested, set_suggested] = useState<Suggested>({ groups: [] });
-  const { generateGroups } = language;
+  const { generate_groups } = language;
   const [value, set_value] = useState<ExpandableListProps[] | null>(null);
 
   useEffect(() => {
@@ -129,7 +129,7 @@ export const AddSpace = React.memo(({}: Props) => {
               disabled={!loading && !description}
               blink={!!description && !loading}
               onClick={() => {
-                generateGroups(description);
+                generate_groups(description);
                 set_value(null);
               }}
             />
