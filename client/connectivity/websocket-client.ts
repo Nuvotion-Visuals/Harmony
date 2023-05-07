@@ -1,8 +1,7 @@
 import { store } from 'redux-tk/store';
-import { generateUUID } from '@avsync.live/formation';
+import { generateUUID, scrollToElementById } from '@avsync.live/formation';
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { speakStream } from 'client/speech/speech';
-import { scrollToElementById } from 'client/utils';
 
 async function connectToServer() {
   let ws = {} as any

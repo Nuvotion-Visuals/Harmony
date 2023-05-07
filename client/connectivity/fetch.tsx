@@ -1,5 +1,4 @@
-// @ts-nocheck
-import html2plaintext from 'html2plaintext'
+import { HTMLtoPlaintext } from '@avsync.live/formation';
 
 interface ArticleContent {
   url: string;
@@ -151,7 +150,7 @@ export const getArticleContent = (
     if (youtubeDomains.includes(hostname)) {
       getYouTubeTranscript(url,
         (transcript) => {
-          callback(html2plaintext(transcript))
+          callback(HTMLtoPlaintext(transcript))
         },
         () => {
           onError('Sorry, I could not get the video transcript')

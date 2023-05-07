@@ -1,5 +1,4 @@
-import { Box, Button, Gap, Item, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation';
-import { scrollToElementById } from 'client/utils';
+import { Box, Button, Gap, Item, scrollToElementById, TextInput } from '@avsync.live/formation';
 import { getWebsocketClient } from 'client/connectivity/websocket-client';
 import { useLanguageAPI } from 'client/language/hooks';
 import React, { useEffect, useState } from 'react'

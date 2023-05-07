@@ -1,4 +1,4 @@
-import { Button, Page, Placeholders, RichTextEditor, LoadingSpinner, useBreakpoint, Dropdown, Box, Select, AutocompleteDropdown, Label } from '@avsync.live/formation';
+import { HTMLtoPlaintext, Button, Page, Placeholders, RichTextEditor, LoadingSpinner, useBreakpoint, Dropdown, Box, Select, AutocompleteDropdown, Label } from '@avsync.live/formation';
 import { getArticleContent, insertContentByUrl } from 'client/connectivity/fetch';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -7,8 +7,6 @@ import { Item } from '@avsync.live/formation';
 import { use100vh } from 'react-div-100vh';
 import { useLanguage_setQuery } from 'redux-tk/language/hook';
 import { speak, speakStream } from 'client/speech/speech';
-// @ts-ignore
-import html2plaintext from 'html2plaintext'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook';
 import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_activeGroup, useSpaces_threadsByGuid, useSpaces_activeThreadGuid, useSpaces_setActiveThreadGuid } from 'redux-tk/spaces/hook';
 
@@ -162,7 +160,7 @@ export const Reader: React.FC<Props> = () => {
             iconPrefix='fas'
             minimal
             onClick={() => {
-              speak(html2plaintext(content), () => {})
+              speak(HTMLtoPlaintext(content || ''), () => {})
             }}
           />
           <Box pr={.5}>

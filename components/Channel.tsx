@@ -1,4 +1,4 @@
-import { Box, Button, Dropdown, Item, Page, Spacer, useBreakpoint } from '@avsync.live/formation'
+import { scrollToElementById, Box, Button, Dropdown, Item, Page, Spacer, useBreakpoint } from '@avsync.live/formation'
 import React, { useEffect, useRef, useState } from 'react'
 import { use100vh } from 'react-div-100vh'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
@@ -9,7 +9,6 @@ import { Threads } from './Threads'
 
 import { ChatBox } from './ChatBox'
 import { useLanguage_query } from 'redux-tk/language/hook'
-import { scrollToElementById } from 'client/utils'
 
 interface Props {
   

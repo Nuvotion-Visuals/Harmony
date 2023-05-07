@@ -1,5 +1,4 @@
-import { Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, LoadingSpinner, ParseHTML, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation'
-import { scrollToElementById } from 'client/utils'
+import { scrollToElementById, Box, Button, Dropdown, Gap, generateUUID, Item, Label, LineBreak, LoadingSpinner, ParseHTML, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation'
 import { getWebsocketClient } from 'client/connectivity/websocket-client'
 import { useLanguageAPI } from 'client/language/hooks'
 import React, { useCallback, useEffect, useRef, useState } from 'react'

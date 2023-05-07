@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import * as Types from './types'
-import { Box, Button, Gap, Item, Label, LabelColor, LineBreak } from '@avsync.live/formation'
-import { scrollToElementById } from 'client/utils'
+import { Box, Button, Gap, Item, Label, LabelColor, LineBreak, scrollToElementById } from '@avsync.live/formation'
 
 interface Props extends Types.Image {
   

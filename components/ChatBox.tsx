@@ -1,4 +1,4 @@
-import { Box, Button, Dropdown, generateUUID, Page, RichTextEditor, TextInput, useBreakpoint} from '@avsync.live/formation'
+import { scrollToElementById, Box, Button, Dropdown, generateUUID, Page, RichTextEditor, TextInput, useBreakpoint} from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
@@ -11,7 +11,6 @@ import { getWebsocketClient } from 'client/connectivity/websocket-client'
 
 import { Message as MessageProps, Thread as ThreadProps } from 'redux-tk/spaces/types'
 import { useLanguage_query, useLanguage_setQuery } from 'redux-tk/language/hook'
-import { scrollToElementById } from 'client/utils'
 
 const systemMessage = `
 My name is Lexi.

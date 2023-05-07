@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import * as Types from './types';
-import { Box, Button, Dropdown, Gap, Icon, Item, LoadingSpinner } from '@avsync.live/formation'
+import { Box, Button, Dropdown, Gap, Icon, Item, LoadingSpinner, HTMLtoPlaintext } from '@avsync.live/formation'
 import { insertContentByUrl } from 'client/connectivity/fetch';
 import { useLanguage_query, useLanguage_setQuery } from 'redux-tk/language/hook';
 import styled from 'styled-components';
-// @ts-ignore
-import html2plaintext from 'html2plaintext'
 import { useRouter } from 'next/router';
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook';
 
@@ -86,7 +84,7 @@ export const SearchResult = ({ result }: { result: Types.SearchResult }) => {
                       insertContentByUrl(
                         result.url, 
                         content => {
-                          set_query(`${query}\n${html2plaintext(content).replace(/\[[^\]]*\]/g, '')}`)
+                          set_query(`${query}\n${HTMLtoPlaintext(content).replace(/\[[^\]]*\]/g, '')}`)
                           set_disabled(false)
                         },
                         error => {

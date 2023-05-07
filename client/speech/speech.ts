@@ -3,8 +3,7 @@ import { split } from 'sentence-splitter';
 
 let audioElements: HTMLAudioElement[] = [];
 let audioSentences: string[] = [];
-// @ts-ignore
-import html2plaintext from 'html2plaintext'
+import { HTMLtoPlaintext } from '@avsync.live/formation';
 
 function createAudioElement(text: string): HTMLAudioElement {
   const audioUrl = `/tts/tts?text=${encodeURIComponent(text)}`;
@@ -59,7 +58,7 @@ export const speak = async (text: string, callback: (error: any) => void) => {
     return;
   }
 
-  const normalizedText = html2plaintext(text);
+  const normalizedText = HTMLtoPlaintext(text);
   const splitSentences = split(normalizedText);
   const sentences = splitSentences.filter(item => item.type === 'Sentence').map(item => item.raw);
   const maxLengthSentences = sentences.flatMap(sentence => {

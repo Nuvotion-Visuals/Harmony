@@ -168,14 +168,19 @@ export const Groups = React.memo(({ }: Props) => {
     const [targetChannelGuid, set_targetChannelGuid] = useState('')
     useEffect(() => {
       if (response && completed && targetChannelGuid) {
-        const newName = JSON.parse(response)?.title
-        updateChannel({
-          guid: targetChannelGuid,
-          channel: {
-            ...channelsByGuid[targetChannelGuid],
-            name: newName,
-          },
-        });
+        try {
+          const newName = JSON.parse(response)?.title
+          updateChannel({
+            guid: targetChannelGuid,
+            channel: {
+              ...channelsByGuid[targetChannelGuid],
+              name: newName,
+            },
+          });
+        }
+       catch (e) {
+        console.log(e)
+       }
       }
     }, [response, completed])
     
