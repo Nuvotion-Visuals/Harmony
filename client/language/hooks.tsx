@@ -60,6 +60,8 @@ export const useLanguageAPI = (initialValue: string) => {
     ) => { removeListeners: () => void }
   ) => {
     dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_COMPLETED', payload: false });
+
 
     const onComplete = (message: string) => {
       dispatch({ type: 'SET_RESPONSE', payload: message });

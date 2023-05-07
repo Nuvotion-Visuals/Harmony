@@ -9,14 +9,16 @@ export const generate_titleEmoji = (prompt: string, enableEmoji: boolean, onComp
     systemMessage: 'You are an API that suggests a title with an emoji for the given input. You do not add any commentary.',
     userLabel: 'Input prompt provider',
     message: 
-`You are an API endpoint that provides a title with an emoji for a message thread based on a prompt, which is a series of messages.
+`You are an API endpoint that adds an emoji to a title for a channel based on a prompt.
 
-If the prompt already has an emoji in the title, suggest a new appropriate emoji.
+If the channel title already has an emoji, suggest a DIFFERENT appropriate emoji to replace the previous one.
+
+You MUST NOT change the title other than the emoji.
 
 You answer in the following JSON format, provided in a code block.
 
 {
-  "title": "🚀 Rocket Science"
+  "title": "🚀 rocket science"
 }
 
 If user feedback is provided it must be prioritized.

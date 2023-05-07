@@ -9,16 +9,18 @@ import {
   LabelColor, 
   Item,
   useBreakpoint,
-  Label
+  Label,
+  LoadingSpinner
 } from '@avsync.live/formation'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_addChannel, useSpaces_addChannelToGroup, useSpaces_addGroup, useSpaces_addGroupToSpace, useSpaces_channelsByGuid, useSpaces_groupsByGuid, useSpaces_removeChannel, useSpaces_removeChannelFromGroup, useSpaces_removeGroupFromSpace } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_activeSpaceGuid, useSpaces_addChannel, useSpaces_addChannelToGroup, useSpaces_addGroup, useSpaces_addGroupToSpace, useSpaces_channelsByGuid, useSpaces_groupsByGuid, useSpaces_removeChannel, useSpaces_removeChannelFromGroup, useSpaces_removeGroupFromSpace, useSpaces_updateChannel } from 'redux-tk/spaces/hook'
 // @ts-ignore
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types'
 import { useRouter } from 'next/router'
 import { useLayout_incrementActiveSwipeIndex } from 'redux-tk/layout/hook'
 import { Indicator } from './Indicator'
 import { AddChannelInput } from './AddChannelInput'
+import { useLanguageAPI } from 'client/language/hooks'
 
 type List = {
   expanded: boolean,
@@ -52,7 +54,6 @@ export const Groups = React.memo(({ }: Props) => {
     const addGroup = useSpaces_addGroup()
     const addGroupToSpace = useSpaces_addGroupToSpace()
     const activeChannel = useSpaces_activeChannel()
-
 
     const [newChannelName, set_newChannelName] = useState('')
 
@@ -159,6 +160,24 @@ export const Groups = React.memo(({ }: Props) => {
         },
       ]
     }, [onAddChannel, newChannelName])
+
+    // generate emoji for title
+    const updateChannel = useSpaces_updateChannel()
+    const { language, response, loading, error, completed } = useLanguageAPI('');
+    const { generate_titleEmoji } = language;
+    const [targetChannelGuid, set_targetChannelGuid] = useState('')
+    useEffect(() => {
+      if (response && completed && targetChannelGuid) {
+        const newName = JSON.parse(response)?.title
+        updateChannel({
+          guid: targetChannelGuid,
+          channel: {
+            ...channelsByGuid[targetChannelGuid],
+            name: newName,
+          },
+        });
+      }
+    }, [response, completed])
     
     return (<>
       <ExpandableLists 
@@ -168,9 +187,7 @@ export const Groups = React.memo(({ }: Props) => {
           value: {
             item: {
               ...expandableList.value.item,
-              // icon: value[i]?.expanded ? 'caret-down' : 'caret-right',
               iconPrefix: 'fas',
-              // minimalIcon: true,
               children: <div onClick={e => e.stopPropagation()}>
                 <Spacer />
                 <Box height={2}>
@@ -206,8 +223,10 @@ export const Groups = React.memo(({ }: Props) => {
               </div>
             },
             list: expandableList.value.list
-              .map((listItem, listItemIndex1) =>
-                ({
+              .map((listItem, listItemIndex1) => {
+                const guid = spaceChannelGuids?.[i]?.[listItemIndex1] || ''
+
+                return ({
                   ...listItem,
                   children: listItem.subtitle && 
                     <div onClick={e => {
@@ -216,12 +235,16 @@ export const Groups = React.memo(({ }: Props) => {
                     }}>
                       <Box height={1.65}>
                         {
+                          (loading && targetChannelGuid === guid) &&
+                            <LoadingSpinner small />
+                        }
+                        {
                           spaceChannelGuids &&
                             <Indicator
-                              count={channelsByGuid?.[spaceChannelGuids?.[i]?.[listItemIndex1]]?.threadGuids?.length}
+                              count={channelsByGuid?.[guid]?.threadGuids?.length}
                             />
                         }
-                        
+
                         <Dropdown 
                           icon={listItem.active ? 'ellipsis-h' : undefined}
                           iconPrefix='fas'
@@ -233,7 +256,18 @@ export const Groups = React.memo(({ }: Props) => {
                               text: 'Edit',
                               icon: 'edit',
                               iconPrefix: 'fas',
-                              href: `/spaces/${activeSpaceGuid}/groups/${activeSpace?.groupGuids[i]}/channels/${activeChannel?.guid}/edit`
+                              href: `/spaces/${activeSpaceGuid}/groups/${activeSpace?.groupGuids[i]}/channels/${guid}/edit`
+                            },
+                            {
+                              text: 'Suggest emoji',
+                              icon: 'bolt-lightning',
+                              iconPrefix: 'fas',
+                              onClick: () => {
+                                set_targetChannelGuid(guid || '')
+                                generate_titleEmoji(`
+                                  Channel name: ${listItem.subtitle}
+                                `)
+                              }
                             },
                             {
                               text: 'Remove',
@@ -251,6 +285,8 @@ export const Groups = React.memo(({ }: Props) => {
                       </Box>
                     </div>
                 })  
+              }
+                
               )
             }
         }))}
