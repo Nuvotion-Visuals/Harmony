@@ -1,7 +1,5 @@
-import { LoadingSpinner } from '@avsync.live/formation'
 import React from 'react'
 import styled from 'styled-components'
-import { MatrixLoading } from './MatrixLoading'
 
 interface Props {
   large?: boolean
@@ -10,11 +8,7 @@ interface Props {
 export const Logo = React.memo(({ large }: Props) => {
   return (
     <S.LogoContainer large={large || false}>
-    <MatrixLoading logo={true}> 
-    </MatrixLoading>
-    <S.Connection>
-    <LoadingSpinner chat />
-    </S.Connection>
+    <S.Logo src='/harmony-white.svg' />
     </S.LogoContainer>
   )
 })
@@ -38,8 +32,7 @@ LogoContainer: styled.div<{
     transform: ${props => props.large ? 'scale(4)' : 'none'};
   `,
   Logo: styled.img`
-    height: var(--F_Input_Height);
-    width: var(--F_Input_Height);
+    width: 100%;
   `,
   Connection: styled.div`
     position: absolute;

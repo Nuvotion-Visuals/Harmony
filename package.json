@@ -1,7 +1,7 @@
 {
   "name": "lexi",
   "version": "0.9.1",
-  "description": "Hi, I'm Lexi, a creative artifical general intelligence system (AGI) ready to work with you on artistic and technical projects.",
+  "description": "Hi, I'm Harmony, a creative artifical general intelligence system (AGI) ready to work with you on artistic and technical projects.",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --watch server --ext ts --exec 'ts-node' --project tsconfig.server.json server/index.ts",
     "build:server": "tsc --project tsconfig.server.json",

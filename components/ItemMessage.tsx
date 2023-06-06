@@ -51,7 +51,7 @@ export const ItemMessage = React.memo((props: Props) => {
   } = props
   const [edit, set_edit] = useState(false)
 
-  const isLexi = userLabel === 'Lexi'
+  const isLexi = userLabel === 'Harmony'
 
   const [localValue, set_localValue] = useState(markdownToHTML(message))
 
@@ -83,8 +83,8 @@ export const ItemMessage = React.memo((props: Props) => {
       <Box width={2} height='100%' wrap>
         <S.Avatar>
           <Avatar
-            labelColor={'gray'}
-            src={isLexi ? '/assets/lexi-circle.png' : undefined}
+            labelColor={'none'}
+            src={isLexi ? '/harmony-white.svg' : undefined}
             icon={isLexi ? undefined : 'user'}
           />
         </S.Avatar>

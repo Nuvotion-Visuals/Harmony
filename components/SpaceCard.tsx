@@ -72,7 +72,7 @@ export const SpaceCard = React.memo(({ previewSrc, name, groupsCount, channelsCo
           />
           <Item
               text="Let's Work Together"
-              subtitle='Hi, my name is Lexi. I can help you with any project. Think of me as your virtual coworker.'
+              subtitle='Hi, my name is Harmony. I can help you with any project. Think of me as your virtual coworker.'
           />
           </Gap>
           </Box>

@@ -99,8 +99,8 @@ function startServer() {
                     (0, sendMessage_1.sendMessage)({
                         conversationId: '',
                         parentMessageId: '',
-                        personaLabel: 'Lexi',
-                        systemMessage: 'You are an especially creative autonomous cognitive entity named Lexi.',
+                        personaLabel: 'Harmony',
+                        systemMessage: 'You are an especially creative autonomous cognitive entity named Harmony.',
                         userLabel: 'user',
                         message: 'State if you are functioning properly. What is your name?',
                         onComplete: function (_a) {

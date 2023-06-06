@@ -9,7 +9,7 @@ type Bookmark = {
 export const bookmarks: Bookmark[] = [
   {
     icon: 'https://lexi.studio/assets/lexi-circle.png',
-    name: "Lexi.studio",
+    name: "Harmony.studio",
     url: "https://lexi.studio/",
   },
   {

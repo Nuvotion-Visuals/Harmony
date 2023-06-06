@@ -2,7 +2,7 @@
   "name": "lexios",
   "version": "1.0.0",
   "author": "AVsync.LIVE LLC",
-  "description": "Lexi's browser-based operating system.",
+  "description": "Harmony's browser-based operating system.",
   "license": "https://github.com/AVsync-LIVE/License/blob/main/LICENSE.md",
   "browserslist": [
     "defaults and supports es6 and not ie 11 and >1%"

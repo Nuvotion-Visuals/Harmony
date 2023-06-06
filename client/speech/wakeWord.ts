@@ -20,7 +20,7 @@ export function listenForWakeWord(callback: () => void) {
   recognition.lang = 'en-US';
   
   // Set up the wake word grammar
-  const wakeWord = 'Lexi';
+  const wakeWord = 'Harmony';
   if (SpeechGrammarList !== undefined) {
     const speechRecognitionList = new SpeechGrammarList();
 

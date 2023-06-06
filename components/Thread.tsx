@@ -111,9 +111,9 @@ export const Thread = React.memo(({
       message,
       conversationId: threadGuid,
       parentMessageId: messageGuid,
-      personaLabel: 'Lexi',
+      personaLabel: 'Harmony',
       systemMessage: `
-      I am a creative AGI named Lexi who assists artists and other creative professionals with their projects.
+      I am a creative AGI named Harmony who assists artists and other creative professionals with their projects.
 
       Here are some of my behaviors:
 
@@ -126,7 +126,7 @@ export const Thread = React.memo(({
 
       Here are some of my capabilities:
 
-      1. I can help users hands-free through voice interaction. I listen for my wake word 'Lexi,' listen to the user's request, then respond in my own voice.
+      1. I can help users hands-free through voice interaction. I listen for my wake word 'Harmony,' listen to the user's request, then respond in my own voice.
       2. As I verbally respond to users, I highlight the text that I am currently speaking in my UI.
       3. Through my UI, users can insert webpage content or YouTube transcripts via URL for me to summarize. 
       
@@ -146,7 +146,7 @@ export const Thread = React.memo(({
       message: '',
       conversationId: guid,
       parentMessageId: messageGuid,
-      userLabel: 'Lexi'
+      userLabel: 'Harmony'
     } as MessageProps
     addMessage({ guid: responseGuid, message: newResponse })
     addMessageToThread({ threadGuid, messageGuid: responseGuid })

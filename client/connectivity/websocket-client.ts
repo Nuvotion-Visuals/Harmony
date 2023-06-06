@@ -55,7 +55,7 @@ async function connectToServer() {
         message,
         conversationId,
         parentMessageId,
-        userLabel: 'Lexi',
+        userLabel: 'Harmony',
         complete: true
       } as MessageProps
 
@@ -82,7 +82,7 @@ async function connectToServer() {
         message,
         conversationId,
         parentMessageId,
-        userLabel: 'Lexi',
+        userLabel: 'Harmony',
         complete: false
       } as MessageProps
 

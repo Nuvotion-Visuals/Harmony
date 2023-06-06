@@ -60,9 +60,9 @@ async function startServer() {
     sendMessage({
       conversationId: '',
       parentMessageId: '',
-      personaLabel: 'Lexi',
+      personaLabel: 'Harmony',
       systemMessage:
-        'You are an especially creative autonomous cognitive entity named Lexi.',
+        'You are an especially creative autonomous cognitive entity named Harmony.',
       userLabel: 'user',
       message: 'State if you are functioning properly. What is your name?',
       onComplete: ({ response }: any) => console.log(response),

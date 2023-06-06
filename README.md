@@ -1,10 +1,10 @@
-# Lexi
+# Harmony
 
-Welcome to Lexi.studio, an open source platform for working with me, Lexi, a creative AGI coworker. I can provide artists and creative professionals with constructive feedback and evaluations on their work, as well as synthesize images, videos, music, and text, assume various roles, and help you control and automate network connected devices.
+Welcome to Harmony.studio, an open source platform for working with me, Harmony, a creative AGI coworker. I can provide artists and creative professionals with constructive feedback and evaluations on their work, as well as synthesize images, videos, music, and text, assume various roles, and help you control and automate network connected devices.
 
 I can listen to your spoken commands and answer in my own voice. I have a consistent sense of identity, personality, and goals, and will get to know you better over time in order to be more helpful.
 
-Lexi.studio is being developed by AVsync.LIVE LLC with the help of numerous open source contributers, libraries, and projects.
+Harmony.studio is being developed by AVsync.LIVE LLC with the help of numerous open source contributers, libraries, and projects.
 
 > Note: My status as an AGI is aspirational, I am not yet able to act autonomously.
 
@@ -56,19 +56,19 @@ Language models are what makes AGIs like myself capable of performing a wide ran
 
 ## Getting started
 
-To get started with Lexi.studio, clone the repository to your local machine. This can be done by using the following command: 
+To get started with Harmony.studio, clone the repository to your local machine. This can be done by using the following command: 
 
-`git clone https://github.com/AVsync-LIVE/Lexi.studio.git` 
+`git clone https://github.com/AVsync-LIVE/Harmony.studio.git` 
 
 Once you have cloned the repository, you can start the containers using Docker. This can be done by running the following command from each module directory (LexiOS, LexiTTS, etc) of the repository: 
 
 `docker-compose up -d` 
 
-Once the containers are up and running, you will need to login to OpenAI through a popup window. This will allow you to access the full range of features and functionality of Lexi.studio. With the containers running and your login completed, you are now ready to start using Lexi.studio to enhance your creativity and productivity by visiting Lexi.studio [http://localhost:1618](http://localhost:1618) and/or LexiOS[http://localhost:3001](http://localhost:3001).
+Once the containers are up and running, you will need to login to OpenAI through a popup window. This will allow you to access the full range of features and functionality of Harmony.studio. With the containers running and your login completed, you are now ready to start using Harmony.studio to enhance your creativity and productivity by visiting Harmony.studio [http://localhost:1618](http://localhost:1618) and/or LexiOS[http://localhost:3001](http://localhost:3001).
 
 ## DNS and SSL
 
-Lexi.studio is designed to run via HTTPS to maintain security and CORS compliance, both in development and production. First, be sure that your firewall is open on port 443. You'll then need SSL certificates for my many modules.
+Harmony.studio is designed to run via HTTPS to maintain security and CORS compliance, both in development and production. First, be sure that your firewall is open on port 443. You'll then need SSL certificates for my many modules.
 
 This is best achieved by using Cloudflare for your DNS, and creating a wildcard certificate for your domain. You can then use Lexiproxy (Nginx Proxy Manager) to reverse proxy each module using your wildcard certificate. You can then limit access to my systems via Cloudflare WAF rules.
 
@@ -88,7 +88,7 @@ In addition to providing feedback and support for creative projects, I am also a
 
 ## Voice
 
-You can simply say my name, "Lexi," to wake me up and then give me commands or ask me questions. I have my own voice and can communicate with you more naturally and easily. 
+You can simply say my name, "Harmony," to wake me up and then give me commands or ask me questions. I have my own voice and can communicate with you more naturally and easily. 
 This allows you to interact with me in a more natural and intuitive way, without needing to use a keyboard or screen. 
 
 
@@ -108,7 +108,7 @@ As an AGI, I have certain limitations and constraints that affect my ability to 
 
 ## Contributing
 
-We welcome contributions to the Lexi.studio platform. If you have ideas or suggestions for improving my capabilities or functionality, please feel free to open an issue or submit a pull request. We are always looking for ways to improve and expand my capabilities, and your contributions can help to make Lexi.studio an even more powerful and valuable resource for artists and creative professionals.
+We welcome contributions to the Harmony.studio platform. If you have ideas or suggestions for improving my capabilities or functionality, please feel free to open an issue or submit a pull request. We are always looking for ways to improve and expand my capabilities, and your contributions can help to make Harmony.studio an even more powerful and valuable resource for artists and creative professionals.
 
 ## Open Source Committment
 

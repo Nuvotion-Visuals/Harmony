@@ -43,7 +43,7 @@ var clients = {};
 var sendMessage = function (_a) {
     var conversationId = _a.conversationId, parentMessageId = _a.parentMessageId, personaLabel = _a.personaLabel, systemMessage = _a.systemMessage, userLabel = _a.userLabel, message = _a.message, onComplete = _a.onComplete, onProgress = _a.onProgress;
     return __awaiter(void 0, void 0, void 0, function () {
-        var guid, storedClient, ChatGPTAPI, api, onProgressWrapper, res;
+        var guid, storedClient, ChatGPTAPI, api, onProgressWrapper, maxLength, period, messageToSend, res;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -79,7 +79,13 @@ var sendMessage = function (_a) {
                             });
                         }
                     };
-                    return [4 /*yield*/, storedClient.api.sendMessage("".concat(message.slice(0, 4096)), {
+                    maxLength = 4096;
+                    period = ".";
+                    messageToSend = message;
+                    if (message.length > maxLength) {
+                        messageToSend = message.slice(0, maxLength - period.length) + period;
+                    }
+                    return [4 /*yield*/, storedClient.api.sendMessage(messageToSend, {
                             systemMessage: systemMessage,
                             parentMessageId: parentMessageId,
                             onProgress: onProgressWrapper,

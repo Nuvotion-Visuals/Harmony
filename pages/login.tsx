@@ -75,7 +75,7 @@ const Preview = ({  } : Props) => {
     setDisabled(false)
   }, [formik.errors])
 
-  return (<Auth title='Welcome to Lexi.studio' logoSrc='/assets/lexi-circle.png'>
+  return (<Auth title='Welcome to Harmony.studio' logoSrc='/assets/lexi-circle.png'>
     <form 
       onSubmit={formik.handleSubmit}
       onKeyDown={e => {
@@ -87,7 +87,7 @@ const Preview = ({  } : Props) => {
     >
       <StyleHTML>
         
-        <S.Help>Hi, I'm Lexi, a creative AGI ready to help you with any artistic or technical project.</S.Help>
+        <S.Help>Hi, I'm Harmony, a creative AGI ready to help you with any artistic or technical project.</S.Help>
         </StyleHTML>
       <Gap gap={1}>
         

@@ -28,7 +28,7 @@ async function synthesizeText(text: string, res: Response): Promise<void> {
     voice: {
       languageCode: 'en-US',
       voiceType: 'Neural2',
-      name: 'en-US-Neural2-C',
+      name: 'en-US-Neural2-F',
       ssmlGender: 'FEMALE'
     },
     audioConfig: {

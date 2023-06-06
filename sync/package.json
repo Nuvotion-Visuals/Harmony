@@ -1,7 +1,7 @@
 {
   "name": "lexisync",
   "version": "1.0.0",
-  "description": "Websockets sync provider for Lexi using Yjs",
+  "description": "Websockets sync provider for Harmony using Yjs",
   "main": "./server.js",
   "scripts": {
     "start": "node ./server.js"

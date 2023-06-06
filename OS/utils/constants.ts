@@ -321,7 +321,7 @@ export const TASKBAR_HEIGHT = 42;
 
 export const PACKAGE_DATA = {
   alias: "LexiOS",
-  description: "Lexi's browser-based operating system.",
+  description: "Harmony's browser-based operating system.",
   author: {
     name: 'AVsync.LIVE LLC'
   },
