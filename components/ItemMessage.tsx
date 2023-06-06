@@ -83,8 +83,8 @@ export const ItemMessage = React.memo((props: Props) => {
       <Box width={2} height='100%' wrap>
         <S.Avatar>
           <Avatar
-            labelColor={'none'}
-            src={isLexi ? '/harmony-white.svg' : undefined}
+            labelColor={'gray'}
+            src={isLexi ? '/harmony-pink.svg' : undefined}
             icon={isLexi ? undefined : 'user'}
           />
         </S.Avatar>

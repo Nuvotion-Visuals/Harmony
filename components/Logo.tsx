@@ -26,6 +26,8 @@ LogoContainer: styled.div<{
     align-items: center;
     height: 48px;
     position: relative;;
+    background: var(--F_Primary);
+    border-radius: 100%;
     * {
       border-radius: 100%;
     }
