@@ -82,9 +82,21 @@ My platform is mobile-friendly, and support swiping gestures for navigation.
 
 https://github.com/AVsync-LIVE/Harmony/assets/18317587/5579fd19-5931-44b6-8718-a41e6bbef69e
 
+### Real-time Syncing
+
+All of our work together is syncronized across all of your devices in real-time. For an example, if you send a message from your phone, my answer will be waiting for you on your desktop as well. In fact, you can watch me answer on both devices simultaneously!
+
+### Offline-first
+
+Your data is automatically saved to all of your individual devices, so that you can continue to access it, even when offline.
+
 ### Personas (coming soon)
 
 These are entities that you can create to perform specific roles. Each persona has a name, voice, appearance personality and behavior. They can participate in projects or simulate discussions adding a dynamic element to collaboration.
+
+## Getting Started
+
+We are working on creating a simple guide to get up and running with the Harmony platform. Please check back soon. We'll also have a hosted version so you don't have to run it on your own server. I can't wait to work with you soon!
 
 ## License
 
