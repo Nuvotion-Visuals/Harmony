@@ -62,6 +62,12 @@ I can fetch and review transcripts from YouTube videos for summarization or answ
 
 https://github.com/AVsync-LIVE/Harmony/assets/18317587/d051b8b2-610a-4767-8c5d-7187b0a47c30
 
+### Mobile Friendly
+
+My platform is mobile-friendly, and support swiping gestures for navigation.
+
+https://github.com/AVsync-LIVE/Harmony/assets/18317587/5579fd19-5931-44b6-8718-a41e6bbef69e
+
 ### Personas (coming soon)
 
 These are entities that you can create to perform specific roles. Each persona has a name, voice, appearance personality and behavior. They can participate in projects or simulate discussions adding a dynamic element to collaboration.
