@@ -18,7 +18,7 @@ interface Props {
   onChange?: (query: string) => void
 }
 
-export const Search = ({ hero } : Props) => {
+export const Search = React.memo(({ hero } : Props) => {
   const [activeType, set_activeType] = useState<'All' | 'Images' | 'Videos'>('All')
 
   const [imageSearchResults, setImageSearchResults] = useState<Types.ImageSearchResultsData | null>(null);
@@ -292,7 +292,7 @@ export const Search = ({ hero } : Props) => {
       
     </S.Search>
   );
-};
+})
 
 const S = {
   Search: styled.div`

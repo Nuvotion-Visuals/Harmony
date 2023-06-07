@@ -13,7 +13,7 @@ import { ThreadSuggestions } from './ThreadSuggestions'
 interface Props extends ThreadProps {
   threadGuid: string,
   expanded: boolean,
-  onExpand: (arg0: boolean) => void
+  onExpand: () => void
 }
 
 export const Thread = React.memo(({
@@ -86,11 +86,6 @@ export const Thread = React.memo(({
     set_newThreadName(name)
     set_newThreadDescription(description)
   }, [edit])
-
-
-  const handleClick = useCallback(() => {
-    onExpand(!expanded);
-  }, [onExpand, expanded]);
 
   const sendMessageToWebsocket = (message: string) => {
   const websocketClient = getWebsocketClient()
@@ -233,7 +228,7 @@ export const Thread = React.memo(({
                 ? undefined 
                 : description ? <ParseHTML html={description} /> : undefined
               }
-            onClick={() => handleClick()}
+            onClick={() => onExpand()}
           >
          
             <Indicator count={messageGuids?.length} />

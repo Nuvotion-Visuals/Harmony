@@ -6,73 +6,78 @@ import { Thread } from './Thread'
 import { use100vh } from 'react-div-100vh'
 import { ThreadsHeader } from './ThreadsHeader'
 
+interface ThreadWrapperProps {
+  threadGuid: string;
+  threadsByGuid: any;
+  expanded: boolean;
+  onExpand: (threadGuid: string) => void;
+}
+
+const ThreadWrapper = ({ threadGuid, threadsByGuid, expanded, onExpand }: ThreadWrapperProps) => {
+  const threadProps = useMemo(() => threadsByGuid[threadGuid], [threadsByGuid, threadGuid]);
+  const handleThreadExpand = useCallback(() => onExpand(threadGuid), [onExpand]);
+  
+  return (
+    <S.ThreadsContainer>
+      <Thread
+        {...threadProps}
+        expanded={expanded}
+        onExpand={handleThreadExpand}
+        threadGuid={threadGuid}
+      />
+    </S.ThreadsContainer>
+  );
+}
+
 interface Props {
   
 }
 
 export const Threads = ({ }: Props) => {
-  const activeGroup = useSpaces_activeGroup()
   const activeChannel = useSpaces_activeChannel()
   const threadsByGuid = useSpaces_threadsByGuid()
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
 
   const true100vh = use100vh()
-  
 
   const activeThreadGuid = useSpaces_activeThreadGuid()
-  const selected = useMemo(() => activeGroup?.name && activeGroup?.name, [activeGroup]);
   
-   const [expandedThreads, setExpandedThreads] = useState<boolean[]>([]);
-  const handleExpandClick = useCallback((index: number) => {
-    setExpandedThreads((prevExpandedThreads) => {
-      const newExpandedThreads = [...prevExpandedThreads];
-      newExpandedThreads[index] = !newExpandedThreads[index];
-      return newExpandedThreads;
-    });
-  }, []);
+  const [expandedThreads, setExpandedThreads] = useState<{ [key: string]: boolean }>({});
 
-    useEffect(() => {
+  const handleExpandClick = useCallback((threadGuid: string) => {
+    setExpandedThreads(prev => ({
+      ...prev,
+      [threadGuid]: !prev[threadGuid],
+    }));
+  }, []);
+  
+  useEffect(() => {
     if (activeThreadGuid) {
-      const targetIndex = activeChannel?.threadGuids.findIndex((item) => item === activeThreadGuid);
-      if (targetIndex !== undefined) {
-        setExpandedThreads((prevExpandedThreads) => {
-          const newExpandedThreads = [...prevExpandedThreads];
-          newExpandedThreads[targetIndex] = true;
-          return newExpandedThreads;
-        });
-      }
+      setExpandedThreads(prev => ({
+        ...prev,
+        [activeThreadGuid]: true,
+      }));
     }
   }, [activeThreadGuid]);
 
   return (<Box wrap width={'100%'}>
-    {
-      selected
-        ? <>
-            <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
-             
-              <Page noPadding>
-                <ThreadsHeader />
-                
-                  {
-                    activeChannel?.threadGuids?.map((threadGuid, index) => (
-                      <S.ThreadsContainer key={threadGuid}>
-                        <Thread
-                          {...threadsByGuid[threadGuid]}
-                          expanded={expandedThreads?.[index]}
-                          onExpand={() => handleExpandClick(index)}
-                          threadGuid={threadGuid}
-                        />
-                      </S.ThreadsContainer>
-                    ))
-                  }
-              </Page>
-            </S.Threads>
-          </>
-        : <Box py={.25}>
-            
-          </Box>
-    }
-    
+    <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
+      <Page noPadding>
+        <ThreadsHeader />
+        
+          {
+            activeChannel?.threadGuids?.map((threadGuid, index) => (
+              <ThreadWrapper
+                key={threadGuid}
+                threadGuid={threadGuid}
+                threadsByGuid={threadsByGuid}
+                expanded={expandedThreads[threadGuid]}
+                onExpand={handleExpandClick}
+              />
+            ))
+          }
+      </Page>
+    </S.Threads>
   </Box>
   )
 }

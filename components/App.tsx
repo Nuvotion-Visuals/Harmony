@@ -92,15 +92,6 @@ const App = ({ children }: Props) => {
     }
   }
 
-  const renderThirdPage = () => {
-    return <S.ThirdPage>
-      {/* <Chatbot /> */}
-      <Search />
-
-      {/* <ActiveSpaceMap /> */}
-    </S.ThirdPage>
-  }
-
   const { spaceGuid, groupGuid } = router.query
 
   useEffect(() => {
@@ -126,7 +117,7 @@ const App = ({ children }: Props) => {
       sidebarWidth='380px'
       firstPage={renderFirstPage()}
       secondPage={renderSecondPage()}
-      thirdPage={renderThirdPage()}
+      thirdPage={<Search />}
       navsPrimary={[
       {
         icon: 'diagram-project',
