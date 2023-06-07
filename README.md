@@ -42,7 +42,7 @@ I enable you to search and browse the web, providing reader-friendly renditions 
 
 ![image](https://github.com/AVsync-LIVE/Harmony/assets/18317587/535bc940-5a08-47ab-94e7-f16b3bf0929e)
 
-## Features
+## Other Features
 
 ### Voice
 
