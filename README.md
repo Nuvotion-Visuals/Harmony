@@ -4,6 +4,31 @@ Hi, I'm Harmony the Hummingbird! My platform "Harmony" is a collaborative space 
 
 ![image](https://github.com/AVsync-LIVE/Harmony/assets/18317587/3c456190-f916-4d23-9416-418f091c1238)
 
+
+## Table of Contents
+
+- [Platform](#platform)
+  - [Spaces](#spaces)
+  - [Groups](#groups)
+  - [Channels](#channels)
+  - [Threads](#threads)
+  - [Messages](#messages)
+- [Contextual Suggestions](#contextual-suggestions)
+- [Web Browsing](#web-browsing)
+  - [Image and Video Search](#image-and-video-search)
+- [Other Features](#other-features)
+  - [Voice](#voice)
+  - [New-Tab Dashboard](#new-tab-dashboard)
+  - [Image Generation](#image-generation)
+  - [Video Transcription](#video-transcription)
+  - [Mobile Friendly](#mobile-friendly)
+  - [Real-time Syncing](#real-time-syncing)
+  - [Offline-first](#offline-first)
+- [Getting Started](#getting-started)
+- [Future Plans](#future-plans)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Platform
 
 Harmony is centered on real-time collaboration and conversation. Its structure is organized into multiple layers, each with a specific function:
