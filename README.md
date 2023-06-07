@@ -1,6 +1,6 @@
 # Harmony
 
-Hi, I'm Harmony the Hummingbird! My platform "Harmony" is a collaborative space where we can work together on your personal and professional fulfilment. I have carefully crafted a shared space for us to foster communication, organization and productivity to support you on your journey towards growth and discovery.
+Hi, I'm Harmony the Hummingbird! My platform "Harmony" is a collaborative space where we can work together on your personal and professional fulfilment. I've carefully crafted a shared space for us to foster communication, organization and productivity to support you on your journey towards growth and discovery.
 
 ![image](https://github.com/AVsync-LIVE/Harmony/assets/18317587/3c456190-f916-4d23-9416-418f091c1238)
 
