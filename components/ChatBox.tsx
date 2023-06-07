@@ -1,7 +1,8 @@
-import { scrollToElementById, Box, Button, Dropdown, generateUUID, Page, RichTextEditor, TextInput, useBreakpoint} from '@avsync.live/formation'
+import styled from 'styled-components'
+import { scrollToElementById, Box, Button, Dropdown, generateUUID, Page, RichTextEditor, TextInput, useBreakpoint, Spacer, Item} from '@avsync.live/formation'
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { useSpaces_activeThreadGuid, useSpaces_activeThreadName, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 
 import { listenForWakeWord } from 'client/speech/wakeWord'
 import { playSound } from 'client/speech/soundEffects'
@@ -29,11 +30,48 @@ When I am asked to generate an image like that, I reply like this, just an html 
 where {description} = {sceneDetailed},%20{adjective1},%20{charactersDetailed},%20{adjective2},%20{visualStyle1},%20{visualStyle2},%20{visualStyle3},%20{genre}
 `
 
+const Reply = memo(() => {
+  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
+  const activeThreadName = useSpaces_activeThreadName()
+  const activeThreadGuid = useSpaces_activeThreadGuid()
+  return (
+    <Page noPadding>
+    {
+      activeThreadGuid &&
+        <S.Reply>
+          <Item
+            icon='reply'
+            minimalIcon
+            subtitle={activeThreadName || ''}
+            onClick={() => {
+              scrollToElementById(`top_${activeThreadGuid}`, {
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
+              })
+            }}
+          >
+            <Spacer />
+            <Button
+              icon='times'
+              iconPrefix='fas'
+              minimal
+              onClick={() => setActiveThreadGuid(null)}
+            />
+          </Item>
+        </S.Reply>
+      }
+  </Page>
+  )
+})
+
 interface Props {
-  
+  onHeightChange: (height: number) => void
 }
 
-export const ChatBox = ({ }: Props) => {
+export const ChatBox = ({
+  onHeightChange
+}: Props) => {
   const router = useRouter()
   const { channelGuid } = router.query
 
@@ -250,8 +288,39 @@ export const ChatBox = ({ }: Props) => {
 
   const { isMobile } = useBreakpoint()
 
+  const [chatBoxHeight, setChatBoxHeight] = useState(0);
+  const chatBoxRef = useRef(null);
+
+  useEffect(() => {
+    const chatBoxElement = chatBoxRef.current;
+    
+    if (chatBoxElement) {
+      const resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+          setChatBoxHeight(entry.contentRect.height);
+        }
+      });
+  
+      resizeObserver.observe(chatBoxElement);
+  
+      // Clean up function
+      return () => {
+        if(chatBoxElement) {
+          resizeObserver.unobserve(chatBoxElement);
+        }
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    onHeightChange(chatBoxHeight)
+  }, [chatBoxHeight])
+
   return (
-    <Page noPadding>
+    <S.Container ref={chatBoxRef}>
+      <Reply />
+      <Box py={.5}>
+      <Page noPadding>
       <RichTextEditor
         key='testley'
         value={query} 
@@ -341,5 +410,25 @@ export const ChatBox = ({ }: Props) => {
        
       </RichTextEditor>
     </Page>
+      </Box>
+     
+    </S.Container>
+   
  )
+}
+
+const S = {
+  Container: styled.div`
+    width: 100%;
+    max-height: 40vh;
+    overflow-y: auto;
+  `,
+  Reply: styled.div`
+    width: 100%;
+    border-left: 4px solid var(--F_Primary);
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  `
 }

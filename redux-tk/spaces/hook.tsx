@@ -26,6 +26,7 @@ export const useSpaces_spaceGuids = () => useSelector(selectors.select_spaceGuid
 export const useSpaces_spacesByGuid = () => useSelector(selectors.select_spacesByGuid);
 export const useSpaces_activeSpaceGuid = () => useSelector(selectors.select_activeSpaceGuid);
 export const useSpaces_spacesInfo = () => useSelector(selectors.select_spacesInfo);
+export const useSpaces_activeThreadName = () => useSelector(selectors.select_activeThreadName);
 export const useSpaces_addSpaceIncludingGroups = () => {
   const dispatch = useDispatch();
   return useCallback((payload: { space: Space; guid: Guid; suggested: Suggested }) => {

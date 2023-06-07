@@ -24,11 +24,6 @@ export const Channel = React.memo(({ }: Props) => {
   const activeChannel = useSpaces_activeChannel()
   const activeSpace = useSpaces_activeSpace()
   const activeGroup = useSpaces_activeGroup()
-  const threadsByGuid = useSpaces_threadsByGuid()
-  const activeThreadGuid = useSpaces_activeThreadGuid()
-  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
-
-  const query = useLanguage_query()
 
   const handleClickBottom = () => {
     scrollToElementById(`bottom_channel`, {
@@ -39,25 +34,6 @@ export const Channel = React.memo(({ }: Props) => {
   }
   
   const [height, setHeight] = useState(160);
-  const componentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (componentRef.current) {
-        setHeight(componentRef.current.clientHeight);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-  
-  useEffect(() => {
-    if (componentRef.current) {
-      setHeight(componentRef.current.clientHeight);
-    }
-  }, [activeThreadGuid, query])
 
   return (<S.Channel true100vh={true100vh || 0}>
     <Box height='var(--F_Header_Height)' width={'100%'}>
@@ -115,38 +91,10 @@ export const Channel = React.memo(({ }: Props) => {
       <div id='bottom_channel' />
     </S.Content>
 
-    <S.Bottom ref={componentRef}>
-      <Page noPadding>
-        {
-          activeThreadGuid &&
-            <S.Reply>
-              <Item
-                icon='reply'
-                minimalIcon
-                subtitle={` ${threadsByGuid?.[activeThreadGuid || '']?.name}`}
-                onClick={() => {
-                  scrollToElementById(`top_${activeThreadGuid}`, {
-                    behavior: 'smooth',
-                    block: 'start',
-                    inline: 'nearest'
-                  })
-                }}
-              >
-                <Spacer />
-                <Button
-                  icon='times'
-                  iconPrefix='fas'
-                  minimal
-                  onClick={() => setActiveThreadGuid(null)}
-                />
-              </Item>
-            </S.Reply>
-          }
-      </Page>
-      <Box p={.5}>
-        <ChatBox />
-      </Box>
-    </S.Bottom>
+    
+    <ChatBox 
+      onHeightChange={newHeight => setHeight(newHeight)}
+    />
   </S.Channel>)
 })
 
@@ -158,7 +106,6 @@ const S = {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    /* background: var(--F_Background_Alternating); */
 
   `,
   Content: styled.div<{
@@ -168,18 +115,4 @@ const S = {
     width: 100%;
     overflow-y: auto;
   `,
-  Bottom: styled.div`
-    /* background: var(--F_Background_Alternating); */
-    width: 100%;
-    overflow-y: auto;
-    max-height: 40vh;
-  `,
-  Reply: styled.div`
-    width: 100%;
-    border-left: 4px solid var(--F_Primary);
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  `
 }

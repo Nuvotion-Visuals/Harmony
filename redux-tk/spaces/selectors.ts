@@ -158,6 +158,13 @@ export const select_messagesByGuid = createSelector(
   }
 );
 
+export const select_activeThreadName = createSelector(
+  [select_threadsByGuid, select_activeThreadGuid],
+  (threadsByGuid, activeThreadGuid) => {
+    return threadsByGuid?.[activeThreadGuid || '']?.name || null;
+  }
+);
+
 export const select_spacesInfo = createSelector(
   [selectSpacesState, select_groupsByGuid, select_channelsByGuid, select_threadsByGuid],
   (spacesState, groupsByGuid, channelsByGuid, threadsByGuid) => {

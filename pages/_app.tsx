@@ -101,7 +101,7 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
 
   return <>
     <Head>
-      <title>Harmony - Creative AGI</title>
+      <title>Harmony</title>
       <meta name="description" content="Hi, I'm Harmony, a creative AGI ready to help with your project." />
       <link rel="icon" href="/favicon.ico" />
       <meta property="og:title" content="Harmony" />
