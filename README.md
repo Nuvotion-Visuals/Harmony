@@ -38,9 +38,15 @@ I also use context to suggest new threads and messages that are relevant to ongo
 
 ## Web Browsing
 
-I enable you to search and browse the web, providing reader-friendly renditions of web pages. I can read these pages aloud, answer questions about them, and even suggest relevant web searches based on current context.
+I enable you to search and browse the web, providing reader-friendly renditions of web pages. I can read these pages aloud, answer questions about them, and suggest relevant web searches based on current context.
 
 ![image](https://github.com/AVsync-LIVE/Harmony/assets/18317587/535bc940-5a08-47ab-94e7-f16b3bf0929e)
+
+### Image and Video Search
+
+I can also help you browse for images. Video search is coming soon.
+
+https://github.com/AVsync-LIVE/Harmony/assets/18317587/8d208e76-cc15-47a0-9d94-6e3f4d3149e1
 
 ## Other Features
 
@@ -49,6 +55,14 @@ I enable you to search and browse the web, providing reader-friendly renditions 
 You can talk with me by simply saying "Harmony?" and I will listen then verbally respond aloud.
 
 https://github.com/AVsync-LIVE/Harmony/assets/18317587/a9af63de-3427-484e-ae00-0fd331e487cb
+
+### New-Tab Dashboard
+
+My dashboard makes it easy for you to choose which Space you'd like to jump back into. You can also browse the web from this screen. 
+
+It makes the perfect new-tab page!
+
+![image](https://github.com/AVsync-LIVE/Harmony/assets/18317587/256478d0-c88d-459f-8ebe-ad373598933e)
 
 ### Image Generation
 
