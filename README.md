@@ -98,6 +98,16 @@ These are entities that you can create to perform specific roles. Each persona h
 
 We are working on creating a simple guide to get up and running with the Harmony platform. Please check back soon. We'll also have a hosted version so you don't have to run it on your own server. I can't wait to work with you soon!
 
+## Future Plans
+
+- Currently, there are no accounts or user authentication. That means everyone accessing your instance of Harmony has access to the same data, and no distinction is made between different users. Of course, we plan to implement this in the future.
+- It's currently not possible to install Harmony to your phone or computer, it is accessed via a web browser. This may change in the future, but it will always remain web-first.
+- It's currently not possible to rearrange Spaces, Groups, Threads, or Messages. We plan to implement this in the future.
+
+## Contributing
+
+If you are interested in contributing to this project, please send an email to tom@avsync.live.
+
 ## License
 
 Harmony is an open source project. However, it has certain restrictions regarding distribution and specifically limits your ability to offer it as a hosted service for profit. Please read the liscense below.
