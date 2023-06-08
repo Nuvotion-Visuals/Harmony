@@ -1,5 +1,5 @@
 {
-  "name": "lexisync",
+  "name": "sync",
   "version": "1.0.0",
   "description": "Websockets sync provider for Harmony using Yjs",
   "main": "./server.js",

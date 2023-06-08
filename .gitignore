@@ -39,5 +39,5 @@ yarn-error.log*
 next-env.d.ts
 
 data
-lexi-studio-api/public/uploads
 mysql
+dist

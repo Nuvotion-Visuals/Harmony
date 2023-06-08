@@ -31,7 +31,7 @@ const speakSentences = (callback: () => void) => {
     audioElement.play();
 
     store.dispatch({
-      type: 'lexi/set_currentlySpeaking',
+      type: 'language/set_currentlySpeaking',
       payload: sentence.replace(/\n|\r/g, " "),
     });
 
@@ -95,7 +95,7 @@ export const speak = async (text: string, callback: (error: any) => void) => {
   speakSentences(() => {
     callback(null);
     store.dispatch({
-      type: 'lexi/set_currentlySpeaking',
+      type: 'language/set_currentlySpeaking',
       payload: '',
     });
   });

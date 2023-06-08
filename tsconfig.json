@@ -26,9 +26,6 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "LexiOS",
-    "LexiTTA",
-    "Lexiframework"
+    "node_modules"
   ]
 }

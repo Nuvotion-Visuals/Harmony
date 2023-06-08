@@ -75,7 +75,7 @@ const Preview = ({  } : Props) => {
     setDisabled(false)
   }, [formik.errors])
 
-  return (<Auth title='Welcome to Harmony.studio' logoSrc='/assets/lexi-circle.png'>
+  return (<Auth title='Welcome to Harmony' logoSrc='/harmony-circle.svg'>
     <form 
       onSubmit={formik.handleSubmit}
       onKeyDown={e => {

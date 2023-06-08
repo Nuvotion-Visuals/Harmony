@@ -16,8 +16,8 @@ import { startMessagingServer } from './messaging/messaging';
 
 dotenv.config();
 
-const LEXISERVER_PORT = parseInt(process.env.LEXISERVER_PORT || '1618');
-const LEXIWEBSOCKETSERVER_PORT = parseInt(process.env.LEXIWEBSOCKETSERVER_PORT || '1619');
+const SERVER_PORT = parseInt(process.env.SERVER_PORT || '1618');
+const WEBSOCKETSERVER_PORT = parseInt(process.env.WEBSOCKETSERVER_PORT || '1619');
 const DEV = process.env.NODE_ENV !== 'production';
 
 const app = next({ dev: DEV });
@@ -55,7 +55,7 @@ async function startServer() {
 
     server.all('*', (req, res) => handle(req, res));
 
-    await startMessagingServer(LEXIWEBSOCKETSERVER_PORT);
+    await startMessagingServer(WEBSOCKETSERVER_PORT);
 
     sendMessage({
       conversationId: '',
@@ -69,8 +69,8 @@ async function startServer() {
       onProgress: () => {},
     });
 
-    server.listen(LEXISERVER_PORT, () => {
-      console.log('🟣', `I'm listening on port ${LEXISERVER_PORT}.`);
+    server.listen(SERVER_PORT, () => {
+      console.log('🟣', `I'm listening on port ${SERVER_PORT}.`);
     });
   } catch (error) {
     console.error(error);

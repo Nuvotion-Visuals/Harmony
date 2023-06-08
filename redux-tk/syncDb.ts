@@ -18,7 +18,7 @@ let syncDb: MyDatabase;
 if (typeof window !== 'undefined') {
   const ydoc = new Y.Doc();
   const persistence = new IndexeddbPersistence('lexi', ydoc);
-  const provider = new WebsocketProvider(process.env.NEXT_PUBLIC_LEXISYNC_URL || 'ws://localhost:1234', 'lexi', ydoc)
+  const provider = new WebsocketProvider(process.env.NEXT_PUBLIC_SYNC_URL || 'ws://localhost:1234', 'lexi', ydoc)
   provider.connect()
 
   provider.awareness.getStates().forEach(state => {

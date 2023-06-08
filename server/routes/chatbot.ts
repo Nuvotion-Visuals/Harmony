@@ -28,9 +28,9 @@ const chatbotController = async (req: Request, res: Response) => {
     settings: {
       nlp: {
         corpora: [
-          path.join(__dirname, './corpa/lexi/space-en.json'),
-          path.join(__dirname, './corpa/lexi/datetime-en.json'),
-          path.join(__dirname, './corpa/lexi/weather-en.json'),
+          path.join(__dirname, './corpa/harmony/space-en.json'),
+          path.join(__dirname, './corpa/harmony/datetime-en.json'),
+          path.join(__dirname, './corpa/harmony/weather-en.json'),
         ]
       }
     },

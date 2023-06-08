@@ -6,7 +6,7 @@ import { speakStream } from 'client/speech/speech';
 async function connectToServer() {
   let ws = {} as any
   if (typeof window !== 'undefined') {
-    ws = new WebSocket(process.env.NEXT_PUBLIC_LEXIWEBSOCKETSERVER_URL || 'ws://localhost:1619');
+    ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKETSERVER_URL || 'ws://localhost:1619');
   }
 
   let latestPing = null

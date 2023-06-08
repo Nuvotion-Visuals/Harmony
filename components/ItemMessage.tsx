@@ -1,11 +1,10 @@
-import { Avatar, Box, Button, Dropdown, Item, LoadingSpinner, markdownToHTML, RichTextEditor, Spacer } from '@avsync.live/formation'
-import React, { useEffect, useRef, useState } from 'react'
+import { Avatar, Box, Button, Dropdown, markdownToHTML, RichTextEditor, Spacer } from '@avsync.live/formation'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { useSpaces_removeMessage, useSpaces_removeMessageFromThread, useSpaces_updateMessage } from 'redux-tk/spaces/hook'
 import { speak } from 'client/speech/speech'
-import { useLanguage_currentlySpeaking } from 'redux-tk/language/hook'
-import { useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
 
 const highlightText = (html: string, currentlySpeaking: string | null): string => {
   const openingTag = `<span style="color: var(--F_Primary_Variant)">`;
@@ -51,7 +50,7 @@ export const ItemMessage = React.memo((props: Props) => {
   } = props
   const [edit, set_edit] = useState(false)
 
-  const isLexi = userLabel === 'Harmony'
+  const isSystem = userLabel === 'Harmony'
 
   const [localValue, set_localValue] = useState(markdownToHTML(message))
 
@@ -73,7 +72,6 @@ export const ItemMessage = React.memo((props: Props) => {
 
   const [isSpeaking, set_isSpeaking] = useState(false)
 
-
   useEffect(() => {
     set_localValue(highlightText(markdownToHTML(message), ''))
   }, [message])
@@ -84,8 +82,8 @@ export const ItemMessage = React.memo((props: Props) => {
         <S.Avatar>
           <Avatar
             labelColor={'none'}
-            src={isLexi ? '/harmony-pink.svg' : undefined}
-            icon={isLexi ? undefined : 'user'}
+            src={isSystem ? '/harmony-pink.svg' : undefined}
+            icon={isSystem ? undefined : 'user'}
           />
         </S.Avatar>
         <S.VerticalSpacer />

@@ -64,7 +64,6 @@ library.add(
 )
 
 import { useRouter } from 'next/router'
-import NextLink from "next/link"
 import { Linker, Ripple } from '@avsync.live/formation'
 
 import dynamic from 'next/dynamic'
@@ -102,15 +101,10 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   return <>
     <Head>
       <title>Harmony</title>
-      <meta name="description" content="Hi, I'm Harmony, a creative AGI ready to help with your project." />
+      <meta name="description" content="Hi, I'm Harmony! Let's work together on whatever you care about." />
       <link rel="icon" href="/favicon.ico" />
       <meta property="og:title" content="Harmony" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-      <meta
-        property="og:image"
-        content="/assets/lexichat-preview.png"
-      />
     </Head>
     <Provider store={store}>
       <Linker CustomLink={MyLink}> 
