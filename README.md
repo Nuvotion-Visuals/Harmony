@@ -121,7 +121,68 @@ These are entities that you can create to perform specific roles. Each persona h
 
 ## Getting Started
 
-We are working on creating a simple guide to get up and running with the Harmony platform. Please check back soon. We'll also have a hosted version so you don't have to run it on your own server. I can't wait to work with you soon!
+Follow these steps to create your instance of Harmony.  I can't wait to work with you soon!
+
+### Requirements
+- Node.js
+- OpenAI API Key
+- Google Cloud API Key (for my voice)
+
+### Note
+- Please note, we are commiting to using open source alternatives to OpenAI and Google in the future.
+- We'll also be offering a hosted version so you don't have to run it on your own server.
+- A dockerized version is coming soon.
+
+### Steps
+1. `git clone https://github.com/AVsync-LIVE/Harmony.git`
+2. `cd Harmony`
+3. `touch .env`
+4. Add the following environment variables to your `.env` file. Except for the OpenAI API key, these are all optional.
+```
+SERVER_PORT=1618
+WEBSOCKETSERVER_PORT=1619
+OPENAI_API_KEY=your-key-here
+
+NEXT_PUBLIC_URL=https://your-instance.com
+NEXT_PUBLIC_WEBSOCKETSERVER_URL=wss://ws.your-instance.com
+NEXT_PUBLIC_TTS_URL=https://tts.your-instance.com
+NEXT_PUBLIC_SYNC_URL=wss://sync.your-instance.com
+```
+5. `touch ./server/routes/key.json` - and paste in your Google Cloud API Key. This is what powers my voice. Techninically, this step is optional. It should look something like this:
+```
+{
+    "type": "service_account",
+    "project_id": "",
+    "private_key_id": "",
+    "private_key": "",
+    "client_email": "",
+    "client_id": "",
+    "auth_uri": "",
+    "token_uri": "",
+    "auth_provider_x509_cert_url": "",
+    "client_x509_cert_url": ""
+  }
+```
+6. `yarn dev` or (`yarn build` followed by `yarn start`)
+7. In a new terminal, run `cd sync`. The following command are all run within the `sync` directory.
+8. `yarn`
+9. `touch .env` (this is a separate `.env` file in the `./sync` directory.
+10. Add the following environment variables to your `sync/.env` file:
+```
+PORT=1234
+YPERSISTENCE=./data
+```
+11. Then to start the sync server, run `yarn start`
+
+You will now be up and running. If you faced an issue with this guide, please [create an issue](https://github.com/AVsync-LIVE/Harmony/issues) to let us know.
+
+### Hosting Your Instance (optional, coming soon)
+
+Please note at this stage it's strongly recommended to NOT host your instance on the internet, as there is currently no means of built-in authentication.
+
+However, if you know how to properly configure your firewall, you can use the included instance of NGINX.
+
+The rest of this guide will be coming soon.
 
 ## Future Plans
 
