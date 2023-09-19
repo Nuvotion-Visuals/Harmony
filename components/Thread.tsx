@@ -96,7 +96,7 @@ export const Thread = React.memo(({
       message,
       conversationId: guid,
       parentMessageId: messageGuid,
-      userLabel: 'User'
+      userLabel: 'You'
     } as MessageProps
     addMessage({ guid: messageGuid, message: newMessage})
     addMessageToThread({ threadGuid, messageGuid })
@@ -108,7 +108,7 @@ export const Thread = React.memo(({
       parentMessageId: messageGuid,
       personaLabel: 'Harmony',
       systemMessage: harmonySystemMessage,
-      userLabel: 'User',
+      userLabel: 'You',
     }
     websocketClient.send(JSON.stringify(action))
 

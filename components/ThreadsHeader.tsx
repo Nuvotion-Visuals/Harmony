@@ -8,7 +8,7 @@ import { getWebsocketClient } from 'client/connectivity/websocket-client'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
 import { Indicator } from './Indicator'
 import { useLanguageAPI } from 'client/language/hooks'
-import { MatrixLoading } from './MatrixLoading'
+import { ResponseStream } from './ResponseStream'
 import { harmonySystemMessage } from 'systemMessage'
 
 export const ThreadsHeader = memo(() => {
@@ -112,7 +112,7 @@ User feedback (optional): ${feedback}
     const messageGuid = generateUUID()
     const newMessage ={
       guid: messageGuid,
-      userLabel: 'User',
+      userLabel: 'You',
       message,
       conversationId: guid,
       parentMessageId: messageGuid
@@ -139,7 +139,7 @@ User feedback (optional): ${feedback}
       parentMessageId: messageGuid,
       personaLabel: 'Harmony',
       systemMessage: harmonySystemMessage,
-      userLabel: 'User',
+      userLabel: 'You',
     }
     websocketClient.send(JSON.stringify(action))
   }
@@ -151,130 +151,35 @@ User feedback (optional): ${feedback}
         activeChannel?.description &&
           <>
             <Box width='100%' wrap>
-            {
-              activeChannel?.previewSrc &&
-              <Box px={.75} width='100%'>
-                <S.ThreadPoster>
-                  
-                  <AspectRatio
-                    backgroundSrc={activeChannel?.previewSrc}
-                    ratio={3}
-                    coverBackground
-                  />
-                </S.ThreadPoster>
-              </Box>
-            }
+              {
+                activeChannel?.previewSrc &&
+                <Box px={.75} width='100%'>
+                  <S.ThreadPoster>
+                    
+                    <AspectRatio
+                      backgroundSrc={activeChannel?.previewSrc}
+                      ratio={3}
+                      coverBackground
+                    />
+                  </S.ThreadPoster>
+                </Box>
+              }
                       
-              <Item  minimalIcon pageTitle={activeChannel?.name}>
-                <Indicator
-                  count={activeChannel?.threadGuids?.length}
-                />
-                <Dropdown
-                  icon='ellipsis-h'
-                  iconPrefix='fas'
-                  minimal
-                  minimalIcon
-                  items={[
-                    {
-                      icon: 'lightbulb',
-                      name: 'Suggest threads',
-                      onClick: () => {
-                        generate_threadPrompts(`
-                        Space name: ${activeSpace?.name}
-                        Space description: ${activeSpace?.description}
-                        
-                        Channel name: ${activeChannel?.name}
-                        Channel description: ${activeChannel?.description} 
-                        
-                        Existing threads: \n${existingThreads}
-                        
-                        Your previous suggestions (optional): ${suggestedPrompts}
-                                        
-                        User feedback (optional): ${feedback}
-                        `)
-                      }
-                    },
-                    {
-                      icon: 'edit',
-                      iconPrefix: 'fas',
-                      name: 'Edit',
-                      href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`,
-                      onClick: () => {
-                        if (!isDesktop) {
-                          decrementActiveSwipeIndex()
-                        }
-                      }
-                    },
-                    {
-                      icon: 'trash-alt',
-                      iconPrefix: 'fas',
-                      name: 'Delete',
-                    }
-                  ]}
-                />
-              </Item>
-              
-              <Box mt={-.75}  width='100%'>
-              <Item 
-                // @ts-ignore
-                subtitle={<RichTextEditor
-                  value={activeChannel?.description || ''}
-                  readOnly={true}
-                >
-                </RichTextEditor>}
-              >
-              
-              </Item>
-              </Box>
-
-              </Box>
-              <Box width={'100%'}  wrap>
-      
-                {
-                  suggestedPrompts?.length && !loading
-                    ? <Box width='100%' pb={.5}>
-                        <Gap gap={.25}>
-                          {
-                            suggestedPrompts?.map(prompt =>
-                              <Item
-                                subtitle={prompt}
-                                icon='paper-plane'
-                                onClick={() => {
-                                  sendThread(prompt)
-                                }}
-                              >
-                              
-                              </Item>
-                            )
-                          }
-                        </Gap>
-                      </Box>
-                    : loading
-                      ? <MatrixLoading>{response}</MatrixLoading>
-                      : null
-                }
-
-                
-                    <Box pb={.25} width='100%'>
-                    {
-                  !loading &&
-                    <Box width='100%'>
-                      <TextInput
-                        value={feedback}
-                        canClear={feedback !== ''}
-                        compact
-                        onChange={val => set_feedback(val)}
-                        placeholder='Suggest new threads'
-                        hideOutline
-                      />
-                      <Box pr={.5}>
-                        <Button
-                          icon='lightbulb'
-                          expand
-                          iconPrefix='fas'
-                          secondary
-                          text='Suggest'
-                          onClick={() => generate_threadPrompts(`
+                <Item  minimalIcon pageTitle={activeChannel?.name}>
+                  <Indicator
+                    count={activeChannel?.threadGuids?.length}
+                  />
+                  <Dropdown
+                    icon='ellipsis-h'
+                    iconPrefix='fas'
+                    minimal
+                    minimalIcon
+                    items={[
+                      {
+                        icon: 'lightbulb',
+                        name: 'Suggest threads',
+                        onClick: () => {
+                          generate_threadPrompts(`
                           Space name: ${activeSpace?.name}
                           Space description: ${activeSpace?.description}
                           
@@ -286,15 +191,108 @@ User feedback (optional): ${feedback}
                           Your previous suggestions (optional): ${suggestedPrompts}
                                           
                           User feedback (optional): ${feedback}
-                          `)}
-                        />
-                      </Box>
-                    </Box>
-                }
-
+                          `)
+                        }
+                      },
+                      {
+                        icon: 'edit',
+                        iconPrefix: 'fas',
+                        name: 'Edit',
+                        href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`,
+                        onClick: () => {
+                          if (!isDesktop) {
+                            decrementActiveSwipeIndex()
+                          }
+                        }
+                      },
+                      {
+                        icon: 'trash-alt',
+                        iconPrefix: 'fas',
+                        name: 'Delete',
+                      }
+                    ]}
+                  />
+                </Item>
+                
+                <Box mt={-.75}  width='100%'>
+                  <Item 
+                    // @ts-ignore
+                    subtitle={<RichTextEditor
+                      value={activeChannel?.description || ''}
+                      readOnly={true}
+                    >
+                    </RichTextEditor>}
+                  >
+                  
+                  </Item>
+                </Box>
               </Box>
-            
-      </Box>
+
+              <Box width={'100%'} wrap>
+                <Box width='100%' pb={.5}>
+                  {
+                    suggestedPrompts?.length && !loading
+                      ? 
+                          <Gap gap={.25}>
+                            {
+                              suggestedPrompts?.map(prompt =>
+                                <Item
+                                  subtitle={prompt}
+                                  icon='paper-plane'
+                                  onClick={() => {
+                                    sendThread(prompt)
+                                  }}
+                                >
+                                
+                                </Item>
+                              )
+                            }
+                          </Gap>
+                        
+                      : loading
+                        ? <ResponseStream 
+                            text={response || ''} 
+                            icon='paper-plane'
+                          />
+                        : null
+                  }
+                </Box>
+
+                <Box pb={.25} width='100%'>
+                  <Box width='100%'>
+                    <TextInput
+                      value={feedback}
+                      canClear={feedback !== ''}
+                      compact
+                      onChange={val => set_feedback(val)}
+                      placeholder='Suggest new threads'
+                      hideOutline
+                    />
+                    <Box pr={.5}>
+                      <Button
+                        icon='lightbulb'
+                        expand
+                        iconPrefix='fas'
+                        secondary
+                        text='Suggest'
+                        onClick={() => generate_threadPrompts(`
+                        Space name: ${activeSpace?.name}
+                        Space description: ${activeSpace?.description}
+                        
+                        Channel name: ${activeChannel?.name}
+                        Channel description: ${activeChannel?.description} 
+                        
+                        Existing threads: \n${existingThreads}
+                        
+                        Your previous suggestions (optional): ${suggestedPrompts}
+                                        
+                        User feedback (optional): ${feedback}
+                        `)}
+                      />
+                    </Box>
+                  </Box>
+              </Box>
+            </Box>
           </>
       }
     </Gap>

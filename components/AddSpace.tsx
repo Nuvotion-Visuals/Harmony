@@ -3,7 +3,7 @@ import { useLanguageAPI } from 'client/language/hooks';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useSpaces_addSpaceIncludingGroups } from 'redux-tk/spaces/hook';
-import { MatrixLoading } from './MatrixLoading';
+import { ResponseStream } from './ResponseStream';
 
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 
@@ -137,7 +137,10 @@ export const AddSpace = React.memo(({}: Props) => {
          
           {
             loading && !value?.length 
-            ? <MatrixLoading text={response!} />
+            ? <ResponseStream 
+                icon='list'
+                text={response!} 
+              />
             : value?.length ?
                 <Box width='100%' wrap my={-.25}>
                   <ExpandableLists

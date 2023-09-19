@@ -4,7 +4,7 @@ import { useLanguageAPI } from 'client/language/hooks';
 import React, { useEffect, useState } from 'react'
 import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_messagesByGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook';
 import styled from 'styled-components'
-import { MatrixLoading } from './MatrixLoading';
+import { ResponseStream } from './ResponseStream';
 
 interface Props {
   onSend: (message: string) => void,
@@ -86,56 +86,50 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
         }
 
         {
-          loading 
-          ? <MatrixLoading
-              text={response || ''}
-            />
-          : 
-            <Box width={'100%'} px={.5} mb={.25}>
-           
-
-              <TextInput
-                value={feedback}
-                onChange={val => set_feedback(val)}
-                placeholder='Suggest new searches'
-                canClear={feedback !== ''}
-                compact
-                hideOutline
+          loading &&
+            <ResponseStream
+                icon='search'
+                text={response || ''}
               />
-
-              <Box >
-                <Button 
-                  secondary 
-                  icon='lightbulb' 
-                  text='Suggest'
-                  iconPrefix='fas' 
-                  onClick={() => {
-                    set_suggestedPrompts([])
-                    generate_searchQueries(`
-                      Channel name: ${activeChannel?.name}
-                      Channel description: ${activeChannel?.description} 
-                    
-                      Thread name ${threadsByGuid?.[guid]?.name}
-                      Thread description ${threadsByGuid?.[guid]?.description}
-                      
-                      Existing messages in thread: \n${existingMessages}
-                      
-                      Your previous suggestions (optional): ${suggestedPrompts}
-                    
-                      User feedback (optional): ${feedback}
-
-                      Existing search term (optional): ${query}
-                    `)
-                  }} 
-                />
-            
-            
-              </Box>
-             
-           
-            </Box>
-         
         }
+
+        <Box width={'100%'} px={.5} mb={.25}>
+          <TextInput
+            value={feedback}
+            onChange={val => set_feedback(val)}
+            placeholder='Suggest new searches'
+            canClear={feedback !== ''}
+            compact
+            hideOutline
+          />
+
+          <Box >
+            <Button 
+              secondary 
+              icon='lightbulb' 
+              text='Suggest'
+              iconPrefix='fas' 
+              onClick={() => {
+                set_suggestedPrompts([])
+                generate_searchQueries(`
+                  Channel name: ${activeChannel?.name}
+                  Channel description: ${activeChannel?.description} 
+                
+                  Thread name ${threadsByGuid?.[guid]?.name}
+                  Thread description ${threadsByGuid?.[guid]?.description}
+                  
+                  Existing messages in thread: \n${existingMessages}
+                  
+                  Your previous suggestions (optional): ${suggestedPrompts}
+                
+                  User feedback (optional): ${feedback}
+
+                  Existing search term (optional): ${query}
+                `)
+              }} 
+            />
+          </Box>
+        </Box>
       </Gap>
     </Box>
   </S.ThreadSuggestions>)

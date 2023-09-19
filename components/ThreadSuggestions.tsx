@@ -4,7 +4,7 @@ import { useLanguageAPI } from 'client/language/hooks';
 import React, { useEffect, useState } from 'react'
 import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_messagesByGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook';
 import styled from 'styled-components'
-import { MatrixLoading } from './MatrixLoading';
+import { ResponseStream } from './ResponseStream';
 
 interface Props {
   onSend: (message: string) => void,
@@ -99,53 +99,51 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
         }
 
         {
-          loading 
-          ? <MatrixLoading
+          loading && <ResponseStream
               text={response || ''}
+              icon='paper-plane'
             />
-          : 
-            <Box width={'100%'} mx={1}>
-              <TextInput
-                value={feedback}
-                onChange={val => set_feedback(val)}
-                placeholder='Suggest new messages'
-                canClear={feedback !== ''}
-                compact
-                hideOutline
-              />
-
-              <Box >
-                <Box >
-                  <Button 
-                    secondary
-                    icon='lightbulb' 
-                    text='Suggest'
-                    iconPrefix='fas' 
-                    onClick={() => {
-                      set_suggestedPrompts([])
-                      generate_followUpMessages(`
-                      Space name: ${activeSpace?.name}
-                      Space description: ${activeSpace?.description}
-                      
-                      Channel name: ${activeChannel?.name}
-                      Channel description: ${activeChannel?.description} 
-                    
-                      Thread name ${threadsByGuid?.[guid]?.name}
-                      Thread description ${threadsByGuid?.[guid]?.description}
-                      
-                      Existing messages in thread: \n${existingMessages}
-                      
-                      Your previous suggestions (optional): ${suggestedPrompts}
-                    
-                      User feedback (optional): ${feedback}
-                      `)
-                    }} 
-                  />
-                </Box>
-              </Box>
-            </Box>
-         
         }
+        <Box width={'100%'} mx={1}>
+          <TextInput
+            value={feedback}
+            onChange={val => set_feedback(val)}
+            placeholder='Suggest new messages'
+            canClear={feedback !== ''}
+            compact
+            hideOutline
+          />
+
+          <Box >
+            <Box >
+              <Button 
+                secondary
+                icon='lightbulb' 
+                text='Suggest'
+                iconPrefix='fas' 
+                onClick={() => {
+                  set_suggestedPrompts([])
+                  generate_followUpMessages(`
+                  Space name: ${activeSpace?.name}
+                  Space description: ${activeSpace?.description}
+                  
+                  Channel name: ${activeChannel?.name}
+                  Channel description: ${activeChannel?.description} 
+                
+                  Thread name ${threadsByGuid?.[guid]?.name}
+                  Thread description ${threadsByGuid?.[guid]?.description}
+                  
+                  Existing messages in thread: \n${existingMessages}
+                  
+                  Your previous suggestions (optional): ${suggestedPrompts}
+                
+                  User feedback (optional): ${feedback}
+                  `)
+                }} 
+              />
+            </Box>
+          </Box>
+        </Box>
       </Gap>
     </Box>
   </S.ThreadSuggestions>)

@@ -88,7 +88,7 @@ export const ChatBox = ({
         message,
         conversationId: activeThreadGuid,
         parentMessageId,
-        userLabel: 'User'
+        userLabel: 'You'
       } as MessageProps
       addMessage({ guid: messageGuid, message: newMessage})
       addMessageToThread({ threadGuid: activeThreadGuid || '', messageGuid })
@@ -101,7 +101,7 @@ export const ChatBox = ({
         parentMessageId,
         personaLabel: 'Harmony',
         systemMessage: harmonySystemMessage,
-        userLabel: 'User',
+        userLabel: 'You',
       }
       websocketClient.send(JSON.stringify(action))
   
@@ -143,7 +143,7 @@ export const ChatBox = ({
     const messageGuid = generateUUID()
     const newMessage ={
       guid: messageGuid,
-      userLabel: 'User',
+      userLabel: 'You',
       message,
       conversationId: guid,
       parentMessageId: 'initial'
@@ -170,7 +170,7 @@ export const ChatBox = ({
       parentMessageId: 'initial',
       personaLabel: 'Harmony',
       systemMessage: harmonySystemMessage,
-      userLabel: 'User',
+      userLabel: 'You',
     }
     websocketClient.send(JSON.stringify(action))
 
