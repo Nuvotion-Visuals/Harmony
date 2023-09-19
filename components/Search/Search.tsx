@@ -77,6 +77,7 @@ export const Search = React.memo(({ hero } : Props) => {
         break
       case 'Harmony':
         if (directSearch || query) {
+          setHarmonySearchResults([])
           fetchHarmonyData(directSearch || query)
         }
         break
@@ -216,13 +217,14 @@ export const Search = React.memo(({ hero } : Props) => {
 
   // Add Harmony search function
   function fetchHarmonyData(query: string) {
+    console.log('fetching harmony data')
     set_loading(true)
     try {
       const searchResults = universalSearch(query)
-      console.log(searchResults)
       setHarmonySearchResults(searchResults)
       localStorage.setItem('harmonySearchResults', JSON.stringify(searchResults))
-    } catch (error) {
+    } 
+    catch (error) {
       console.error(error)
     }
     set_loading(false)

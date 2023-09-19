@@ -60,18 +60,10 @@ export interface UniversalSearchResults {
   messages?: Message[]
 }
 
-let previousResults: UniversalSearchResults | null = null
-let previousSearchTerm: string | null = null
-
 export const universalSearch = (searchTerm: string): UniversalSearchResults => {
   const lowerSearchTerm = `${searchTerm.toLowerCase()}*`
   const results: UniversalSearchResults = {}
 
-  // Compare previous results and search term with current ones
-  if (previousResults && previousSearchTerm === lowerSearchTerm) {
-    console.log("Previous results have not changed, exiting.")
-    return previousResults
-  }
 
   Object.keys(indices).forEach(key => {
     const searchResults = indices[key].search(lowerSearchTerm)
@@ -83,10 +75,6 @@ export const universalSearch = (searchTerm: string): UniversalSearchResults => {
                (entity.description && entity.description.toLowerCase().includes(searchTerm.toLowerCase()))
       })
   })
-
-  // Update the previous results and search term
-  previousResults = results
-  previousSearchTerm = lowerSearchTerm
 
   console.log(results)
 

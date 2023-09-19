@@ -1,5 +1,5 @@
 import { HTMLtoPlaintext, Item } from '@avsync.live/formation'
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { UniversalSearchResults } from 'redux-tk/search'
 import styled from 'styled-components'
 import { debounce } from 'lodash'
@@ -14,32 +14,45 @@ interface Props {
 const SUBSTRING_LENGTH = 120
 
 const areEqual = (prevProps: any, nextProps: any) => {
-  return prevProps.message === nextProps.message && prevProps.query === nextProps.query
+  return (
+    prevProps.message === nextProps.message &&
+    prevProps.type === nextProps.type &&
+    prevProps.properties === nextProps.properties &&
+    prevProps.query === nextProps.query
+  )
 }
 
 const GenericItemMemo = React.memo(({ item, query, type, properties }: { item: any, type: 'Messages' | 'Threads' | 'Channels' | 'Groups' | 'Spaces', query: string, properties: string[] }) => {
+  const [highlightMatch, setHighlightMatch] = useState<JSX.Element[]>([])
   const router = useRouter()
-  const highlightMatch = useMemo(() => {
-    return properties.map((property) => {
+
+  useEffect(() => {
+    const newHighlightMatch = properties.reduce<JSX.Element[]>((acc, property) => {
       const message = item[property]
       const lowerMessage = message.toLowerCase()
-      const matchIndex = lowerMessage.indexOf(query)
+      const matchIndex = lowerMessage.indexOf(query.toLowerCase())
 
-      if (matchIndex === -1) {
-        return <div key={property}>{message}</div>
+      if (matchIndex !== -1)
+      {
+        const start = Math.max(matchIndex - SUBSTRING_LENGTH, 0)
+        const end = Math.min(matchIndex + SUBSTRING_LENGTH + query.length, message.length)
+        const pre = message.substring(start, matchIndex)
+        const match = message.substring(matchIndex, matchIndex + query.length)
+        const post = message.substring(matchIndex + query.length, end)
+        const preEllipsis = start > 0 ? '...' : ''
+        const postEllipsis = end < message.length ? '...' : ''
+        
+        acc.push(
+          <div key={property}>
+            {preEllipsis}{pre}<S.Strong>{match}</S.Strong>{post}{postEllipsis}
+          </div>
+        )
       }
+      return acc
+    }, [])
 
-      const start = Math.max(matchIndex - SUBSTRING_LENGTH, 0)
-      const end = Math.min(matchIndex + SUBSTRING_LENGTH + query.length, message.length)
-      const pre = message.substring(start, matchIndex)
-      const match = message.substring(matchIndex, matchIndex + query.length)
-      const post = message.substring(matchIndex + query.length, end)
-      const preEllipsis = start > 0 ? '...' : ''
-      const postEllipsis = end < message.length ? '...' : ''
-
-      return <div key={property}>{preEllipsis}{pre}<S.Strong>{match}</S.Strong>{post}{postEllipsis}</div>
-    })
-  }, [item, query, properties])
+    setHighlightMatch(newHighlightMatch)
+  }, [item, properties, query])
 
   const handleClick = async () => {
     // Assume the item has a type and guid, adjust as necessary
@@ -76,7 +89,7 @@ const GenericItemMemo = React.memo(({ item, query, type, properties }: { item: a
 
   return (
     <S.Item onClick={handleClick}>
-      {highlightMatch}
+      { highlightMatch }
     </S.Item>
   )
 }, areEqual)
@@ -106,21 +119,23 @@ export const Harmony = ({ searchResults, query }: Props) => {
   const [debouncedQuery, setDebouncedQuery] = useState(query)
   const lowerQuery = useMemo(() => debouncedQuery.toLowerCase(), [debouncedQuery])
 
-  useEffect(() => {
-    const handleDebounce = debounce((newQuery) => {
+  const handleDebounce = useCallback(
+    debounce((newQuery) => {
       setDebouncedQuery(newQuery)
-    }, 3000)
-    
+    }, 3000),
+    []
+  )
+  
+  useEffect(() => {
     handleDebounce(query)
-  }, [query])
-
+  }, [query, handleDebounce])
   return (
     <S.Harmony>
       {renderResults(searchResults?.messages ?? [], 'Messages', ['message'], lowerQuery)}
-      {renderResults(searchResults?.spaces ?? [], 'Spaces', ['name', 'description'], lowerQuery)}
+      {renderResults(searchResults?.threads ?? [], 'Threads', ['name', 'description'], lowerQuery)}
       {renderResults(searchResults?.channels ?? [], 'Channels', ['name', 'description'], lowerQuery)}
       {renderResults(searchResults?.groups ?? [], 'Groups', ['name', 'description'], lowerQuery)}
-      {renderResults(searchResults?.threads ?? [], 'Threads', ['name', 'description'], lowerQuery)}
+      {renderResults(searchResults?.spaces ?? [], 'Spaces', ['name', 'description'], lowerQuery)}
     </S.Harmony>
   )
 }
