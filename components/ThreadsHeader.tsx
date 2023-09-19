@@ -176,7 +176,7 @@ User feedback (optional): ${feedback}
                   minimalIcon
                   items={[
                     {
-                      icon: 'bolt-lightning',
+                      icon: 'lightbulb',
                       name: 'Suggest threads',
                       onClick: () => {
                         generate_threadPrompts(`
@@ -267,31 +267,27 @@ User feedback (optional): ${feedback}
                         placeholder='Suggest new threads'
                         hideOutline
                       />
-                      <Box minWidth={7}>
-                        <MatrixLoading >
-                        
-                          <Button
-                            icon='bolt-lightning'
-                            expand
-                            iconPrefix='fas'
-                            minimal
-                            text='Auto'
-                            onClick={() => generate_threadPrompts(`
-                            Space name: ${activeSpace?.name}
-                            Space description: ${activeSpace?.description}
-                            
-                            Channel name: ${activeChannel?.name}
-                            Channel description: ${activeChannel?.description} 
-                            
-                            Existing threads: \n${existingThreads}
-                            
-                            Your previous suggestions (optional): ${suggestedPrompts}
-                                            
-                            User feedback (optional): ${feedback}
-                            `)}
-                          />
-
-                        </MatrixLoading>
+                      <Box pr={.5}>
+                        <Button
+                          icon='lightbulb'
+                          expand
+                          iconPrefix='fas'
+                          secondary
+                          text='Suggest'
+                          onClick={() => generate_threadPrompts(`
+                          Space name: ${activeSpace?.name}
+                          Space description: ${activeSpace?.description}
+                          
+                          Channel name: ${activeChannel?.name}
+                          Channel description: ${activeChannel?.description} 
+                          
+                          Existing threads: \n${existingThreads}
+                          
+                          Your previous suggestions (optional): ${suggestedPrompts}
+                                          
+                          User feedback (optional): ${feedback}
+                          `)}
+                        />
                       </Box>
                     </Box>
                 }

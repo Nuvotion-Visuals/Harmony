@@ -91,7 +91,7 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
               text={response || ''}
             />
           : 
-            <Box width={'100%'}>
+            <Box width={'100%'} px={.5} mb={.25}>
            
 
               <TextInput
@@ -103,35 +103,31 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
                 hideOutline
               />
 
-              <Box>
-                <Box width={7}>
-                <MatrixLoading >
-                  <Button 
-                    minimal 
-                    icon='bolt-lightning' 
-                    text='Auto'
-                    iconPrefix='fas' 
-                    onClick={() => {
-                      set_suggestedPrompts([])
-                      generate_searchQueries(`
-                        Channel name: ${activeChannel?.name}
-                        Channel description: ${activeChannel?.description} 
+              <Box >
+                <Button 
+                  secondary 
+                  icon='lightbulb' 
+                  text='Suggest'
+                  iconPrefix='fas' 
+                  onClick={() => {
+                    set_suggestedPrompts([])
+                    generate_searchQueries(`
+                      Channel name: ${activeChannel?.name}
+                      Channel description: ${activeChannel?.description} 
+                    
+                      Thread name ${threadsByGuid?.[guid]?.name}
+                      Thread description ${threadsByGuid?.[guid]?.description}
                       
-                        Thread name ${threadsByGuid?.[guid]?.name}
-                        Thread description ${threadsByGuid?.[guid]?.description}
-                        
-                        Existing messages in thread: \n${existingMessages}
-                        
-                        Your previous suggestions (optional): ${suggestedPrompts}
+                      Existing messages in thread: \n${existingMessages}
                       
-                        User feedback (optional): ${feedback}
+                      Your previous suggestions (optional): ${suggestedPrompts}
+                    
+                      User feedback (optional): ${feedback}
 
-                        Existing search term (optional): ${query}
-                      `)
-                    }} 
-                  />
-                </MatrixLoading>
-                </Box>
+                      Existing search term (optional): ${query}
+                    `)
+                  }} 
+                />
             
             
               </Box>

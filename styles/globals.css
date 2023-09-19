@@ -1,11 +1,14 @@
 :root {
-  --F_Primary: #800080;
-  --F_Primary_Variant: #FF99FF;
-  --F_Primary_Hover: #990099;
+  --F_Primary: #7a120b;
+  --F_Primary_Variant: #c00c00;
+  --F_Primary_Hover: #95170e;
   --F_Font_Color_Error: #d70a53;
   --F_Font_Family: 'Poppins';
   --L_Prompt_Height: 160px;
   --L_Prompt_Padding: .75rem;
+  --F_Background: black;
+  --F_Background_Alternating: black;
+  --F_Font_Color: #dfdfdf;
 }
 
 html, body {

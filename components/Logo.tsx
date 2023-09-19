@@ -8,7 +8,7 @@ interface Props {
 export const Logo = React.memo(({ large }: Props) => {
   return (
     <S.LogoContainer large={large || false}>
-    <S.Logo src='/harmony-circle.svg' />
+    <S.Logo src='/harmony-circle-red.svg' />
     </S.LogoContainer>
   )
 })

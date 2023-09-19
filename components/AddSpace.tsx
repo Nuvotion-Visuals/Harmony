@@ -103,7 +103,7 @@ export const AddSpace = React.memo(({}: Props) => {
             onChange={(newValue) => set_prompt(newValue)}
             buttons={[
               {
-                icon: 'bolt-lightning',
+                icon: 'lightbulb',
                 iconPrefix: 'fas',
                 secondary: true,
                 circle: true,
@@ -120,7 +120,7 @@ export const AddSpace = React.memo(({}: Props) => {
             onChange={(newValue) => set_description(newValue)}
           >
             <Button
-              icon='bolt-lightning'
+              icon='lightbulb'
               iconPrefix='fas'
               minimal
               secondary

@@ -7,7 +7,6 @@ import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/
 import styled from 'styled-components'
 import { Indicator } from './Indicator'
 import { ItemMessage } from './ItemMessage'
-import { MatrixLoading } from './MatrixLoading'
 import { ThreadSuggestions } from './ThreadSuggestions'
 import { harmonySystemMessage } from 'systemMessage'
 
@@ -215,7 +214,7 @@ export const Thread = React.memo(({
               e.preventDefault()
               e.stopPropagation()
             }}>
-              <Box wrap maxWidth={2} ml={.25} mr={.25}>
+              <Box wrap maxWidth={2} ml={.25} mr={.25} >
                 {
                   !active &&
                     <Box mb={.25} >
@@ -257,7 +256,7 @@ export const Thread = React.memo(({
                       }
                     },
                     {
-                      icon: 'bolt-lightning',
+                      icon: 'lightbulb',
                       iconPrefix: 'fas',
                       name: 'Generate title',
                       onClick: () => {
@@ -353,6 +352,8 @@ const S = {
     display: flex;
     flex-wrap: wrap;
     border-left: ${props => props.active ? '4px solid var(--F_Primary)' : '4px solid var(--F_Surface_0)'};
-    padding: .5rem 0;
+    margin: .25rem 0;
+    padding: .25rem 0;
+    border-bottom: 1px solid var(--F_Surface_0);
   `
 }

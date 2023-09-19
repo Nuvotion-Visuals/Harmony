@@ -82,7 +82,7 @@ export const ItemMessage = React.memo((props: Props) => {
         <S.Avatar>
           <Avatar
             labelColor={'none'}
-            src={isSystem ? '/harmony-pink.svg' : undefined}
+            src={isSystem ? '/harmony-circle-red.svg' : undefined}
             icon={isSystem ? undefined : 'user'}
           />
         </S.Avatar>

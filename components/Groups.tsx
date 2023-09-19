@@ -265,7 +265,7 @@ export const Groups = React.memo(({ }: Props) => {
                             },
                             {
                               text: 'Suggest emoji',
-                              icon: 'bolt-lightning',
+                              icon: 'lightbulb',
                               iconPrefix: 'fas',
                               onClick: () => {
                                 set_targetChannelGuid(guid || '')

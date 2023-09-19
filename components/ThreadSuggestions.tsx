@@ -104,7 +104,7 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
               text={response || ''}
             />
           : 
-            <Box width={'100%'}>
+            <Box width={'100%'} mx={1}>
               <TextInput
                 value={feedback}
                 onChange={val => set_feedback(val)}
@@ -114,13 +114,12 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
                 hideOutline
               />
 
-              <Box>
-                <Box width={7}>
-                <MatrixLoading >
+              <Box >
+                <Box >
                   <Button 
-                    minimal 
-                    icon='bolt-lightning' 
-                    text='Auto'
+                    secondary
+                    icon='lightbulb' 
+                    text='Suggest'
                     iconPrefix='fas' 
                     onClick={() => {
                       set_suggestedPrompts([])
@@ -142,7 +141,6 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
                       `)
                     }} 
                   />
-                </MatrixLoading>
                 </Box>
               </Box>
             </Box>
