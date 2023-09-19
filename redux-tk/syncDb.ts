@@ -3,6 +3,7 @@ import * as Y from 'yjs';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { WebsocketProvider } from 'y-websocket';
 import { store } from 'redux-tk/store';
+import { setupThrottledIndices, updateIndexListAndTriggerThrottledIndex } from './search';
 
 interface MyDatabase {
   spaces: Y.Map<Space>;
@@ -40,11 +41,15 @@ if (typeof window !== 'undefined') {
     messages: ydoc.getMap('messages'),
   };
 
+  setupThrottledIndices(syncDb)
+
   Object.entries(syncDb).forEach(([name, map]) => {
     map.observe((event: Y.YMapEvent<Space | Channel | Asset | Group | Thread | Message>) => {
       setTimeout(() => {
         try {
           const payload = map.toJSON();
+
+          updateIndexListAndTriggerThrottledIndex(name, payload)
     
           switch (name) {
             case 'spaces':

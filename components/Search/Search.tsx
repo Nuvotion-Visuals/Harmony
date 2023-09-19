@@ -12,6 +12,7 @@ import { PeopleAlsoSearch } from "./PeopleAlsoSearch";
 import { SearchSuggestions } from "components/SearchSuggestions";
 import styled from "styled-components";
 import { Image } from "./Image";
+import { universalSearch } from "redux-tk/search";
 
 interface Props {
   hero?: boolean,
@@ -19,7 +20,9 @@ interface Props {
 }
 
 export const Search = React.memo(({ hero } : Props) => {
-  const [activeType, set_activeType] = useState<'All' | 'Images' | 'Videos'>('All')
+  const [activeType, set_activeType] = useState<'All' | 'Images' | 'Videos' | 'Harmony'>('All')
+
+  const [harmonySearchResults, setHarmonySearchResults] = useState<any>(null)
 
   const [imageSearchResults, setImageSearchResults] = useState<Types.ImageSearchResultsData | null>(null);
   async function fetchImagesData(query: string) {
@@ -61,6 +64,9 @@ export const Search = React.memo(({ hero } : Props) => {
         break
       case 'Images':
         fetchImagesData(directSearch || query)
+        break
+      case 'Harmony':
+        fetchHarmonyData(directSearch || query)
         break
     }
   }
@@ -186,8 +192,30 @@ export const Search = React.memo(({ hero } : Props) => {
   useEffect(() => {
     if (activeType === 'Images') {
       fetchImagesData(query)
+    } 
+    else if (activeType === 'Harmony') {
+      fetchHarmonyData(query)
     }
   }, [activeType])
+
+  // Add Harmony search function
+  function fetchHarmonyData(query: string) {
+    set_loading(true)
+    try {
+      const searchResults = universalSearch(query)
+      console.log(searchResults)
+      setHarmonySearchResults(searchResults)
+    } catch (error) {
+      console.error(error)
+    }
+    set_loading(false)
+  }
+
+  useEffect(() => {
+    if (activeType === 'Harmony' && query !== '') {
+      fetchHarmonyData(query)
+    }
+  }, [query])
 
   return (
     <S.Search>
@@ -216,7 +244,7 @@ export const Search = React.memo(({ hero } : Props) => {
             minimal: true
           }
         ]}
-        items={[
+        items={activeType === 'Harmony' ? [] : [
           ...(query !== '' ? [{
             icon: 'search',
             subtitle: query,
@@ -260,13 +288,21 @@ export const Search = React.memo(({ hero } : Props) => {
             onClick={() => set_activeType('Images')}
           />
           <Button 
+            text='Harmony'
+            secondary={activeType !== 'Harmony'}
+            minimal={activeType !== 'Harmony'}
+            icon="music"
+            iconPrefix="fas"
+            onClick={() => set_activeType('Harmony')}
+          />
+          {/* <Button 
             text='Videos' 
             secondary={activeType !== 'Videos'}
             minimal={activeType !== 'Videos'}
             icon="video"
             iconPrefix="fas"
             onClick={() => set_activeType('Videos')}
-          />
+          /> */}
         
           <Spacer />
       </Box>
@@ -294,13 +330,25 @@ export const Search = React.memo(({ hero } : Props) => {
       }
       <Box wrap>
         {
-        activeType === 'Images' && imageSearchResults?.data?.results?.map((searchResult, index) =>
-          <Image {...searchResult} />
-        )
-      }
+          activeType === 'Images' && imageSearchResults?.data?.results?.map((searchResult, index) =>
+            <Image {...searchResult} />
+          )
+        }
+        {
+          (activeType === 'Harmony') && <S.HarmonySearchResults>
+            {
+              JSON.stringify(harmonySearchResults, null, 2)
+            }
+          </S.HarmonySearchResults>
+        }
       </Box>
      
-      
+      {/* <input type='text' value={messageSearchTerm} onChange={(e) => set_messageSearchTerm(e.target.value)}></input>
+      <button onClick={() => {
+        console.log(universalSearch(messageSearchTerm))
+      }}>
+        Search Messages
+      </button> */}
     </S.Search>
   );
 })
@@ -311,5 +359,11 @@ const S = {
     overflow-x: hidden;
     overflow-y: auto;
     height: 100%;
+  `,
+  HarmonySearchResults: styled.pre`
+    width: 100%;
+    font-size: 12px;
+    color: var(--F_Font_Color_Label);
   `
 }
+
