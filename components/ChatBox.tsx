@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { scrollToElementById, Box, Button, Dropdown, generateUUID, Page, RichTextEditor, TextInput, useBreakpoint, Spacer, Item} from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { useSpaces_activeThreadGuid, useSpaces_activeThreadName, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_activeThreadName, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 
 import { listenForWakeWord } from 'client/speech/wakeWord'
 import { playSound } from 'client/speech/soundEffects'
@@ -123,6 +123,11 @@ export const ChatBox = ({
       })
   }, [activeThreadGuid, messagesByGuid, threadsByGuid]);
 
+
+  const activeChannel = useSpaces_activeChannel()
+  const activeSpace = useSpaces_activeSpace()
+  const activeGroup = useSpaces_activeGroup()
+
   const sendThread = useCallback((message: string) => {
     const websocketClient = getWebsocketClient()
     const guid = generateUUID()
@@ -165,7 +170,15 @@ export const ChatBox = ({
     const action = {
       type: 'message',
       guid,
-      message,
+      message: `
+        Space Description: ${activeSpace?.description}
+        Group Description: ${activeGroup?.description}
+        Channel Description: ${activeChannel?.description}
+
+        User Message: ${message}
+
+        Action: given the context, respond directy to the user.
+      `,
       conversationId: guid,
       parentMessageId: 'initial',
       personaLabel: 'Harmony',

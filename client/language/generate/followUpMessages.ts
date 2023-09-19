@@ -41,7 +41,7 @@ export const generate_followUpMessages = (
       ]
     }
     
-    If user feedback is provided it must be prioritized.
+    If user feedback is provided it MUST be prioritized, and all suggestions should center around the user's direction.
 
     Prompt: ${prompt} Reply in JSON`,
   };

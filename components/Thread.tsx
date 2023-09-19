@@ -126,8 +126,6 @@ export const Thread = React.memo(({
     addMessageToThread({ threadGuid, messageGuid: responseGuid })
   }
 
-  const showSpinner = loading
-
   useEffect(() => {
     if (messageGuids?.length === 2 && !name && !description) {
       if (messagesByGuid[messageGuids[1]]?.complete) {
@@ -139,9 +137,6 @@ export const Thread = React.memo(({
   const active = guid === activeThreadGuid
 
   const jsonValidatorRef = useRef(new JsonValidator())
-  
-  const temporaryName = jsonValidatorRef.current.parseJsonProperty(response, 'name') || 'Thinking...'
-  const temporaryDescription = jsonValidatorRef.current.parseJsonProperty(response, 'description') || ''
 
   return (<S.Thread active={active}>
     <Box width='100%'>
@@ -202,19 +197,18 @@ export const Thread = React.memo(({
             minimalIcon
             // @ts-ignore
             text={
-              showSpinner 
-                ? temporaryName
-                : name
-                  ? name : 'Thinking...'}
+              loading
+                ? jsonValidatorRef.current.parseJsonProperty(response, 'name') || 'Thinking...'
+                : name ? name : 'Thinking...'
+            }
             // @ts-ignore
             subtitle={
-              showSpinner
-                ? temporaryDescription
-                : description ? <ParseHTML html={description} /> : undefined
+              loading
+                ? jsonValidatorRef.current.parseJsonProperty(response, 'description') || ''
+                : description ? description : undefined
               }
             onClick={() => onExpand()}
           >
-         
             <Indicator count={messageGuids?.length} />
             <div onClick={e => {
               e.preventDefault()

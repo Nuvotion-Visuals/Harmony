@@ -134,7 +134,16 @@ User feedback (optional): ${feedback}
     const action = {
       type: 'message',
       guid,
-      message,
+      message: `
+        Space Description: ${activeSpace?.description}
+        Group Description: ${activeGroup?.description}
+        Channel Description: ${activeChannel?.description}
+        Existing threads: \n${existingThreads}
+
+        User Message: ${message}
+
+        Action: given the context, respond directy to the user.
+      `,
       conversationId: guid,
       parentMessageId: messageGuid,
       personaLabel: 'Harmony',
