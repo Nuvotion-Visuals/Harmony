@@ -216,17 +216,28 @@ export const Search = React.memo(({ hero } : Props) => {
             minimal: true
           }
         ]}
-        items={suggestions.map((suggestion : any) => ({
-          icon: 'search',
-          subtitle: suggestion.suggestion,
-          onClick: () => {
-            setTimeout(() => {
-              set_query(suggestion.suggestion)
-              handleSearch(suggestion.suggestion)
-            }, 1)
-            // set_suggestions([])
-          }
-        }))}
+        items={[
+          ...(query !== '' ? [{
+            icon: 'search',
+            subtitle: query,
+            onClick: async () => {
+              setTimeout(() => {
+                set_query(query)
+                handleSearch(query)
+              }, 1)
+            }
+          }] : []),
+          ...suggestions.map((suggestion: any) => ({
+            icon: 'search',
+            subtitle: suggestion.suggestion,
+            onClick: async () => {
+              setTimeout(() => {
+                set_query(suggestion.suggestion)
+                handleSearch(suggestion.suggestion)
+              }, 1)
+            }
+          }))
+        ]}
       />
       </Box>
       </Box>

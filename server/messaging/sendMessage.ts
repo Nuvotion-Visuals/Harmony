@@ -26,7 +26,12 @@ export const sendMessage = async ({
     const { ChatGPTAPI } = await dynamicImport('chatgpt', module) as typeof import('chatgpt');
     const api = new ChatGPTAPI({
       apiKey: process.env.OPENAI_API_KEY || '',
-    });
+      completionParams: {
+        model: 'gpt-3.5-turbo-16k',
+        temperature: 0.8,
+        top_p: 0.95
+      }
+    })
 
     storedClient = {
       api,
