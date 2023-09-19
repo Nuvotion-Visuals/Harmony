@@ -1,10 +1,11 @@
 import { Box, Page } from '@avsync.live/formation'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Thread } from './Thread'
 import { use100vh } from 'react-div-100vh'
 import { ThreadsHeader } from './ThreadsHeader'
+import { useRouter } from 'next/router'
 
 interface ThreadWrapperProps {
   threadGuid: string;
@@ -34,29 +35,36 @@ interface Props {
 }
 
 export const Threads = ({ }: Props) => {
+  const router = useRouter()
+  const { thread: threadGuidFromQuery } = router.query
+
   const activeChannel = useSpaces_activeChannel()
   const threadsByGuid = useSpaces_threadsByGuid()
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
-
   const true100vh = use100vh()
-
   const activeThreadGuid = useSpaces_activeThreadGuid()
+  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
   
-  const [expandedThreads, setExpandedThreads] = useState<{ [key: string]: boolean }>({});
+  const [expandedThreads, setExpandedThreads] = useState<{ [key: string]: boolean }>({})
 
   const handleExpandClick = useCallback((threadGuid: string) => {
     setExpandedThreads(prev => ({
       ...prev,
-      [threadGuid]: !prev[threadGuid],
-    }));
-  }, []);
-  
+      [threadGuid]: !prev[threadGuid]
+    }))
+  }, [])
+
   useEffect(() => {
+    // Expand thread if its GUID exists in the query parameter
+    if (threadGuidFromQuery) {
+      setActiveThreadGuid(threadGuidFromQuery as string)
+    }
+  
     // Automatically expand the active thread
     if (activeThreadGuid) {
       setExpandedThreads(prev => ({
         ...prev,
-        [activeThreadGuid]: true,
+        [activeThreadGuid]: true
       }))
     }
 
@@ -65,10 +73,10 @@ export const Threads = ({ }: Props) => {
       const singleThreadGuid = activeChannel.threadGuids[0]
       setExpandedThreads(prev => ({
         ...prev,
-        [singleThreadGuid]: true,
+        [singleThreadGuid]: true
       }))
     }
-  }, [activeThreadGuid, activeChannel])
+  }, [activeThreadGuid, activeChannel, threadGuidFromQuery])
 
   return (<Box wrap width={'100%'}>
     <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>

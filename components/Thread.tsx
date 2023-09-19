@@ -10,6 +10,7 @@ import { ItemMessage } from './ItemMessage'
 import { ThreadSuggestions } from './ThreadSuggestions'
 import { harmonySystemMessage } from 'systemMessage'
 import { JsonValidator } from 'client/utils'
+import { useRouter } from 'next/router'
 
 interface Props extends ThreadProps {
   threadGuid: string,
@@ -137,6 +138,9 @@ export const Thread = React.memo(({
   const active = guid === activeThreadGuid
 
   const jsonValidatorRef = useRef(new JsonValidator())
+
+  const router = useRouter()
+  const { message: messageGuidFromQuery } = router.query
 
   return (<S.Thread active={active}>
     <Box width='100%'>
@@ -302,6 +306,7 @@ export const Thread = React.memo(({
                 ...message
               }
               threadGuid={threadGuid}
+              active={messageGuid === messageGuidFromQuery}
             />
         )
       })

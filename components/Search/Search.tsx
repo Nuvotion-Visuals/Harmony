@@ -25,6 +25,11 @@ export const Search = React.memo(({ hero } : Props) => {
 
   const [harmonySearchResults, setHarmonySearchResults] = useState<any>(null)
 
+  useEffect(() => {
+    localStorage.setItem('activeType', activeType)
+    localStorage.setItem('harmonySearchResults', JSON.stringify(harmonySearchResults))
+  }, [activeType, harmonySearchResults])
+
   const [imageSearchResults, setImageSearchResults] = useState<Types.ImageSearchResultsData | null>(null);
   async function fetchImagesData(query: string) {
     set_loading(true)
@@ -101,15 +106,27 @@ export const Search = React.memo(({ hero } : Props) => {
   }, [query])
 
   useEffect(() => {
-    const lastSearch = localStorage.getItem('lastSearch');
-    const savedResults = localStorage.getItem('searchResults');
+    const lastSearch = localStorage.getItem('lastSearch')
+    const savedResults = localStorage.getItem('searchResults')
+    const savedActiveType = localStorage.getItem('activeType')
+    const savedHarmonySearchResults = localStorage.getItem('harmonySearchResults')
+  
     if (lastSearch) {
-      set_query(lastSearch);
+      set_query(lastSearch)
     }
+  
     if (savedResults) {
-      setSearchResults(JSON.parse(savedResults));
+      setSearchResults(JSON.parse(savedResults))
     }
-  }, []);
+  
+    if (savedActiveType) {
+      set_activeType(savedActiveType as 'All' | 'Images' | 'Videos' | 'Harmony')
+    }
+  
+    if (savedHarmonySearchResults) {
+      setHarmonySearchResults(JSON.parse(savedHarmonySearchResults))
+    }
+  }, [])
 
   const Content = () => (
     <>
@@ -208,6 +225,7 @@ export const Search = React.memo(({ hero } : Props) => {
       const searchResults = universalSearch(query)
       console.log(searchResults)
       setHarmonySearchResults(searchResults)
+      localStorage.setItem('harmonySearchResults', JSON.stringify(searchResults))
     } catch (error) {
       console.error(error)
     }
@@ -294,7 +312,7 @@ export const Search = React.memo(({ hero } : Props) => {
             text='Harmony'
             secondary={activeType !== 'Harmony'}
             minimal={activeType !== 'Harmony'}
-            icon="music"
+            icon="list"
             iconPrefix="fas"
             onClick={() => set_activeType('Harmony')}
           />

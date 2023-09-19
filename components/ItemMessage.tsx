@@ -1,6 +1,6 @@
-import { Avatar, Box, Button, Dropdown, markdownToHTML, RichTextEditor, Spacer } from '@avsync.live/formation'
+import { Avatar, Box, Button, Dropdown, markdownToHTML, RichTextEditor, scrollToElementById, Spacer } from '@avsync.live/formation'
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { Message as MessageProps } from 'redux-tk/spaces/types'
 import { useSpaces_removeMessage, useSpaces_removeMessageFromThread, useSpaces_updateMessage } from 'redux-tk/spaces/hook'
 import { speak } from 'client/speech/speech'
@@ -38,7 +38,8 @@ const highlightText = (html: string, currentlySpeaking: string | null): string =
 
 
 interface Props extends MessageProps {
-  threadGuid: string
+  threadGuid: string,
+  active: boolean
 }
 
 export const ItemMessage = React.memo((props: Props) => {
@@ -47,6 +48,7 @@ export const ItemMessage = React.memo((props: Props) => {
     userLabel,
     message,
     threadGuid,
+    active
   } = props
   const [edit, set_edit] = useState(false)
 
@@ -76,8 +78,16 @@ export const ItemMessage = React.memo((props: Props) => {
     set_localValue(highlightText(markdownToHTML(message), ''))
   }, [message])
 
+  useEffect(() => {
+    if (active) {
+      scrollToElementById(guid, {
+        behavior: 'smooth'
+      })
+    }
+  }, [active])
+
   const Message = React.memo(({ text } : { text: string }) => (
-    <S.ItemMessage>
+    <S.ItemMessage id={guid} active={active}>
       <Box width={2} height='100%' wrap>
         <S.Avatar>
           <Avatar
@@ -200,11 +210,17 @@ export const ItemMessage = React.memo((props: Props) => {
 })
 
 const S = {
-  ItemMessage: styled.div`
+  ItemMessage: styled.div<{
+    active: boolean
+  }>`
     width: 100%;
     display: flex;
     padding: .325rem 0;
     transition: height 0.3s ease-out;
+    animation: ${props => props.active
+      ? css`${blink} 3s linear forwards` 
+      : 'none'
+    };
   `,
   VerticalSpacer: styled.div`
     height: 100%;
@@ -234,3 +250,15 @@ const S = {
     line-height: 1.66;
   `
 }
+
+const blink = keyframes`
+  0% {
+    background: rgba(0,0,0,0);
+  }
+  50% {
+    background: var(--F_Primary);
+  }
+  100% {
+    background: rgba(0,0,0,0);
+  }
+`

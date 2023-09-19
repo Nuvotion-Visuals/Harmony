@@ -60,14 +60,22 @@ export interface UniversalSearchResults {
   messages?: Message[]
 }
 
+let previousResults: UniversalSearchResults | null = null
+let previousSearchTerm: string | null = null
+
 export const universalSearch = (searchTerm: string): UniversalSearchResults => {
   const lowerSearchTerm = `${searchTerm.toLowerCase()}*`
   const results: UniversalSearchResults = {}
 
+  // Compare previous results and search term with current ones
+  if (previousResults && previousSearchTerm === lowerSearchTerm) {
+    console.log("Previous results have not changed, exiting.")
+    return previousResults
+  }
+
   Object.keys(indices).forEach(key => {
     const searchResults = indices[key].search(lowerSearchTerm)
     results[key as keyof UniversalSearchResults] = searchResults
-      .filter(result => result.score > 2) // Adjust the threshold value as needed
       .map(result => indexLists[key][result.ref])
       .filter(entity => {
         return (entity.message && entity.message.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -76,10 +84,15 @@ export const universalSearch = (searchTerm: string): UniversalSearchResults => {
       })
   })
 
+  // Update the previous results and search term
+  previousResults = results
+  previousSearchTerm = lowerSearchTerm
+
   console.log(results)
 
   return results
 }
+
 
 export const setupThrottledIndices = (syncDb: MyDatabase) => {
   Object.keys(syncDb).forEach(key => {
