@@ -41,15 +41,38 @@ const GenericItemMemo = React.memo(({ item, query, type, properties }: { item: a
     })
   }, [item, query, properties])
 
-  const handleClick = () => {
+  const handleClick = async () => {
     // Assume the item has a type and guid, adjust as necessary
     const relationshipObject = findRelationships(item.guid, type)
-    console.log(item.guid, type)
-    console.log('Relationship Object:', relationshipObject)
+  
     if (type === 'Messages') {
-      router.push(`/spaces/${relationshipObject.spaceGuid}/groups/${relationshipObject.groupGuid}/channels/${relationshipObject.channelGuid}?thread=${relationshipObject.threadGuid}&message=${item.guid}`)
+      const url = `/spaces/${relationshipObject.spaceGuid}/groups/${relationshipObject.groupGuid}/channels/${relationshipObject.channelGuid}`
+      const queryParams = `?thread=${relationshipObject.threadGuid}&message=${item.guid}`
+      await router.push(url + queryParams)
+    }
+  
+    if (type === 'Threads') {
+      const url = `/spaces/${relationshipObject.spaceGuid}/groups/${relationshipObject.groupGuid}/channels/${relationshipObject.channelGuid}`
+      const queryParams = `?thread=${relationshipObject.threadGuid}`
+      await router.push(url + queryParams)
+    }
+  
+    if (type === 'Channels') {
+      const url = `/spaces/${relationshipObject.spaceGuid}/groups/${relationshipObject.groupGuid}/channels/${relationshipObject.channelGuid}`
+      await router.push(url)
+    }
+  
+    if (type === 'Groups') {
+      const url = `/spaces/${relationshipObject.spaceGuid}/groups/${relationshipObject.groupGuid}`
+      await router.push(url)
+    }
+  
+    if (type === 'Spaces') {
+      const url = `/spaces/${relationshipObject.spaceGuid}`
+      await router.push(url)
     }
   }
+  
 
   return (
     <S.Item onClick={handleClick}>

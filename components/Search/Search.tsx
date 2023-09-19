@@ -20,15 +20,20 @@ interface Props {
   onChange?: (query: string) => void
 }
 
+type ActiveType = 'All' | 'Images' | 'Videos' | 'Harmony'
+
 export const Search = React.memo(({ hero } : Props) => {
-  const [activeType, set_activeType] = useState<'All' | 'Images' | 'Videos' | 'Harmony'>('All')
+  const [activeType, set_activeType] = useState<ActiveType>(typeof window !== undefined ? localStorage.getItem('activeType') as ActiveType : 'All')
 
   const [harmonySearchResults, setHarmonySearchResults] = useState<any>(null)
 
   useEffect(() => {
-    localStorage.setItem('activeType', activeType)
     localStorage.setItem('harmonySearchResults', JSON.stringify(harmonySearchResults))
-  }, [activeType, harmonySearchResults])
+  }, [harmonySearchResults])
+
+  useEffect(() => {
+    localStorage.setItem('activeType', activeType)
+  }, [activeType])
 
   const [imageSearchResults, setImageSearchResults] = useState<Types.ImageSearchResultsData | null>(null);
   async function fetchImagesData(query: string) {
@@ -45,7 +50,7 @@ export const Search = React.memo(({ hero } : Props) => {
   }
 
   const [searchResults, setSearchResults] = useState<Types.SearchResultsData | null>(null);
-  const [query, set_query] = useState('');
+  const [query, set_query] = useState(typeof window !== undefined ? localStorage.getItem('query') || '' : '');
 
   const [loading, set_loading] = useState(false)
 
@@ -55,7 +60,6 @@ export const Search = React.memo(({ hero } : Props) => {
       const response = await fetch(`/tools/search?q=${query}`);
       const data = await response.json();
       setSearchResults(data);
-      localStorage.setItem('lastSearch', query);
       localStorage.setItem('searchResults', JSON.stringify(data));
     } catch (error) {
       console.error(error);
@@ -103,25 +107,17 @@ export const Search = React.memo(({ hero } : Props) => {
       set_suggestions([])
       setSearchResults(null)
     }
+    localStorage.setItem('query', query)
   }, [query])
 
   useEffect(() => {
-    const lastSearch = localStorage.getItem('lastSearch')
     const savedResults = localStorage.getItem('searchResults')
-    const savedActiveType = localStorage.getItem('activeType')
     const savedHarmonySearchResults = localStorage.getItem('harmonySearchResults')
-  
-    if (lastSearch) {
-      set_query(lastSearch)
-    }
   
     if (savedResults) {
       setSearchResults(JSON.parse(savedResults))
     }
   
-    if (savedActiveType) {
-      set_activeType(savedActiveType as 'All' | 'Images' | 'Videos' | 'Harmony')
-    }
   
     if (savedHarmonySearchResults) {
       setHarmonySearchResults(JSON.parse(savedHarmonySearchResults))
@@ -231,12 +227,6 @@ export const Search = React.memo(({ hero } : Props) => {
     }
     set_loading(false)
   }
-
-  // useEffect(() => {
-  //   if (activeType === 'Harmony' && query !== '') {
-  //     fetchHarmonyData(query)
-  //   }
-  // }, [query])
 
   return (
     <S.Search>
