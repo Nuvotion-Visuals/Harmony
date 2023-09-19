@@ -69,7 +69,7 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
     <Box width='100%'>
       <Gap gap={.25}>
         {
-          suggestedPrompts?.length > 0 
+          !loading && suggestedPrompts?.length > 0 
             ? suggestedPrompts?.map(prompt =>
                 <Item
                   subtitle={prompt}
