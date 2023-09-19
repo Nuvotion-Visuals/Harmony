@@ -13,6 +13,7 @@ import { SearchSuggestions } from "components/SearchSuggestions";
 import styled from "styled-components";
 import { Image } from "./Image";
 import { universalSearch } from "redux-tk/search";
+import { Harmony } from "./Harmony";
 
 interface Props {
   hero?: boolean,
@@ -66,7 +67,9 @@ export const Search = React.memo(({ hero } : Props) => {
         fetchImagesData(directSearch || query)
         break
       case 'Harmony':
-        fetchHarmonyData(directSearch || query)
+        if (directSearch || query) {
+          fetchHarmonyData(directSearch || query)
+        }
         break
     }
   }
@@ -193,7 +196,7 @@ export const Search = React.memo(({ hero } : Props) => {
     if (activeType === 'Images') {
       fetchImagesData(query)
     } 
-    else if (activeType === 'Harmony') {
+    else if (activeType === 'Harmony' && query !== '') {
       fetchHarmonyData(query)
     }
   }, [activeType])
@@ -211,11 +214,11 @@ export const Search = React.memo(({ hero } : Props) => {
     set_loading(false)
   }
 
-  useEffect(() => {
-    if (activeType === 'Harmony' && query !== '') {
-      fetchHarmonyData(query)
-    }
-  }, [query])
+  // useEffect(() => {
+  //   if (activeType === 'Harmony' && query !== '') {
+  //     fetchHarmonyData(query)
+  //   }
+  // }, [query])
 
   return (
     <S.Search>
@@ -335,20 +338,9 @@ export const Search = React.memo(({ hero } : Props) => {
           )
         }
         {
-          (activeType === 'Harmony') && <S.HarmonySearchResults>
-            {
-              JSON.stringify(harmonySearchResults, null, 2)
-            }
-          </S.HarmonySearchResults>
+          (activeType === 'Harmony') && <Harmony searchResults={harmonySearchResults} query={query}/>
         }
       </Box>
-     
-      {/* <input type='text' value={messageSearchTerm} onChange={(e) => set_messageSearchTerm(e.target.value)}></input>
-      <button onClick={() => {
-        console.log(universalSearch(messageSearchTerm))
-      }}>
-        Search Messages
-      </button> */}
     </S.Search>
   );
 })
@@ -359,11 +351,6 @@ const S = {
     overflow-x: hidden;
     overflow-y: auto;
     height: 100%;
-  `,
-  HarmonySearchResults: styled.pre`
-    width: 100%;
-    font-size: 12px;
-    color: var(--F_Font_Color_Label);
   `
 }
 

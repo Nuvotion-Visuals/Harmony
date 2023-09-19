@@ -51,16 +51,32 @@ export const buildIndex = (key: string) => {
   })
 }
 
-export const universalSearch = (searchTerm: string) => {
-  // Add wildcard '*' to match substrings
+export interface UniversalSearchResults {
+  spaces?: Space[]
+  channels?: Channel[]
+  assets?: Asset[]
+  groups?: Group[]
+  threads?: Thread[]
+  messages?: Message[]
+}
+
+export const universalSearch = (searchTerm: string): UniversalSearchResults => {
   const lowerSearchTerm = `${searchTerm.toLowerCase()}*`
-  const results = {}
+  const results: UniversalSearchResults = {}
 
   Object.keys(indices).forEach(key => {
     const searchResults = indices[key].search(lowerSearchTerm)
-    // @ts-ignore
-    results[key] = searchResults.map(result => indexLists[key][result.ref])
+    results[key as keyof UniversalSearchResults] = searchResults
+      .filter(result => result.score > 2) // Adjust the threshold value as needed
+      .map(result => indexLists[key][result.ref])
+      .filter(entity => {
+        return (entity.message && entity.message.toLowerCase().includes(searchTerm.toLowerCase())) ||
+               (entity.name && entity.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+               (entity.description && entity.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      })
   })
+
+  console.log(results)
 
   return results
 }
