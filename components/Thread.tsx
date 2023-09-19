@@ -9,6 +9,7 @@ import { Indicator } from './Indicator'
 import { ItemMessage } from './ItemMessage'
 import { ThreadSuggestions } from './ThreadSuggestions'
 import { harmonySystemMessage } from 'systemMessage'
+import { JsonValidator } from 'client/utils'
 
 interface Props extends ThreadProps {
   threadGuid: string,
@@ -137,6 +138,11 @@ export const Thread = React.memo(({
 
   const active = guid === activeThreadGuid
 
+  const jsonValidatorRef = useRef(new JsonValidator())
+  
+  const temporaryName = jsonValidatorRef.current.parseJsonProperty(response, 'name') || 'Thinking...'
+  const temporaryDescription = jsonValidatorRef.current.parseJsonProperty(response, 'description') || ''
+
   return (<S.Thread active={active}>
     <Box width='100%'>
     
@@ -197,13 +203,13 @@ export const Thread = React.memo(({
             // @ts-ignore
             text={
               showSpinner 
-                ? response || ''
+                ? temporaryName
                 : name
                   ? name : 'Untitled'}
             // @ts-ignore
             subtitle={
               showSpinner
-                ? undefined 
+                ? temporaryDescription
                 : description ? <ParseHTML html={description} /> : undefined
               }
             onClick={() => onExpand()}

@@ -1,6 +1,6 @@
-import { Gap, Item, LoadingSpinner } from '@avsync.live/formation'
-import { scrollToBottom } from 'client/utils'
-import React, { ReactNode, useEffect, useRef } from 'react'
+import { Gap, Item } from '@avsync.live/formation'
+import { JsonValidator, scrollToBottom } from 'client/utils'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 
@@ -9,82 +9,23 @@ interface Props {
   icon: IconName,
 }
 
-let lastValidJson = ''
-
-const ensureValidJson = (str: string): string | null => {
-  try {
-    if (str === 'null') {
-      return lastValidJson
-    }
-    JSON.parse(str)
-    lastValidJson = str
-    return str
-  } catch (error) {
-    let repairedString = str
-    let stack: string[] = []
-    let withinString = false
-
-    for (let i = 0; i < str.length; i++) {
-      const char = str[i]
-
-      if (char === '"' && (i === 0 || str[i - 1] !== '\\')) {
-        withinString = !withinString
-      }
-
-      if (!withinString) {
-        if (char === '{' || char === '[') {
-          stack.push(char)
-        } else if (char === '}' || char === ']') {
-          const lastOpen = stack.pop()
-          if ((char === '}' && lastOpen !== '{') || (char === ']' && lastOpen !== '[')) {
-            if (lastOpen) stack.push(lastOpen)
-            return lastValidJson  // Too complex to repair; return last known valid.
-          }
-        }
-      }
-    }
-
-    if (withinString) {
-      repairedString += '"'
-    }
-
-    while (stack.length > 0) {
-      const lastOpen = stack.pop()
-      if (lastOpen === '{') {
-        repairedString += '}'
-      } else if (lastOpen === '[') {
-        repairedString += ']'
-      }
-    }
-
-    try {
-      JSON.parse(repairedString)
-      lastValidJson = repairedString
-      return repairedString
-    } catch (finalError) {
-      return lastValidJson
-    }
-  }
-}
-
-
-
 export const ResponseStream = ({ 
   text,
   icon,
 }: Props) => {
+  const jsonValidator = useRef(new JsonValidator())  // Initialize JsonValidator
   const scrollContainerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (text) {
-      const validJsonText = ensureValidJson(text)
+      const validJsonText = jsonValidator.current.ensureValidJson(text)
       if (validJsonText) {
         scrollToBottom(scrollContainerRef)
       }
     }
   }, [text])
 
-  const validText = text ? ensureValidJson(text) : '{}'
+  const validText = text ? jsonValidator.current.ensureValidJson(text) : '{}'
   let suggestions: string[] = []
 
   if (validText) {
@@ -99,8 +40,8 @@ export const ResponseStream = ({
   }
 
   useEffect(() => {
-    console.log(ensureValidJson(text || ''))
-  }, [suggestions.length > 0 ])
+    console.log(jsonValidator.current.ensureValidJson(text || ''))
+  }, [suggestions.length > 0])
 
   return (
     <S.Container>
