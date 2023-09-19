@@ -52,13 +52,23 @@ export const Threads = ({ }: Props) => {
   }, []);
   
   useEffect(() => {
+    // Automatically expand the active thread
     if (activeThreadGuid) {
       setExpandedThreads(prev => ({
         ...prev,
         [activeThreadGuid]: true,
-      }));
+      }))
     }
-  }, [activeThreadGuid]);
+
+    // Automatically expand if there's only one thread
+    if (activeChannel?.threadGuids?.length === 1) {
+      const singleThreadGuid = activeChannel.threadGuids[0]
+      setExpandedThreads(prev => ({
+        ...prev,
+        [singleThreadGuid]: true,
+      }))
+    }
+  }, [activeThreadGuid, activeChannel])
 
   return (<Box wrap width={'100%'}>
     <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>

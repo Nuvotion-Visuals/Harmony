@@ -180,17 +180,19 @@ User feedback (optional): ${feedback}
                         name: 'Suggest threads',
                         onClick: () => {
                           generate_threadPrompts(`
-                          Space name: ${activeSpace?.name}
-                          Space description: ${activeSpace?.description}
-                          
-                          Channel name: ${activeChannel?.name}
-                          Channel description: ${activeChannel?.description} 
-                          
-                          Existing threads: \n${existingThreads}
-                          
-                          Your previous suggestions (optional): ${suggestedPrompts}
-                                          
-                          User feedback (optional): ${feedback}
+                            Space name: ${activeSpace?.name}
+                            Space description: ${activeSpace?.description}
+                            
+                            Channel name: ${activeChannel?.name}
+                            Channel description: ${activeChannel?.description} 
+                            
+                            Existing threads: \n${existingThreads}
+                            
+                            Your previous suggestions (optional): ${suggestedPrompts}
+                                            
+                            User feedback (optional): ${feedback}
+
+                            Your answer should relate to the Space description, with a focus on the Channel description. Emphasize User feedback, if provided.
                           `)
                         }
                       },
@@ -275,19 +277,24 @@ User feedback (optional): ${feedback}
                         iconPrefix='fas'
                         secondary
                         text='Suggest'
-                        onClick={() => generate_threadPrompts(`
-                        Space name: ${activeSpace?.name}
-                        Space description: ${activeSpace?.description}
-                        
-                        Channel name: ${activeChannel?.name}
-                        Channel description: ${activeChannel?.description} 
-                        
-                        Existing threads: \n${existingThreads}
-                        
-                        Your previous suggestions (optional): ${suggestedPrompts}
-                                        
-                        User feedback (optional): ${feedback}
-                        `)}
+                        onClick={() => {
+                          console.log(activeSpace?.description)
+                          generate_threadPrompts(`
+                            Space name: ${activeSpace?.name}
+                            Space description: ${activeSpace?.description}
+                            
+                            Channel name: ${activeChannel?.name}
+                            Channel description: ${activeChannel?.description} 
+                            
+                            Existing threads: \n${existingThreads}
+                            
+                            Your previous suggestions (optional): ${suggestedPrompts}
+                                            
+                            User feedback (optional): ${feedback}
+
+                            Your answer should relate to the Space description, with a focus on the Channel description. Emphasize User feedback, if provided.
+                        `)
+                        }}
                       />
                     </Box>
                   </Box>

@@ -205,7 +205,7 @@ export const Thread = React.memo(({
               showSpinner 
                 ? temporaryName
                 : name
-                  ? name : 'Untitled'}
+                  ? name : 'Thinking...'}
             // @ts-ignore
             subtitle={
               showSpinner

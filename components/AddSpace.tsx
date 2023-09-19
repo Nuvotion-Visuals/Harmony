@@ -6,6 +6,7 @@ import { useSpaces_addSpaceIncludingGroups } from 'redux-tk/spaces/hook';
 import { ResponseStream } from './ResponseStream';
 
 import { IconName } from '@fortawesome/fontawesome-svg-core';
+import { SpaceResponseStream } from './SpaceResponseStream';
 
 interface Channel {
   name: string;
@@ -61,7 +62,7 @@ export const AddSpace = React.memo(({}: Props) => {
       set_value(
         suggested.groups.map((group: Group, i: number) => ({
           reorderId: `list_${i}`,
-          expanded: false,
+          expanded: true,
           value: {
             item: {
               labelColor: 'none',
@@ -79,7 +80,7 @@ export const AddSpace = React.memo(({}: Props) => {
       );
     }
   }, [suggested]);
-  
+
   return (
     <Box wrap>
       <Box my={0.25} width='100%'>
@@ -137,9 +138,8 @@ export const AddSpace = React.memo(({}: Props) => {
          
           {
             loading && !value?.length 
-            ? <ResponseStream 
-                icon='list'
-                text={response!} 
+            ? <SpaceResponseStream
+                text={response || ''}
               />
             : value?.length ?
                 <Box width='100%' wrap my={-.25}>

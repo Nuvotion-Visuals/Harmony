@@ -48,23 +48,25 @@ router.get('/prompt/:prompt', async (req, res) => {
       );
     }
 
-    const contentType = imageRes.headers.get('content-type');
-    if (!contentType || !contentType.startsWith('image/')) {
-      throw new Error(`Invalid content type for image: ${contentType}`);
+    const contentType = imageRes.headers.get('content-type') || 'image/jpeg'
+
+    if (contentType.startsWith('image/')) {
+      const imageBuffer = await imageRes.arrayBuffer()
+      
+      res.setHeader('Content-Type', contentType)
+      res.send(Buffer.from(imageBuffer))
+      return  // Return after response is sent
+      
+    } else {
+      console.warn(`Unexpected Content-Type: ${contentType}, but proceeding anyway`)
+      const imageBuffer = await imageRes.arrayBuffer()
+      
+      res.setHeader('Content-Type', 'image/jpeg')
+      res.send(Buffer.from(imageBuffer))
+      return  // Return after response is sent
     }
-
-    const imageBuffer = await imageRes.arrayBuffer();
-    // Set Content-Type header only once
-    res.setHeader('Content-Type', contentType || '');
-    res.send(Buffer.from(imageBuffer));
-
-    // Store image in cache and on disk
-    console.log(`Caching image ${imageUrl}`);
-    cache.put(imageUrl, { contentType: contentType || '', data: Buffer.from(imageBuffer) }, CACHE_DURATION);
-
-    fs.writeFileSync(filename, Buffer.from(imageBuffer));
-    console.log(`Saved image to disk: ${filename}`);
-  } catch (err: any) {
+  } 
+  catch (err: any) {
     console.error(`Error fetching image from ${imageUrl}: ${err.message}`);
     const placeholderUrl =
       'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png';
