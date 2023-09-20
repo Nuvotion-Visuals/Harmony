@@ -23,24 +23,18 @@ export const ThreadsHeader = memo(() => {
 
   const addThread = useSpaces_addThread()
   const addMessage = useSpaces_addMessage()
-  const threadsByGuid = useSpaces_threadsByGuid()
   const addThreadToChannel = useSpaces_addThreadToChannel()
   const addMessageToThread = useSpaces_addMessageToThread()
   const setActiveChannelGuid = useSpaces_setActiveChannelGuid()
   const setActiveGroupGuid = useSpaces_setActiveGroupGuid()
+
+  const threadsByGuid = useSpaces_threadsByGuid()
   const activeChannel = useSpaces_activeChannel()
   const activeSpace = useSpaces_activeSpace()
   const activeGroup = useSpaces_activeGroup()
 
-
-  // websocket communication with server
-  const [newThreadName, set_newThreadName] = useState('')
-  const [newThreadDescription, set_newThreadDescription] = useState('')
-
-
   const decrementActiveSwipeIndex = useLayout_decrementActiveSwipeIndex()
   const { isDesktop } = useBreakpoint()
-
   
   const { language, response, loading, error, completed } = useLanguageAPI('');
   const { generate_threadPrompts } = language;
@@ -66,9 +60,6 @@ export const ThreadsHeader = memo(() => {
   }, [activeChannel?.threadGuids])
 
 
-  
-
-
   const websocketClient = getWebsocketClient()
 
   const [feedback, set_feedback] = useState('')
@@ -77,34 +68,31 @@ export const ThreadsHeader = memo(() => {
     set_suggestedPrompts([])
     // @ts-ignore
     if (activeChannel?.description && getWebsocketClient?.send) {
-        generate_threadPrompts(`
-Space name: ${activeSpace?.name}
-Space description: ${activeSpace?.description}
+      generate_threadPrompts(`
+        Space name: ${activeSpace?.name}
+        Space description: ${activeSpace?.description}
 
-Channel name: ${activeChannel?.name}
-Channel description: ${activeChannel?.description} 
+        Channel name: ${activeChannel?.name}
+        Channel description: ${activeChannel?.description} 
 
-Existing threads: \n${existingThreads}
+        Existing threads: \n${existingThreads}
 
-Your previous suggestions (optional): ${suggestedPrompts}
-                
-User feedback (optional): ${feedback}
-`)
+        Your previous suggestions (optional): ${suggestedPrompts}
+                        
+        User feedback (optional): ${feedback}
+      `)
     }
   }, [activeChannel?.threadGuids, websocketClient, activeChannel?.guid])
-
-
-
 
   const sendThread = (message: string) => {
     const websocketClient = getWebsocketClient()
     const guid = generateUUID()
     const newThread = {
       guid,
-      name: newThreadName,
+      name: '',
       channelGuid,
       messageGuids: [],
-      description: newThreadDescription
+      description: ''
     } as ThreadProps
     addThread({ guid, thread: newThread })
     addThreadToChannel({ channelGuid: channelGuid as string, threadGuid: guid })
@@ -153,7 +141,6 @@ User feedback (optional): ${feedback}
     websocketClient.send(JSON.stringify(action))
   }
 
-
   return (
     <Gap>
       {
@@ -185,27 +172,6 @@ User feedback (optional): ${feedback}
                     minimalIcon
                     items={[
                       {
-                        icon: 'lightbulb',
-                        name: 'Suggest threads',
-                        onClick: () => {
-                          generate_threadPrompts(`
-                            Space name: ${activeSpace?.name}
-                            Space description: ${activeSpace?.description}
-                            
-                            Channel name: ${activeChannel?.name}
-                            Channel description: ${activeChannel?.description} 
-                            
-                            Existing threads: \n${existingThreads}
-                            
-                            Your previous suggestions (optional): ${suggestedPrompts}
-                                            
-                            User feedback (optional): ${feedback}
-
-                            Your answer should relate to the Space description, with a focus on the Channel description. Emphasize User feedback, if provided.
-                          `)
-                        }
-                      },
-                      {
                         icon: 'edit',
                         iconPrefix: 'fas',
                         name: 'Edit',
@@ -228,14 +194,13 @@ User feedback (optional): ${feedback}
                 <Box mt={-.75}  width='100%'>
                   <Item 
                     // @ts-ignore
-                    subtitle={<RichTextEditor
-                      value={activeChannel?.description || ''}
-                      readOnly={true}
-                    >
-                    </RichTextEditor>}
-                  >
-                  
-                  </Item>
+                    subtitle={
+                      <RichTextEditor
+                        value={activeChannel?.description || ''}
+                        readOnly={true}
+                      />
+                    }
+                  />
                 </Box>
               </Box>
 
@@ -243,23 +208,19 @@ User feedback (optional): ${feedback}
                 <Box width='100%' pb={.5}>
                   {
                     suggestedPrompts?.length && !loading
-                      ? 
-                          <Gap gap={.25}>
-                            {
-                              suggestedPrompts?.map(prompt =>
-                                <Item
-                                  subtitle={prompt}
-                                  icon='paper-plane'
-                                  onClick={() => {
-                                    sendThread(prompt)
-                                  }}
-                                >
-                                
-                                </Item>
-                              )
-                            }
-                          </Gap>
-                        
+                      ? <Gap gap={.25}>
+                          {
+                            suggestedPrompts?.map(prompt =>
+                              <Item
+                                subtitle={prompt}
+                                icon='paper-plane'
+                                onClick={() => {
+                                  sendThread(prompt)
+                                }}
+                              />
+                            )
+                          }
+                        </Gap>
                       : loading
                         ? <ResponseStream 
                             text={response || ''} 

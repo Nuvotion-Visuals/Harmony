@@ -21,53 +21,51 @@ export const SpaceCardComponent = React.memo(() => {
   const activeSpaceStats = useSpaces_activeSpaceStats()
 
   return (
-    <Box p={.75} width='100%'>
-      <SpaceCard
-        name={activeSpace?.name}
-        previewSrc={activeSpace?.previewSrc}
-        {...activeSpaceStats}
-      >
-        <Dropdown
-          icon='ellipsis-h'
-          iconPrefix='fas'
-          circle
-          items={[
-            {
-              text: 'Edit',
-              icon: 'edit',
-              iconPrefix: 'fas',
-              href: `/spaces/${activeSpace?.guid}/edit`
-            },
-            {
-              text: activeSpace?.locked ? 'Unlock' : 'Lock',
-              icon: activeSpace?.locked ? 'lock' : 'lock-open',
-              iconPrefix: 'fas',
-              onClick: () => {
-                updateSpace({
-                  guid: spaceGuid as string,
-                  space: {
-                    ...activeSpace!,
-                    locked: !activeSpace?.locked
-                  }
-                })
-              }
-            },
-            {
-              text: 'Remove',
-              icon: 'trash-alt',
-              iconPrefix: 'fas',
-              onClick: () => {
-                if (activeSpace?.guid) {
-                  removeSpace(activeSpace?.guid)
-                  router.push('/spaces')
+    <SpaceCard
+      name={activeSpace?.name}
+      previewSrc={activeSpace?.previewSrc}
+      {...activeSpaceStats}
+    >
+      <Dropdown
+        icon='ellipsis-h'
+        iconPrefix='fas'
+        circle
+        items={[
+          {
+            text: 'Edit',
+            icon: 'edit',
+            iconPrefix: 'fas',
+            href: `/spaces/${activeSpace?.guid}/edit`
+          },
+          {
+            text: activeSpace?.locked ? 'Unlock' : 'Lock',
+            icon: activeSpace?.locked ? 'lock' : 'lock-open',
+            iconPrefix: 'fas',
+            onClick: () => {
+              updateSpace({
+                guid: spaceGuid as string,
+                space: {
+                  ...activeSpace!,
+                  locked: !activeSpace?.locked
                 }
+              })
+            }
+          },
+          {
+            text: 'Remove',
+            icon: 'trash-alt',
+            iconPrefix: 'fas',
+            onClick: () => {
+              if (activeSpace?.guid) {
+                removeSpace(activeSpace?.guid)
+                router.push('/spaces')
               }
             }
-          ]}
-        />
-      </SpaceCard>
-    </Box>
-  )
+          }
+        ]}
+      />
+    </SpaceCard>
+)
 })
 
 const arePropsEqual = (prevProps: any, nextProps: any) => {
@@ -132,12 +130,8 @@ export const SpaceSidebar = React.memo(({ }: Props) => {
   return (<S.GroupsSidebar>
     <SpacesSidebarComponent />
     <S.SidebarContainer>
-      <Box wrap width='100%'>
-        <Box p={.75} width='100%'>
-          <SpaceCardComponent />
-        </Box>
-        <Groups />
-      </Box>
+      <SpaceCardComponent />
+      <Groups />
     </S.SidebarContainer>
   </S.GroupsSidebar>)
 })

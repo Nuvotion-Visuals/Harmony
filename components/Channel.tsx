@@ -1,14 +1,13 @@
-import { scrollToElementById, Box, Button, Dropdown, Item, Page, Spacer, useBreakpoint } from '@avsync.live/formation'
-import React, { useEffect, useRef, useState } from 'react'
+import { scrollToElementById, Box, Button, Dropdown, Item, useBreakpoint } from '@avsync.live/formation'
+import React, { useState } from 'react'
 import { use100vh } from 'react-div-100vh'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
-import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Indicator } from './Indicator'
 import { Threads } from './Threads'
 
 import { ChatBox } from './ChatBox'
-import { useLanguage_query } from 'redux-tk/language/hook'
 
 interface Props {
   

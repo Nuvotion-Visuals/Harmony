@@ -1,35 +1,56 @@
 import { Box, Page } from '@avsync.live/formation'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Thread } from './Thread'
 import { use100vh } from 'react-div-100vh'
 import { ThreadsHeader } from './ThreadsHeader'
 import { useRouter } from 'next/router'
+import _ from 'lodash'
 
 interface ThreadWrapperProps {
-  threadGuid: string;
-  threadsByGuid: any;
-  expanded: boolean;
-  onExpand: (threadGuid: string) => void;
+  threadGuid: string
+  threadsByGuid: any
+  expanded: boolean
+  threadProps: any
+  onExpand: (threadGuid: string) => void
+  messages: any,
+  active: boolean
 }
 
-const ThreadWrapper = React.memo(({ threadGuid, threadsByGuid, expanded, onExpand }: ThreadWrapperProps) => {
-  const threadProps = useMemo(() => threadsByGuid[threadGuid], [threadsByGuid, threadGuid]);
-  const handleThreadExpand = useCallback(() => onExpand(threadGuid), [onExpand]);
-  
+const areEqual = (
+  prevProps: ThreadWrapperProps,
+  nextProps: ThreadWrapperProps
+) => {
   return (
-    <S.ThreadsContainer>
-      <Thread
-        {...threadProps}
-        expanded={expanded}
-        onExpand={handleThreadExpand}
-        threadGuid={threadGuid}
-      />
-    </S.ThreadsContainer>
-  );
-})
+    prevProps.threadGuid === nextProps.threadGuid &&
+    _.isEqual(prevProps.threadsByGuid, nextProps.threadsByGuid) && // Deep equality
+    prevProps.expanded === nextProps.expanded &&
+    prevProps.onExpand === nextProps.onExpand &&
+    _.isEqual(prevProps.messages, nextProps.messages) && // Deep equality
+    _.isEqual(prevProps.threadProps, nextProps.threadProps) &&
+    _.isEqual(prevProps.active, nextProps.active)
+  )
+}
 
+const ThreadWrapper = React.memo(
+  ({ threadGuid, threadProps, expanded, onExpand, messages, active }: ThreadWrapperProps) => {
+    
+    return (
+      <S.ThreadsContainer>
+        <Thread
+          {...threadProps}
+          expanded={expanded}
+          onExpand={() => {onExpand(threadGuid)}}
+          threadGuid={threadGuid}
+          messages={messages}
+          active={active}
+        />
+      </S.ThreadsContainer>
+    )
+  },
+  areEqual
+)
 interface Props {
   
 }
@@ -44,6 +65,7 @@ export const Threads = React.memo(({ }: Props) => {
   const true100vh = use100vh()
   const activeThreadGuid = useSpaces_activeThreadGuid()
   const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
+  const messagesByGuid = useSpaces_messagesByGuid()
   
   const [expandedThreads, setExpandedThreads] = useState<{ [key: string]: boolean }>({})
 
@@ -82,7 +104,7 @@ export const Threads = React.memo(({ }: Props) => {
     <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
       <Page noPadding>
         <ThreadsHeader />
-        
+
           {
             activeChannel?.threadGuids?.map((threadGuid, index) => (
               <ThreadWrapper
@@ -91,6 +113,13 @@ export const Threads = React.memo(({ }: Props) => {
                 threadsByGuid={threadsByGuid}
                 expanded={expandedThreads[threadGuid]}
                 onExpand={handleExpandClick}
+                threadProps={threadsByGuid[threadGuid]}
+                messages={
+                  threadsByGuid[threadGuid].messageGuids?.map((messageGuid, index) => {
+                    return messagesByGuid?.[messageGuid]
+                  })
+                }
+                active={activeThreadGuid === threadGuid}
               />
             ))
           }

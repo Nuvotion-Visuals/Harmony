@@ -15,7 +15,9 @@ import { useRouter } from 'next/router'
 interface Props extends ThreadProps {
   threadGuid: string,
   expanded: boolean,
-  onExpand: () => void
+  onExpand: () => void,
+  messages: MessageProps[],
+  active: boolean
 }
 
 export const Thread = React.memo(({
@@ -26,7 +28,9 @@ export const Thread = React.memo(({
     description,
     threadGuid,
     expanded,
-    onExpand
+    onExpand,
+    messages,
+    active
  }: Props) => {
 
   const [newThreadName, set_newThreadName] = useState(name)
@@ -35,16 +39,16 @@ export const Thread = React.memo(({
  
   const [messageContent, set_messageContent] = useState('')
 
-  useEffect(() => {
-    const newMessageContent = messageGuids?.map((messageGuid, index) => {
-      const message = messagesByGuid?.[messageGuid];
-      return message?.message;
-    }).join('\n');
+  // useEffect(() => {
+  //   const newMessageContent = messageGuids?.map((messageGuid, index) => {
+  //     const message = messagesByGuid?.[messageGuid];
+  //     return message?.message;
+  //   }).join('\n');
     
-    if (newMessageContent !== messageContent) {
-      set_messageContent(newMessageContent);
-    }
-  }, [JSON.stringify(messageGuids)]);
+  //   if (newMessageContent !== messageContent) {
+  //     set_messageContent(newMessageContent);
+  //   }
+  // }, [JSON.stringify(messageGuids)]);
 
   const { language, response, loading, error, completed } = useLanguageAPI(messageContent);
   const { generate_title } = language;
@@ -74,14 +78,12 @@ export const Thread = React.memo(({
   }, [response, completed]);
   
   const addMessage = useSpaces_addMessage()
-  const messagesByGuid = useSpaces_messagesByGuid()
   const addMessageToThread = useSpaces_addMessageToThread()
   const updateThread = useSpaces_updateThread()
   const removeThreadFromChannel = useSpaces_removeThreadFromChannel()
   const removeThread = useSpaces_removeThread()
   const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
-  const activeThreadGuid = useSpaces_activeThreadGuid()
-   
+  
 
   const [edit, set_edit] = useState(false)
   useEffect(() => {
@@ -129,13 +131,13 @@ export const Thread = React.memo(({
 
   useEffect(() => {
     if (messageGuids?.length === 2 && !name && !description) {
-      if (messagesByGuid[messageGuids[1]]?.complete) {
+      const message = messages.find(msg => msg.guid === messageGuids[1])
+      if (message?.complete) {
         generate_title(messageContent)
       }
     }
-  }, [messagesByGuid[messageGuids[1]]?.complete])
+  }, [messages])
 
-  const active = guid === activeThreadGuid
 
   const jsonValidatorRef = useRef(new JsonValidator())
 
@@ -280,7 +282,7 @@ export const Thread = React.memo(({
                       onClick: (e) => {
                         removeThreadFromChannel({ threadGuid: guid, channelGuid})
                         removeThread(guid)
-                        if (activeThreadGuid === guid) {
+                        if (active) {
                           setActiveThreadGuid(null)
                         }
                       }
@@ -296,17 +298,16 @@ export const Thread = React.memo(({
     </Box>
     <div id={`top_${guid}`}></div>
     {
-      messageGuids?.map((messageGuid, index) => {
-        const message = messagesByGuid?.[messageGuid]
+      messages?.map((message, index) => {
         return (
           expanded && message && 
             <ItemMessage 
-              key={messageGuid}
+              key={`message{${index}}`}
               {
                 ...message
               }
               threadGuid={threadGuid}
-              active={messageGuid === messageGuidFromQuery}
+              active={false}
             />
         )
       })
@@ -320,15 +321,15 @@ export const Thread = React.memo(({
 
           <ThreadSuggestions guid={guid} onSend={(message) => sendMessageToWebsocket(message)} />
             {
-              activeThreadGuid !== guid &&
+              !active &&
               <Box width='100%' px={.75} my={.25}>
                 <Button
                   expand
                   icon='reply'
                   iconPrefix='fas'
-                  text={activeThreadGuid === guid ? 'Replying' : 'Reply'}
+                  text={active ? 'Replying' : 'Reply'}
                   secondary
-                  disabled={activeThreadGuid === guid}
+                  disabled={active}
                   onClick={() => {
                     scrollToElementById(`bottom_${guid}`, {
                       behavior: 'smooth',

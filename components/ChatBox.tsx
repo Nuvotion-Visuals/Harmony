@@ -18,7 +18,6 @@ const Reply = memo(() => {
   const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
   const activeThreadName = useSpaces_activeThreadName()
   const activeThreadGuid = useSpaces_activeThreadGuid()
-  const router = useRouter()
   
   return (
     <Page noPadding>
@@ -44,9 +43,6 @@ const Reply = memo(() => {
               minimal
               onClick={async () => {
                 setActiveThreadGuid(null)
-                const { asPath } = router
-                const pathWithoutQuery = asPath.split('?')[0]
-                await router.push(pathWithoutQuery, undefined, { shallow: true })
               }}
             />
           </Item>
