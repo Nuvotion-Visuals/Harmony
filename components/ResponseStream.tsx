@@ -1,6 +1,6 @@
-import { Gap, Item } from '@avsync.live/formation'
+import { Gap, Item as OriginalItem } from '@avsync.live/formation'
 import { JsonValidator, scrollToBottom } from 'client/utils'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, memo } from 'react'
 import styled from 'styled-components'
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 
@@ -11,7 +11,15 @@ interface Props {
   loading?: boolean
 }
 
-export const ResponseStream = ({ 
+// Memoized Item component
+const Item = memo(OriginalItem, (prevProps, nextProps) => {
+  return (
+    prevProps.subtitle === nextProps.subtitle &&
+    prevProps.icon === nextProps.icon
+  )
+})
+
+export const ResponseStream = ({
   text,
   icon,
   onClick,
@@ -26,8 +34,6 @@ export const ResponseStream = ({
       const validJsonText = jsonValidator.current.ensureValidJson(text)
       if (validJsonText) {
         scrollToBottom(scrollContainerRef)
-
-        // Moved the state-updating logic here
         try {
           const parsed = JSON.parse(validJsonText)
           if (parsed?.suggestions && Array.isArray(parsed.suggestions)) {
@@ -47,14 +53,14 @@ export const ResponseStream = ({
         {suggestions.length > 0
           ? suggestions.map((prompt, index) =>
               <Item
+                key={index}  // Keys help React identify which items have changed
                 subtitle={prompt}
                 icon={icon}
                 onClick={() => {
                   onClick(prompt)
                   set_suggestions([])
                 }}
-              >
-              </Item>
+              />
             )
           : loading
               ? <Item

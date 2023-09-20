@@ -11,17 +11,12 @@ import { ResponseStream } from './ResponseStream'
 import { harmonySystemMessage } from 'systemMessage'
 import { getStore } from 'redux-tk/store'
 import { select_activeChannel, select_activeSpace, select_activeGroup } from 'redux-tk/spaces/selectors'
+import { Channel, Group, Message, Space, Thread } from 'redux-tk/spaces/types'
 
 type ActiveChannelComponentProps = {
-  activeChannel: {
-    previewSrc?: string
-    name?: string
-    threadGuids?: string[]
-    description?: string
-    guid?: string
-  }
-  activeSpace: { guid?: string }
-  activeGroup: { guid?: string }
+  activeChannel: Channel
+  activeSpace: Space
+  activeGroup: Group
   isDesktop?: boolean
   decrementActiveSwipeIndex: () => void
 }
@@ -193,9 +188,9 @@ export const ThreadsHeader = memo(() => {
       channelGuid,
       messageGuids: [],
       description: ''
-    }
+    } as Thread
     addThread({ guid, thread: newThread })
-    addThreadToChannel({ channelGuid, threadGuid: guid })
+    addThreadToChannel({ channelGuid: channelGuid as string, threadGuid: guid })
 
     const messageGuid = generateUUID()
     const newMessage = {
@@ -204,7 +199,7 @@ export const ThreadsHeader = memo(() => {
       message,
       conversationId: guid,
       parentMessageId: messageGuid
-    }
+    } as Message
     addMessage({ guid: messageGuid, message: newMessage })
     addMessageToThread({ threadGuid: guid, messageGuid })
 
@@ -215,7 +210,7 @@ export const ThreadsHeader = memo(() => {
       conversationId: guid,
       parentMessageId: messageGuid,
       userLabel: 'Harmony'
-    }
+    } as Message
     addMessage({ guid: responseGuid, message: newResponse })
     addMessageToThread({ threadGuid: guid, messageGuid: responseGuid })
 
@@ -265,8 +260,8 @@ export const ThreadsHeader = memo(() => {
         <>
           <ActiveChannelComponent
             activeChannel={activeChannel}
-            activeSpace={activeSpace}
-            activeGroup={activeGroup}
+            activeSpace={activeSpace!}
+            activeGroup={activeGroup!}
             isDesktop={isDesktop}
             decrementActiveSwipeIndex={decrementActiveSwipeIndex}
           />

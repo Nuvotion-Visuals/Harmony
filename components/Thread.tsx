@@ -11,6 +11,7 @@ import { ThreadSuggestions } from './ThreadSuggestions'
 import { harmonySystemMessage } from 'systemMessage'
 import { JsonValidator } from 'client/utils'
 import { useRouter } from 'next/router'
+import { getStore } from 'redux-tk/store'
 
 interface ReplyProps {
   expanded: boolean,
@@ -82,20 +83,21 @@ export const Thread = React.memo(({
 
   const [newThreadName, set_newThreadName] = useState(name)
   const [newThreadDescription, set_newThreadDescription] = useState(description)
-
  
   const [messageContent, set_messageContent] = useState('')
 
-  // useEffect(() => {
-  //   const newMessageContent = messageGuids?.map((messageGuid, index) => {
-  //     const message = messagesByGuid?.[messageGuid];
-  //     return message?.message;
-  //   }).join('\n');
+  useEffect(() => {
+    const state = getStore().getState()
+    const { messagesByGuid } = state.spaces
+    const newMessageContent = messageGuids?.map((messageGuid, index) => {
+      const message = messagesByGuid?.[messageGuid]
+      return message?.message
+    }).join('\n')
     
-  //   if (newMessageContent !== messageContent) {
-  //     set_messageContent(newMessageContent);
-  //   }
-  // }, [JSON.stringify(messageGuids)]);
+    if (newMessageContent !== messageContent) {
+      set_messageContent(newMessageContent)
+    }
+  }, [JSON.stringify(messageGuids)])
 
   const { language, response, loading, error, completed } = useLanguageAPI(messageContent);
   const { generate_title } = language;
@@ -138,43 +140,43 @@ export const Thread = React.memo(({
     set_newThreadDescription(description)
   }, [edit])
 
-  const sendMessageToWebsocket = (message: string) => {
+  const sendMessageToWebsocket = useCallback((message: string) => {
   const websocketClient = getWebsocketClient()
 
-    const messageGuid = generateUUID()
-    const newMessage ={
-      guid: messageGuid,
-      message,
-      conversationId: guid,
-      parentMessageId: messageGuid,
-      userLabel: 'You'
-    } as MessageProps
-    addMessage({ guid: messageGuid, message: newMessage})
-    addMessageToThread({ threadGuid, messageGuid })
-    const action = {
-      type: 'message',
-      guid,
-      message,
-      conversationId: threadGuid,
-      parentMessageId: messageGuid,
-      personaLabel: 'Harmony',
-      systemMessage: harmonySystemMessage,
-      userLabel: 'You',
-    }
-    websocketClient.send(JSON.stringify(action))
-
-    // insert new message in anticipation of response
-    const responseGuid = generateUUID()
-    const newResponse ={
-      guid: responseGuid,
-      message: '',
-      conversationId: guid,
-      parentMessageId: messageGuid,
-      userLabel: 'Harmony'
-    } as MessageProps
-    addMessage({ guid: responseGuid, message: newResponse })
-    addMessageToThread({ threadGuid, messageGuid: responseGuid })
+  const messageGuid = generateUUID()
+  const newMessage = {
+    guid: messageGuid,
+    message,
+    conversationId: guid,
+    parentMessageId: messageGuid,
+    userLabel: 'You'
+  } as MessageProps
+  addMessage({ guid: messageGuid, message: newMessage })
+  addMessageToThread({ threadGuid, messageGuid })
+  const action = {
+    type: 'message',
+    guid,
+    message,
+    conversationId: threadGuid,
+    parentMessageId: messageGuid,
+    personaLabel: 'Harmony',
+    systemMessage: harmonySystemMessage,
+    userLabel: 'You'
   }
+  websocketClient.send(JSON.stringify(action))
+
+  // Insert new message in anticipation of response
+  const responseGuid = generateUUID()
+  const newResponse = {
+    guid: responseGuid,
+    message: '',
+    conversationId: guid,
+    parentMessageId: messageGuid,
+    userLabel: 'Harmony'
+  } as MessageProps
+  addMessage({ guid: responseGuid, message: newResponse })
+  addMessageToThread({ threadGuid, messageGuid: responseGuid })
+}, [addMessage, addMessageToThread, getWebsocketClient, guid, threadGuid, harmonySystemMessage])
 
   useEffect(() => {
     if (messageGuids?.length === 2 && !name && !description) {
@@ -379,6 +381,7 @@ const S = {
     display: flex;
     flex-wrap: wrap;
     border-left: ${props => props.active ? '4px solid var(--F_Primary)' : '4px solid var(--F_Surface_0)'};
+    border-radius: .125rem 0 0 .125rem;
     margin: .25rem 0;
     padding: .25rem 0;
     border-bottom: 1px solid var(--F_Surface_0);

@@ -1,10 +1,10 @@
-import { Box, Button, Gap, Item, RichTextEditor, Spacer, TextInput } from '@avsync.live/formation';
-import { getWebsocketClient } from 'client/connectivity/websocket-client';
-import { useLanguageAPI } from 'client/language/hooks';
+import { Box, Button, Gap, TextInput } from '@avsync.live/formation'
+import { getWebsocketClient } from 'client/connectivity/websocket-client'
+import { useLanguageAPI } from 'client/language/hooks'
 import React, { useEffect, useState } from 'react'
-import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_messagesByGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook';
+import { useSpaces_activeChannel, useSpaces_messagesByGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
-import { ResponseStream } from './ResponseStream';
+import { ResponseStream } from './ResponseStream'
 
 interface Props {
   onSend: (message: string) => void,
@@ -17,8 +17,8 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
     const activeChannel = useSpaces_activeChannel()
     const messagesByGuid = useSpaces_messagesByGuid()
 
-    const { language, response, loading, error, completed } = useLanguageAPI('');
-    const { generate_searchQueries } = language;
+    const { language, response, loading, error, completed } = useLanguageAPI('')
+    const { generate_searchQueries } = language
     
     const [suggestedPrompts, set_suggestedPrompts] = useState([])
   

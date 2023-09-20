@@ -104,7 +104,6 @@ export const Threads = React.memo(({ }: Props) => {
     <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
       <Page noPadding>
         <ThreadsHeader />
-
           {
             activeChannel?.threadGuids?.map((threadGuid, index) => (
               <ThreadWrapper
