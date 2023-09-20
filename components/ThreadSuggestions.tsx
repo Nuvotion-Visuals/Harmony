@@ -1,72 +1,88 @@
-import { Box, Button, Gap, Item, scrollToElementById, TextInput } from '@avsync.live/formation';
-import { getWebsocketClient } from 'client/connectivity/websocket-client';
-import { useLanguageAPI } from 'client/language/hooks';
-import React, { useEffect, useState } from 'react'
-import { useSpaces_activeChannel, useSpaces_activeSpace, useSpaces_messagesByGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook';
+import { Box, Button, Gap, Item, scrollToElementById, TextInput } from '@avsync.live/formation'
+import { useLanguageAPI } from 'client/language/hooks'
+import React, { useCallback, useEffect, useState } from 'react'
+import { getStore } from 'redux-tk/store'  // Add the import for your Redux store
 import styled from 'styled-components'
-import { ResponseStream } from './ResponseStream';
+import { ResponseStream } from './ResponseStream'
+import { select_activeChannel, select_activeSpace } from 'redux-tk/spaces/selectors'
+
+interface FeedbackBoxProps {
+  feedback: string
+  set_feedback: (value: string) => void
+  generateFollowUpMessage: () => void
+}
+
+const FeedbackBox: React.FC<FeedbackBoxProps> = React.memo(({ feedback, set_feedback, generateFollowUpMessage }) => {
+  return (
+    <Box width={'100%'} mx={1}>
+      <TextInput
+        value={feedback}
+        onChange={val => set_feedback(val)}
+        placeholder='Suggest new messages'
+        canClear={feedback !== ''}
+        compact
+        hideOutline
+      />
+      <Box>
+        <Button
+          secondary
+          icon='lightbulb'
+          text='Suggest'
+          iconPrefix='fas'
+          onClick={() => generateFollowUpMessage()}
+        />
+      </Box>
+    </Box>
+  )
+})
 
 interface Props {
-  onSend: (message: string) => void,
+  onSend: (message: string) => void
   guid: string
 }
 
-export const ThreadSuggestions = ({ onSend, guid }: Props) => {
-    const threadsByGuid = useSpaces_threadsByGuid()
-    const activeChannel = useSpaces_activeChannel()
-    const activeSpace = useSpaces_activeSpace()
-    const messagesByGuid = useSpaces_messagesByGuid()
-  
+export const ThreadSuggestions = React.memo(({ onSend, guid }: Props) => {
+  const { language, response, loading, error, completed } = useLanguageAPI('')
+  const { generate_followUpMessages } = language
+  const [suggestedPrompts, set_suggestedPrompts] = useState([])
+  const [feedback, set_feedback] = useState('')
 
-    const { language, response, loading, error, completed } = useLanguageAPI('');
-    const { generate_followUpMessages } = language;
-    
-    const [suggestedPrompts, set_suggestedPrompts] = useState([])
-  
-    useEffect(() => {
-      if (response && completed) {
-        try {
-          let obj = JSON.parse(response);
-          set_suggestedPrompts(obj.suggestions)
-        } catch (e) {}
-      }
-    }, [response, completed]);
-  
-    const [ existingMessages, set_existingMessages ] = useState('')
-    useEffect(() => {
-      if (activeChannel?.threadGuids) {
-        set_existingMessages(threadsByGuid?.[guid]?.messageGuids.map((messageGuid, index) => (
-          `Existing message: ${messagesByGuid?.[messageGuid]?.message}`
-        )).join('\n'))
-      }
-    }, [threadsByGuid?.[guid]?.messageGuids])
-  
-    const websocketClient = getWebsocketClient()
+  const generateFollowUpMessage = useCallback(async () => {
+    const state = getStore().getState()
+    const { threadsByGuid, messagesByGuid } = state.spaces
+    const activeChannel = select_activeChannel(state)
+    const activeSpace = select_activeSpace(state)
 
-    const [feedback, set_feedback] = useState('')
-  
-    useEffect(() => {
-      set_suggestedPrompts([])
-      // @ts-ignore
-      if (activeChannel?.description && getWebsocketClient?.send) {
-        generate_followUpMessages(`
-  Space name: ${activeSpace?.name}
-  Space description: ${activeSpace?.description}
-  
-  Channel name: ${activeChannel?.name}
-  Channel description: ${activeChannel?.description} 
+    let existingMessages = threadsByGuid?.[guid]?.messageGuids.map((messageGuid) => (
+      `Existing message: ${messagesByGuid?.[messageGuid]?.message}`
+    )).join('\n')
 
-  Thread name ${threadsByGuid?.[guid]?.name}
-  Thread description ${threadsByGuid?.[guid]?.description}
-  
-  Existing messages in thread: \n${existingMessages}
-  
-  Your previous suggestions (optional): ${suggestedPrompts}
+    generate_followUpMessages(`
+      Space name: ${activeSpace?.name}
+      Space description: ${activeSpace?.description}
+      
+      Channel name: ${activeChannel?.name}
+      Channel description: ${activeChannel?.description}
 
-  User feedback (optional): ${feedback}
-  `)
-      }
-    }, [guid])
+      Thread name: ${threadsByGuid?.[guid]?.name}
+      Thread description: ${threadsByGuid?.[guid]?.description}
+
+      Existing messages in thread: \n${existingMessages}
+      
+      Your previous suggestions (optional): ${suggestedPrompts}
+
+      User feedback (optional): ${feedback}
+    `)
+  }, [feedback, suggestedPrompts])
+
+  useEffect(() => {
+    if (response && completed) {
+      try {
+        let obj = JSON.parse(response)
+        set_suggestedPrompts(obj.suggestions)
+      } catch (e) {}
+    }
+  }, [response, completed])
 
   useEffect(() => {
     if (response) {
@@ -78,76 +94,31 @@ export const ThreadSuggestions = ({ onSend, guid }: Props) => {
     }
   }, [response])
 
-  return (<S.ThreadSuggestions>
-    <Box width='100%'>
-      <Gap gap={.25}>
-        {
-          suggestedPrompts.length > 0 
-            ? suggestedPrompts?.map(prompt =>
-                <Item
-                  subtitle={prompt}
-                  icon='paper-plane'
-                  onClick={() => {
-                    onSend(prompt)
-                    set_suggestedPrompts([])
-                    set_feedback('')
-                  }}
-                >
-                </Item>
-              )
-            : null
-        }
-
-        {
-          loading && <ResponseStream
-              text={response || ''}
-              icon='paper-plane'
-            />
-        }
-        <Box width={'100%'} mx={1}>
-          <TextInput
-            value={feedback}
-            onChange={val => set_feedback(val)}
-            placeholder='Suggest new messages'
-            canClear={feedback !== ''}
-            compact
-            hideOutline
+  return (
+    <S.ThreadSuggestions>
+      <Box width='100%'>
+        <Gap gap={.25}>
+          <ResponseStream
+            text={response || ''}
+            icon='paper-plane'
+            onClick={(prompt) => {
+              onSend(prompt)
+              set_suggestedPrompts([])
+              set_feedback('')
+            }}
+            loading={loading}
           />
-
-          <Box >
-            <Box >
-              <Button 
-                secondary
-                icon='lightbulb' 
-                text='Suggest'
-                iconPrefix='fas' 
-                onClick={() => {
-                  set_suggestedPrompts([])
-                  generate_followUpMessages(`
-                  Space name: ${activeSpace?.name}
-                  Space description: ${activeSpace?.description}
-                  
-                  Channel name: ${activeChannel?.name}
-                  Channel description: ${activeChannel?.description} 
-                
-                  Thread name ${threadsByGuid?.[guid]?.name}
-                  Thread description ${threadsByGuid?.[guid]?.description}
-                  
-                  Existing messages in thread: \n${existingMessages}
-                  
-                  Your previous suggestions (optional): ${suggestedPrompts}
-                
-                  User feedback (optional): ${feedback}
-                  `)
-                }} 
-              />
-            </Box>
-          </Box>
-        </Box>
-      </Gap>
-    </Box>
-  </S.ThreadSuggestions>)
-}
+            
+         <FeedbackBox
+            feedback={feedback}
+            set_feedback={set_feedback}
+            generateFollowUpMessage={generateFollowUpMessage}
+          />
+        </Gap>
+      </Box>
+    </S.ThreadSuggestions>
+  )
+})
 
 const S = {
   ThreadSuggestions: styled.div`

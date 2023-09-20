@@ -12,6 +12,53 @@ import { harmonySystemMessage } from 'systemMessage'
 import { JsonValidator } from 'client/utils'
 import { useRouter } from 'next/router'
 
+interface ReplyProps {
+  expanded: boolean,
+  guid: string,
+  active: boolean,
+  setActiveThreadGuid: (guid: string) => void,
+  sendMessageToWebsocket: (message: any) => void,
+}
+
+const Reply = React.memo((props: ReplyProps) => {
+  const { expanded, guid, active, setActiveThreadGuid, sendMessageToWebsocket } = props
+
+  return (
+    <>
+      {
+        expanded &&
+        <Box width={'100%'} mt={.25} wrap>
+          <Gap>
+            <ThreadSuggestions guid={guid} onSend={message => sendMessageToWebsocket(message)} />
+            {
+              !active &&
+              <Box width='100%' px={.75} my={.25}>
+                <Button
+                  expand
+                  icon='reply'
+                  iconPrefix='fas'
+                  text={active ? 'Replying' : 'Reply'}
+                  secondary
+                  disabled={active}
+                  onClick={() => {
+                    scrollToElementById(`bottom_${guid}`, {
+                      behavior: 'smooth',
+                      block: 'end',
+                      inline: 'nearest'
+                    })
+                    setActiveThreadGuid(guid)
+                  }}  
+                />
+              </Box>
+            }
+          </Gap>
+        </Box>
+      }
+    </>
+  )
+})
+
+
 interface Props extends ThreadProps {
   threadGuid: string,
   expanded: boolean,
@@ -313,39 +360,13 @@ export const Thread = React.memo(({
       })
     }
     
-    {
-      expanded &&
-        <Box width={'100%'}  mt={.25} wrap>
-          <Gap>
-
-
-          <ThreadSuggestions guid={guid} onSend={(message) => sendMessageToWebsocket(message)} />
-            {
-              !active &&
-              <Box width='100%' px={.75} my={.25}>
-                <Button
-                  expand
-                  icon='reply'
-                  iconPrefix='fas'
-                  text={active ? 'Replying' : 'Reply'}
-                  secondary
-                  disabled={active}
-                  onClick={() => {
-                    scrollToElementById(`bottom_${guid}`, {
-                      behavior: 'smooth',
-                      block: 'end',
-                      inline: 'nearest'
-                    })
-                  
-                    setActiveThreadGuid(guid)
-                  }}  
-                />
-              </Box>
-                
-            }
-        </Gap>
-      </Box>
-    }
+    <Reply
+      expanded={expanded} 
+      guid={guid} 
+      active={active} 
+      setActiveThreadGuid={setActiveThreadGuid} 
+      sendMessageToWebsocket={sendMessageToWebsocket} 
+    />
    <div id={`bottom_${guid}`}></div>
   </S.Thread>)
 })

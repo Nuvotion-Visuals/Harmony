@@ -1,8 +1,7 @@
 import { Button, Gap, generateUUID, Item, TextInput, RichTextEditor, Box, Dropdown, useBreakpoint, AspectRatio, } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
-import { Thread as ThreadProps, Message as MessageProps } from 'redux-tk/spaces/types'
 import styled from 'styled-components'
 import { getWebsocketClient } from 'client/connectivity/websocket-client'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
@@ -10,6 +9,129 @@ import { Indicator } from './Indicator'
 import { useLanguageAPI } from 'client/language/hooks'
 import { ResponseStream } from './ResponseStream'
 import { harmonySystemMessage } from 'systemMessage'
+import { getStore } from 'redux-tk/store'
+import { select_activeChannel, select_activeSpace, select_activeGroup } from 'redux-tk/spaces/selectors'
+
+type ActiveChannelComponentProps = {
+  activeChannel: {
+    previewSrc?: string
+    name?: string
+    threadGuids?: string[]
+    description?: string
+    guid?: string
+  }
+  activeSpace: { guid?: string }
+  activeGroup: { guid?: string }
+  isDesktop?: boolean
+  decrementActiveSwipeIndex: () => void
+}
+
+const ActiveChannelComponent: React.FC<ActiveChannelComponentProps> = memo(({
+  activeChannel,
+  activeSpace,
+  activeGroup,
+  isDesktop,
+  decrementActiveSwipeIndex
+}) => {
+  return (
+    <Box width='100%' wrap>
+      {
+        activeChannel?.previewSrc &&
+        <Box px={.75} width='100%'>
+          <S.ThreadPoster>
+            <AspectRatio
+              backgroundSrc={activeChannel?.previewSrc}
+              ratio={3}
+              coverBackground
+            />
+          </S.ThreadPoster>
+        </Box>
+      }
+
+      <Item minimalIcon pageTitle={activeChannel?.name}>
+        <Indicator
+          count={activeChannel?.threadGuids?.length}
+        />
+        <Dropdown
+          icon='ellipsis-h'
+          iconPrefix='fas'
+          minimal
+          minimalIcon
+          items={[
+            {
+              icon: 'edit',
+              iconPrefix: 'fas',
+              name: 'Edit',
+              href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`,
+              onClick: () => {
+                if (!isDesktop) {
+                  decrementActiveSwipeIndex()
+                }
+              }
+            },
+            {
+              icon: 'trash-alt',
+              iconPrefix: 'fas',
+              name: 'Delete',
+            }
+          ]}
+        />
+      </Item>
+
+      <Box mt={-.75} width='100%'>
+        <Item 
+          // @ts-ignore
+          subtitle={
+            <RichTextEditor
+              value={activeChannel?.description || ''}
+              readOnly={true}
+            />
+          }
+        />
+      </Box>
+    </Box>
+  )
+})
+
+type SuggestBoxProps = {
+  feedback: string,
+  set_feedback: React.Dispatch<React.SetStateAction<string>>,
+  generateThreadPrompts: () => void
+}
+
+const SuggestBox: React.FC<SuggestBoxProps> = memo(({ feedback, set_feedback, generateThreadPrompts }) => {
+  const handleChange = (val: string) => {
+    set_feedback(val)
+  }
+
+  const handleThreadPrompt = () => {
+    generateThreadPrompts()
+  }
+
+  return (
+    <Box width='100%' pb={.25}>
+      <TextInput
+        value={feedback}
+        canClear={feedback !== ''}
+        compact
+        onChange={handleChange}
+        placeholder='Suggest new threads'
+        hideOutline
+      />
+      <Box pr={.5}>
+        <Button
+          icon='lightbulb'
+          expand
+          iconPrefix='fas'
+          secondary
+          text='Suggest'
+          onClick={handleThreadPrompt}
+        />
+      </Box>
+    </Box>
+  )
+})
+
 
 export const ThreadsHeader = memo(() => {
   const router = useRouter()
@@ -27,8 +149,7 @@ export const ThreadsHeader = memo(() => {
   const addMessageToThread = useSpaces_addMessageToThread()
   const setActiveChannelGuid = useSpaces_setActiveChannelGuid()
   const setActiveGroupGuid = useSpaces_setActiveGroupGuid()
-
-  const threadsByGuid = useSpaces_threadsByGuid()
+  
   const activeChannel = useSpaces_activeChannel()
   const activeSpace = useSpaces_activeSpace()
   const activeGroup = useSpaces_activeGroup()
@@ -50,42 +171,21 @@ export const ThreadsHeader = memo(() => {
     }
   }, [response, completed]);
 
-  const [ existingThreads, set_existingThreads ] = useState('')
-  useEffect(() => {
-    if (activeChannel?.threadGuids) {
-      set_existingThreads(activeChannel?.threadGuids?.map((threadGuid, index) => (
-        `Existing thread: ${threadsByGuid[threadGuid]?.name} - ${threadsByGuid[threadGuid]?.description}`
-      )).join('\n'))
-    }
-  }, [activeChannel?.threadGuids])
-
-
   const websocketClient = getWebsocketClient()
 
   const [feedback, set_feedback] = useState('')
 
-  useEffect(() => {
-    set_suggestedPrompts([])
-    // @ts-ignore
-    if (activeChannel?.description && getWebsocketClient?.send) {
-      generate_threadPrompts(`
-        Space name: ${activeSpace?.name}
-        Space description: ${activeSpace?.description}
-
-        Channel name: ${activeChannel?.name}
-        Channel description: ${activeChannel?.description} 
-
-        Existing threads: \n${existingThreads}
-
-        Your previous suggestions (optional): ${suggestedPrompts}
-                        
-        User feedback (optional): ${feedback}
-      `)
-    }
-  }, [activeChannel?.threadGuids, websocketClient, activeChannel?.guid])
-
   const sendThread = (message: string) => {
-    const websocketClient = getWebsocketClient()
+    const state = getStore().getState()
+    const { threadsByGuid } = state.spaces
+    const activeChannel = select_activeChannel(state)
+    const activeSpace = select_activeSpace(state)
+    const activeGroup = select_activeGroup(state)
+
+    let existingThreads = activeChannel?.threadGuids.map((threadGuid) => (
+      `Existing thread: ${threadsByGuid[threadGuid]?.name} - ${threadsByGuid[threadGuid]?.description}`
+    )).join('\n')
+
     const guid = generateUUID()
     const newThread = {
       guid,
@@ -93,29 +193,29 @@ export const ThreadsHeader = memo(() => {
       channelGuid,
       messageGuids: [],
       description: ''
-    } as ThreadProps
+    }
     addThread({ guid, thread: newThread })
-    addThreadToChannel({ channelGuid: channelGuid as string, threadGuid: guid })
-    
+    addThreadToChannel({ channelGuid, threadGuid: guid })
+
     const messageGuid = generateUUID()
-    const newMessage ={
+    const newMessage = {
       guid: messageGuid,
       userLabel: 'You',
       message,
       conversationId: guid,
       parentMessageId: messageGuid
-    } as MessageProps
-    addMessage({ guid: messageGuid, message: newMessage})
+    }
+    addMessage({ guid: messageGuid, message: newMessage })
     addMessageToThread({ threadGuid: guid, messageGuid })
 
     const responseGuid = generateUUID()
-    const newResponse ={
+    const newResponse = {
       guid: responseGuid,
       message: '',
       conversationId: guid,
       parentMessageId: messageGuid,
       userLabel: 'Harmony'
-    } as MessageProps
+    }
     addMessage({ guid: responseGuid, message: newResponse })
     addMessageToThread({ threadGuid: guid, messageGuid: responseGuid })
 
@@ -127,9 +227,7 @@ export const ThreadsHeader = memo(() => {
         Group Description: ${activeGroup?.description}
         Channel Description: ${activeChannel?.description}
         Existing threads: \n${existingThreads}
-
         User Message: ${message}
-
         Action: given the context, respond directy to the user.
       `,
       conversationId: guid,
@@ -141,139 +239,59 @@ export const ThreadsHeader = memo(() => {
     websocketClient.send(JSON.stringify(action))
   }
 
+  const generateThreadPrompts = useCallback(() => {
+    const state = getStore().getState()
+    const { threadsByGuid } = state.spaces
+
+    let existingThreads = activeChannel?.threadGuids.map((threadGuid) => (
+      `Existing thread: ${threadsByGuid[threadGuid]?.name} - ${threadsByGuid[threadGuid]?.description}`
+    )).join('\n')
+
+    generate_threadPrompts(`
+      Space name: ${activeSpace?.name}
+      Space description: ${activeSpace?.description}
+      Channel name: ${activeChannel?.name}
+      Channel description: ${activeChannel?.description}
+      Existing threads: \n${existingThreads}
+      Your previous suggestions (optional): ${suggestedPrompts}
+      User feedback (optional): ${feedback}
+    `)
+  }, [getStore, activeChannel, activeSpace, suggestedPrompts, feedback])
+
   return (
     <Gap>
       {
         activeChannel?.description &&
-          <>
-            <Box width='100%' wrap>
-              {
-                activeChannel?.previewSrc &&
-                <Box px={.75} width='100%'>
-                  <S.ThreadPoster>
-                    
-                    <AspectRatio
-                      backgroundSrc={activeChannel?.previewSrc}
-                      ratio={3}
-                      coverBackground
-                    />
-                  </S.ThreadPoster>
-                </Box>
-              }
-                      
-                <Item  minimalIcon pageTitle={activeChannel?.name}>
-                  <Indicator
-                    count={activeChannel?.threadGuids?.length}
-                  />
-                  <Dropdown
-                    icon='ellipsis-h'
-                    iconPrefix='fas'
-                    minimal
-                    minimalIcon
-                    items={[
-                      {
-                        icon: 'edit',
-                        iconPrefix: 'fas',
-                        name: 'Edit',
-                        href: `/spaces/${activeSpace?.guid}/groups/${activeGroup?.guid}/channels/${activeChannel?.guid}/edit`,
-                        onClick: () => {
-                          if (!isDesktop) {
-                            decrementActiveSwipeIndex()
-                          }
-                        }
-                      },
-                      {
-                        icon: 'trash-alt',
-                        iconPrefix: 'fas',
-                        name: 'Delete',
-                      }
-                    ]}
-                  />
-                </Item>
-                
-                <Box mt={-.75}  width='100%'>
-                  <Item 
-                    // @ts-ignore
-                    subtitle={
-                      <RichTextEditor
-                        value={activeChannel?.description || ''}
-                        readOnly={true}
-                      />
-                    }
-                  />
-                </Box>
-              </Box>
+        <>
+          <ActiveChannelComponent
+            activeChannel={activeChannel}
+            activeSpace={activeSpace}
+            activeGroup={activeGroup}
+            isDesktop={isDesktop}
+            decrementActiveSwipeIndex={decrementActiveSwipeIndex}
+          />
 
-              <Box width={'100%'} wrap>
-                <Box width='100%' pb={.5}>
-                  {
-                    suggestedPrompts?.length && !loading
-                      ? <Gap gap={.25}>
-                          {
-                            suggestedPrompts?.map(prompt =>
-                              <Item
-                                subtitle={prompt}
-                                icon='paper-plane'
-                                onClick={() => {
-                                  sendThread(prompt)
-                                }}
-                              />
-                            )
-                          }
-                        </Gap>
-                      : loading
-                        ? <ResponseStream 
-                            text={response || ''} 
-                            icon='paper-plane'
-                          />
-                        : null
-                  }
-                </Box>
-
-                <Box pb={.25} width='100%'>
-                  <Box width='100%'>
-                    <TextInput
-                      value={feedback}
-                      canClear={feedback !== ''}
-                      compact
-                      onChange={val => set_feedback(val)}
-                      placeholder='Suggest new threads'
-                      hideOutline
-                    />
-                    <Box pr={.5}>
-                      <Button
-                        icon='lightbulb'
-                        expand
-                        iconPrefix='fas'
-                        secondary
-                        text='Suggest'
-                        onClick={() => {
-                          console.log(activeSpace?.description)
-                          generate_threadPrompts(`
-                            Space name: ${activeSpace?.name}
-                            Space description: ${activeSpace?.description}
-                            
-                            Channel name: ${activeChannel?.name}
-                            Channel description: ${activeChannel?.description} 
-                            
-                            Existing threads: \n${existingThreads}
-                            
-                            Your previous suggestions (optional): ${suggestedPrompts}
-                                            
-                            User feedback (optional): ${feedback}
-
-                            Your answer should relate to the Space description, with a focus on the Channel description. Emphasize User feedback, if provided.
-                        `)
-                        }}
-                      />
-                    </Box>
-                  </Box>
-              </Box>
+          <Box width={'100%'} wrap>
+            <Box width='100%' pb={.5}>
+              <ResponseStream 
+                text={response || ''} 
+                icon='paper-plane'
+                onClick={(prompt) => sendThread(prompt)}
+                loading={loading}
+              />
             </Box>
-          </>
-      }
-    </Gap>
+
+            <SuggestBox
+              feedback={feedback}
+              set_feedback={set_feedback}
+              generateThreadPrompts={generateThreadPrompts}
+            />
+        </Box>
+      </>
+    }
+  </Gap>
   )
+
 })
 
 const S = {

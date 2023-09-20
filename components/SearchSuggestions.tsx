@@ -15,7 +15,6 @@ interface Props {
 export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
     const threadsByGuid = useSpaces_threadsByGuid()
     const activeChannel = useSpaces_activeChannel()
-    const activeSpace = useSpaces_activeSpace()
     const messagesByGuid = useSpaces_messagesByGuid()
 
     const { language, response, loading, error, completed } = useLanguageAPI('');
@@ -68,30 +67,16 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
   return (<S.ThreadSuggestions>
     <Box width='100%'>
       <Gap gap={.25}>
-        {
-          !loading && suggestedPrompts?.length > 0 
-            ? suggestedPrompts?.map(prompt =>
-                <Item
-                  subtitle={prompt}
-                  icon='search'
-                  onClick={() => {
-                    onSend(prompt)
-                    set_suggestedPrompts([])
-                    set_feedback('')
-                  }}
-                >
-                </Item>
-              )
-            : null
-        }
-
-        {
-          loading &&
-            <ResponseStream
-                icon='search'
-                text={response || ''}
-              />
-        }
+        <ResponseStream
+          icon='search'
+          text={response || ''}
+          onClick={(prompt) => {
+            onSend(prompt)
+            set_suggestedPrompts([])
+            set_feedback('')
+          }}
+          loading={loading}
+        />
 
         <Box width={'100%'} px={.5} mb={.25}>
           <TextInput

@@ -1,94 +1,77 @@
 import { Gap, Item } from '@avsync.live/formation'
 import { JsonValidator, scrollToBottom } from 'client/utils'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { IconName } from "@fortawesome/fontawesome-svg-core";
-
-interface ItemProps {
-  subtitle: string,
-  icon: IconName,
-  onClick: () => void,
-}
-
-const MemoizedItem = React.memo((props: ItemProps) => {
-  return (
-    <Item
-      subtitle={props.subtitle}
-      icon={props.icon}
-      onClick={props.onClick}
-    >
-    </Item>
-  )
-})
 
 interface Props {
   text?: string,
   icon: IconName,
+  onClick: (prompt: string) => void,
+  loading?: boolean
 }
 
 export const ResponseStream = ({ 
   text,
   icon,
+  onClick,
+  loading
 }: Props) => {
-  const jsonValidator = useRef(new JsonValidator())  // Initialize JsonValidator
+  const jsonValidator = useRef(new JsonValidator())
   const scrollContainerRef = useRef<HTMLElement>(null)
+  const [suggestions, set_suggestions] = useState<string[]>([])
 
   useEffect(() => {
     if (text) {
       const validJsonText = jsonValidator.current.ensureValidJson(text)
       if (validJsonText) {
         scrollToBottom(scrollContainerRef)
+
+        // Moved the state-updating logic here
+        try {
+          const parsed = JSON.parse(validJsonText)
+          if (parsed?.suggestions && Array.isArray(parsed.suggestions)) {
+            set_suggestions(parsed.suggestions as string[])
+          }
+        } 
+        catch (error) {
+          console.error('Failed to parse JSON:', error)
+        }
       }
     }
   }, [text])
 
-  const validText = text ? jsonValidator.current.ensureValidJson(text) : '{}'
-  let suggestions: string[] = []
-
-  if (validText) {
-    try {
-      const parsed = JSON.parse(validText)
-      if (parsed?.suggestions && Array.isArray(parsed.suggestions)) {
-        suggestions = parsed.suggestions as string[]
-      }
-    } catch (error) {
-      console.error('Failed to parse JSON:', error)
-    }
-  }
-
   return (
     <S.Container>
       <Gap gap={.25}>
-        {suggestions.length > 0 ? (
-          suggestions.map(prompt =>
-            <MemoizedItem
-              subtitle={prompt}
-              icon={icon}
-              onClick={() => {
-                
-              }}
-            />
-          )
-        ) : (
-          <MemoizedItem
-            subtitle={'Thinking...'}
-            icon={icon}
-            onClick={() => {
-              
-            }}
-          />
-        )}
+        {suggestions.length > 0
+          ? suggestions.map((prompt, index) =>
+              <Item
+                subtitle={prompt}
+                icon={icon}
+                onClick={() => {
+                  onClick(prompt)
+                  set_suggestions([])
+                }}
+              >
+              </Item>
+            )
+          : loading
+              ? <Item
+                  icon={icon}
+                  subtitle='Thinking...'
+                />
+              : null
+        }
       </Gap>
     </S.Container>
   )
 }
 
-
 const S = {
   Container: styled.div`
     width: 100%;
     height: 100%;
-    min-height: var(--F_Input_Height);
     position: relative;
     overflow: hidden;
     font-size: var(--F_Font_Size_Label);
@@ -96,7 +79,6 @@ const S = {
     display: block;
     align-items: center;
     justify-content: center;
-    line-height: 1.33;
     white-space: pre-wrap;
   `
 }
