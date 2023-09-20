@@ -12,6 +12,168 @@ import { harmonySystemMessage } from 'systemMessage'
 import { JsonValidator } from 'client/utils'
 import { useRouter } from 'next/router'
 import { getStore } from 'redux-tk/store'
+import { isEqual } from 'lodash'
+
+interface EditThreadTitleProps {
+  newThreadName: string
+  newThreadDescription: string | null
+  guid: string
+  channelGuid: string
+  messageGuids: string[]
+  set_newThreadName: (val: string) => void
+  set_newThreadDescription: (val: string) => void
+  onSaveClick: () => void
+  set_edit: (edit: boolean) => void
+  edit: boolean
+}
+
+const EditThreadTitle = React.memo<EditThreadTitleProps>(
+  ({
+    newThreadName,
+    newThreadDescription,
+    onSaveClick,
+    set_newThreadName,
+    set_newThreadDescription,
+    set_edit,
+    edit
+  }) => {
+    return (
+      <Box width={'100%'} px={.75} wrap>
+        <Box wrap width='calc(100% - 4rem)'>
+          <Gap gap={.75}>
+            <TextInput
+              value={newThreadName}
+              onChange={val => set_newThreadName(val)}
+              placeholder='Name'
+            />
+            <RichTextEditor
+              value={newThreadDescription || ''}
+              onChange={val => set_newThreadDescription(val)}
+              placeholder={'Description'}
+            />
+          </Gap>
+        </Box>
+        <Box width={4} wrap>
+          <Box wrap mt={-3}>
+            <Button
+              primary
+              circle
+              hero
+              icon='save'
+              iconPrefix='fas'
+              onClick={onSaveClick}
+            />
+            <Button
+              minimal
+              circle
+              hero
+              icon='times'
+              iconPrefix='fas'
+              onClick={() => set_edit(!edit)}
+            />
+          </Box>
+        </Box>
+      </Box>
+    )
+  }, (prevProps, nextProps) => {
+    return isEqual(prevProps, nextProps)
+  }
+)
+
+type ThreadTitleProps = {
+  expanded: boolean
+  text: string
+  subtitle: string | undefined
+  onExpand: () => void
+  messageCount?: number
+  onClickReplyButton: () => void
+  onClickDropdownReply: () => void
+  onClickGenerateTitle: () => void
+  onClickEdit: () => void
+  onClickDelete: () => void
+}
+
+const ThreadTitle: React.FC<ThreadTitleProps> = React.memo((props) => {
+  const {
+    expanded,
+    text,
+    subtitle,
+    onExpand,
+    messageCount,
+    onClickReplyButton,
+    onClickDropdownReply,
+    onClickGenerateTitle,
+    onClickEdit,
+    onClickDelete
+  } = props
+  
+  return (
+    <Item
+      icon={expanded ? 'caret-down' : 'caret-right'}
+      iconPrefix='fas'
+      minimalIcon
+      text={text}
+      subtitle={subtitle}
+      onClick={() => onExpand()}
+    >
+      <Indicator count={messageCount} />
+      <div onClick={e => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}>
+        <Box wrap maxWidth={2} ml={.25} mr={.25} >
+          {
+            !expanded &&
+              <Box mb={.25} >
+                <Button
+                  icon='reply'
+                  iconPrefix='fas'
+                  minimal
+                  minimalIcon
+                  onClick={onClickReplyButton}
+                />
+              </Box>
+          }
+          <Dropdown
+            icon='ellipsis-h'
+            iconPrefix='fas'
+            minimal
+            minimalIcon
+            items={[
+              {
+                icon: 'reply',
+                iconPrefix: 'fas',
+                name: 'Reply',
+                onClick: onClickDropdownReply
+              },
+              {
+                icon: 'lightbulb',
+                iconPrefix: 'fas',
+                name: 'Generate title',
+                onClick: onClickGenerateTitle
+              },
+              {
+                icon: 'edit',
+                iconPrefix: 'fas',
+                name: 'Edit',
+                onClick: onClickEdit
+              },
+              {
+                icon: 'trash-alt',
+                iconPrefix: 'fas',
+                name: 'Delete',
+                onClick: onClickDelete
+              }
+            ]}
+          />
+        </Box>
+      </div>
+    </Item>
+  )
+  }, (prevProps, nextProps) => {
+    return isEqual(prevProps, nextProps)
+  }
+)
 
 interface ReplyProps {
   expanded: boolean,
@@ -28,7 +190,7 @@ const Reply = React.memo((props: ReplyProps) => {
     <>
       {
         expanded &&
-        <Box width={'100%'} mt={.25} wrap>
+        <Box width={'100%'} wrap>
           <Gap>
             <ThreadSuggestions guid={guid} onSend={message => sendMessageToWebsocket(message)} />
             {
@@ -132,7 +294,6 @@ export const Thread = React.memo(({
   const removeThreadFromChannel = useSpaces_removeThreadFromChannel()
   const removeThread = useSpaces_removeThread()
   const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
-  
 
   const [edit, set_edit] = useState(false)
   useEffect(() => {
@@ -193,159 +354,100 @@ export const Thread = React.memo(({
   const router = useRouter()
   const { message: messageGuidFromQuery } = router.query
 
+  const onSaveClick = useCallback(() => {
+    updateThread({
+      guid,
+      thread: {
+        guid,
+        name: newThreadName,
+        channelGuid,
+        messageGuids,
+        description: newThreadDescription,
+        threadGuid
+      } as ThreadProps
+    })
+    set_edit(false)
+  }, [guid, newThreadName, newThreadDescription, channelGuid, messageGuids, threadGuid])
+
+  const onClickReplyButton = useCallback(() => {
+    setActiveThreadGuid(guid)
+    scrollToElementById(`bottom_${guid}`, {
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest'
+    })
+  }, [guid])
+
+  const onClickDropdownReply = useCallback(() => {
+    setActiveThreadGuid(guid)
+    scrollToElementById(`bottom_${guid}`, {
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest'
+    })
+  }, [guid])
+
+  const onClickGenerateTitle = useCallback(() => {
+    generate_title(messageContent)
+  }, [messageContent])
+
+  const onClickEdit = useCallback(() => {
+    set_edit(!edit)
+  }, [edit])
+
+  const onClickDelete = useCallback(() => {
+    removeThreadFromChannel({ threadGuid: guid, channelGuid })
+    removeThread(guid)
+    if (active) {
+      setActiveThreadGuid(null)
+    }
+  }, [guid, channelGuid, active])
+
   return (<S.Thread active={active}>
     <Box width='100%'>
     
-    {
-      edit
-        ? <Box width={'100%'} px={.75} wrap>
-            <Box wrap width='calc(100% - 4rem)'>
-              <Gap gap={.75}>
-                <TextInput
-                  value={newThreadName}
-                  onChange={val => set_newThreadName(val)}
-                  placeholder='Name'
-                />
-                <RichTextEditor
-                  value={newThreadDescription || ''}
-                  onChange={val => set_newThreadDescription(val)}
-                  placeholder={'Description'}
-                />
-              </Gap>
-            </Box>
-            <Box width={4} wrap> 
-            <Box wrap mt={-3}>
-            <Button
-                primary
-                circle
-                hero
-                icon='save'
-                iconPrefix='fas'
-                onClick={() => {
-                  updateThread({ guid, thread: {
-                    guid,
-                    name: newThreadName,
-                    channelGuid,
-                    messageGuids,
-                    description: newThreadDescription,
-                    threadGuid,
-                  } as ThreadProps})
-            
-                  set_edit(false)
-                }}
-              />
-             <Button
-                minimal
-                circle
-                hero
-                icon='times'
-                iconPrefix='fas'
-                onClick={() => set_edit(!edit)}
-              />
-            </Box>
-          </Box>
-            
-          </Box>
-        : <Item
-            icon={expanded ? 'caret-down' : 'caret-right'}
-            iconPrefix='fas'
-            minimalIcon
-            // @ts-ignore
-            text={
-              loading
+      {
+        edit
+          ? (
+            <EditThreadTitle
+              newThreadName={newThreadName}
+              newThreadDescription={newThreadDescription || ''}
+              guid={guid}
+              channelGuid={channelGuid}
+              messageGuids={messageGuids}
+              set_newThreadName={val => set_newThreadName(val)}
+              set_newThreadDescription={val => set_newThreadDescription(val)}
+              onSaveClick={onSaveClick}
+              set_edit={edit => set_edit(edit)}
+              edit={edit}
+            />
+          )
+          : (
+            <ThreadTitle
+              expanded={expanded}
+              text={
+                loading
                 ? jsonValidatorRef.current.parseJsonProperty(response, 'name') || 'Thinking...'
                 : name ? name : 'Thinking...'
-            }
-            // @ts-ignore
-            subtitle={
-              loading
+              }
+              subtitle={
+                loading
                 ? jsonValidatorRef.current.parseJsonProperty(response, 'description') || ''
                 : description ? description : undefined
               }
-            onClick={() => onExpand()}
-          >
-            <Indicator count={messageGuids?.length} />
-            <div onClick={e => {
-              e.preventDefault()
-              e.stopPropagation()
-            }}>
-              <Box wrap maxWidth={2} ml={.25} mr={.25} >
-                {
-                  !active &&
-                    <Box mb={.25} >
-                      <Button
-                        icon='reply'
-                        iconPrefix='fas'
-                        minimal
-                        minimalIcon
-                        onClick={() => {
-                          setActiveThreadGuid(guid)
-                          scrollToElementById(`bottom_${guid}`, {
-                            behavior: 'smooth',
-                            block: 'end',
-                            inline: 'nearest'
-                          })
-                        }}
-                      />
-                    </Box>
-                }
-              
-                <Dropdown
-                  icon='ellipsis-h'
-                  iconPrefix='fas'
-                  minimal
-                  minimalIcon
-
-                  items={[
-                    {
-                      icon: 'reply',
-                      iconPrefix: 'fas',
-                      name: 'Reply',
-                      onClick: () => {
-                        setActiveThreadGuid(guid)
-                        scrollToElementById(`bottom_${guid}`, {
-                          behavior: 'smooth',
-                          block: 'end',
-                          inline: 'nearest'
-                        })
-                      }
-                    },
-                    {
-                      icon: 'lightbulb',
-                      iconPrefix: 'fas',
-                      name: 'Generate title',
-                      onClick: () => {
-                        generate_title(messageContent)
-                      }
-                    },
-                    {
-                      icon: 'edit',
-                      iconPrefix: 'fas',
-                      name: 'Edit',
-                      onClick: () => set_edit(!edit)
-                    },
-                    {
-                      icon: 'trash-alt',
-                      iconPrefix: 'fas',
-                      name: 'Delete',
-                      onClick: (e) => {
-                        removeThreadFromChannel({ threadGuid: guid, channelGuid})
-                        removeThread(guid)
-                        if (active) {
-                          setActiveThreadGuid(null)
-                        }
-                      }
-                    }
-                  ]}
-                />
-              </Box>
-           
-            </div>
-          </Item>
+              onExpand={() => onExpand()}
+              messageCount={messageGuids.length}
+              onClickReplyButton={onClickReplyButton}
+              onClickDropdownReply={onClickDropdownReply}
+              onClickGenerateTitle={onClickGenerateTitle}
+              onClickEdit={onClickEdit}
+              onClickDelete={onClickDelete}
+            />
+          )
     }
     
     </Box>
-    <div id={`top_${guid}`}></div>
+    <div id={`top_${guid}`} />
     {
       messages?.map((message, index) => {
         return (
@@ -369,7 +471,7 @@ export const Thread = React.memo(({
       setActiveThreadGuid={setActiveThreadGuid} 
       sendMessageToWebsocket={sendMessageToWebsocket} 
     />
-   <div id={`bottom_${guid}`}></div>
+   <div id={`bottom_${guid}`} />
   </S.Thread>)
 })
 

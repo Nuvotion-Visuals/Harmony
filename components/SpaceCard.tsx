@@ -23,13 +23,12 @@ export const SpaceCard = React.memo(({ previewSrc, name, groupsCount, channelsCo
       </Box>
 
       </S.SpaceName>
-    ));
+    ))
 
   return (<S.SpaceCard>
     {
       previewSrc &&
-      <>
-          
+        <>
           <S.OverlayContainer>
               <S.Overlay>
                 <SpaceName />
@@ -47,35 +46,26 @@ export const SpaceCard = React.memo(({ previewSrc, name, groupsCount, channelsCo
               
               </S.OverlayBottom>
               <AspectRatio
-              ratio={16/9}
-              backgroundSrc={previewSrc}
-              coverBackground
-              borderRadius={.75}
+                ratio={16/9}
+                backgroundSrc={previewSrc}
+                coverBackground
               />
           </S.OverlayContainer>
-    
-      </>
-  }
-  {
-      name
-      ? <>
-          {
-              // previewSrc && <SpaceName />
-          }
-          </>
-      : <Box py={.75}>
-          <Gap gap={.75}>
-          
+        </>
+    }
+    {
+      !name && <Box py={.75}>
+        <Gap gap={.75}>
           <Item
-              title='Create a Space'
-              subtitle='Spaces organize your work into groups of channels.'
+            title='Create a Space'
+            subtitle='Spaces organize your work into groups of channels.'
           />
           <Item
-              text="Let's Work Together"
-              subtitle='Hi, my name is Harmony. I can help you with any project. Think of me as your virtual coworker.'
+            text="Let's Work Together"
+            subtitle='Hi, my name is Harmony. I can help you with any project. Think of me as your virtual coworker.'
           />
-          </Gap>
-          </Box>
+        </Gap>
+      </Box>
     }
   </S.SpaceCard>)
 })

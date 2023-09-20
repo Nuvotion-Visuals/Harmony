@@ -1,7 +1,7 @@
 import { Box, Button, Gap, Item, scrollToElementById, TextInput } from '@avsync.live/formation'
 import { useLanguageAPI } from 'client/language/hooks'
 import React, { useCallback, useEffect, useState } from 'react'
-import { getStore } from 'redux-tk/store'  // Add the import for your Redux store
+import { getStore } from 'redux-tk/store'
 import styled from 'styled-components'
 import { ResponseStream } from './ResponseStream'
 import { select_activeChannel, select_activeSpace } from 'redux-tk/spaces/selectors'
@@ -14,7 +14,7 @@ interface FeedbackBoxProps {
 
 const FeedbackBox: React.FC<FeedbackBoxProps> = React.memo(({ feedback, set_feedback, generateFollowUpMessage }) => {
   return (
-    <Box width={'100%'} mx={1}>
+    <Box width={'100%'} mx={.75}>
       <TextInput
         value={feedback}
         onChange={val => set_feedback(val)}
@@ -23,15 +23,13 @@ const FeedbackBox: React.FC<FeedbackBoxProps> = React.memo(({ feedback, set_feed
         compact
         hideOutline
       />
-      <Box>
-        <Button
-          secondary
-          icon='lightbulb'
-          text='Suggest'
-          iconPrefix='fas'
-          onClick={() => generateFollowUpMessage()}
-        />
-      </Box>
+      <Button
+        secondary
+        icon='lightbulb'
+        text='Suggest'
+        iconPrefix='fas'
+        onClick={() => generateFollowUpMessage()}
+      />
     </Box>
   )
 })
@@ -96,26 +94,24 @@ export const ThreadSuggestions = React.memo(({ onSend, guid }: Props) => {
 
   return (
     <S.ThreadSuggestions>
-      <Box width='100%'>
-        <Gap gap={.25}>
-          <ResponseStream
-            text={response || ''}
-            icon='paper-plane'
-            onClick={(prompt) => {
-              onSend(prompt)
-              set_suggestedPrompts([])
-              set_feedback('')
-            }}
-            loading={loading}
-          />
-            
-         <FeedbackBox
-            feedback={feedback}
-            set_feedback={set_feedback}
-            generateFollowUpMessage={generateFollowUpMessage}
-          />
-        </Gap>
-      </Box>
+      <Gap gap={.25}>
+        <ResponseStream
+          text={response || ''}
+          icon='paper-plane'
+          onClick={(prompt) => {
+            onSend(prompt)
+            set_suggestedPrompts([])
+            set_feedback('')
+          }}
+          loading={loading}
+        />
+          
+        <FeedbackBox
+          feedback={feedback}
+          set_feedback={set_feedback}
+          generateFollowUpMessage={generateFollowUpMessage}
+        />
+      </Gap>
     </S.ThreadSuggestions>
   )
 })

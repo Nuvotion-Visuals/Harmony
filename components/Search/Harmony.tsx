@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { debounce } from 'lodash'
 import { findRelationships } from 'redux-tk/util'
 import { useRouter } from 'next/router'
+import { useSpaces_setActiveMessageGuid, useSpaces_setActiveThreadGuid } from 'redux-tk/spaces/hook'
 
 interface Props {
   searchResults: UniversalSearchResults
@@ -25,6 +26,8 @@ const areEqual = (prevProps: any, nextProps: any) => {
 const GenericItemMemo = React.memo(({ item, query, type, properties }: { item: any, type: 'Messages' | 'Threads' | 'Channels' | 'Groups' | 'Spaces', query: string, properties: string[] }) => {
   const [highlightMatch, setHighlightMatch] = useState<JSX.Element[]>([])
   const router = useRouter()
+  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
+  const setActiveMessageGuid = useSpaces_setActiveMessageGuid()
 
   useEffect(() => {
     const newHighlightMatch = properties.reduce<JSX.Element[]>((acc, property) => {
@@ -60,14 +63,17 @@ const GenericItemMemo = React.memo(({ item, query, type, properties }: { item: a
   
     if (type === 'Messages') {
       const url = `/spaces/${relationshipObject.spaceGuid}/groups/${relationshipObject.groupGuid}/channels/${relationshipObject.channelGuid}`
-      const queryParams = `?thread=${relationshipObject.threadGuid}&message=${item.guid}`
+      const queryParams = '' // `?thread=${relationshipObject.threadGuid}&message=${item.guid}`
       await router.push(url + queryParams)
+      setActiveThreadGuid(relationshipObject.threadGuid)
+      setActiveMessageGuid(item.guid)
     }
   
     if (type === 'Threads') {
       const url = `/spaces/${relationshipObject.spaceGuid}/groups/${relationshipObject.groupGuid}/channels/${relationshipObject.channelGuid}`
-      const queryParams = `?thread=${relationshipObject.threadGuid}`
+      const queryParams = '' // `?thread=${relationshipObject.threadGuid}`
       await router.push(url + queryParams)
+      setActiveThreadGuid(relationshipObject.threadGuid)
     }
   
     if (type === 'Channels') {

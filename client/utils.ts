@@ -130,9 +130,9 @@ export class JsonValidator {
     }
   }
 
-  public parseJsonProperty(response: string | null, propertyName: string): Promise<string | null> {
+  public parseJsonProperty(response: string | null, propertyName: string): string | null {
     const safeJsonString = this.ensureValidJson(response || '') || '{}'
     const parsedObject = JSON.parse(safeJsonString)
     return parsedObject?.[propertyName] || null
-  }
+  }  
 }

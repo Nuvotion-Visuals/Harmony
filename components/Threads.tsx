@@ -1,6 +1,12 @@
 import { Box, Page } from '@avsync.live/formation'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_activeThreadGuid, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_messagesByGuid, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { 
+  useSpaces_activeChannel, 
+  useSpaces_activeThreadGuid, 
+  useSpaces_messagesByGuid, 
+  useSpaces_setActiveThreadGuid, 
+  useSpaces_threadsByGuid 
+} from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { Thread } from './Thread'
 import { use100vh } from 'react-div-100vh'
@@ -24,10 +30,10 @@ const areEqual = (
 ) => {
   return (
     prevProps.threadGuid === nextProps.threadGuid &&
-    _.isEqual(prevProps.threadsByGuid, nextProps.threadsByGuid) && // Deep equality
+    _.isEqual(prevProps.threadsByGuid, nextProps.threadsByGuid) && 
     prevProps.expanded === nextProps.expanded &&
     prevProps.onExpand === nextProps.onExpand &&
-    _.isEqual(prevProps.messages, nextProps.messages) && // Deep equality
+    _.isEqual(prevProps.messages, nextProps.messages) && 
     _.isEqual(prevProps.threadProps, nextProps.threadProps) &&
     _.isEqual(prevProps.active, nextProps.active)
   )
@@ -77,12 +83,10 @@ export const Threads = React.memo(({ }: Props) => {
   }, [])
 
   useEffect(() => {
-    // Expand thread if its GUID exists in the query parameter
     if (threadGuidFromQuery) {
       setActiveThreadGuid(threadGuidFromQuery as string)
     }
   
-    // Automatically expand the active thread
     if (activeThreadGuid) {
       setExpandedThreads(prev => ({
         ...prev,
@@ -90,7 +94,6 @@ export const Threads = React.memo(({ }: Props) => {
       }))
     }
 
-    // Automatically expand if there's only one thread
     if (activeChannel?.threadGuids?.length === 1) {
       const singleThreadGuid = activeChannel.threadGuids[0]
       setExpandedThreads(prev => ({
@@ -105,7 +108,7 @@ export const Threads = React.memo(({ }: Props) => {
       <Page noPadding>
         <ThreadsHeader />
           {
-            activeChannel?.threadGuids?.map((threadGuid, index) => (
+            activeChannel?.threadGuids?.map((threadGuid) => (
               <ThreadWrapper
                 key={threadGuid}
                 threadGuid={threadGuid}
@@ -114,9 +117,9 @@ export const Threads = React.memo(({ }: Props) => {
                 onExpand={handleExpandClick}
                 threadProps={threadsByGuid[threadGuid]}
                 messages={
-                  threadsByGuid[threadGuid].messageGuids?.map((messageGuid, index) => {
-                    return messagesByGuid?.[messageGuid]
-                  })
+                  threadsByGuid[threadGuid].messageGuids?.map((messageGuid) => 
+                    messagesByGuid?.[messageGuid]
+                  )
                 }
                 active={activeThreadGuid === threadGuid}
               />
@@ -149,7 +152,6 @@ const S = {
   ThreadsContainer: styled.div`
     :nth-child(odd) {
       background: var(--F_Background);
-      // CSS Property
-  }
+    }
   `
 }
