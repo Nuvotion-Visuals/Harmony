@@ -127,7 +127,6 @@ export const Search = React.memo(({ hero } : Props) => {
 
   const Content = () => (
     <>
-      <LineBreak />
         {
           searchResults?.data?.results?.knowledge_panel?.title && (
             <KnowledgePanel knowledge_panel={searchResults.data.results.knowledge_panel} />

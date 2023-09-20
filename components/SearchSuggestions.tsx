@@ -1,10 +1,11 @@
 import { Box, Button, Gap, TextInput } from '@avsync.live/formation'
 import { getWebsocketClient } from 'client/connectivity/websocket-client'
 import { useLanguageAPI } from 'client/language/hooks'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSpaces_activeChannel, useSpaces_messagesByGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { ResponseStream } from './ResponseStream'
+import { getStore } from 'redux-tk/store'
 
 interface Props {
   onSend: (message: string) => void,
@@ -13,60 +14,47 @@ interface Props {
 }
 
 export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
-    const threadsByGuid = useSpaces_threadsByGuid()
-    const activeChannel = useSpaces_activeChannel()
-    const messagesByGuid = useSpaces_messagesByGuid()
+  const threadsByGuid = useSpaces_threadsByGuid()
+  const activeChannel = useSpaces_activeChannel()
+  const { language, response, loading, error, completed } = useLanguageAPI('')
+  const { generate_searchQueries } = language
+  const [suggestedPrompts, set_suggestedPrompts] = useState([])
+  const [feedback, set_feedback] = useState('')
 
-    const { language, response, loading, error, completed } = useLanguageAPI('')
-    const { generate_searchQueries } = language
+  const generateSearchQueries = useCallback(async () => {
+    const state = getStore().getState()
+    const { messagesByGuid } = state.spaces
     
-    const [suggestedPrompts, set_suggestedPrompts] = useState([])
-  
-    useEffect(() => {
-      if (response) {
-        try {
-          let obj = JSON.parse(response);
-          set_suggestedPrompts(obj.suggestions)
-        } catch (e) {}
+    const existingMessages = threadsByGuid?.[guid]?.messageGuids.map((messageGuid) => (
+      `Existing message: ${messagesByGuid?.[messageGuid]?.message}`
+    )).join('\n')
+
+    await generate_searchQueries(`
+      Channel name: ${activeChannel?.name}
+      Channel description: ${activeChannel?.description}
+      Thread name: ${threadsByGuid?.[guid]?.name}
+      Thread description: ${threadsByGuid?.[guid]?.description}
+      Existing messages in thread: \n${existingMessages}
+      Your previous suggestions (optional): ${suggestedPrompts}
+      User feedback (optional): ${feedback}
+      Existing search term (optional): ${query}
+    `)
+  }, [activeChannel, threadsByGuid, guid, suggestedPrompts, feedback, query])
+
+  useEffect(() => {
+    if (response && completed) {
+      try {
+        const obj = JSON.parse(response)
+        set_suggestedPrompts(obj.suggestions)
+      } catch (e) {
+        console.error('JSON Parsing Error:', e)
       }
-    }, [response, completed]);
-  
-    const [ existingMessages, set_existingMessages ] = useState('')
-    useEffect(() => {
-      if (activeChannel?.threadGuids) {
-        set_existingMessages(threadsByGuid?.[guid]?.messageGuids.map((messageGuid, index) => (
-          `Existing message: ${messagesByGuid?.[messageGuid]?.message}`
-        )).join('\n'))
-      }
-    }, [threadsByGuid?.[guid]?.messageGuids])
-  
-    const [feedback, set_feedback] = useState('')
-  
-    useEffect(() => {
-      set_suggestedPrompts([])
-      // @ts-ignore
-      if (activeChannel?.description && getWebsocketClient?.send) {
-        generate_searchQueries(`
-          Channel name: ${activeChannel?.name}
-          Channel description: ${activeChannel?.description} 
+    }
+  }, [response, completed])
 
-          Thread name ${threadsByGuid?.[guid]?.name}
-          Thread description ${threadsByGuid?.[guid]?.description}
-          
-          Existing messages in thread: \n${existingMessages}
-          
-          Your previous suggestions (optional): ${suggestedPrompts}
-
-          User feedback (optional): ${feedback}
-
-          Existing search term (optional): ${query}
-        `)
-      }
-    }, [guid])
-
-  return (<S.ThreadSuggestions>
+  return (
     <Box width='100%'>
-      <Gap gap={.25}>
+      <Gap gap={0.25}>
         <ResponseStream
           icon='search'
           text={response || ''}
@@ -78,7 +66,7 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
           loading={loading}
         />
 
-        <Box width={'100%'} px={.5} mb={.25}>
+        <Box width='100%' px={0.5} mb={0.25}>
           <TextInput
             value={feedback}
             onChange={val => set_feedback(val)}
@@ -88,36 +76,19 @@ export const SearchSuggestions = ({ onSend, guid, query }: Props) => {
             hideOutline
           />
 
-          <Box >
-            <Button 
-              secondary 
-              icon='lightbulb' 
+          <Box>
+            <Button
+              secondary
+              icon='lightbulb'
               text='Suggest'
-              iconPrefix='fas' 
-              onClick={() => {
-                set_suggestedPrompts([])
-                generate_searchQueries(`
-                  Channel name: ${activeChannel?.name}
-                  Channel description: ${activeChannel?.description} 
-                
-                  Thread name ${threadsByGuid?.[guid]?.name}
-                  Thread description ${threadsByGuid?.[guid]?.description}
-                  
-                  Existing messages in thread: \n${existingMessages}
-                  
-                  Your previous suggestions (optional): ${suggestedPrompts}
-                
-                  User feedback (optional): ${feedback}
-
-                  Existing search term (optional): ${query}
-                `)
-              }} 
+              iconPrefix='fas'
+              onClick={generateSearchQueries}
             />
           </Box>
         </Box>
       </Gap>
     </Box>
-  </S.ThreadSuggestions>)
+  )
 }
 
 const S = {

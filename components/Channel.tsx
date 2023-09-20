@@ -1,5 +1,5 @@
 import { scrollToElementById, Box, Button, Dropdown, Item, useBreakpoint } from '@avsync.live/formation'
-import React, { useState } from 'react'
+import React, { memo, useState } from 'react'
 import { use100vh } from 'react-div-100vh'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
 import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace } from 'redux-tk/spaces/hook'
@@ -9,32 +9,28 @@ import { Threads } from './Threads'
 
 import { ChatBox } from './ChatBox'
 
-interface Props {
-  
+
+type ChannelHeaderProps = {
+  activeSpace: {
+    name: string,
+    guid: string
+  } | null,
+  activeGroup: {
+    name: string,
+    guid: string
+  } | null,
+  activeChannel: {
+    name: string,
+    guid: string,
+    threadGuids: string[]
+  } | null,
+  isDesktop: boolean,
+  decrementActiveSwipeIndex: () => void,
+  handleClickBottom: () => void
 }
 
-export const Channel = React.memo(({ }: Props) => {
-  const true100vh = use100vh()
-
-  const { isDesktop } = useBreakpoint()
-
-  const decrementActiveSwipeIndex = useLayout_decrementActiveSwipeIndex()
-
-  const activeChannel = useSpaces_activeChannel()
-  const activeSpace = useSpaces_activeSpace()
-  const activeGroup = useSpaces_activeGroup()
-
-  const handleClickBottom = () => {
-    scrollToElementById(`bottom_channel`, {
-      behavior: 'smooth',
-      block: 'end',
-      inline: 'nearest'
-    })
-  }
-  
-  const [height, setHeight] = useState(160);
-
-  return (<S.Channel true100vh={true100vh || 0}>
+const ChannelHeader = memo(({ activeSpace, activeGroup, activeChannel, isDesktop, decrementActiveSwipeIndex, handleClickBottom }: ChannelHeaderProps) => {
+  return (
     <Box height='var(--F_Header_Height)' width={'100%'}>
       <Item>
         
@@ -78,12 +74,49 @@ export const Channel = React.memo(({ }: Props) => {
             {
               icon: 'trash-alt',
               iconPrefix: 'fas',
-              name: 'Delete',
+              name: 'Delete'
             }
           ]}
         />
       </Item>
     </Box>
+  )
+})
+
+interface Props {
+  
+}
+
+export const Channel = React.memo(({ }: Props) => {
+  const true100vh = use100vh()
+
+  const { isDesktop } = useBreakpoint()
+
+  const decrementActiveSwipeIndex = useLayout_decrementActiveSwipeIndex()
+
+  const activeChannel = useSpaces_activeChannel()
+  const activeSpace = useSpaces_activeSpace()
+  const activeGroup = useSpaces_activeGroup()
+
+  const handleClickBottom = () => {
+    scrollToElementById(`bottom_channel`, {
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest'
+    })
+  }
+  
+  const [height, setHeight] = useState(160);
+
+  return (<S.Channel true100vh={true100vh || 0}>
+    <ChannelHeader 
+      activeSpace={activeSpace}
+      activeGroup={activeGroup}
+      activeChannel={activeChannel}
+      isDesktop={isDesktop}
+      decrementActiveSwipeIndex={decrementActiveSwipeIndex}
+      handleClickBottom={handleClickBottom}
+    />
 
     <S.Content height={height}>
       <Threads />

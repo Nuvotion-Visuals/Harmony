@@ -169,19 +169,23 @@ export const ChatBox = ({
     addMessage({ guid: responseGuid, message: newResponse })
     addMessageToThread({ threadGuid: guid, messageGuid: responseGuid })
 
+    const messageWithContext = `
+      Space Description: ${activeSpace?.description}
+      Group Description: ${activeGroup?.description}
+      Channel Description: ${activeChannel?.description}
+
+      User Message: ${message}
+
+      Action: given the context, respond directy to the user.
+    `
+
+    console.log(messageWithContext)
+
     // send message to server
     const action = {
       type: 'message',
       guid,
-      message: `
-        Space Description: ${activeSpace?.description}
-        Group Description: ${activeGroup?.description}
-        Channel Description: ${activeChannel?.description}
-
-        User Message: ${message}
-
-        Action: given the context, respond directy to the user.
-      `,
+      message: messageWithContext,
       conversationId: guid,
       parentMessageId: 'initial',
       personaLabel: 'Harmony',
