@@ -24,6 +24,7 @@ export const useSpaces_activeSpaceStats = () => useSelector(selectors.select_act
 export const useSpaces_activeSpace = () => useSelector(selectors.select_activeSpace);
 export const useSpaces_spaceGuids = () => useSelector(selectors.select_spaceGuids);
 export const useSpaces_spacesByGuid = () => useSelector(selectors.select_spacesByGuid);
+export const useSpaces_activeSpaceIndex = () => useSelector(selectors.select_activeSpaceIndex);
 export const useSpaces_activeSpaceGuid = () => useSelector(selectors.select_activeSpaceGuid);
 export const useSpaces_spacesInfo = () => useSelector(selectors.select_spacesInfo);
 export const useSpaces_activeThreadName = () => useSelector(selectors.select_activeThreadName);
@@ -39,6 +40,12 @@ export const useSpaces_setActiveSpaceGuid = () => {
     dispatch(slice.actions.setActiveSpaceGuid(payload));
   }, [dispatch]);
 };
+export const useSpaces_setActiveSpaceIndex = () => {
+  const dispatch = useDispatch()
+  return useCallback((index: number) => {
+    dispatch(slice.actions.setActiveSpaceIndex(index))
+  }, [dispatch])
+}
 export const useSpaces_addSpace = () => {
   const dispatch = useDispatch();
   return useCallback((payload: { guid: Guid; space: Space }) => {

@@ -165,6 +165,17 @@ export const select_activeThreadName = createSelector(
   }
 );
 
+export const select_activeSpaceIndex = createSelector(
+  [selectSpacesState],
+  (spacesState) => {
+    const activeSpaceGuid = spacesState.activeSpaceGuid
+    const spacesByGuid = spacesState.spacesByGuid
+    const spaceGuids = Object.keys(spacesByGuid)
+
+    return spaceGuids.indexOf(activeSpaceGuid || '')
+  }
+)
+
 export const select_spacesInfo = createSelector(
   [selectSpacesState, select_groupsByGuid, select_channelsByGuid, select_threadsByGuid],
   (spacesState, groupsByGuid, channelsByGuid, threadsByGuid) => {

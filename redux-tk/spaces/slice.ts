@@ -211,6 +211,13 @@ export const slice = createSlice({
     setActiveSpaceGuid: (state, action: PayloadAction<Types.Guid | null>) => {
       state.activeSpaceGuid = action.payload;
     },
+    setActiveSpaceIndex: (state, action: PayloadAction<number>) => {
+      const spaceGuids = Object.keys(state.spacesByGuid)
+      const newActiveSpaceGuid = spaceGuids[action.payload]
+      if (newActiveSpaceGuid) {
+        state.activeSpaceGuid = newActiveSpaceGuid
+      }
+    },
     addSpace: (state, action: PayloadAction<{ guid: Types.Guid; space: Types.Space }>) => {
       const { guid, space } = action.payload;
       state.spaceGuids.push(guid);
