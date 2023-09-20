@@ -242,6 +242,12 @@ export const Thread = React.memo(({
     messages,
     active
  }: Props) => {
+  const addMessage = useSpaces_addMessage()
+  const addMessageToThread = useSpaces_addMessageToThread()
+  const updateThread = useSpaces_updateThread()
+  const removeThreadFromChannel = useSpaces_removeThreadFromChannel()
+  const removeThread = useSpaces_removeThread()
+  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
 
   const [newThreadName, set_newThreadName] = useState(name)
   const [newThreadDescription, set_newThreadDescription] = useState(description)
@@ -287,13 +293,6 @@ export const Thread = React.memo(({
       } catch (e) {}
     }
   }, [response, completed]);
-  
-  const addMessage = useSpaces_addMessage()
-  const addMessageToThread = useSpaces_addMessageToThread()
-  const updateThread = useSpaces_updateThread()
-  const removeThreadFromChannel = useSpaces_removeThreadFromChannel()
-  const removeThread = useSpaces_removeThread()
-  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
 
   const [edit, set_edit] = useState(false)
   useEffect(() => {
@@ -348,11 +347,7 @@ export const Thread = React.memo(({
     }
   }, [messages])
 
-
   const jsonValidatorRef = useRef(new JsonValidator())
-
-  const router = useRouter()
-  const { message: messageGuidFromQuery } = router.query
 
   const onSaveClick = useCallback(() => {
     updateThread({
@@ -405,7 +400,6 @@ export const Thread = React.memo(({
 
   return (<S.Thread active={active}>
     <Box width='100%'>
-    
       {
         edit
           ? (
@@ -444,26 +438,24 @@ export const Thread = React.memo(({
               onClickDelete={onClickDelete}
             />
           )
-    }
-    
+      }
     </Box>
     <div id={`top_${guid}`} />
-    {
-      messages?.map((message, index) => {
-        return (
-          expanded && message && 
-            <ItemMessage 
-              key={`message{${index}}`}
-              {
-                ...message
-              }
-              threadGuid={threadGuid}
-              active={false}
-            />
-        )
-      })
-    }
-    
+      {
+        messages?.map((message, index) => {
+          return (
+            expanded && message && 
+              <ItemMessage 
+                key={`message{${index}}`}
+                {
+                  ...message
+                }
+                threadGuid={threadGuid}
+                active={false}
+              />
+          )
+        })
+      }
     <Reply
       expanded={expanded} 
       guid={guid} 

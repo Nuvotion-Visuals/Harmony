@@ -56,20 +56,9 @@ export const ThreadSuggestions = React.memo(({ onSend, guid }: Props) => {
     )).join('\n')
 
     generate_followUpMessages(`
-      Space name: ${activeSpace?.name}
-      Space description: ${activeSpace?.description}
-      
-      Channel name: ${activeChannel?.name}
-      Channel description: ${activeChannel?.description}
-
-      Thread name: ${threadsByGuid?.[guid]?.name}
-      Thread description: ${threadsByGuid?.[guid]?.description}
-
       Existing messages in thread: \n${existingMessages}
-      
-      Your previous suggestions (optional): ${suggestedPrompts}
 
-      User feedback (optional): ${feedback}
+      User direction (optional): ${feedback}
     `)
   }, [feedback, suggestedPrompts])
 

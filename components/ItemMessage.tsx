@@ -117,7 +117,7 @@ export const ItemMessage = React.memo((props: Props) => {
               minimal
               minimalIcon
               onClick={() => {
-                speak(message, () => {})
+                speak(message, () => {}, guid)
                 set_isSpeaking(true)
               }}
             />

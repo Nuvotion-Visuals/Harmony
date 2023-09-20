@@ -64,7 +64,7 @@ async function connectToServer() {
         payload: { guid: targetMessageGuid, message: newMessage }
       })
 
-      speakStream(message, guid)
+      speakStream(message, targetMessageGuid)
 
       scrollToElementById(`bottom_${conversationId}`, {
         behavior: 'auto',
@@ -91,7 +91,7 @@ async function connectToServer() {
         payload: { guid: targetMessageGuid, message: newMessage }
       })
 
-      speakStream(message, guid)
+      speakStream(message, targetMessageGuid)
 
       scrollToElementById(`bottom_${conversationId}`, {
         behavior: 'auto',

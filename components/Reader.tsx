@@ -160,7 +160,7 @@ export const Reader: React.FC<Props> = () => {
             iconPrefix='fas'
             minimal
             onClick={() => {
-              speak(HTMLtoPlaintext(content || ''), () => {})
+              speak(HTMLtoPlaintext(content || ''), () => {}, '')
             }}
           />
           <Box pr={.5}>
