@@ -14,7 +14,7 @@ interface ThreadWrapperProps {
   onExpand: (threadGuid: string) => void;
 }
 
-const ThreadWrapper = ({ threadGuid, threadsByGuid, expanded, onExpand }: ThreadWrapperProps) => {
+const ThreadWrapper = React.memo(({ threadGuid, threadsByGuid, expanded, onExpand }: ThreadWrapperProps) => {
   const threadProps = useMemo(() => threadsByGuid[threadGuid], [threadsByGuid, threadGuid]);
   const handleThreadExpand = useCallback(() => onExpand(threadGuid), [onExpand]);
   
@@ -28,13 +28,13 @@ const ThreadWrapper = ({ threadGuid, threadsByGuid, expanded, onExpand }: Thread
       />
     </S.ThreadsContainer>
   );
-}
+})
 
 interface Props {
   
 }
 
-export const Threads = ({ }: Props) => {
+export const Threads = React.memo(({ }: Props) => {
   const router = useRouter()
   const { thread: threadGuidFromQuery } = router.query
 
@@ -98,7 +98,7 @@ export const Threads = ({ }: Props) => {
     </S.Threads>
   </Box>
   )
-}
+})
 
 const S = {
   Threads: styled.div<{

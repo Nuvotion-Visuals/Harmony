@@ -1,31 +1,20 @@
 import { AspectRatio, Box, Button, Gap, Grid, Page, TextInput, useBreakpoint } from '@avsync.live/formation'
 import React, { useState } from 'react'
-import { useSpaces_activeSpaceGuid, useSpaces_channelsByGuid, useSpaces_groupsByGuid, useSpaces_spaceGuids, useSpaces_spacesByGuid, useSpaces_spacesInfo, useSpaces_threadsByGuid, useSpaces_updateSpace } from 'redux-tk/spaces/hook'
+import { useSpaces_spacesInfo } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import MyLink from './Link'
 import { SpaceCard } from './SpaceCard'
 import { Search } from './Search/Search'
-import { ZoomableHierarchyNavigator } from './ZoomableHierarchyNavigator'
-import { useRouter } from 'next/router'
 
 interface Props {
   
 }
 
 const SpacesDashboard = ({ }: Props) => {
-  const router = useRouter()
-
   const spacesInfo = useSpaces_spacesInfo()
     const { isMobile, isDesktop } = useBreakpoint()
     const [searchQuery, set_searchQuery] = useState('')
 
-    const updateSpace = useSpaces_updateSpace()
-  const activeSpaceGuid = useSpaces_activeSpaceGuid()
-  const spaceGuids = useSpaces_spaceGuids()
-  const spacesByGuid = useSpaces_spacesByGuid()
-  const groupsByGuid = useSpaces_groupsByGuid()
-  const channelsByGuid = useSpaces_channelsByGuid()
-  const threadsByGuid = useSpaces_threadsByGuid()
   return (<S.SpacesDashboard>
     <S.Inner isDesktop={isDesktop}>
       <Gap gap={isMobile ? 1 : 1.5}>

@@ -4,6 +4,23 @@ import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 
+interface ItemProps {
+  subtitle: string,
+  icon: IconName,
+  onClick: () => void,
+}
+
+const MemoizedItem = React.memo((props: ItemProps) => {
+  return (
+    <Item
+      subtitle={props.subtitle}
+      icon={props.icon}
+      onClick={props.onClick}
+    >
+    </Item>
+  )
+})
+
 interface Props {
   text?: string,
   icon: IconName,
@@ -39,33 +56,27 @@ export const ResponseStream = ({
     }
   }
 
-  useEffect(() => {
-    console.log(jsonValidator.current.ensureValidJson(text || ''))
-  }, [suggestions.length > 0])
-
   return (
     <S.Container>
       <Gap gap={.25}>
         {suggestions.length > 0 ? (
           suggestions.map(prompt =>
-            <Item
+            <MemoizedItem
               subtitle={prompt}
               icon={icon}
               onClick={() => {
                 
               }}
-            >
-            </Item>
+            />
           )
         ) : (
-          <Item
+          <MemoizedItem
             subtitle={'Thinking...'}
             icon={icon}
             onClick={() => {
               
             }}
-          >
-          </Item>
+          />
         )}
       </Gap>
     </S.Container>
