@@ -30,7 +30,7 @@ type ChannelHeaderProps = {
   handleClickBottom: () => void,
   handleClickTop: () => void,
   toggleAllThreads: () => void,
-  allExpanded: boolean
+  anyExpanded: boolean
 }
 
 const ChannelHeader = memo(({ 
@@ -41,7 +41,7 @@ const ChannelHeader = memo(({
   decrementActiveSwipeIndex, 
   handleClickBottom, 
   handleClickTop,
-  allExpanded, 
+  anyExpanded, 
   toggleAllThreads 
 }: ChannelHeaderProps) => {
   return (
@@ -57,7 +57,7 @@ const ChannelHeader = memo(({
           }}
         />
         <Button
-          icon={allExpanded ? 'chevron-up' : 'chevron-down'}
+          icon={anyExpanded ? 'chevron-up' : 'chevron-down'}
           iconPrefix='fas'
           minimalIcon
           minimal
@@ -183,18 +183,22 @@ export const Channel = React.memo(({ }: Props) => {
     }
   }, [activeThreadGuid, activeChannel, threadGuidFromQuery])
 
-  // New state variable to track if all threads are expanded
-  const [allExpanded, setAllExpanded] = useState(false)
+  const [anyExpanded, setAnyExpanded] = useState(false)
 
-  // Function to toggle all threads
   const toggleAllThreads = useCallback(() => {
-    const newExpandedState: { [key: string]: boolean } = {}
+    let newExpandedState: { [key: string]: boolean } = {}
+    let someExpanded = Object.values(expandedThreads).some(value => value)
     activeChannel?.threadGuids?.forEach((threadGuid) => {
-      newExpandedState[threadGuid] = !allExpanded
+      newExpandedState[threadGuid] = !someExpanded
     })
     setExpandedThreads(newExpandedState)
-    setAllExpanded(!allExpanded)
-  }, [activeChannel, allExpanded])
+    setAnyExpanded(!someExpanded)
+  }, [activeChannel, expandedThreads])
+
+  useEffect(() => {
+    const someExpanded = Object.values(expandedThreads).some(value => value)
+    setAnyExpanded(someExpanded)
+  }, [expandedThreads])
   
 
   return (<S.Channel true100vh={true100vh || 0}>
@@ -207,7 +211,7 @@ export const Channel = React.memo(({ }: Props) => {
       handleClickBottom={handleClickBottom}
       handleClickTop={handleClickTop}
       toggleAllThreads={toggleAllThreads}
-      allExpanded={allExpanded}
+      anyExpanded={anyExpanded}
     />
 
     <S.Content height={height}>

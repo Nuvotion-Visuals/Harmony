@@ -2,7 +2,7 @@ import { Gap, Item as OriginalItem } from '@avsync.live/formation'
 import { JsonValidator, scrollToBottom } from 'client/utils'
 import React, { useEffect, useRef, useState, memo } from 'react'
 import styled from 'styled-components'
-import { IconName } from "@fortawesome/fontawesome-svg-core";
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 interface Props {
   text?: string,
@@ -53,7 +53,7 @@ export const ResponseStream = ({
         {suggestions.length > 0
           ? suggestions.map((prompt, index) =>
               <Item
-                key={index}  // Keys help React identify which items have changed
+                key={index}
                 subtitle={prompt}
                 icon={icon}
                 onClick={() => {

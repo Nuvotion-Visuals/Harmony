@@ -318,6 +318,12 @@ export const ChatBox = ({
     onHeightChange(chatBoxHeight)
   }, [chatBoxHeight])
 
+  const [autoFocus, set_autoFocus] = useState(false)
+
+  useEffect(() => {
+    set_autoFocus(!!activeThreadGuid)
+  }, [activeThreadGuid])
+
   return (
     <S.Container ref={chatBoxRef}>
       <Reply />
@@ -335,7 +341,7 @@ export const ChatBox = ({
         }}
         placeholder='Chat'
         outset
-        // autoFocus
+        autoFocus={autoFocus}
       >
         <Box wrap>
           {
