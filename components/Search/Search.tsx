@@ -20,10 +20,10 @@ interface Props {
   onChange?: (query: string) => void
 }
 
-type ActiveType = 'All' | 'Images' | 'Videos' | 'Harmony'
+type ActiveType = 'Web' | 'Images' | 'Videos' | 'Harmony'
 
 export const Search = React.memo(({ hero } : Props) => {
-  const [activeType, set_activeType] = useState<ActiveType>(typeof window !== undefined ? localStorage.getItem('activeType') as ActiveType : 'All')
+  const [activeType, set_activeType] = useState<ActiveType>(typeof window !== undefined ? localStorage.getItem('activeType') as ActiveType : 'Web')
 
   const [harmonySearchResults, setHarmonySearchResults] = useState<any>(null)
 
@@ -69,7 +69,7 @@ export const Search = React.memo(({ hero } : Props) => {
 
   const handleSearch = (directSearch?: string) => {
     switch(activeType) {
-      case 'All':
+      case 'Web':
         fetchData(directSearch || query);
         break
       case 'Images':
@@ -284,12 +284,12 @@ export const Search = React.memo(({ hero } : Props) => {
 
       <Box px={.5} width='calc(100% - 1rem)'>
           <Button 
-            text='All' 
-            secondary={activeType !== 'All'}
-            minimal={activeType !== 'All'}
-            icon='search'
+            text='Web' 
+            secondary={activeType !== 'Web'}
+            minimal={activeType !== 'Web'}
+            icon='globe'
             iconPrefix="fas"
-            onClick={() => set_activeType('All')}
+            onClick={() => set_activeType('Web')}
           />
           <Button 
             text='Images' 
@@ -303,7 +303,7 @@ export const Search = React.memo(({ hero } : Props) => {
             text='Harmony'
             secondary={activeType !== 'Harmony'}
             minimal={activeType !== 'Harmony'}
-            icon="list"
+            icon="search"
             iconPrefix="fas"
             onClick={() => set_activeType('Harmony')}
           />
@@ -336,7 +336,7 @@ export const Search = React.memo(({ hero } : Props) => {
               // @ts-ignore
               message={<LoadingSpinner />}
             />
-          : !nothing && activeType === 'All'
+          : !nothing && activeType === 'Web'
             ? <Content />
             : null
       }

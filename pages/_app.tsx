@@ -60,7 +60,8 @@ library.add(
   fas.faReply, fas.faChevronUp, fas.faGripHorizontal, fas.faUpRightFromSquare,
   fas.faTriangleExclamation, fas.faMagnifyingGlassMinus, fas.faMagnifyingGlassPlus,
   fas.faTextHeight, fas.faTextWidth, fas.faAlignLeft, fas.faAlignJustify, fas.faFont,
-  fas.faMinus, fas.faArrowsUpDown, fas.faArrowsLeftRight, fas.faMagicWandSparkles
+  fas.faMinus, fas.faArrowsUpDown, fas.faArrowsLeftRight, fas.faMagicWandSparkles,
+  fas.faArrowDown
 )
 
 import { useRouter } from 'next/router'

@@ -121,7 +121,7 @@ const ThreadTitle: React.FC<ThreadTitleProps> = React.memo((props) => {
         e.preventDefault()
         e.stopPropagation()
       }}>
-        <Box wrap maxWidth={2} ml={.25} mr={.25} >
+        <Box wrap maxWidth={2} ml={.25} mr={.25} height='36px'>
           {
             !expanded &&
               <Box mb={.25} >
@@ -195,7 +195,7 @@ const Reply = React.memo((props: ReplyProps) => {
             <ThreadSuggestions guid={guid} onSend={message => sendMessageToWebsocket(message)} />
             {
               !active &&
-              <Box width='100%' px={.75} my={.25}>
+              <Box width='100%' px={.75}>
                 <Button
                   expand
                   icon='reply'
@@ -471,7 +471,7 @@ export const Thread = React.memo(({
       setActiveThreadGuid={setActiveThreadGuid} 
       sendMessageToWebsocket={sendMessageToWebsocket} 
     />
-   <div id={`bottom_${guid}`} />
+   <S.Bottom id={`bottom_${guid}`} />
   </S.Thread>)
 })
 
@@ -487,5 +487,9 @@ const S = {
     margin: .25rem 0;
     padding: .25rem 0;
     border-bottom: 1px solid var(--F_Surface_0);
+  `,
+  Bottom: styled.div`
+    width: 100%;
+    height: .25rem;
   `
 }

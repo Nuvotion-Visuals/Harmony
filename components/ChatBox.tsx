@@ -179,8 +179,6 @@ export const ChatBox = ({
       Action: given the context, respond directy to the user.
     `
 
-    console.log(messageWithContext)
-
     // send message to server
     const action = {
       type: 'message',

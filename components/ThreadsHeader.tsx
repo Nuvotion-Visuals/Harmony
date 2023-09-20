@@ -1,7 +1,7 @@
 import { Button, Gap, generateUUID, Item, TextInput, RichTextEditor, Box, Dropdown, useBreakpoint, AspectRatio, } from '@avsync.live/formation'
 import { useRouter } from 'next/router'
 import React, { memo, useCallback, useEffect, useState } from 'react'
-import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
+import { useSpaces_activeChannel, useSpaces_activeGroup, useSpaces_activeSpace, useSpaces_addMessage, useSpaces_addMessageToThread, useSpaces_addThread, useSpaces_addThreadToChannel, useSpaces_setActiveChannelGuid, useSpaces_setActiveGroupGuid, useSpaces_setActiveThreadGuid, useSpaces_threadsByGuid } from 'redux-tk/spaces/hook'
 import styled from 'styled-components'
 import { getWebsocketClient } from 'client/connectivity/websocket-client'
 import { useLayout_decrementActiveSwipeIndex } from 'redux-tk/layout/hook'
@@ -144,6 +144,7 @@ export const ThreadsHeader = memo(() => {
   const addMessageToThread = useSpaces_addMessageToThread()
   const setActiveChannelGuid = useSpaces_setActiveChannelGuid()
   const setActiveGroupGuid = useSpaces_setActiveGroupGuid()
+  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
   
   const activeChannel = useSpaces_activeChannel()
   const activeSpace = useSpaces_activeSpace()
@@ -191,6 +192,7 @@ export const ThreadsHeader = memo(() => {
     } as Thread
     addThread({ guid, thread: newThread })
     addThreadToChannel({ channelGuid: channelGuid as string, threadGuid: guid })
+    setActiveThreadGuid(guid)
 
     const messageGuid = generateUUID()
     const newMessage = {

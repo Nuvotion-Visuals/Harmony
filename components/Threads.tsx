@@ -58,10 +58,13 @@ const ThreadWrapper = React.memo(
   areEqual
 )
 interface Props {
-  
+  expandedThreads: { [key: string]: boolean }
+  onExpand: (threadGuid: string) => void
 }
 
-export const Threads = React.memo(({ }: Props) => {
+export const Threads = React.memo(({
+  expandedThreads, onExpand
+}: Props) => {
   const router = useRouter()
   const { thread: threadGuidFromQuery } = router.query
 
@@ -70,38 +73,7 @@ export const Threads = React.memo(({ }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const true100vh = use100vh()
   const activeThreadGuid = useSpaces_activeThreadGuid()
-  const setActiveThreadGuid = useSpaces_setActiveThreadGuid()
   const messagesByGuid = useSpaces_messagesByGuid()
-  
-  const [expandedThreads, setExpandedThreads] = useState<{ [key: string]: boolean }>({})
-
-  const handleExpandClick = useCallback((threadGuid: string) => {
-    setExpandedThreads(prev => ({
-      ...prev,
-      [threadGuid]: !prev[threadGuid]
-    }))
-  }, [])
-
-  useEffect(() => {
-    if (threadGuidFromQuery) {
-      setActiveThreadGuid(threadGuidFromQuery as string)
-    }
-  
-    if (activeThreadGuid) {
-      setExpandedThreads(prev => ({
-        ...prev,
-        [activeThreadGuid]: true
-      }))
-    }
-
-    if (activeChannel?.threadGuids?.length === 1) {
-      const singleThreadGuid = activeChannel.threadGuids[0]
-      setExpandedThreads(prev => ({
-        ...prev,
-        [singleThreadGuid]: true
-      }))
-    }
-  }, [activeThreadGuid, activeChannel, threadGuidFromQuery])
 
   return (<Box wrap width={'100%'}>
     <S.Threads ref={scrollContainerRef} true100vh={true100vh || 0}>
@@ -114,7 +86,7 @@ export const Threads = React.memo(({ }: Props) => {
                 threadGuid={threadGuid}
                 threadsByGuid={threadsByGuid}
                 expanded={expandedThreads[threadGuid]}
-                onExpand={handleExpandClick}
+                onExpand={onExpand}
                 threadProps={threadsByGuid[threadGuid]}
                 messages={
                   threadsByGuid[threadGuid].messageGuids?.map((messageGuid) => 
