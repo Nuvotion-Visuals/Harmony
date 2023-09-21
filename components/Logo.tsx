@@ -8,7 +8,7 @@ interface Props {
 export const Logo = React.memo(({ large }: Props) => {
   return (
     <S.LogoContainer large={large || false}>
-    <S.Logo src='/harmony-circle-red.svg' />
+    <S.Logo src='/cute-harmony.png' />
     </S.LogoContainer>
   )
 })
@@ -17,21 +17,18 @@ const S = {
 LogoContainer: styled.div<{
   large: boolean
 }>`
-    width: 48px;
-    min-width: 48px;
-    max-width: 48px;
-    height: var(--F_Header_Height);
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 48px;
     position: relative;;
-    border-radius: 100%;
-    background: var(--F_Primary);
-    * {
-      border-radius: 100%;
-    }
+    border-radius: .5rem;
     transform: ${props => props.large ? 'scale(4)' : 'none'};
+    &:hover {
+      background: var(--F_Surface);
+    }
   `,
   Logo: styled.img`
     width: 100%;
