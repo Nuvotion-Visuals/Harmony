@@ -102,10 +102,23 @@ const MyApp = React.memo(({ Component, pageProps }: AppProps) => {
   return <>
     <Head>
       <title>Harmony</title>
-      <meta name="description" content="Hi, I'm Harmony! Let's work together on whatever you care about." />
+      <meta name="description" content="Let's work together on whatever you care about." />
       <link rel="icon" href="/favicon.ico" />
       <meta property="og:title" content="Harmony" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      <link rel="manifest" href="/manifest.json" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      <meta name="theme-color" content="#000000" />
+      <link rel="icon" href="/favicon.ico" />
+      <link rel="manifest" href="/manifest.json" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="Harmony" />
+      <meta property="og:image" content="harmony-social-share.png"></meta>
+      <meta
+        property="og:description"
+        content="Let's work together on whatever you care about."
+      />
+      <meta property="og:site_name" content="Harmony" />
     </Head>
     <Provider store={store}>
       <Linker CustomLink={MyLink}> 

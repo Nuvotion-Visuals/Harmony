@@ -222,10 +222,8 @@ export const ThreadsHeader = memo(() => {
       message: `
         Space Description: ${activeSpace?.description}
         Group Description: ${activeGroup?.description}
-        Channel Description: ${activeChannel?.description}
-        Existing threads: \n${existingThreads}
         User Message: ${message}
-        Action: given the context, respond directy to the user.
+        Action: given the context, respond directy to the user, answering their message.
       `,
       conversationId: guid,
       parentMessageId: messageGuid,
@@ -246,12 +244,13 @@ export const ThreadsHeader = memo(() => {
 
     generate_threadPrompts(`
       Space name: ${activeSpace?.name}
-      Space description: ${activeSpace?.description}
       Channel name: ${activeChannel?.name}
       Channel description: ${activeChannel?.description}
       Existing threads: \n${existingThreads}
       Your previous suggestions (optional): ${suggestedPrompts}
       User feedback (optional): ${feedback}
+
+      PRIORITIZE THE CHANNEL DESCRIPTION!!
     `)
   }, [getStore, activeChannel, activeSpace, suggestedPrompts, feedback])
 

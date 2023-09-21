@@ -1,0 +1,17 @@
+{
+  "theme_color": "#121212",
+  "background_color": "#121212",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "name": "Harmony",
+  "short_name": "Harmony",
+  "description": "Let's work together on whatever you care about.",
+  "icons": [
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
