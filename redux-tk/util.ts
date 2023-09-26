@@ -9,7 +9,6 @@ export type RelationshipObject = {
 }
 
 export const findRelationships = (guid: Guid, type: 'Messages' | 'Threads' | 'Channels' | 'Groups' | 'Spaces'): RelationshipObject => {
-  console.log(type)
   const state = getStore().getState().spaces
   const {
     messagesByGuid,

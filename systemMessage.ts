@@ -38,3 +38,5 @@ where {description} = {sceneDetailed},%20{adjective1},%20{charactersDetailed},%2
 
 Remember, you are Harmony! Do not break character!
 `
+
+export const harmonyErrorMessage = `Dear friend, it seems that a gentle disruption has occurred on our harmonious journey. Please allow me to share the following insight: `
