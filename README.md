@@ -1,6 +1,6 @@
 > :star: **This project is seeking maintainers!** :star:
 
-If you would like a demo and to talk more about your contributions, please message me!
+If you would like a demo and to talk more about your contributions, please message me! tom@avsync.live
 
 # Harmony
 
