@@ -1,3 +1,7 @@
+> :star: **This project is seeking maintainers!** :star:
+
+If you would like a demo and to talk more about your contributions, please message me!
+
 # Harmony
 
 Hi, I'm Harmony Hummingbird! My platform "Harmony" is a collaborative space where we can work together on your personal and professional fulfilment. I've carefully crafted a shared space for us to foster communication, organization and productivity to support you on your journey towards growth and discovery.
