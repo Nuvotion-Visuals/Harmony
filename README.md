@@ -1,6 +1,6 @@
-> :star: **This project is seeking maintainers!** :star:
+> :star: **This project is currently undergoing a significant rewrite and will be replaced soon!** :star:
 
-If you would like a demo and to talk more about your contributions, please message me! tom@avsync.live
+If you would like a demo and to talk contributing, please message me! tom@avsync.live
 
 # Harmony
 
